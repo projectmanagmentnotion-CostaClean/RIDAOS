@@ -1,66 +1,61 @@
-export type SEOKey =
-  | 'home'
-  | 'catalogo'
-  | 'producto-dtf'
-  | 'guia'
-  | 'portafolio'
-  | 'presupuesto'
-  | 'contacto'
-  | 'legal'
+import { getSeoForRoute } from '../catalog/content/contentSelectors'
+import { catalogEntries } from '../catalog/registry/catalogRegistry'
 
-type SEOEntry = {
+type StaticSeoEntry = {
   title: string
   description: string
   ogType: 'website'
 }
 
-const defaultSEO: SEOEntry = {
-  title: 'RidaosPrint',
-  description: 'Produccion grafica con catalogo, DTF por metro y flujos frontend listos para crecer.',
-  ogType: 'website',
+type OpenGraphData = {
+  title: string
+  description: string
+  type: 'website'
+  url: string
 }
 
-export const pageSEO: Record<SEOKey, SEOEntry> = {
-  home: {
-    title: 'RidaosPrint | DTF por metro',
-    description: 'Base clara para configurar DTF por metro, revisar archivos y avanzar a pedido.',
+const staticRouteSEO: Record<string, StaticSeoEntry> = {
+  '#/': {
+    title: 'RidaosPrint | DTF por metro y produccion grafica',
+    description: 'Base comercial de RidaosPrint para DTF, catalogo, materiales, servicios y propuestas a medida.',
     ogType: 'website',
   },
-  catalogo: {
+  '#/catalogo': {
     title: 'Catalogo | RidaosPrint',
-    description: 'Catalogo base con DTF por metro, servicios a medida y accesos directos.',
+    description: 'Catalogo modular con compra directa, presupuesto y lectura clara de cada linea de producto o servicio.',
     ogType: 'website',
   },
-  'producto-dtf': {
-    title: 'DTF por metro | RidaosPrint',
-    description: 'Configura metraje, archivo y urgencia con resumen de precio en vivo.',
-    ogType: 'website',
-  },
-  guia: {
+  '#/guia': {
     title: 'Guia de Archivos | RidaosPrint',
-    description: 'Formatos, resolucion y checklist practico para preparar artes finales.',
+    description: 'Formatos, revision y checklist practico para preparar archivos antes de producir.',
     ogType: 'website',
   },
-  portafolio: {
+  '#/portafolio': {
     title: 'Portafolio | RidaosPrint',
-    description: 'Muestra visual de trabajos en rotulacion, textil, vinilos y gran formato.',
+    description: 'Trabajos de DTF, vinilo, rotulacion, stickers y gran formato con lectura visual del taller.',
     ogType: 'website',
   },
-  presupuesto: {
+  '#/presupuesto': {
     title: 'Solicitar Presupuesto | RidaosPrint',
-    description: 'Envia una solicitud base para proyectos personalizados y servicios a medida.',
+    description: 'Formulario de propuesta comercial para proyectos personalizados, servicios y gran formato.',
     ogType: 'website',
   },
-  contacto: {
+  '#/contacto': {
     title: 'Contacto | RidaosPrint',
-    description: 'Canales directos para consultas, pedidos y propuestas personalizadas.',
+    description: 'Contacto directo para pedidos, consultas y proyectos que requieren propuesta comercial.',
     ogType: 'website',
   },
-  legal: {
-    title: 'Legal y Confianza | RidaosPrint',
-    description: 'Base legal, revision tecnica y estructura de confianza pendiente de validacion final.',
+  '#/legal': {
+    title: 'Legal y condiciones comerciales | RidaosPrint',
+    description: 'Condiciones comerciales, revision tecnica y base legal visible para el flujo de compra o presupuesto.',
     ogType: 'website',
   },
+}
+
+const defaultSEO: StaticSeoEntry = {
+  title: 'RidaosPrint',
+  description: 'Produccion grafica con catalogo modular, configuracion y flujos preparados para crecer.',
+  ogType: 'website',
 }
 
 function ensureMeta(selector: string, createTag: () => HTMLElement) {
@@ -75,49 +70,145 @@ function ensureMeta(selector: string, createTag: () => HTMLElement) {
   return element
 }
 
-export function applySEO(key: SEOKey) {
+function normalizeHash(hash: string) {
+  if (!hash || hash === '#') {
+    return '#/'
+  }
+
+  return hash
+}
+
+export function buildPageTitle(title?: string) {
+  return title || defaultSEO.title
+}
+
+export function buildMetaDescription(description?: string) {
+  return description || defaultSEO.description
+}
+
+export function buildOpenGraphData(data: {
+  title?: string
+  description?: string
+  url: string
+}): OpenGraphData {
+  return {
+    title: buildPageTitle(data.title),
+    description: buildMetaDescription(data.description),
+    type: 'website',
+    url: data.url,
+  }
+}
+
+export function buildJsonLdProductStub(entryId: string) {
+  const entry = catalogEntries.find((item) => item.id === entryId)
+  const content = getSeoForRoute(entry?.route ?? '')
+
+  if (!entry || entry.kind !== 'product') {
+    return null
+  }
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: entry.name,
+    description: content?.metaDescription ?? entry.description,
+    category: entry.category,
+    sku: entry.id,
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: 'EUR',
+      price: entry.basePrice ?? undefined,
+      availability: 'https://schema.org/InStock',
+      url: entry.route,
+    },
+  }
+}
+
+export function buildJsonLdServiceStub(entryId: string) {
+  const entry = catalogEntries.find((item) => item.id === entryId)
+  const content = getSeoForRoute(entry?.route ?? '')
+
+  if (!entry || entry.kind !== 'service') {
+    return null
+  }
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: entry.name,
+    description: content?.metaDescription ?? entry.description,
+    serviceType: entry.category,
+    areaServed: 'ES',
+    url: entry.route,
+  }
+}
+
+export function applySEO(routeHash: string) {
   if (typeof document === 'undefined' || typeof window === 'undefined') {
     return
   }
 
-  const entry = pageSEO[key] ?? defaultSEO
-  document.title = entry.title
+  const normalizedHash = normalizeHash(routeHash)
+  const staticSeo = staticRouteSEO[normalizedHash.split('?')[0]] ?? defaultSEO
+  const contentSeo = getSeoForRoute(normalizedHash)
 
-  const description = ensureMeta('meta[name="description"]', () => {
+  const title = buildPageTitle(contentSeo?.seoTitle ?? staticSeo.title)
+  const description = buildMetaDescription(contentSeo?.metaDescription ?? staticSeo.description)
+  const ogData = buildOpenGraphData({
+    title,
+    description,
+    url: `${window.location.origin}${window.location.pathname}${window.location.search}${normalizedHash}`,
+  })
+
+  document.title = title
+
+  const descriptionMeta = ensureMeta('meta[name="description"]', () => {
     const meta = document.createElement('meta')
     meta.setAttribute('name', 'description')
     return meta
   })
-  description.setAttribute('content', entry.description)
+  descriptionMeta.setAttribute('content', description)
 
   const ogTitle = ensureMeta('meta[property="og:title"]', () => {
     const meta = document.createElement('meta')
     meta.setAttribute('property', 'og:title')
     return meta
   })
-  ogTitle.setAttribute('content', entry.title)
+  ogTitle.setAttribute('content', ogData.title)
 
   const ogDescription = ensureMeta('meta[property="og:description"]', () => {
     const meta = document.createElement('meta')
     meta.setAttribute('property', 'og:description')
     return meta
   })
-  ogDescription.setAttribute('content', entry.description)
+  ogDescription.setAttribute('content', ogData.description)
 
   const ogType = ensureMeta('meta[property="og:type"]', () => {
     const meta = document.createElement('meta')
     meta.setAttribute('property', 'og:type')
     return meta
   })
-  ogType.setAttribute('content', entry.ogType)
+  ogType.setAttribute('content', ogData.type)
 
   const canonical = ensureMeta('link[rel="canonical"]', () => {
     const link = document.createElement('link')
     link.setAttribute('rel', 'canonical')
     return link
   })
-  canonical.setAttribute(
-    'href',
-    `${window.location.origin}${window.location.pathname}${window.location.search}${window.location.hash || '#/'}`,
-  )
+  canonical.setAttribute('href', ogData.url)
+
+  const routeEntry = catalogEntries.find((entry) => entry.route === normalizedHash || entry.route.split('?')[0] === normalizedHash.split('?')[0])
+  const jsonLd = routeEntry
+    ? routeEntry.kind === 'product'
+      ? buildJsonLdProductStub(routeEntry.id)
+      : buildJsonLdServiceStub(routeEntry.id)
+    : null
+
+  const jsonLdScript = ensureMeta('script[data-ridaos-jsonld="true"]', () => {
+    const script = document.createElement('script')
+    script.setAttribute('type', 'application/ld+json')
+    script.setAttribute('data-ridaos-jsonld', 'true')
+    return script
+  })
+  jsonLdScript.textContent = jsonLd ? JSON.stringify(jsonLd) : ''
 }

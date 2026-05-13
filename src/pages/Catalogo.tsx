@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useRef } from 'react'
 import CtaPanel from '../components/CtaPanel'
+import ConversionTrustBlock from '../components/ConversionTrustBlock'
 import MetricCard from '../components/MetricCard'
 import PageShell from '../components/PageShell'
+import SeoContentBlock from '../components/SeoContentBlock'
 import SectionHeader from '../components/SectionHeader'
 import StatusBadge from '../components/StatusBadge'
+import { getContentByEntryId } from '../catalog/content/contentSelectors'
 import {
   initCinematicScroll,
   initCursorAwareReveals,
@@ -112,13 +115,17 @@ function Catalogo() {
     () => catalogSections.filter((section) => section.key !== 'featured'),
     [catalogSections],
   )
+  const featuredContent = useMemo(
+    () => (featuredProduct ? getContentByEntryId(featuredProduct.id) : null),
+    [featuredProduct],
+  )
 
   return (
     <PageShell className="catalog-page premium-page" ref={pageRef}>
       <SectionHeader
         className="catalog-hero premium-hero type-split"
-        description="El catalogo marca la estructura completa del ecommerce: que se compra directo, que pasa a presupuesto y que requiere archivo o revision manual."
-        eyebrow="Catalogo pro"
+        description={featuredContent?.metaDescription ?? 'El catalogo marca la estructura completa del ecommerce: que se compra directo, que pasa a presupuesto y que requiere archivo o revision manual.'}
+        eyebrow={featuredContent?.eyebrow ?? 'Catalogo pro'}
         hero
         stickerWords={['directa', 'presupuesto']}
         title="Compra directa donde importa, presupuesto donde aporta valor."
@@ -152,15 +159,15 @@ function Catalogo() {
           actions={
             <div className="catalog-cta-row">
               <a className="action-button action-link-button" data-cursor="magnetic" href={featuredProduct.route}>
-                {featuredProduct.cta.label}
+                {featuredContent?.primaryCta.label ?? featuredProduct.cta.label}
               </a>
               <a className="action-button action-button-muted action-link-button" data-cursor="magnetic" href="#/guia">
-                Ver guia de archivos
+                {featuredContent?.secondaryCta.label ?? 'Ver guia de archivos'}
               </a>
             </div>
           }
           className="featured-product-card"
-          description={featuredProduct.shortDescription}
+          description={featuredContent?.intro ?? featuredProduct.shortDescription}
           label="Producto destacado"
           title={`${featuredProduct.name} listo para configurar.`}
         />
@@ -186,6 +193,28 @@ function Catalogo() {
           <MetricCard className="featured-metric hover-lift" label="Base actual" note="Tarifa de partida" value={featuredProduct.basePrice ? `${featuredProduct.basePrice.toFixed(2)} EUR/metro` : 'Consultar'} />
           <MetricCard className="featured-metric hover-lift" label="Revision" note="Estado comercial" value={featuredProduct.manualReviewRequired ? 'Manual review' : 'Flujo directo'} />
         </div>
+      ) : null}
+
+      {featuredProduct ? (
+        <section className="content-section content-grid-two" data-animate="reveal" data-scroll-scene="catalog-content">
+          <SeoContentBlock entryId={featuredProduct.id} title="Que hacemos desde el catalogo" />
+          <SeoContentBlock entryId={featuredProduct.id} mode="useCases" title="Como leer esta oferta" />
+        </section>
+      ) : null}
+
+      {featuredProduct ? (
+        <section className="content-section content-grid-two" data-animate="reveal" data-scroll-scene="catalog-trust">
+          <ConversionTrustBlock entryId={featuredProduct.id} title="Por que empezar por el catalogo" />
+          <article className="content-card seo-content-block">
+            <p className="section-label">Catalogo</p>
+            <h3>Como se organiza la compra.</h3>
+            <ul className="placeholder-list">
+              <li>Compra directa para productos con precio claro y configuracion controlada.</li>
+              <li>Presupuesto para proyectos donde material, medida o instalacion cambian el resultado final.</li>
+              <li>Revision manual cuando el archivo o el soporte lo exigen.</li>
+            </ul>
+          </article>
+        </section>
       ) : null}
 
       <section className="catalog-section" data-animate="reveal" data-motion="poster-stack" data-scroll-scene="catalog-categories">

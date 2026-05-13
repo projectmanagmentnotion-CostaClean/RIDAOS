@@ -1,11 +1,17 @@
 import { useEffect, useRef } from 'react'
 import CtaPanel from '../components/CtaPanel'
-import FAQSection from '../components/FAQSection'
+import ConversionTrustBlock from '../components/ConversionTrustBlock'
+import FaqBlock from '../components/FaqBlock'
 import MetricCard from '../components/MetricCard'
+import ObjectionHandlerBlock from '../components/ObjectionHandlerBlock'
 import PageShell from '../components/PageShell'
 import ProcessSteps from '../components/ProcessSteps'
+import SeoContentBlock from '../components/SeoContentBlock'
 import SectionHeader from '../components/SectionHeader'
 import TrustGrid from '../components/TrustGrid'
+import UploadGuidanceBlock from '../components/UploadGuidanceBlock'
+import { dtfEntry } from '../catalog/products/dtf'
+import { getContentByEntryId } from '../catalog/content/contentSelectors'
 import {
   initCinematicScroll,
   initCursorAwareReveals,
@@ -18,20 +24,7 @@ const stats = [
   { label: 'Estado', value: 'Frontend base listo' },
 ]
 
-const homeFaq = [
-  {
-    question: 'DTF por metro',
-    answer: 'Configuras el metraje, subes archivo y revisas el resumen antes de seguir.',
-  },
-  {
-    question: 'Archivos',
-    answer: 'La guia resume formatos y criterios basicos antes de producir.',
-  },
-  {
-    question: 'Produccion',
-    answer: 'Los trabajos quedan sujetos a revision y aprobacion previa cuando aplique.',
-  },
-]
+const homeContent = getContentByEntryId(dtfEntry.id)
 
 const selectedRows = [
   {
@@ -153,11 +146,11 @@ function Home() {
         <div className="hero-flash-band" aria-hidden="true" />
         <SectionHeader
           className="premium-hero home-hero-copy type-split"
-          description="Compra DTF por metro lineal con una base clara para pedidos agiles: configura tu tirada, sube tus disenos y avanza a produccion sin una capa extra de complejidad."
-          eyebrow="DTF por metro para produccion flexible"
+          description={homeContent?.intro ?? 'Compra DTF por metro lineal con una base clara para pedidos agiles: configura tu tirada, sube tus disenos y avanza a produccion sin una capa extra de complejidad.'}
+          eyebrow={homeContent?.eyebrow ?? 'DTF por metro para produccion flexible'}
           hero
           stickerWords={['DTF', 'produccion']}
-          title="RidaosPrint DTF por metro."
+          title={homeContent?.h1 ? `RidaosPrint ${homeContent.h1}` : 'RidaosPrint DTF por metro.'}
           titleLines={['RIDAOSPRINT', 'DTF POR', 'METRO']}
         />
 
@@ -187,7 +180,7 @@ function Home() {
           </div>
           <div className="catalog-cta-row">
             <a className="action-button action-link-button" data-cursor="magnetic" href="#/producto/dtf">
-              Configurar DTF
+              {homeContent?.primaryCta.label ?? 'Configurar DTF'}
             </a>
             <a className="action-button action-button-muted action-link-button" data-cursor="magnetic" href="#/catalogo">
               Ver catalogo
@@ -367,15 +360,23 @@ function Home() {
         <ProcessSteps />
       </section>
 
+      <section className="content-section content-grid-two" data-animate="reveal" data-scroll-scene="home-content">
+        <SeoContentBlock entryId={dtfEntry.id} title="Que hacemos" />
+        <SeoContentBlock entryId={dtfEntry.id} mode="useCases" title="Para quien imprimimos" />
+      </section>
+
+      <section className="content-section content-grid-two" data-animate="reveal" data-scroll-scene="home-why">
+        <UploadGuidanceBlock entryId={dtfEntry.id} title="Como preparar el pedido" />
+        <ConversionTrustBlock entryId={dtfEntry.id} title="Por que RidaosPrint" />
+      </section>
+
       <section className="content-section" data-animate="reveal" data-scroll-scene="home-trust">
         <SectionHeader eyebrow="Confianza" title="Estructura operativa visible desde el inicio." />
         <TrustGrid />
       </section>
 
-      <section className="content-section" data-animate="reveal" data-scroll-scene="home-faq">
-        <SectionHeader eyebrow="FAQ" title="Preguntas rapidas antes de pedir." />
-        <FAQSection items={homeFaq} />
-      </section>
+      <ObjectionHandlerBlock entryId={dtfEntry.id} title="Respuestas rapidas antes de pedir." />
+      <FaqBlock entryId={dtfEntry.id} title="Preguntas rapidas antes de pedir." />
 
       <section className="cta-overload-section" data-motion="cta-overload" data-scroll-scene="home-overload-cta">
         <div className="overload-band" aria-hidden="true" />

@@ -1,12 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import CommercialNoticeGroup from '../components/CommercialNoticeGroup'
+import ConversionTrustBlock from '../components/ConversionTrustBlock'
 import CtaPanel from '../components/CtaPanel'
-import FAQSection from '../components/FAQSection'
+import FaqBlock from '../components/FaqBlock'
 import MetricCard from '../components/MetricCard'
+import ObjectionHandlerBlock from '../components/ObjectionHandlerBlock'
 import PageShell from '../components/PageShell'
 import ProcessSteps from '../components/ProcessSteps'
+import SeoContentBlock from '../components/SeoContentBlock'
 import SectionHeader from '../components/SectionHeader'
 import TrustGrid from '../components/TrustGrid'
+import UploadGuidanceBlock from '../components/UploadGuidanceBlock'
+import { getContentByEntryId } from '../catalog/content/contentSelectors'
 import {
   initCinematicScroll,
   initCursorAwareReveals,
@@ -51,25 +56,7 @@ const urgencyLabels: Record<DTFUrgency, string> = {
 
 const previewableTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml']
 const premiumDocumentFormats = ['PDF', 'AI', 'EPS', 'ZIP', 'TIFF']
-
-const dtfFaq = [
-  {
-    question: 'DTF por metro',
-    answer: 'El precio base parte de 14,50 EUR por metro antes de extras de calidad o urgencia.',
-  },
-  {
-    question: 'Archivos',
-    answer: 'Puedes revisar nombre, tipo y miniatura cuando el navegador la soporte.',
-  },
-  {
-    question: 'Produccion',
-    answer: 'La produccion final queda preparada para una revision tecnica posterior.',
-  },
-  {
-    question: 'Envios o recogida',
-    answer: 'La capa operativa existe como placeholder y se completara en fases futuras.',
-  },
-]
+const dtfContent = getContentByEntryId(dtfEntry.id)
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('es-ES', {
@@ -269,11 +256,11 @@ function DTFPage() {
         <div className="hero-flash-band" aria-hidden="true" />
         <SectionHeader
           className="premium-hero type-split"
-          description="Configura tu pedido base por metraje, revisa la pieza antes de enviar y deja preparada una base escalable para futuras validaciones tecnicas."
-          eyebrow="Producto principal"
+          description={dtfContent?.intro ?? 'Configura tu pedido base por metraje, revisa la pieza antes de enviar y deja preparada una base escalable para futuras validaciones tecnicas.'}
+          eyebrow={dtfContent?.eyebrow ?? 'Producto principal'}
           hero
           stickerWords={['DTF', 'archivo']}
-          title="DTF por metro."
+          title={dtfContent?.h1 ?? 'DTF por metro.'}
           titleLines={['DTF', 'POR METRO']}
         />
       </section>
@@ -376,10 +363,10 @@ function DTFPage() {
 
             <div className="form-actions">
               <button className="action-button action-button-muted" data-cursor="invert" onClick={handleAddToCart} type="button">
-                Anadir al carrito
+                {dtfContent?.primaryCta.label ?? 'Anadir al carrito'}
               </button>
               <button className="action-button" data-cursor="invert" onClick={handleSimulateOrder} type="button">
-                Simular pedido
+                {dtfContent?.secondaryCta.label ?? 'Simular pedido'}
               </button>
             </div>
 
@@ -507,15 +494,23 @@ function DTFPage() {
         <ProcessSteps />
       </section>
 
+      <section className="content-section content-grid-two" data-animate="reveal" data-scroll-scene="dtf-content">
+        <SeoContentBlock entryId={dtfEntry.id} title="Por que este flujo convierte mejor." />
+        <SeoContentBlock entryId={dtfEntry.id} mode="useCases" title="Cuando usarlo." />
+      </section>
+
+      <section className="content-section content-grid-two" data-animate="reveal" data-scroll-scene="dtf-guidance">
+        <UploadGuidanceBlock entryId={dtfEntry.id} />
+        <ConversionTrustBlock entryId={dtfEntry.id} title="Confianza para cerrar el pedido." />
+      </section>
+
       <section className="content-section" data-animate="reveal" data-scroll-scene="dtf-trust">
         <SectionHeader eyebrow="Confianza" title="Checks y aprobacion antes de producir." />
         <TrustGrid />
       </section>
 
-      <section className="content-section" data-animate="reveal" data-scroll-scene="dtf-faq">
-        <SectionHeader eyebrow="FAQ" title="Dudas frecuentes del configurador." />
-        <FAQSection items={dtfFaq} />
-      </section>
+      <ObjectionHandlerBlock entryId={dtfEntry.id} title="Objeciones antes de enviar archivo." />
+      <FaqBlock entryId={dtfEntry.id} title="Dudas frecuentes del configurador." />
     </PageShell>
   )
 }

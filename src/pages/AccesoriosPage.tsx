@@ -1,7 +1,13 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import CatalogEntryPageTemplate from '../components/CatalogEntryPageTemplate'
 import CatalogResultPanel from '../components/CatalogResultPanel'
 import CommercialNoticeGroup from '../components/CommercialNoticeGroup'
+import ConversionTrustBlock from '../components/ConversionTrustBlock'
+import FaqBlock from '../components/FaqBlock'
+import ObjectionHandlerBlock from '../components/ObjectionHandlerBlock'
+import SeoContentBlock from '../components/SeoContentBlock'
+import UploadGuidanceBlock from '../components/UploadGuidanceBlock'
+import { getContentByEntryId } from '../catalog/content/contentSelectors'
 import { addToCart } from '../lib/cart'
 import { createCatalogCartItem } from '../lib/catalogCartAdapter'
 import { getCatalogPricingResult } from '../lib/catalogPricingAdapter'
@@ -15,15 +21,10 @@ function AccesoriosPage() {
   const [message, setMessage] = useState('')
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<string, string>>>({})
   const selectedProduct = useMemo(() => getProductById(productId), [productId])
-
-  useEffect(() => {
-    if (!selectedProduct) {
-      return
-    }
-
-    setConfig(createInitialConfig(selectedProduct))
-    setFieldErrors({})
-  }, [selectedProduct])
+  const content = useMemo(
+    () => (selectedProduct ? getContentByEntryId(selectedProduct.id) : null),
+    [selectedProduct],
+  )
 
   const estimate = useMemo(
     () => (selectedProduct ? getCatalogPricingResult(selectedProduct, config) : null),
@@ -31,12 +32,20 @@ function AccesoriosPage() {
   )
 
   const handleConfigChange = (key: string, value: string) => {
+    if ((key === 'product' || key === 'variant') && getProductById(value)) {
+      const nextProduct = getProductById(value)
+
+      if (nextProduct) {
+        setProductId(value)
+        setConfig(createInitialConfig(nextProduct))
+        setFieldErrors({})
+      }
+
+      return
+    }
+
     setConfig((current) => updateConfigValue(current, key, value))
     setFieldErrors((current) => ({ ...current, [key]: undefined }))
-
-    if ((key === 'product' || key === 'variant') && getProductById(value)) {
-      setProductId(value)
-    }
   }
 
   const handleFileChange = (_key: string, file: File | null) => {
@@ -81,16 +90,16 @@ function AccesoriosPage() {
             onClick={handleAddToCart}
             type="button"
           >
-            Anadir al carrito
+            {content?.primaryCta.label ?? 'Anadir al carrito'}
           </button>
-          <a className="action-button action-button-muted action-link-button" href="#/presupuesto?service=accesorios">
-            Solicitar presupuesto
+          <a className="action-button action-button-muted action-link-button" href={content?.secondaryCta.href ?? '#/presupuesto?service=materiales'}>
+            {content?.secondaryCta.label ?? 'Solicitar presupuesto'}
           </a>
         </>
       }
-      description="Llaveros y pegatinas con tramos directos del catalogo y salida local al carrito."
+      description={content?.intro ?? 'Llaveros y pegatinas con tramos directos del catalogo y salida local al carrito.'}
       entry={selectedProduct}
-      eyebrow="Accesorios"
+      eyebrow={content?.eyebrow ?? 'Accesorios'}
       fieldErrors={fieldErrors}
       onConfigChange={handleConfigChange}
       onFileChange={handleFileChange}
@@ -101,8 +110,15 @@ function AccesoriosPage() {
           {message ? <p className="inline-notice">{message}</p> : null}
         </>
       }
-      title="Accesorios con lectura rapida."
-    />
+      title={content?.h1 ?? 'Accesorios con lectura rapida.'}
+    >
+      <SeoContentBlock entryId={selectedProduct.id} />
+      <SeoContentBlock entryId={selectedProduct.id} mode="useCases" />
+      <UploadGuidanceBlock entryId={selectedProduct.id} />
+      <ConversionTrustBlock entryId={selectedProduct.id} />
+      <ObjectionHandlerBlock entryId={selectedProduct.id} />
+      <FaqBlock entryId={selectedProduct.id} title="FAQ accesorios" />
+    </CatalogEntryPageTemplate>
   )
 }
 

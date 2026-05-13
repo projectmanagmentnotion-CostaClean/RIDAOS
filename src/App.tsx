@@ -26,7 +26,7 @@ import Portafolio from './pages/Portafolio'
 import RotulacionPage from './pages/RotulacionPage'
 import SolicitarPresupuesto from './pages/SolicitarPresupuesto'
 import TextilPage from './pages/TextilPage'
-import { applySEO, type SEOKey } from './lib/seo'
+import { applySEO } from './lib/seo'
 import { initSmoothScroll } from './lib/smoothScroll'
 import { refreshScrollNarrative, syncScrollTriggerWithLenis } from './lib/animations'
 
@@ -121,33 +121,6 @@ const pageComponents: Record<RouteKey, ReactNode> = {
   presupuesto: <SolicitarPresupuesto />,
 }
 
-const routeSEOMap: Record<RouteKey, SEOKey> = {
-  home: 'home',
-  catalogo: 'catalogo',
-  dtf: 'producto-dtf',
-  textil: 'catalogo',
-  papeleria: 'catalogo',
-  materiales: 'catalogo',
-  accesorios: 'catalogo',
-  rotulacion: 'presupuesto',
-  neones: 'presupuesto',
-  carrito: 'producto-dtf',
-  checkout: 'producto-dtf',
-  guia: 'guia',
-  portafolio: 'portafolio',
-  contacto: 'contacto',
-  legal: 'legal',
-  miCuenta: 'home',
-  misPedidos: 'home',
-  detallePedido: 'home',
-  historialArchivos: 'home',
-  admin: 'home',
-  adminPedidos: 'home',
-  adminDetallePedido: 'home',
-  adminArchivos: 'home',
-  presupuesto: 'presupuesto',
-}
-
 function getRouteFromHash(hash: string): RouteKey {
   const normalizedHash = hash.split('?')[0]
 
@@ -206,7 +179,7 @@ function App() {
   }, [route])
 
   useEffect(() => {
-    applySEO(routeSEOMap[route])
+    applySEO(window.location.hash || '#/')
   }, [route])
 
   return (

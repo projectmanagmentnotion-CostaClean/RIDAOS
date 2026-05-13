@@ -3286,3 +3286,49 @@ body.lenis {
 .checkout-notice {
   margin-top: 18px;
 }
+
+.content-grid-two {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.seo-content-block,
+.conversion-trust-block,
+.upload-guidance-block,
+.faq-block-header,
+.objection-block-header {
+  min-width: 0;
+}
+
+.seo-content-block h3,
+.conversion-trust-block h3,
+.upload-guidance-block h3,
+.faq-block-header h3,
+.objection-block-header h3 {
+  margin: 0;
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+  line-height: 1.05;
+}
+
+.conversion-copy-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.conversion-copy-grid p {
+  margin: 0;
+  color: rgba(231, 231, 231, 0.8);
+}
+
+.faq-block,
+.objection-block {
+  display: grid;
+  gap: 18px;
+}
+
+@media (max-width: 860px) {
+  .content-grid-two {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import CommercialNoticeGroup from '../components/CommercialNoticeGroup'
 import CtaPanel from '../components/CtaPanel'
 import FAQSection from '../components/FAQSection'
 import MetricCard from '../components/MetricCard'
@@ -18,6 +19,7 @@ import {
   type DTFQuality,
   type DTFUrgency,
 } from '../lib/pricing'
+import { dtfEntry } from '../catalog/products/dtf'
 import type { CartItem } from '../types/ecommerce'
 
 type SimulationResult = {
@@ -495,6 +497,8 @@ function DTFPage() {
               title="La configuracion esta lista para seguir en el flujo."
             />
           ) : null}
+
+          <CommercialNoticeGroup noticeKeys={dtfEntry.legalNotes} />
         </div>
       </div>
 

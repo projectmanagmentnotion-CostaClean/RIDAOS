@@ -1,137 +1,97 @@
-import { useMemo, useState } from 'react'
-import CommercialNotice from '../components/CommercialNotice'
-import PriceCard from '../components/PriceCard'
-import ProductConfiguratorShell from '../components/ProductConfiguratorShell'
-import SectionHeader from '../components/SectionHeader'
+import { useEffect, useMemo, useState } from 'react'
+import CatalogEntryPageTemplate from '../components/CatalogEntryPageTemplate'
+import CatalogResultPanel from '../components/CatalogResultPanel'
+import CommercialNoticeGroup from '../components/CommercialNoticeGroup'
 import { addToCart } from '../lib/cart'
-import { calculateMaterialM2Price } from '../lib/pricingEngine'
-import { getProductsByCategory, getProductById } from '../lib/products'
-import type { CartItem } from '../types/ecommerce'
-
-const formatCurrency = (value: number) =>
-  new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(value)
+import { createCatalogCartItem } from '../lib/catalogCartAdapter'
+import { getCatalogPricingResult } from '../lib/catalogPricingAdapter'
+import { createInitialConfig, getRequiredFieldErrors, updateConfigValue, type ConfigState } from '../lib/configuratorState'
+import { getProductById, getProductsByCategory, resolveLegalNoticeItems } from '../lib/products'
 
 function MaterialesPage() {
   const products = getProductsByCategory('materiales')
   const [productId, setProductId] = useState(products[0]?.id ?? '')
-  const [area, setArea] = useState('1')
+  const [config, setConfig] = useState<ConfigState>(() => (products[0] ? createInitialConfig(products[0]) : {}))
   const [message, setMessage] = useState('')
-  const selectedProduct = getProductById(productId)
-  const estimate = useMemo(() => calculateMaterialM2Price(productId, Number(area)), [productId, area])
+  const [fieldErrors, setFieldErrors] = useState<Partial<Record<string, string>>>({})
+  const selectedProduct = useMemo(() => getProductById(productId), [productId])
 
-  const handleAddToCart = () => {
-    if (!selectedProduct || estimate.quoteRequired || estimate.validationMessage || !estimate.unitPrice) {
+  useEffect(() => {
+    if (!selectedProduct) {
       return
     }
 
-    const itemId = `material-${Date.now()}`
-    const cartItem: CartItem = {
-      id: itemId,
-      productType: 'material',
-      productName: selectedProduct.name,
-      configuration: {
-        areaM2: Number(area),
-        variant: selectedProduct.name,
-        summary: [`${area} m2`, selectedProduct.name],
-        notes: '',
-      },
-      pricing: {
-        unitPrice: estimate.unitPrice,
-        unitLabel: 'm2',
-        subtotal: estimate.subtotal,
-        extras: 0,
-        total: estimate.total,
-      },
-      artwork: {
-        id: `upload-${Date.now()}`,
-        itemId,
-        fileName: 'Sin archivo adjunto',
-        fileType: 'text/plain',
-        fileSize: 0,
-        formatLabel: 'PENDIENTE',
-        status: 'pending_review',
-        uploadedAt: new Date().toISOString(),
-      },
+    setConfig(createInitialConfig(selectedProduct))
+    setFieldErrors({})
+  }, [selectedProduct])
+
+  const estimate = useMemo(
+    () => (selectedProduct ? getCatalogPricingResult(selectedProduct, config) : null),
+    [config, selectedProduct],
+  )
+
+  const handleConfigChange = (key: string, value: string) => {
+    setConfig((current) => updateConfigValue(current, key, value))
+    setFieldErrors((current) => ({ ...current, [key]: undefined }))
+
+    if ((key === 'product' || key === 'variant') && getProductById(value)) {
+      setProductId(value)
+    }
+  }
+
+  const handleAddToCart = () => {
+    if (!selectedProduct) {
+      return
     }
 
-    addToCart(cartItem)
+    const nextErrors = getRequiredFieldErrors(selectedProduct, config)
+    setFieldErrors(nextErrors)
+
+    if (!estimate || Object.keys(nextErrors).length > 0 || !estimate.canAddToCart) {
+      return
+    }
+
+    addToCart(createCatalogCartItem(selectedProduct, config, estimate))
     setMessage('Estimacion de materiales anadida al carrito.')
   }
 
+  if (!selectedProduct) {
+    return null
+  }
+
   return (
-    <ProductConfiguratorShell
+    <CatalogEntryPageTemplate
       className="materiales-page"
+      config={config}
+      ctaArea={
+        <>
+          <button
+            className="action-button"
+            disabled={Boolean(!estimate?.canAddToCart)}
+            onClick={handleAddToCart}
+            type="button"
+          >
+            Anadir al carrito
+          </button>
+          <a className="action-button action-button-muted action-link-button" href="#/presupuesto?service=materiales">
+            Solicitar presupuesto
+          </a>
+        </>
+      }
       description="Vinilos y materiales por metro cuadrado con lectura defensiva para soportes que siguen yendo por presupuesto."
+      entry={selectedProduct}
       eyebrow="Materiales"
+      fieldErrors={fieldErrors}
+      onConfigChange={handleConfigChange}
+      resultArea={
+        <>
+          {estimate ? <CatalogResultPanel result={estimate} title="Precio estimado" /> : null}
+          <CommercialNoticeGroup items={resolveLegalNoticeItems(selectedProduct.legalNotes)} />
+          {message ? <p className="inline-notice">{message}</p> : null}
+        </>
+      }
       title="Materiales y vinilos por m2."
-    >
-      <div className="split-grid product-layout">
-        <article className="content-card product-config-card">
-          <SectionHeader eyebrow="Configurador" title="Elige material y superficie." />
-          <div className="configurator-form">
-            <label className="field-group" htmlFor="material-product">
-              <span className="field-label">Material</span>
-              <select
-                className="form-input"
-                id="material-product"
-                onChange={(event) => setProductId(event.target.value)}
-                value={productId}
-              >
-                {products.map((product) => (
-                  <option key={product.id} value={product.id}>
-                    {product.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="field-group" htmlFor="material-area">
-              <span className="field-label">Superficie</span>
-              <input
-                className="form-input"
-                id="material-area"
-                min="0.1"
-                onChange={(event) => setArea(event.target.value)}
-                step="0.1"
-                type="number"
-                value={area}
-              />
-            </label>
-
-            <div className="form-actions">
-              <button
-                className="action-button"
-                disabled={Boolean(estimate.quoteRequired || estimate.validationMessage)}
-                onClick={handleAddToCart}
-                type="button"
-              >
-                Anadir al carrito
-              </button>
-              <a className="action-button action-button-muted action-link-button" href="#/presupuesto?service=materiales">
-                Solicitar presupuesto
-              </a>
-            </div>
-
-            {message ? <p className="inline-notice">{message}</p> : null}
-          </div>
-        </article>
-
-        <div className="summary-stack">
-          <PriceCard
-            label="Precio estimado"
-            note={estimate.validationMessage || 'Los soportes complejos y lonas pasan a presupuesto.'}
-            value={
-              estimate.quoteRequired
-                ? 'Precio a consultar'
-                : estimate.total > 0
-                  ? formatCurrency(estimate.total)
-                  : 'Pendiente'
-            }
-          />
-          <CommercialNotice />
-        </div>
-      </div>
-    </ProductConfiguratorShell>
+    />
   )
 }
 

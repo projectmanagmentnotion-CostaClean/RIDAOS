@@ -1,79 +1,79 @@
-import { useMemo, useState } from 'react'
-import CommercialNotice from '../components/CommercialNotice'
-import PriceCard from '../components/PriceCard'
-import ProductConfiguratorShell from '../components/ProductConfiguratorShell'
-import SectionHeader from '../components/SectionHeader'
-import { calculateVanWrapEstimate } from '../lib/pricingEngine'
-import { getProductsByCategory, getProductById } from '../lib/products'
+import { useEffect, useMemo, useState } from 'react'
+import CatalogEntryPageTemplate from '../components/CatalogEntryPageTemplate'
+import CatalogResultPanel from '../components/CatalogResultPanel'
+import CommercialNoticeGroup from '../components/CommercialNoticeGroup'
+import { getCatalogPricingResult } from '../lib/catalogPricingAdapter'
+import { createInitialConfig, getRequiredFieldErrors, updateConfigValue, type ConfigState } from '../lib/configuratorState'
+import { getProductById, getProductsByCategory, resolveLegalNoticeItems } from '../lib/products'
 
 function RotulacionPage() {
-  const products = getProductsByCategory('rotulacion')
-  const [productId, setProductId] = useState(products[0]?.id ?? '')
-  const [size, setSize] = useState<'S' | 'M' | 'L' | 'XL'>('M')
-  const selectedProduct = getProductById(productId)
-  const estimate = useMemo(() => calculateVanWrapEstimate(productId, size), [productId, size])
+  const services = getProductsByCategory('rotulacion')
+  const [productId, setProductId] = useState(services[0]?.id ?? '')
+  const [config, setConfig] = useState<ConfigState>(() => (services[0] ? createInitialConfig(services[0]) : {}))
+  const [fieldErrors, setFieldErrors] = useState<Partial<Record<string, string>>>({})
+  const selectedProduct = useMemo(() => getProductById(productId), [productId])
+
+  useEffect(() => {
+    if (!selectedProduct) {
+      return
+    }
+
+    setConfig(createInitialConfig(selectedProduct))
+    setFieldErrors({})
+  }, [selectedProduct])
+
+  const estimate = useMemo(
+    () => (selectedProduct ? getCatalogPricingResult(selectedProduct, config) : null),
+    [config, selectedProduct],
+  )
+
+  const handleConfigChange = (key: string, value: string) => {
+    setConfig((current) => updateConfigValue(current, key, value))
+    setFieldErrors((current) => ({ ...current, [key]: undefined }))
+
+    if ((key === 'product' || key === 'variant') && getProductById(value)) {
+      setProductId(value)
+    }
+  }
+
+  if (!selectedProduct) {
+    return null
+  }
 
   return (
-    <ProductConfiguratorShell
+    <CatalogEntryPageTemplate
       className="rotulacion-page"
+      config={config}
+      ctaArea={
+        <a className="action-button action-link-button" href="#/presupuesto?service=rotulacion">
+          Solicitar presupuesto
+        </a>
+      }
       description="Rotulacion de furgonetas por tramos orientativos y cierre por presupuesto comercial."
+      entry={selectedProduct}
       eyebrow="Rotulacion de furgonetas"
+      fieldErrors={fieldErrors}
+      onConfigChange={(key, value) => {
+        handleConfigChange(key, value)
+        if (selectedProduct) {
+          setFieldErrors(getRequiredFieldErrors(selectedProduct, updateConfigValue(config, key, value)))
+        }
+      }}
+      resultArea={
+        <>
+          {estimate ? <CatalogResultPanel result={estimate} title="Rango orientativo" /> : null}
+          <CommercialNoticeGroup items={resolveLegalNoticeItems(selectedProduct.legalNotes)} />
+          <article className="content-card">
+            <p className="section-label">Revision comercial</p>
+            <ul className="placeholder-list">
+              <li>{selectedProduct.manualReviewRequired ? 'Requiere revision manual.' : 'Flujo directo habilitado.'}</li>
+              <li>{selectedProduct.upload.required ? 'Archivo requerido antes de producir.' : 'Archivo opcional para la primera propuesta.'}</li>
+            </ul>
+          </article>
+        </>
+      }
       title="Rotulacion por nivel de cobertura."
-    >
-      <div className="split-grid product-layout">
-        <article className="content-card product-config-card">
-          <SectionHeader eyebrow="Estimador" title="Tipo de rotulacion y tamano." />
-          <div className="configurator-form">
-            <label className="field-group" htmlFor="wrap-product">
-              <span className="field-label">Servicio</span>
-              <select
-                className="form-input"
-                id="wrap-product"
-                onChange={(event) => setProductId(event.target.value)}
-                value={productId}
-              >
-                {products.map((product) => (
-                  <option key={product.id} value={product.id}>
-                    {product.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="field-group" htmlFor="wrap-size">
-              <span className="field-label">Tamano de vehiculo</span>
-              <select
-                className="form-input"
-                id="wrap-size"
-                onChange={(event) => setSize(event.target.value as 'S' | 'M' | 'L' | 'XL')}
-                value={size}
-              >
-                {['S', 'M', 'L', 'XL'].map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <div className="form-actions">
-              <a className="action-button action-link-button" href="#/presupuesto?service=rotulacion">
-                Solicitar presupuesto
-              </a>
-            </div>
-          </div>
-        </article>
-
-        <div className="summary-stack">
-          <PriceCard
-            label="Rango orientativo"
-            note={selectedProduct?.description || 'Incluye material e instalacion. No incluye diseno.'}
-            value={estimate.rangeLabel || 'Precio a consultar'}
-          />
-          <CommercialNotice />
-        </div>
-      </div>
-    </ProductConfiguratorShell>
+    />
   )
 }
 

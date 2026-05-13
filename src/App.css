@@ -3250,6 +3250,39 @@ body.lenis {
   margin: 0;
 }
 
+.catalog-result-panel,
+.commercial-notice-group {
+  gap: 14px;
+}
+
+.catalog-result-panel .summary-list {
+  margin-top: 4px;
+}
+
+.catalog-result-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 191, 102, 0.24);
+  border-radius: 999px;
+  background: rgba(255, 191, 102, 0.08);
+  color: rgba(255, 232, 204, 0.92);
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.catalog-result-list,
+.catalog-warning-list {
+  margin-top: 2px;
+}
+
+.catalog-warning-list li {
+  color: rgba(255, 214, 166, 0.86);
+}
+
 .checkout-notice {
   margin-top: 18px;
 }

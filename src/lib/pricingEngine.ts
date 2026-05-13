@@ -40,7 +40,7 @@ export function calculateTextilePrice(productId: string, quantity: number) {
     })
   }
 
-  if (product.salesMode === 'quote' || product.pricingModel === 'quote') {
+  if (product.purchaseMode === 'quote' || product.pricingMode === 'quote') {
     return result({
       total: 0,
       subtotal: 0,
@@ -94,7 +94,7 @@ export function calculatePaperPrice(productId: string, quantity: number) {
     })
   }
 
-  if (product.salesMode === 'quote') {
+  if (product.purchaseMode === 'quote') {
     return result({
       total: 0,
       subtotal: 0,
@@ -137,7 +137,7 @@ export function calculateMaterialM2Price(productId: string, areaM2: number) {
     })
   }
 
-  if (product.salesMode === 'quote' || product.pricingModel === 'quote') {
+  if (product.purchaseMode === 'quote' || product.pricingMode === 'quote') {
     return result({
       total: 0,
       subtotal: 0,

@@ -1,141 +1,110 @@
-import { useMemo, useState } from 'react'
-import CommercialNotice from '../components/CommercialNotice'
-import PriceCard from '../components/PriceCard'
-import ProductConfiguratorShell from '../components/ProductConfiguratorShell'
-import SectionHeader from '../components/SectionHeader'
+import { useEffect, useMemo, useState } from 'react'
+import CatalogEntryPageTemplate from '../components/CatalogEntryPageTemplate'
+import CatalogResultPanel from '../components/CatalogResultPanel'
+import CommercialNoticeGroup from '../components/CommercialNoticeGroup'
 import { addToCart } from '../lib/cart'
-import { calculatePaperPrice } from '../lib/pricingEngine'
-import { getProductsByCategory, getProductById } from '../lib/products'
-import type { CartItem } from '../types/ecommerce'
-
-const formatCurrency = (value: number) =>
-  new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(value)
+import { createCatalogCartItem } from '../lib/catalogCartAdapter'
+import { getCatalogPricingResult } from '../lib/catalogPricingAdapter'
+import { createInitialConfig, getRequiredFieldErrors, updateConfigValue, type ConfigState } from '../lib/configuratorState'
+import { getProductById, getProductsByCategory, resolveLegalNoticeItems } from '../lib/products'
 
 function PapeleriaPage() {
   const products = getProductsByCategory('papeleria')
   const [productId, setProductId] = useState(products[0]?.id ?? '')
-  const [quantity, setQuantity] = useState('100')
+  const [config, setConfig] = useState<ConfigState>(() => (products[0] ? createInitialConfig(products[0]) : {}))
   const [message, setMessage] = useState('')
+  const [fieldErrors, setFieldErrors] = useState<Partial<Record<string, string>>>({})
 
-  const selectedProduct = getProductById(productId)
-  const estimate = useMemo(() => calculatePaperPrice(productId, Number(quantity)), [productId, quantity])
+  const selectedProduct = useMemo(() => getProductById(productId), [productId])
 
-  const handleAddToCart = () => {
-    if (!selectedProduct || estimate.quoteRequired || estimate.validationMessage || !estimate.total) {
+  useEffect(() => {
+    if (!selectedProduct) {
       return
     }
 
-    const itemId = `paper-${Date.now()}`
-    const cartItem: CartItem = {
-      id: itemId,
-      productType: 'paper',
-      productName: selectedProduct.name,
-      configuration: {
-        quantity: Number(quantity),
-        variant: selectedProduct.name,
-        summary: [`${quantity} uds`, selectedProduct.name],
-        notes: '',
-      },
-      pricing: {
-        unitPrice: estimate.unitPrice ?? estimate.total / Number(quantity),
-        unitLabel: selectedProduct.unitLabel,
-        subtotal: estimate.subtotal,
-        extras: 0,
-        total: estimate.total,
-      },
-      artwork: {
-        id: `upload-${Date.now()}`,
-        itemId,
-        fileName: 'Sin archivo adjunto',
-        fileType: 'text/plain',
-        fileSize: 0,
-        formatLabel: 'PENDIENTE',
-        status: 'pending_review',
-        uploadedAt: new Date().toISOString(),
-      },
+    setConfig(createInitialConfig(selectedProduct))
+    setFieldErrors({})
+  }, [selectedProduct])
+
+  const estimate = useMemo(
+    () => (selectedProduct ? getCatalogPricingResult(selectedProduct, config) : null),
+    [config, selectedProduct],
+  )
+
+  const handleConfigChange = (key: string, value: string) => {
+    setConfig((current) => updateConfigValue(current, key, value))
+    setFieldErrors((current) => ({ ...current, [key]: undefined }))
+
+    if ((key === 'product' || key === 'variant') && getProductById(value)) {
+      setProductId(value)
+    }
+  }
+
+  const handleFileChange = (_key: string, file: File | null) => {
+    setConfig((current) => updateConfigValue(current, 'file', file?.name ?? ''))
+  }
+
+  const handleAddToCart = () => {
+    if (!selectedProduct) {
+      return
     }
 
-    addToCart(cartItem)
+    const nextErrors = getRequiredFieldErrors(selectedProduct, config)
+    setFieldErrors(nextErrors)
+
+    if (!estimate || Object.keys(nextErrors).length > 0 || !estimate.canAddToCart) {
+      return
+    }
+
+    const fileName = config.file || 'Sin archivo adjunto'
+    addToCart(
+      createCatalogCartItem(selectedProduct, config, estimate, {
+        fileName,
+        formatLabel: fileName === 'Sin archivo adjunto' ? 'PENDIENTE' : 'ARCHIVO',
+        notes: config.notes?.trim() ?? '',
+      }),
+    )
     setMessage('Estimacion de papeleria anadida al carrito.')
   }
 
+  if (!selectedProduct) {
+    return null
+  }
+
   return (
-    <ProductConfiguratorShell
+    <CatalogEntryPageTemplate
       className="papeleria-page"
+      config={config}
+      ctaArea={
+        <>
+          <button
+            className="action-button"
+            disabled={Boolean(!estimate?.canAddToCart)}
+            onClick={handleAddToCart}
+            type="button"
+          >
+            Anadir al carrito
+          </button>
+          <a className="action-button action-button-muted action-link-button" href="#/presupuesto?service=papeleria">
+            Solicitar presupuesto
+          </a>
+        </>
+      }
       description="Tarjetas y flyers con tiradas concretas del PDF 2026 y aviso de diseno por separado."
+      entry={selectedProduct}
       eyebrow="Papeleria"
+      fieldErrors={fieldErrors}
+      onConfigChange={handleConfigChange}
+      onFileChange={handleFileChange}
+      resultArea={
+        <>
+          {estimate ? <CatalogResultPanel result={estimate} title="Precio" /> : null}
+          <CommercialNoticeGroup items={resolveLegalNoticeItems(selectedProduct.legalNotes)} />
+          {message ? <p className="inline-notice">{message}</p> : null}
+        </>
+      }
       title="Papeleria de tirada corta y media."
-    >
-      <div className="split-grid product-layout">
-        <article className="content-card product-config-card">
-          <SectionHeader eyebrow="Configurador" title="Elige producto y tirada." />
-          <div className="configurator-form">
-            <label className="field-group" htmlFor="paper-product">
-              <span className="field-label">Producto</span>
-              <select
-                className="form-input"
-                id="paper-product"
-                onChange={(event) => setProductId(event.target.value)}
-                value={productId}
-              >
-                {products.map((product) => (
-                  <option key={product.id} value={product.id}>
-                    {product.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="field-group" htmlFor="paper-quantity">
-              <span className="field-label">Tirada</span>
-              <select
-                className="form-input"
-                id="paper-quantity"
-                onChange={(event) => setQuantity(event.target.value)}
-                value={quantity}
-              >
-                {['100', '250', '500', '1000', '2500', '5000'].map((option) => (
-                  <option key={option} value={option}>
-                    {option} uds
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <div className="form-actions">
-              <button
-                className="action-button"
-                disabled={Boolean(estimate.quoteRequired || estimate.validationMessage)}
-                onClick={handleAddToCart}
-                type="button"
-              >
-                Anadir al carrito
-              </button>
-              <a className="action-button action-button-muted action-link-button" href="#/presupuesto?service=papeleria">
-                Solicitar presupuesto
-              </a>
-            </div>
-
-            {message ? <p className="inline-notice">{message}</p> : null}
-          </div>
-        </article>
-
-        <div className="summary-stack">
-          <PriceCard
-            label="Precio"
-            note={estimate.validationMessage || selectedProduct?.productionTime || 'Diseno: 35 EUR/hora.'}
-            value={
-              estimate.quoteRequired
-                ? 'Precio a consultar'
-                : estimate.total > 0
-                  ? formatCurrency(estimate.total)
-                  : 'Pendiente'
-            }
-          />
-          <CommercialNotice />
-        </div>
-      </div>
-    </ProductConfiguratorShell>
+    />
   )
 }
 

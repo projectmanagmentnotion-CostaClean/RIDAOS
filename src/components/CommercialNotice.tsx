@@ -1,4 +1,4 @@
-import { commercialConditions } from '../lib/products'
+import CommercialNoticeGroup from './CommercialNoticeGroup'
 
 type CommercialNoticeProps = {
   title?: string
@@ -8,20 +8,10 @@ type CommercialNoticeProps = {
 
 function CommercialNotice({
   title = 'Condiciones comerciales',
-  items = commercialConditions,
+  items,
   className = '',
 }: CommercialNoticeProps) {
-  return (
-    <article className={`content-card commercial-notice ${className}`.trim()}>
-      <p className="section-label">Comercial</p>
-      <h3>{title}</h3>
-      <ul className="placeholder-list">
-        {items.map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-      </ul>
-    </article>
-  )
+  return <CommercialNoticeGroup className={className} items={items} title={title} />
 }
 
 export default CommercialNotice

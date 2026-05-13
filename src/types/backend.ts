@@ -3,12 +3,16 @@ import type { DTFQuality, DTFUrgency } from '../lib/pricing'
 export type OrderStatus =
   | 'pending_review'
   | 'approved'
-  | 'rejected'
+  | 'needs_changes'
+  | 'awaiting_payment'
+  | 'paid'
   | 'in_production'
+  | 'quality_check'
   | 'ready'
   | 'completed'
+  | 'cancelled'
 
-export type PaymentStatus = 'pending' | 'paid' | 'disabled'
+export type PaymentStatus = 'pending' | 'awaiting_payment' | 'paid' | 'disabled'
 
 export type Customer = {
   id: string

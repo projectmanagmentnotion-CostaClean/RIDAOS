@@ -1,11 +1,13 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import './App.css'
+import CustomersPage from './admin/pages/CustomersPage'
+import DashboardPage from './admin/pages/DashboardPage'
+import OrderDetailPage from './admin/pages/OrderDetailPage'
+import OrdersPage from './admin/pages/OrdersPage'
+import ProductionPage from './admin/pages/ProductionPage'
+import UploadsPage from './admin/pages/UploadsPage'
 import CustomCursor from './components/CustomCursor'
 import FrameSequenceIntro from './components/FrameSequenceIntro'
-import AdminArchivos from './pages/AdminArchivos'
-import AdminDashboard from './pages/AdminDashboard'
-import AdminDetallePedido from './pages/AdminDetallePedido'
-import AdminPedidos from './pages/AdminPedidos'
 import AccesoriosPage from './pages/AccesoriosPage'
 import Carrito from './pages/Carrito'
 import Catalogo from './pages/Catalogo'
@@ -45,9 +47,11 @@ type RouteKey =
   | 'detallePedido'
   | 'historialArchivos'
   | 'admin'
-  | 'adminPedidos'
-  | 'adminDetallePedido'
-  | 'adminArchivos'
+  | 'adminOrders'
+  | 'adminOrderDetail'
+  | 'adminUploads'
+  | 'adminCustomers'
+  | 'adminProduction'
   | 'presupuesto'
   | 'textil'
   | 'papeleria'
@@ -77,9 +81,12 @@ const routes: Record<string, RouteKey> = {
   '#/mi-cuenta/pedidos/demo': 'detallePedido',
   '#/mi-cuenta/archivos': 'historialArchivos',
   '#/admin': 'admin',
-  '#/admin/pedidos': 'adminPedidos',
-  '#/admin/pedidos/demo': 'adminDetallePedido',
-  '#/admin/archivos': 'adminArchivos',
+  '#/admin/orders': 'adminOrders',
+  '#/admin/uploads': 'adminUploads',
+  '#/admin/customers': 'adminCustomers',
+  '#/admin/production': 'adminProduction',
+  '#/admin/pedidos': 'adminOrders',
+  '#/admin/archivos': 'adminUploads',
   '#/presupuesto': 'presupuesto',
 }
 
@@ -114,10 +121,12 @@ const pageComponents: Record<RouteKey, ReactNode> = {
   misPedidos: <MisPedidos />,
   detallePedido: <DetallePedido />,
   historialArchivos: <HistorialArchivos />,
-  admin: <AdminDashboard />,
-  adminPedidos: <AdminPedidos />,
-  adminDetallePedido: <AdminDetallePedido />,
-  adminArchivos: <AdminArchivos />,
+  admin: <DashboardPage />,
+  adminOrders: <OrdersPage />,
+  adminOrderDetail: <OrderDetailPage />,
+  adminUploads: <UploadsPage />,
+  adminCustomers: <CustomersPage />,
+  adminProduction: <ProductionPage />,
   presupuesto: <SolicitarPresupuesto />,
 }
 
@@ -126,6 +135,14 @@ function getRouteFromHash(hash: string): RouteKey {
 
   if (!normalizedHash || normalizedHash === '#') {
     return 'home'
+  }
+
+  if (normalizedHash.startsWith('#/admin/orders/')) {
+    return 'adminOrderDetail'
+  }
+
+  if (normalizedHash === '#/admin/pedidos/demo') {
+    return 'adminOrderDetail'
   }
 
   return routes[normalizedHash] ?? 'home'
@@ -139,9 +156,11 @@ function isNavigationActive(route: RouteKey, itemRoute: (typeof navigation)[numb
   if (itemRoute === 'admin') {
     return (
       route === 'admin' ||
-      route === 'adminPedidos' ||
-      route === 'adminDetallePedido' ||
-      route === 'adminArchivos'
+      route === 'adminOrders' ||
+      route === 'adminOrderDetail' ||
+      route === 'adminUploads' ||
+      route === 'adminCustomers' ||
+      route === 'adminProduction'
     )
   }
 

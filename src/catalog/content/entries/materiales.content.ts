@@ -6,7 +6,7 @@ function createMaterialContent(entry: (typeof materialesEntries)[number]): Catal
     entryId: entry.id,
     slug: entry.slug,
     seoTitle: `${entry.name} | RidaosPrint`,
-    metaDescription: `${entry.name} por metro cuadrado con base comercial clara y revision posterior del soporte final.`,
+    metaDescription: `${entry.name} por metro cuadrado con base comercial clara y comprobacion posterior del soporte final.`,
     h1: entry.name,
     eyebrow: 'Materiales y vinilos',
     intro: `${entry.name} con lectura por superficie para piezas directas o proyectos que luego puedan ampliarse a presupuesto.`,
@@ -22,13 +22,13 @@ function createMaterialContent(entry: (typeof materialesEntries)[number]): Catal
     ],
     uploadGuidance: [
       'El archivo es opcional en la fase de estimacion base.',
-      'Si el soporte requiere homologacion o validacion extra, se confirmara despues.',
+      'Si el soporte requiere homologacion o una comprobacion extra, se confirmara despues.',
       'Indica medidas reales y contexto de uso para evitar rehacer la propuesta.',
     ],
     faq: [
       {
         question: 'El precio es definitivo',
-        answer: 'Es una base util para estimar. El soporte final y la instalacion pueden requerir revision.',
+        answer: 'Es una base util para estimar. El soporte final y la instalacion pueden requerir una comprobacion adicional.',
       },
       {
         question: 'Puedo pedir solo material',

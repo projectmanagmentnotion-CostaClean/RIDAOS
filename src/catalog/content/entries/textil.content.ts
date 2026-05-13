@@ -9,7 +9,7 @@ function createTextilContent(
     entryId: entry.id,
     slug: entry.slug,
     seoTitle: `${entry.name} | RidaosPrint`,
-    metaDescription: `${entry.name} con precio por volumen, lectura comercial directa y revision posterior del pedido.`,
+    metaDescription: `${entry.name} con precio por volumen, lectura comercial directa y confirmacion posterior del pedido.`,
     h1: entry.name,
     eyebrow: 'Textil y estampacion',
     intro:
@@ -24,12 +24,12 @@ function createTextilContent(
     useCases:
       overrides?.useCases ?? [
         'Merch, equipacion interna y series cortas.',
-        'Pedidos con aprobacion comercial antes de produccion.',
+        'Pedidos con confirmacion comercial antes de fabricar.',
         'Reposiciones textiles con una base clara de precio.',
       ],
     uploadGuidance: [
       'Puedes adjuntar arte final si ya lo tienes preparado.',
-      'Si la prenda la aporta el cliente, el plazo final queda sujeto a revision.',
+      'Si la prenda la aporta el cliente, el plazo final queda sujeto a comprobacion.',
       'Anota acabados o posiciones especiales en el campo de notas.',
     ],
     faq: [

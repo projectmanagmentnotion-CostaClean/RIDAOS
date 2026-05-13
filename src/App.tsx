@@ -8,6 +8,8 @@ import ProductionPage from './admin/pages/ProductionPage'
 import UploadsPage from './admin/pages/UploadsPage'
 import CustomCursor from './components/CustomCursor'
 import FrameSequenceIntro from './components/FrameSequenceIntro'
+import NotFoundPage from './components/NotFoundPage'
+import RouteErrorBoundary from './components/RouteErrorBoundary'
 import AccesoriosPage from './pages/AccesoriosPage'
 import Carrito from './pages/Carrito'
 import Catalogo from './pages/Catalogo'
@@ -53,6 +55,7 @@ type RouteKey =
   | 'adminCustomers'
   | 'adminProduction'
   | 'presupuesto'
+  | 'notFound'
   | 'textil'
   | 'papeleria'
   | 'materiales'
@@ -128,6 +131,7 @@ const pageComponents: Record<RouteKey, ReactNode> = {
   adminCustomers: <CustomersPage />,
   adminProduction: <ProductionPage />,
   presupuesto: <SolicitarPresupuesto />,
+  notFound: <NotFoundPage />,
 }
 
 function getRouteFromHash(hash: string): RouteKey {
@@ -145,7 +149,7 @@ function getRouteFromHash(hash: string): RouteKey {
     return 'adminOrderDetail'
   }
 
-  return routes[normalizedHash] ?? 'home'
+  return routes[normalizedHash] ?? 'notFound'
 }
 
 function isNavigationActive(route: RouteKey, itemRoute: (typeof navigation)[number]['route']) {
@@ -237,7 +241,9 @@ function App() {
       {route === 'home' ? <FrameSequenceIntro /> : null}
 
       <main className="page-shell" id="main-content" tabIndex={-1}>
-        {pageComponents[route]}
+        <RouteErrorBoundary fallback={<NotFoundPage />}>
+          {pageComponents[route] ?? <NotFoundPage />}
+        </RouteErrorBoundary>
       </main>
 
       <footer className="site-footer">

@@ -73,10 +73,10 @@ function RotulacionPage() {
           {estimate ? <CatalogResultPanel result={estimate} title="Rango orientativo" /> : null}
           <CommercialNoticeGroup items={resolveLegalNoticeItems(selectedProduct.legalNotes)} />
           <article className="content-card">
-            <p className="section-label">Revision comercial</p>
+            <p className="section-label">Resumen del servicio</p>
             <ul className="placeholder-list">
-              <li>{selectedProduct.manualReviewRequired ? 'Requiere revision manual.' : 'Flujo directo habilitado.'}</li>
-              <li>{selectedProduct.upload.required ? 'Archivo requerido antes de producir.' : 'Archivo opcional para la primera propuesta.'}</li>
+              <li>{selectedProduct.manualReviewRequired ? 'Incluye comprobacion tecnica antes de cerrar la propuesta.' : 'Flujo directo habilitado.'}</li>
+              <li>{selectedProduct.upload.required ? 'Archivo requerido antes de fabricar.' : 'Archivo opcional para la primera propuesta.'}</li>
             </ul>
           </article>
         </>

@@ -5,7 +5,7 @@ export const legalNoticeCopy: Record<LegalNoticeKey, string> = {
   advance_payment_required: 'Anticipo requerido.',
   balance_on_delivery: 'Saldo contra entrega.',
   design_changes_requote: 'Cambios de diseno sujetos a nueva cotizacion.',
-  production_subject_to_review: 'Plazos de produccion sujetos a revision.',
+  production_subject_to_review: 'Plazos de entrega sujetos a comprobacion tecnica.',
 }
 
 export const defaultCommercialNoticeKeys: LegalNoticeKey[] = [

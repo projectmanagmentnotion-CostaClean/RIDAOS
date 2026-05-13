@@ -22,9 +22,9 @@ function Carrito() {
     <section className="page">
       <div className="page-hero">
         <p className="eyebrow">Carrito</p>
-        <h1>Resumen local del pedido antes del checkout.</h1>
+        <h1>Resumen del pedido antes de confirmar.</h1>
         <p>
-          Esta cesta usa persistencia local con arquitectura global para mantener los items configurados antes del backend real.
+          Aqui puedes revisar los articulos configurados antes de pasar al cierre del pedido.
         </p>
       </div>
 

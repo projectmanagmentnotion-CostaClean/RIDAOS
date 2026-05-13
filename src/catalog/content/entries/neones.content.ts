@@ -6,7 +6,7 @@ function createNeonContent(entry: (typeof neonesEntries)[number]): CatalogSeoCon
     entryId: entry.id,
     slug: entry.slug,
     seoTitle: `${entry.name} | RidaosPrint`,
-    metaDescription: `${entry.name} con lectura comercial orientativa, revision manual y foco en forma, color y complejidad.`,
+    metaDescription: `${entry.name} con lectura comercial orientativa y foco en forma, color y complejidad.`,
     h1: entry.name,
     eyebrow: 'Neones y piezas luminosas',
     intro: `${entry.name} pensado para proyectos decorativos o de marca donde la forma y la complejidad mandan el presupuesto final.`,
@@ -18,12 +18,12 @@ function createNeonContent(entry: (typeof neonesEntries)[number]): CatalogSeoCon
     useCases: [
       'Interiores comerciales, escaparates y piezas de marca.',
       'Señales decorativas con forma o color personalizado.',
-      'Proyectos que necesitan validacion tecnica antes de producir.',
+      'Proyectos que necesitan una comprobacion tecnica antes de fabricarse.',
     ],
     uploadGuidance: [
       'Adjunta referencia si ya existe boceto, logo o arte final.',
       'Si el proyecto depende de forma o varios colores, detalla esa parte en el resumen.',
-      'La fabricacion final siempre pasa por revision manual.',
+      'La fabricacion final siempre se confirma con una comprobacion tecnica.',
     ],
     faq: [
       {
@@ -42,7 +42,7 @@ function createNeonContent(entry: (typeof neonesEntries)[number]): CatalogSeoCon
       },
       {
         title: 'No se si mi pieza entra en rango o en consulta',
-        response: 'La vista actual sirve para orientar y dejar claro cuando la complejidad ya exige revision personalizada.',
+        response: 'La vista actual sirve para orientar y dejar claro cuando la complejidad ya exige una propuesta personalizada.',
       },
     ],
     primaryCta: {

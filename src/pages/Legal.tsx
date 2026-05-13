@@ -10,7 +10,7 @@ const legalSections = [
   'Terminos y condiciones',
   'Devoluciones',
   'Envios y recogida',
-  'Archivos y revision tecnica',
+  'Archivos y comprobacion tecnica',
 ]
 
 function Legal() {
@@ -18,10 +18,10 @@ function Legal() {
     <PageShell className="premium-page legal-page">
       <SectionHeader
         className="premium-hero legal-hero"
-        description="Estructura base para contenidos juridicos, operativos y de confianza. Cada bloque queda pendiente de revision legal antes de publicacion final."
+        description="Base para los contenidos juridicos y comerciales que acompanaran el flujo de compra y presupuesto."
         eyebrow="Legal y confianza"
         hero
-        title="Base legal clara antes de completar el texto definitivo."
+        title="Informacion legal clara antes del texto definitivo."
       />
 
       <section className="content-section" data-animate="reveal">
@@ -30,7 +30,7 @@ function Legal() {
           {legalSections.map((section) => (
             <article className="content-card legal-card hover-lift" data-animate="panel" key={section}>
               <p className="section-label">{section}</p>
-              <p>Pendiente de revision legal.</p>
+              <p>Texto pendiente de validacion legal.</p>
             </article>
           ))}
         </div>
@@ -42,7 +42,7 @@ function Legal() {
       </section>
 
       <section className="content-section" data-animate="reveal">
-        <SectionHeader eyebrow="Condiciones comerciales" title="Base operativa del catalogo 2026." />
+        <SectionHeader eyebrow="Condiciones comerciales" title="Base comercial del catalogo 2026." />
         <CommercialNotice />
       </section>
     </PageShell>

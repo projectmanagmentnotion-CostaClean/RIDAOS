@@ -135,9 +135,9 @@ function Portafolio() {
           description="Casos, acabados y resultados pensados para convertir inspiracion visual en solicitud comercial real."
           eyebrow="Portfolio pro"
           hero
-          stickerWords={['calle', 'produccion']}
-          title="Resultados que venden calle, marca y produccion."
-          titleLines={['RESULTADOS', 'QUE VENDEN', 'CALLE, MARCA', 'Y PRODUCCION']}
+          stickerWords={['calle', 'impacto']}
+          title="Resultados que venden calle, marca e impacto."
+          titleLines={['RESULTADOS', 'QUE VENDEN', 'CALLE, MARCA', 'E IMPACTO']}
         />
 
         <aside
@@ -149,12 +149,12 @@ function Portafolio() {
           tabIndex={0}
         >
           <p className="section-label">Direccion visual</p>
-          <h2 className="section-heading">Street-facing production con acabado comercial.</h2>
+          <h2 className="section-heading">Acabado urbano con lectura comercial.</h2>
           <p>
             RidaosPrint combina rotulacion, textil, vinilos, lonas y diseno para proyectos que necesitan impacto visual y ejecucion clara.
           </p>
           <div className="flagship-product-meta">
-            <span>produccion</span>
+            <span>acabado</span>
             <span>instalacion</span>
             <span>arte final</span>
           </div>
@@ -307,9 +307,9 @@ function Portafolio() {
           </>
         }
         className="portfolio-cta-panel"
-        description="Si el proyecto requiere una mezcla de produccion, instalacion o direccion grafica, el siguiente paso es una propuesta personalizada."
+        description="Si el proyecto requiere una mezcla de fabricacion, instalacion o direccion grafica, el siguiente paso es una propuesta personalizada."
         label="Servicio a medida"
-        title="Activa el flujo de presupuesto sin depender de backend."
+        title="Activa tu propuesta personalizada."
       />
     </PageShell>
   )

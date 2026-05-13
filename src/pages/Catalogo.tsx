@@ -124,7 +124,7 @@ function Catalogo() {
     <PageShell className="catalog-page premium-page" ref={pageRef}>
       <SectionHeader
         className="catalog-hero premium-hero type-split"
-        description={featuredContent?.metaDescription ?? 'El catalogo marca la estructura completa del ecommerce: que se compra directo, que pasa a presupuesto y que requiere archivo o revision manual.'}
+        description={featuredContent?.metaDescription ?? 'El catalogo marca la estructura completa del ecommerce: que se compra directo, que pasa a propuesta y que requiere archivo o comprobacion tecnica.'}
         eyebrow={featuredContent?.eyebrow ?? 'Catalogo pro'}
         hero
         stickerWords={['directa', 'presupuesto']}
@@ -191,7 +191,7 @@ function Catalogo() {
         <div className="featured-product-panel flagship-metrics" data-animate="panel" data-depth="0.05" data-parallax="soft" data-scroll-scene="catalog-featured">
           <MetricCard className="featured-metric hover-lift" label="Modalidad" note="Fuente: catalogo central" value={featuredProduct.purchaseMode === 'direct' ? 'Compra directa' : 'Hibrido'} />
           <MetricCard className="featured-metric hover-lift" label="Base actual" note="Tarifa de partida" value={featuredProduct.basePrice ? `${featuredProduct.basePrice.toFixed(2)} EUR/metro` : 'Consultar'} />
-          <MetricCard className="featured-metric hover-lift" label="Revision" note="Estado comercial" value={featuredProduct.manualReviewRequired ? 'Manual review' : 'Flujo directo'} />
+          <MetricCard className="featured-metric hover-lift" label="Comprobacion" note="Lectura comercial" value={featuredProduct.manualReviewRequired ? 'Asistencia tecnica' : 'Flujo directo'} />
         </div>
       ) : null}
 
@@ -211,7 +211,7 @@ function Catalogo() {
             <ul className="placeholder-list">
               <li>Compra directa para productos con precio claro y configuracion controlada.</li>
               <li>Presupuesto para proyectos donde material, medida o instalacion cambian el resultado final.</li>
-              <li>Revision manual cuando el archivo o el soporte lo exigen.</li>
+              <li>Comprobacion tecnica cuando el archivo o el soporte lo exigen.</li>
             </ul>
           </article>
         </section>
@@ -241,7 +241,7 @@ function Catalogo() {
       </section>
 
       <section className="catalog-section" data-animate="reveal" data-motion="poster-stack" data-scroll-scene="catalog-selected">
-        <SectionHeader eyebrow="Selected services" title="Filas derivadas del catalogo para compra o propuesta." />
+        <SectionHeader eyebrow="Servicios y productos" title="Filas derivadas del catalogo para compra o propuesta." />
         <div className="editorial-row-list">
           {selectedRows.map((entry, index) => (
             <a
@@ -312,7 +312,7 @@ function Catalogo() {
                   {entry.featured ? (
                     <div className="flagship-product-meta">
                       <span>{entry.upload.required ? 'Archivo requerido' : 'Archivo opcional'}</span>
-                      <span>{entry.manualReviewRequired ? 'Revision manual' : 'Flujo directo'}</span>
+                      <span>{entry.manualReviewRequired ? 'Comprobacion tecnica' : 'Flujo directo'}</span>
                       <span>{entry.pricingMode}</span>
                     </div>
                   ) : null}

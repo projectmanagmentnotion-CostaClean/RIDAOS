@@ -13,12 +13,12 @@ function createAccesorioContent(entry: (typeof accesoriosEntries)[number]): Cata
     benefits: [
       'Tiradas claras para piezas promocionales.',
       'Compatibilidad con archivo cuando la pieza lo necesita.',
-      'Transicion simple entre compra directa y revision manual.',
+      'Transicion simple entre compra directa y comprobacion tecnica.',
     ],
     useCases: [
       'Stickers, llaveros y piezas de apoyo para marca urbana.',
       'Lotes de merchandising para acciones locales.',
-      'Accesorios que necesitan validacion antes de producir a volumen.',
+      'Accesorios que necesitan confirmacion antes de fabricar a volumen.',
     ],
     uploadGuidance: [
       'Adjunta archivo cuando la pieza dependa de forma, corte o acabado.',
@@ -32,7 +32,7 @@ function createAccesorioContent(entry: (typeof accesoriosEntries)[number]): Cata
       },
       {
         question: 'Puedo enviar el arte despues',
-        answer: 'Si, pero la revision comercial sera mas precisa si el archivo ya acompana el pedido.',
+        answer: 'Si, pero la propuesta sera mas precisa si el archivo ya acompana el pedido.',
       },
     ],
     objectionHandlers: [

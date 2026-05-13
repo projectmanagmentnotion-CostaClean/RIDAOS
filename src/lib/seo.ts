@@ -16,7 +16,7 @@ type OpenGraphData = {
 
 const staticRouteSEO: Record<string, StaticSeoEntry> = {
   '#/': {
-    title: 'RidaosPrint | DTF por metro y produccion grafica',
+    title: 'RidaosPrint | DTF por metro e impresion profesional',
     description: 'Base comercial de RidaosPrint para DTF, catalogo, materiales, servicios y propuestas a medida.',
     ogType: 'website',
   },
@@ -27,7 +27,7 @@ const staticRouteSEO: Record<string, StaticSeoEntry> = {
   },
   '#/guia': {
     title: 'Guia de Archivos | RidaosPrint',
-    description: 'Formatos, revision y checklist practico para preparar archivos antes de producir.',
+    description: 'Formatos, comprobaciones y checklist practico para preparar archivos antes de fabricar.',
     ogType: 'website',
   },
   '#/portafolio': {
@@ -47,14 +47,14 @@ const staticRouteSEO: Record<string, StaticSeoEntry> = {
   },
   '#/legal': {
     title: 'Legal y condiciones comerciales | RidaosPrint',
-    description: 'Condiciones comerciales, revision tecnica y base legal visible para el flujo de compra o presupuesto.',
+    description: 'Condiciones comerciales, comprobacion tecnica y base legal visible para el flujo de compra o presupuesto.',
     ogType: 'website',
   },
 }
 
 const defaultSEO: StaticSeoEntry = {
   title: 'RidaosPrint',
-  description: 'Produccion grafica con catalogo modular, configuracion y flujos preparados para crecer.',
+  description: 'Impresion profesional con catalogo modular, configuracion y flujos preparados para crecer.',
   ogType: 'website',
 }
 

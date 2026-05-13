@@ -99,9 +99,9 @@ function Checkout() {
     <section className="page">
       <div className="page-hero">
         <p className="eyebrow">Checkout</p>
-        <h1>Simulacion local del cierre de pedido.</h1>
+        <h1>Confirma tu pedido.</h1>
         <p>
-          Este checkout valida datos del cliente, genera un pedido estructurado y lo guarda en el historial local preparado para backend.
+          Revisa los datos del cliente, confirma el resumen y deja el pedido listo para seguimiento.
         </p>
       </div>
 
@@ -151,7 +151,7 @@ function Checkout() {
 
             <div className="form-actions">
               <button className="action-button" disabled={loading} onClick={handleSubmit} type="button">
-                Confirmar pedido simulado
+                Confirmar pedido
               </button>
             </div>
           </div>
@@ -162,7 +162,7 @@ function Checkout() {
             <p className="section-label">Resumen de carrito</p>
             {cartItems.length === 0 ? (
               <div className="empty-state">
-                <p>No hay items pendientes en checkout.</p>
+              <p>No hay items pendientes en este paso.</p>
                 <a className="card-link" href="#/catalogo">
                   Volver al catalogo
                 </a>

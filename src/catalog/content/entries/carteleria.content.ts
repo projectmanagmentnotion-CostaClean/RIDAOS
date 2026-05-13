@@ -5,14 +5,14 @@ export const carteleriaSeoContent: CatalogSeoContent[] = carteleriaEntries.map((
   entryId: entry.id,
   slug: entry.slug,
   seoTitle: `${entry.name} | RidaosPrint`,
-  metaDescription: `${entry.name} para gran formato con medidas, acabados y presupuesto sujeto a revision comercial.`,
+  metaDescription: `${entry.name} para gran formato con medidas, acabados y presupuesto sujeto a comprobacion comercial.`,
   h1: entry.name,
   eyebrow: 'Carteleria y gran formato',
   intro: `${entry.name} preparada para recoger medidas, acabados y contexto antes de generar una propuesta comercial seria.`,
   benefits: [
     'Entrada clara para proyectos que dependen de medidas y confeccion.',
     'Soporte a archivo y resumen del proyecto desde la primera toma.',
-    'Proceso comercial alineado con revision manual y tiempos sujetos a aprobacion.',
+    'Proceso comercial alineado con comprobacion tecnica y tiempos sujetos a confirmacion.',
   ],
   useCases: [
     'Lonas promocionales y piezas de exterior.',
@@ -37,7 +37,7 @@ export const carteleriaSeoContent: CatalogSeoContent[] = carteleriaEntries.map((
   objectionHandlers: [
     {
       title: 'No tengo todas las medidas cerradas',
-      response: 'Puedes dejar una base y completar el proyecto durante la revision comercial.',
+      response: 'Puedes dejar una base y completar el proyecto durante la propuesta comercial.',
     },
     {
       title: 'Necesito saber si entra en gran formato complejo',

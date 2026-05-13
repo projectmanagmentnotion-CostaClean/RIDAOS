@@ -9,10 +9,10 @@ function createPapeleriaContent(entry: (typeof papeleriaEntries)[number]): Catal
     metaDescription: `${entry.name} con lectura por tirada, condiciones comerciales claras y opcion de archivo de referencia.`,
     h1: entry.name,
     eyebrow: 'Papeleria comercial',
-    intro: `${entry.name} con tiradas del catalogo 2026 y un flujo pensado para validar archivo, cantidad y condiciones antes de cerrar.`,
+    intro: `${entry.name} con tiradas del catalogo 2026 y un flujo pensado para confirmar archivo, cantidad y condiciones antes de cerrar.`,
     benefits: [
       'Tiradas directas donde el catalogo ya define precio.',
-      'Archivo opcional para acelerar la revision comercial.',
+      'Archivo opcional para acelerar la preparacion de la propuesta.',
       'Via de presupuesto disponible para variantes fuera de tramo.',
     ],
     useCases: [
@@ -23,7 +23,7 @@ function createPapeleriaContent(entry: (typeof papeleriaEntries)[number]): Catal
     uploadGuidance: [
       'Adjunta el archivo si ya tienes el arte final.',
       'Si necesitas diseno o adaptacion, indicarlo en notas acelera la propuesta.',
-      'La revision final sigue sujeta a formato, cantidad y acabado.',
+      'La comprobacion final sigue sujeta a formato, cantidad y acabado.',
     ],
     faq: [
       {

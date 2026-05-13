@@ -84,12 +84,12 @@ export function getCatalogPricingResult(entry: CatalogEntry, config: ConfigState
     case 'rotulacion': {
       const size = (config.size || 'M') as 'S' | 'M' | 'L' | 'XL'
       const price = calculateVanWrapEstimate(entry.id, size)
-      return finalizeResult(entry, price, [`Servicio: ${entry.name}`, `Tamano: ${size}`], ['Servicio orientativo sujeto a revision comercial.'])
+      return finalizeResult(entry, price, [`Servicio: ${entry.name}`, `Tamano: ${size}`], ['Servicio orientativo sujeto a confirmacion comercial.'])
     }
     case 'neones': {
       return finalizeResult(entry, { subtotal: entry.range?.max ?? 0, total: entry.range?.max ?? 0, quoteRequired: true, rangeLabel: entry.range ? formatRangeLabel(entry.range.min, entry.range.max) : undefined }, [`Servicio: ${entry.name}`], entry.notes ?? ['No incluye instalacion y puede variar por complejidad.'])
     }
     default:
-      return toResult({ subtotal: 0, total: 0, pricingLabel: 'Precio a consultar', quoteRequired: true, warnings: ['El precio se confirmara en revision comercial.'] })
+      return toResult({ subtotal: 0, total: 0, pricingLabel: 'Precio a consultar', quoteRequired: true, warnings: ['El precio se confirmara al revisar los detalles del proyecto.'] })
   }
 }

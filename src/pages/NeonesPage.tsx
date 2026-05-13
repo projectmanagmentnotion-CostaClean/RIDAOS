@@ -78,9 +78,9 @@ function NeonesPage() {
           {estimate ? <CatalogResultPanel result={estimate} title="Referencia" /> : null}
           <CommercialNoticeGroup items={resolveLegalNoticeItems(selectedProduct.legalNotes)} />
           <article className="content-card">
-            <p className="section-label">Revision comercial</p>
+            <p className="section-label">Resumen del servicio</p>
             <ul className="placeholder-list">
-              <li>{selectedProduct.manualReviewRequired ? 'Proyecto sujeto a revision manual.' : 'Flujo directo habilitado.'}</li>
+              <li>{selectedProduct.manualReviewRequired ? 'Proyecto sujeto a comprobacion tecnica.' : 'Flujo directo habilitado.'}</li>
               <li>{selectedProduct.upload.required ? 'Archivo requerido.' : 'Archivo opcional para la propuesta inicial.'}</li>
             </ul>
           </article>

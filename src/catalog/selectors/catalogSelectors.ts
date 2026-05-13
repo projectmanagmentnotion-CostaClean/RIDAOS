@@ -48,7 +48,7 @@ export function getCatalogSections(): CatalogSection[] {
     {
       key: 'textil',
       title: 'Textil',
-      description: 'Linea textil con tramos por volumen y revision posterior.',
+      description: 'Linea textil con tramos por volumen y comprobacion posterior.',
       entries: catalogEntries.filter((entry) => entry.catalogGroups?.includes('textil') && !entry.featured),
     },
     {

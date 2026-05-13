@@ -29,7 +29,7 @@ const guideFaq = [
   },
   {
     question: 'Produccion',
-    answer: 'La revision tecnica se confirma antes de pasar a produccion cuando haga falta.',
+    answer: 'La comprobacion tecnica se confirma antes de fabricar cuando haga falta.',
   },
   {
     question: 'Presupuestos personalizados',
@@ -45,7 +45,7 @@ function GuiaArchivos() {
         description="Esta guia concentra criterios tecnicos para reducir errores antes de pasar por el configurador DTF o solicitar un presupuesto para otras lineas del catalogo."
         eyebrow="Preparacion de archivos"
         hero
-        title="Arte listo para produccion sin friccion innecesaria."
+        title="Arte listo para fabricar sin friccion innecesaria."
       />
 
       <div className="split-grid guide-layout">
@@ -75,13 +75,13 @@ function GuiaArchivos() {
         </article>
 
         <article className="content-card mock-upload-card" data-animate="panel">
-          <p className="section-label">Mock upload</p>
+          <p className="section-label">Zona de carga</p>
           <div className="mock-upload-box" aria-label="Panel visual de carga de archivos no funcional">
             <div aria-hidden="true" className="mock-upload-icon">
               +
             </div>
             <h3>Zona de carga visual</h3>
-            <p>Arrastra aqui tus artes finales o reune todo en un ZIP. Este panel es solo una maqueta visual sin backend.</p>
+            <p>Arrastra aqui tus artes finales o reune todo en un ZIP. Este panel muestra como se presentara la carga del proyecto.</p>
             <div className="mock-upload-meta">
               <span>PDF, AI, EPS, SVG, PNG, JPG, TIFF, ZIP</span>
               <span>Maximo recomendado: estructura limpia por proyecto</span>
@@ -96,7 +96,7 @@ function GuiaArchivos() {
       <div className="guide-card-grid" data-animate="reveal">
         <article className="content-card guide-card" data-animate="panel">
           <p className="section-label">CMYK y RGB</p>
-          <p>No des por hecho que un color visto en pantalla se comportara igual impreso. Revisa el espacio de color antes de producir.</p>
+          <p>No des por hecho que un color visto en pantalla se comportara igual impreso. Revisa el espacio de color antes de fabricar.</p>
         </article>
 
         <article className="content-card guide-card" data-animate="panel">
@@ -126,12 +126,12 @@ function GuiaArchivos() {
       </div>
 
       <section className="content-section" data-animate="reveal">
-        <SectionHeader eyebrow="Como funciona" title="Proceso base antes de producir." />
+        <SectionHeader eyebrow="Como funciona" title="Proceso base antes de fabricar." />
         <ProcessSteps />
       </section>
 
       <section className="content-section" data-animate="reveal">
-        <SectionHeader eyebrow="Confianza" title="Revision tecnica visible desde la guia." />
+        <SectionHeader eyebrow="Confianza" title="Comprobacion tecnica visible desde la guia." />
         <TrustGrid />
       </section>
 

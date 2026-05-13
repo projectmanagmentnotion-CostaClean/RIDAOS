@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import CtaPanel from '../components/CtaPanel'
 import ConversionTrustBlock from '../components/ConversionTrustBlock'
 import FaqBlock from '../components/FaqBlock'
@@ -24,8 +24,6 @@ const stats = [
   { label: 'Estado', value: 'Frontend base listo' },
 ]
 
-const homeContent = getContentByEntryId(dtfEntry.id)
-
 const selectedRows = [
   {
     index: '01',
@@ -39,8 +37,8 @@ const selectedRows = [
   {
     index: '02',
     label: 'Servicio / Vinilos',
-    title: 'Vinilo y retail con lectura de produccion clara.',
-    detail: 'Lineas preparadas para presupuesto con preview abstracto de reticula.',
+    title: 'Vinilo y retail con una propuesta clara desde el primer vistazo.',
+    detail: 'Lineas preparadas para presupuesto con preview abstracto y lectura comercial directa.',
     href: '#/catalogo',
     action: 'Ver linea',
     visual: 'vinyl',
@@ -69,23 +67,24 @@ const narrativeSteps = [
   },
   {
     number: '03',
-    title: 'Revision tecnica',
-    detail: 'El archivo pasa por checks previos antes de comprometer produccion.',
+    title: 'Comprobacion tecnica',
+    detail: 'Revisamos el archivo y los detalles clave antes de confirmar el trabajo.',
   },
   {
     number: '04',
-    title: 'Produccion',
-    detail: 'La aprobacion da paso al flujo interno con tiempos y prioridad definidos.',
+    title: 'Fabricacion',
+    detail: 'Con todo validado, el pedido entra en fabricacion con una fecha clara.',
   },
   {
     number: '05',
     title: 'Entrega',
-    detail: 'El pedido queda listo para recogida o envio cuando la capa operativa se active.',
+    detail: 'Tu pedido queda listo para recogida o envio cuando termina el proceso.',
   },
 ]
 
 function Home() {
   const pageRef = useRef<HTMLElement | null>(null)
+  const homeContent = useMemo(() => getContentByEntryId(dtfEntry.id), [])
 
   useEffect(() => {
     const scope = pageRef.current
@@ -110,14 +109,14 @@ function Home() {
       <section className="cinematic-scene home-cinematic-scene" data-animate="hero" data-motion="hero-stage" data-scroll-scene="home-cinematic" data-scroll-section>
         <div className="hero-flash-band" aria-hidden="true" />
         <div className="cinematic-scene-copy">
-          <p className="eyebrow type-kicker" data-motion="subheadline">DTF por metro / cinematic system</p>
+          <p className="eyebrow type-kicker" data-motion="subheadline">DTF por metro / visual opener</p>
           <div className="cinematic-word type-mega type-condensed type-negative" data-cursor="fisheye">
             <span>DTF</span>
             <span>POR</span>
             <span>METRO</span>
           </div>
           <p className="cinematic-scene-note">
-            Un arranque visual donde el texto abre la imagen y la imagen arrastra el siguiente bloque comercial.
+            Un arranque visual donde el texto abre la imagen y la imagen conecta con el siguiente bloque comercial.
           </p>
         </div>
 
@@ -138,7 +137,7 @@ function Home() {
         </div>
 
         <div className="giant-marquee" aria-hidden="true">
-          PRODUCCION FLEXIBLE / PREVIEW / PEDIDO / REVISION / ENTREGA
+          DTF / PREVIEW / PEDIDO / COMPROBACION / ENTREGA
         </div>
       </section>
 
@@ -146,10 +145,10 @@ function Home() {
         <div className="hero-flash-band" aria-hidden="true" />
         <SectionHeader
           className="premium-hero home-hero-copy type-split"
-          description={homeContent?.intro ?? 'Compra DTF por metro lineal con una base clara para pedidos agiles: configura tu tirada, sube tus disenos y avanza a produccion sin una capa extra de complejidad.'}
-          eyebrow={homeContent?.eyebrow ?? 'DTF por metro para produccion flexible'}
+          description={homeContent?.intro ?? 'Compra DTF por metro lineal con una base clara para pedidos agiles: configura tu tirada, sube tus disenos y avanza con una experiencia directa y profesional.'}
+          eyebrow={homeContent?.eyebrow ?? 'DTF por metro para pedidos agiles'}
           hero
-          stickerWords={['DTF', 'produccion']}
+          stickerWords={['DTF', 'pedido']}
           title={homeContent?.h1 ? `RidaosPrint ${homeContent.h1}` : 'RidaosPrint DTF por metro.'}
           titleLines={['RIDAOSPRINT', 'DTF POR', 'METRO']}
         />
@@ -163,7 +162,7 @@ function Home() {
           tabIndex={0}
         >
           <p className="section-label">Posicionamiento</p>
-          <h2 className="section-heading">Produccion flexible con lectura premium.</h2>
+          <h2 className="section-heading">Pedido directo con lectura premium.</h2>
           <div className="hero-orbit-stack">
             <div className="hero-orbit-line">
               <span className="orbit-dot" />
@@ -175,7 +174,7 @@ function Home() {
             </div>
             <div className="hero-orbit-line">
               <span className="orbit-dot" />
-              <span>Base lista para validacion y automatizacion futura</span>
+              <span>Base lista para confirmacion y escalado comercial</span>
             </div>
           </div>
           <div className="catalog-cta-row">
@@ -247,7 +246,7 @@ function Home() {
           <article className="content-card narrative-copy-panel" data-cursor="invert">
             <SectionHeader eyebrow="DTF por metro" title="Un bloque narrativo para conectar producto, archivo y entrega." />
             <p>
-              Esta escena une el posicionamiento del producto con el avance operativo para que el scroll lea el servicio como una secuencia continua.
+            Esta escena une el posicionamiento del producto con el avance del pedido para que el scroll lea el servicio como una secuencia continua.
             </p>
           </article>
 
@@ -317,7 +316,7 @@ function Home() {
           <span>PRINT</span>
         </div>
         <p className="negative-type-copy">
-          Un bloque corto para remarcar lectura editorial, contraste y direccion visual sin vaciar el flujo comercial.
+          Un bloque corto para remarcar lectura editorial, contraste y direccion visual sin romper el flujo comercial.
         </p>
         <div className="image-placeholder image-placeholder-dtf-sheet" aria-label="Imagen placeholder: DTF sheet" data-cursor="invert">
           <span className="image-placeholder-label">Imagen placeholder: DTF sheet</span>
@@ -326,7 +325,7 @@ function Home() {
 
       <section className="manifesto-section" data-motion="manifesto" data-scroll-scene="home-manifesto">
         <div className="manifesto-grid">
-          {['IMPRESION', 'CALLE', 'ARCHIVO', 'PRODUCCION', 'RIDAOS'].map((word, index) => (
+          {['IMPRESION', 'CALLE', 'ARCHIVO', 'DETALLE', 'RIDAOS'].map((word, index) => (
             <span
               className={`manifesto-word${index === 1 || index === 3 ? ' is-sticker' : ''}${index === 4 ? ' type-negative' : ''}`}
               data-cursor={index === 4 ? 'fisheye' : 'invert'}
@@ -371,7 +370,7 @@ function Home() {
       </section>
 
       <section className="content-section" data-animate="reveal" data-scroll-scene="home-trust">
-        <SectionHeader eyebrow="Confianza" title="Estructura operativa visible desde el inicio." />
+        <SectionHeader eyebrow="Confianza" title="Un proceso claro desde el diseno hasta la entrega." />
         <TrustGrid />
       </section>
 
@@ -386,7 +385,7 @@ function Home() {
           <div className="overload-layer type-negative">ACTIVA TU PEDIDO</div>
           <div className="overload-layer overload-layer-main">ACTIVA TU PEDIDO</div>
         </div>
-        <p className="negative-type-copy">Configura, sube archivo y empuja el flujo comercial sin romper la lectura visual.</p>
+        <p className="negative-type-copy">Configura, sube archivo y avanza con una experiencia clara de principio a fin.</p>
         <a className="action-button action-link-button overload-button" data-cursor="magnetic" href="#/producto/dtf">
           Configurar DTF ahora
         </a>

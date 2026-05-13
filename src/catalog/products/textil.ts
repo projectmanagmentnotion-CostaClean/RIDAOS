@@ -54,7 +54,7 @@ export const textilEntries: CatalogEntry[] = [
     manualReviewRequired: true,
     badge: 'Textil',
     unitLabel: 'ud',
-    productionTime: 'Segun stock y revision del pedido.',
+    productionTime: 'Segun stock y comprobacion del pedido.',
     notes: ['+3 EUR por estampado adicional.'],
     tiers: [
       { min: 1, max: 5, unitPrice: 35, note: 'Menos de 6 prendas' },
@@ -95,7 +95,7 @@ export const textilEntries: CatalogEntry[] = [
     category: 'textil',
     name: 'Polo manga corta',
     description: 'Polo manga corta con tramos por volumen.',
-    shortDescription: 'Polos preparados para tiradas rapidas con revision posterior.',
+    shortDescription: 'Polos preparados para tiradas rapidas con comprobacion posterior.',
     route: '#/producto/textil',
     purchaseMode: 'hybrid',
     pricingMode: 'volume',

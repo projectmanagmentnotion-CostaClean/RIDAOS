@@ -6,14 +6,14 @@ function createRotulacionContent(entry: (typeof rotulacionEntries)[number]): Cat
     entryId: entry.id,
     slug: entry.slug,
     seoTitle: `${entry.name} | RidaosPrint`,
-    metaDescription: `${entry.name} con rango orientativo, revision manual y paso directo a propuesta personalizada.`,
+    metaDescription: `${entry.name} con rango orientativo y paso directo a una propuesta personalizada.`,
     h1: entry.name,
     eyebrow: 'Rotulacion de vehiculos',
-    intro: `${entry.name} con rango comercial visible para situar cobertura, tamano y complejidad antes de pedir propuesta.`,
+    intro: `${entry.name} con rango comercial visible para situar cobertura, tamano y complejidad antes de pedir una propuesta.`,
     benefits: [
       'Rango orientativo para no empezar la conversacion a ciegas.',
       'Lectura clara del nivel de cobertura del vehiculo.',
-      'Base preparada para archivo, medidas y revision comercial.',
+      'Base preparada para archivo, medidas y una propuesta clara.',
     ],
     useCases: [
       'Furgonetas de servicio, flotas y piezas promocionales sobre vehiculo.',
@@ -23,12 +23,12 @@ function createRotulacionContent(entry: (typeof rotulacionEntries)[number]): Cat
     uploadGuidance: [
       'El archivo es util, pero no obligatorio para la primera propuesta.',
       'Indica el tamano del vehiculo para orientar el rango inicial.',
-      'La medicion final y la instalacion siempre pasan por revision manual.',
+      'La medicion final y la instalacion siempre se confirman antes de cerrar el proyecto.',
     ],
     faq: [
       {
         question: 'El rango ya cierra el proyecto',
-        answer: 'No. Sirve para orientar la conversacion; el presupuesto final requiere revision.',
+        answer: 'No. Sirve para orientar la conversacion; el presupuesto final se confirma con los detalles del proyecto.',
       },
       {
         question: 'Incluye instalacion',
@@ -42,7 +42,7 @@ function createRotulacionContent(entry: (typeof rotulacionEntries)[number]): Cat
       },
       {
         title: 'No tengo el arte final cerrado',
-        response: 'Puedes avanzar igual y dejar la pieza preparada para revision comercial.',
+        response: 'Puedes avanzar igual y dejar la pieza preparada para recibir una propuesta.',
       },
     ],
     primaryCta: {

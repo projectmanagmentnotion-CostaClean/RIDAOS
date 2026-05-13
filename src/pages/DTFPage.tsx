@@ -56,8 +56,6 @@ const urgencyLabels: Record<DTFUrgency, string> = {
 
 const previewableTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml']
 const premiumDocumentFormats = ['PDF', 'AI', 'EPS', 'ZIP', 'TIFF']
-const dtfContent = getContentByEntryId(dtfEntry.id)
-
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('es-ES', {
     style: 'currency',
@@ -88,6 +86,7 @@ const detectFormatLabel = (file: File) => {
 
 function DTFPage() {
   const pageRef = useRef<HTMLElement | null>(null)
+  const dtfContent = useMemo(() => getContentByEntryId(dtfEntry.id), [])
   const [meters, setMeters] = useState('1')
   const [quality, setQuality] = useState<DTFQuality>('standard')
   const [urgency, setUrgency] = useState<DTFUrgency>('normal')
@@ -256,7 +255,7 @@ function DTFPage() {
         <div className="hero-flash-band" aria-hidden="true" />
         <SectionHeader
           className="premium-hero type-split"
-          description={dtfContent?.intro ?? 'Configura tu pedido base por metraje, revisa la pieza antes de enviar y deja preparada una base escalable para futuras validaciones tecnicas.'}
+          description={dtfContent?.intro ?? 'Configura tu pedido por metraje, revisa la pieza antes de enviar y deja el trabajo listo para una comprobacion clara.'}
           eyebrow={dtfContent?.eyebrow ?? 'Producto principal'}
           hero
           stickerWords={['DTF', 'archivo']}
@@ -281,14 +280,14 @@ function DTFPage() {
         <div className="scroll-bridge">
           <span className="bridge-chip">configura</span>
           <span className="bridge-chip">previsualiza</span>
-          <span className="bridge-chip">revisa</span>
-          <span className="bridge-chip">produce</span>
+          <span className="bridge-chip">confirma</span>
+          <span className="bridge-chip">entrega</span>
         </div>
       </section>
 
       <div className="split-grid dtf-cockpit-layout dtf-layout" data-animate="reveal" data-motion="poster-stack" data-scroll-scene="dtf-cockpit">
         <article className="content-card dtf-cockpit-panel hover-lift" data-animate="panel" data-cursor="invert" data-scroll-scene="dtf-form" tabIndex={0}>
-          <SectionHeader eyebrow="Configurador" title="Pedido DTF sin backend." />
+          <SectionHeader eyebrow="Configurador" title="Configura tu pedido DTF." />
 
           <div className="configurator-form">
             <label className="field-group" htmlFor="dtf-meters">
@@ -407,7 +406,7 @@ function DTFPage() {
                         : 'ARCHIVO'}
                     </span>
                     <h3>{filePreview.fileName}</h3>
-                    <p>El navegador no genera miniatura directa. El archivo queda preparado para revision visual.</p>
+                    <p>El navegador no genera miniatura directa. Aun asi, el archivo queda listo para revisarlo antes de confirmar el trabajo.</p>
                   </div>
                 )}
 
@@ -428,13 +427,13 @@ function DTFPage() {
               </div>
             ) : (
               <div className="empty-state">
-                <p>Selecciona un archivo para activar la previsualizacion y la futura capa de revision.</p>
+                <p>Selecciona un archivo para activar la previsualizacion del pedido.</p>
               </div>
             )}
           </article>
 
           <article className="content-card preflight-card hover-lift premium-preflight-panel" data-animate="panel" data-cursor="invert" data-scroll-scene="dtf-preflight" tabIndex={0}>
-            <SectionHeader eyebrow="Preflight mock" title="Checks preparados para validacion futura." />
+            <SectionHeader eyebrow="Comprobacion previa" title="Resumen claro antes de confirmar el pedido." />
             <div className="preflight-list">
               <div className="preflight-item">
                 <span>Formato detectado</span>
@@ -445,16 +444,16 @@ function DTFPage() {
                 <strong>{selectedFile ? 'Si' : 'Pendiente'}</strong>
               </div>
               <div className="preflight-item">
-                <span>Revision pendiente</span>
-                <strong>Mock ready</strong>
+                <span>Comprobacion del archivo</span>
+                <strong>Se confirma al revisar el pedido</strong>
               </div>
               <div className="preflight-item">
-                <span>Sangrado pendiente de validar</span>
-                <strong>Proxima fase</strong>
+                <span>Sangrado</span>
+                <strong>Se revisa si el trabajo lo necesita</strong>
               </div>
               <div className="preflight-item">
-                <span>Resolucion pendiente de validar</span>
-                <strong>Proxima fase</strong>
+                <span>Resolucion</span>
+                <strong>Se comprueba antes de fabricar</strong>
               </div>
             </div>
           </article>
@@ -505,7 +504,7 @@ function DTFPage() {
       </section>
 
       <section className="content-section" data-animate="reveal" data-scroll-scene="dtf-trust">
-        <SectionHeader eyebrow="Confianza" title="Checks y aprobacion antes de producir." />
+        <SectionHeader eyebrow="Confianza" title="Confirmacion tecnica antes de fabricar." />
         <TrustGrid />
       </section>
 

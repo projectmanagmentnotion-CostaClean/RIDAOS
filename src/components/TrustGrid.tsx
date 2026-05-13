@@ -1,19 +1,19 @@
 const defaultTrustItems = [
   {
-    title: 'Pago seguro proximamente',
-    description: 'La capa de pago se activara mas adelante tras validacion tecnica y legal.',
+    title: 'Pago seguro tras confirmar el pedido',
+    description: 'El cobro se confirma una vez revisado el archivo y validado el trabajo.',
   },
   {
-    title: 'Revision de archivos',
-    description: 'El arte final se revisa antes de pasar a produccion cuando el flujo lo requiera.',
+    title: 'Comprobacion tecnica del archivo',
+    description: 'Comprobamos el arte final antes de lanzar la fabricacion cuando el trabajo lo necesita.',
   },
   {
-    title: 'Produccion bajo aprobacion',
-    description: 'La produccion queda sujeta a confirmacion visual o tecnica previa.',
+    title: 'Fabricacion confirmada tras revision tecnica',
+    description: 'El trabajo avanza con confirmacion tecnica para evitar errores en el resultado final.',
   },
   {
     title: 'Atencion personalizada',
-    description: 'Los trabajos especiales pasan por propuesta o seguimiento directo.',
+    description: 'Cada proyecto especial cuenta con seguimiento directo y propuesta a medida.',
   },
   {
     title: 'Precios sin IVA',
@@ -21,7 +21,7 @@ const defaultTrustItems = [
   },
   {
     title: 'Anticipo y saldo',
-    description: 'Se trabaja con anticipo y saldo restante contra entrega.',
+    description: 'Trabajamos con un anticipo inicial y el resto a la entrega del pedido.',
   },
 ] as const
 

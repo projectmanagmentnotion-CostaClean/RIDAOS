@@ -1,3 +1,4 @@
+import { getContinueShoppingHref, publicRoutes } from '../lib/navigation'
 import { useMemo } from 'react'
 import { getOrderItemSummary } from '../lib/products'
 import { useCartStore } from '../store/useCartStore'
@@ -34,7 +35,7 @@ function Carrito() {
           {items.length === 0 ? (
             <div className="empty-state">
               <p>El carrito esta vacio por ahora.</p>
-              <a className="card-link" href="#/catalogo">
+              <a className="card-link" href={getContinueShoppingHref()}>
                 Volver al catalogo
               </a>
             </div>
@@ -109,11 +110,14 @@ function Carrito() {
             >
               Vaciar carrito
             </button>
+            <a className="action-button action-button-muted action-link-button" href={getContinueShoppingHref()}>
+              Seguir comprando
+            </a>
             <a
               className={`action-button action-link-button${items.length === 0 ? ' is-disabled' : ''}`}
-              href={items.length === 0 ? '#/carrito' : '#/checkout'}
+              href={items.length === 0 ? publicRoutes.carrito : publicRoutes.checkout}
             >
-              Ir a checkout
+              Finalizar compra
             </a>
           </div>
         </article>

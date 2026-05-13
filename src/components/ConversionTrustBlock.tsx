@@ -14,7 +14,7 @@ function ConversionTrustBlock({ entryId, title = 'Confianza comercial' }: Conver
 
   return (
     <article className="content-card conversion-trust-block">
-      <p className="section-label">Conversion</p>
+      <p className="section-label">Confianza</p>
       <h3>{title}</h3>
       <ul className="placeholder-list">
         {block.trustBullets.map((item) => (
@@ -22,10 +22,10 @@ function ConversionTrustBlock({ entryId, title = 'Confianza comercial' }: Conver
         ))}
       </ul>
       <div className="conversion-copy-grid">
-        <p><strong>Produccion:</strong> {block.productionPromise}</p>
-        <p><strong>Revision:</strong> {block.reviewNotice}</p>
+        <p><strong>Fabricacion:</strong> {block.productionPromise}</p>
+        <p><strong>Comprobacion:</strong> {block.reviewNotice}</p>
         <p><strong>Riesgo:</strong> {block.riskReducer}</p>
-        <p><strong>Prueba:</strong> {block.qualityProof}</p>
+        <p><strong>Calidad:</strong> {block.qualityProof}</p>
       </div>
     </article>
   )

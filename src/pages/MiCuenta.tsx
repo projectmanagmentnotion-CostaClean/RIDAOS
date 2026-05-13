@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import CtaPanel from '../components/CtaPanel'
 import PageShell from '../components/PageShell'
 import SectionHeader from '../components/SectionHeader'
+import { publicRoutes } from '../lib/navigation'
 import { useOrderStore } from '../store/useOrderStore'
 import { useUserStore } from '../store/useUserStore'
 
@@ -25,15 +26,15 @@ function MiCuenta() {
     <PageShell className="account-page premium-page">
       <SectionHeader
         className="account-hero premium-hero"
-        description="Esta base organiza perfil, pedidos y archivos para que la futura capa de acceso con cuenta pueda entrar sin rehacer la navegacion principal."
+        description="Aqui reunimos perfil, pedidos y archivos para que el seguimiento del cliente sea claro en cada proyecto."
         eyebrow="Area cliente"
         hero
-        title="Mi cuenta preparada para escalar sin activar auth todavia."
+        title="Tu area cliente en un solo lugar."
       />
 
       <div className="split-grid account-layout">
         <article className="content-card account-profile-card hover-lift" data-animate="panel" tabIndex={0}>
-          <SectionHeader eyebrow="Perfil mock" title={customer.company || customer.name} />
+          <SectionHeader eyebrow="Perfil" title={customer.company || customer.name} />
           <div className="account-profile-grid">
             <div className="account-profile-item">
               <span className="meta-label">Empresa</span>
@@ -55,16 +56,16 @@ function MiCuenta() {
         </article>
 
         <CtaPanel
-          actions={<a className="card-link" href="#/producto/dtf">Volver al configurador DTF</a>}
+          actions={<a className="card-link" href={publicRoutes.dtf}>Volver al configurador DTF</a>}
           className="account-notice-card"
-          description="El acceso con cuenta se activara mas adelante."
-          label="Acceso futuro"
-          title="Area preparada para autenticar mas adelante."
+          description="Desde aqui puedes retomar pedidos, revisar archivos y volver al configurador principal."
+          label="Acceso rapido"
+          title="Tu cuenta queda conectada con el flujo de pedido."
         />
       </div>
 
       <section className="account-section">
-        <SectionHeader eyebrow="Resumen" title="Actividad local ya alineada con el futuro backend." />
+        <SectionHeader eyebrow="Resumen" title="Actividad reciente del cliente." />
         <div className="account-dashboard-grid">
           <article className="content-card account-link-card hover-lift" data-animate="panel" tabIndex={0}>
             <h3>Pedidos guardados</h3>
@@ -73,7 +74,7 @@ function MiCuenta() {
           </article>
           <article className="content-card account-link-card hover-lift" data-animate="panel" tabIndex={0}>
             <h3>Archivos vinculados</h3>
-            <p>Los archivos quedan alineados con cada item para conectar revision tecnica real mas adelante.</p>
+            <p>Los archivos quedan vinculados a cada pedido para mantener el seguimiento claro.</p>
             <strong>{uploadCount} archivos</strong>
           </article>
         </div>
@@ -85,7 +86,7 @@ function MiCuenta() {
           {quickLinks.map((item) => (
             <article className="content-card account-link-card hover-lift" data-animate="panel" key={item.label} tabIndex={0}>
               <h3>{item.label}</h3>
-              <p>Modulo frontend preparado para conectar datos reales en una fase posterior.</p>
+              <p>Acceso directo a la informacion principal de tu cuenta.</p>
               <a className="card-link" href={item.href}>
                 Abrir
               </a>

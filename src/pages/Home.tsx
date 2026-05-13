@@ -12,6 +12,7 @@ import TrustGrid from '../components/TrustGrid'
 import UploadGuidanceBlock from '../components/UploadGuidanceBlock'
 import { dtfEntry } from '../catalog/products/dtf'
 import { getContentByEntryId } from '../catalog/content/contentSelectors'
+import { publicRoutes } from '../lib/navigation'
 import {
   initCinematicScroll,
   initCursorAwareReveals,
@@ -21,7 +22,7 @@ import {
 const stats = [
   { label: 'Base', value: '14,50 EUR/metro' },
   { label: 'Flujo', value: 'Configura, sube y pide' },
-  { label: 'Estado', value: 'Frontend base listo' },
+  { label: 'Estado', value: 'Pedido claro desde el inicio' },
 ]
 
 const selectedRows = [
@@ -178,10 +179,10 @@ function Home() {
             </div>
           </div>
           <div className="catalog-cta-row">
-            <a className="action-button action-link-button" data-cursor="magnetic" href="#/producto/dtf">
+            <a className="action-button action-link-button" data-cursor="magnetic" href={publicRoutes.dtf}>
               {homeContent?.primaryCta.label ?? 'Configurar DTF'}
             </a>
-            <a className="action-button action-button-muted action-link-button" data-cursor="magnetic" href="#/catalogo">
+            <a className="action-button action-button-muted action-link-button" data-cursor="magnetic" href={publicRoutes.catalogo}>
               Ver catalogo
             </a>
           </div>
@@ -205,16 +206,16 @@ function Home() {
         <CtaPanel
           actions={
             <>
-              <a className="action-button action-link-button" data-cursor="magnetic" href="#/catalogo">
+              <a className="action-button action-link-button" data-cursor="magnetic" href={publicRoutes.catalogo}>
                 Ver catalogo
               </a>
-              <a className="card-link" data-cursor="magnetic" href="#/guia">
+              <a className="card-link" data-cursor="magnetic" href={publicRoutes.guia}>
                 Ver guia de archivos
               </a>
             </>
           }
           className="home-foundation-panel"
-          description="Esta fase organiza la web en paginas simples y listas para crecer hacia configuracion, carrito y checkout sin introducir dependencias pesadas."
+          description="Organizamos la experiencia para que puedas pasar del catalogo al pedido con una lectura clara y sin pasos innecesarios."
           label="Base comercial"
           title="Un frente claro para ventas DTF por metro."
         />
@@ -223,17 +224,17 @@ function Home() {
           <SectionHeader title="Accesos rapidos" />
           <ul className="placeholder-list">
             <li>
-              <a className="card-link" href="#/catalogo">
+              <a className="card-link" href={publicRoutes.catalogo}>
                 Ver catalogo
               </a>
             </li>
             <li>
-              <a className="card-link" data-cursor="invert" href="#/producto/dtf">
+              <a className="card-link" data-cursor="invert" href={publicRoutes.dtf}>
                 Abrir pagina DTF por metro
               </a>
             </li>
             <li>
-              <a className="card-link" data-cursor="invert" href="#/guia">
+              <a className="card-link" data-cursor="invert" href={publicRoutes.guia}>
                 Revisar guia de archivos
               </a>
             </li>
@@ -379,14 +380,14 @@ function Home() {
 
       <section className="cta-overload-section" data-motion="cta-overload" data-scroll-scene="home-overload-cta">
         <div className="overload-band" aria-hidden="true" />
-        <p className="type-kicker">Final system overload</p>
+        <p className="type-kicker">Cierre del recorrido</p>
         <div className="overload-title">
           <div className="overload-layer type-outline">ACTIVA TU PEDIDO</div>
           <div className="overload-layer type-negative">ACTIVA TU PEDIDO</div>
           <div className="overload-layer overload-layer-main">ACTIVA TU PEDIDO</div>
         </div>
         <p className="negative-type-copy">Configura, sube archivo y avanza con una experiencia clara de principio a fin.</p>
-        <a className="action-button action-link-button overload-button" data-cursor="magnetic" href="#/producto/dtf">
+        <a className="action-button action-link-button overload-button" data-cursor="magnetic" href={publicRoutes.dtf}>
           Configurar DTF ahora
         </a>
       </section>

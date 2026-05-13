@@ -21,7 +21,7 @@ const projects = [
   {
     category: 'DTF/Textil',
     title: 'DTF textile run para drop capsula',
-    description: 'Produccion corta con colores solidos y ritmo de reposicion preparado para campanas rapidas.',
+    description: 'Serie corta con colores solidos y ritmo de reposicion preparado para campanas rapidas.',
     tags: ['premium', 'drop', 'reposicion'],
     metric: '320 prendas / 48h',
   },

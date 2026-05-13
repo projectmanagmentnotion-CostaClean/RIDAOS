@@ -18,6 +18,7 @@ import {
   getProductsForCatalogView,
   resolveCtaForEntry,
 } from '../lib/catalogSelectors'
+import { publicRoutes } from '../lib/navigation'
 import { catalogCategories } from '../lib/products'
 import type { CatalogEntry } from '../types/product'
 
@@ -161,7 +162,7 @@ function Catalogo() {
               <a className="action-button action-link-button" data-cursor="magnetic" href={featuredProduct.route}>
                 {featuredContent?.primaryCta.label ?? featuredProduct.cta.label}
               </a>
-              <a className="action-button action-button-muted action-link-button" data-cursor="magnetic" href="#/guia">
+              <a className="action-button action-button-muted action-link-button" data-cursor="magnetic" href={publicRoutes.guia}>
                 {featuredContent?.secondaryCta.label ?? 'Ver guia de archivos'}
               </a>
             </div>

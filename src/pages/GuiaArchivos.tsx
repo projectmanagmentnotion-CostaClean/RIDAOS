@@ -28,7 +28,7 @@ const guideFaq = [
     answer: 'Se aceptan PDF, AI, EPS, SVG, PNG, JPG, TIFF y ZIP.',
   },
   {
-    question: 'Produccion',
+    question: 'Fabricacion',
     answer: 'La comprobacion tecnica se confirma antes de fabricar cuando haga falta.',
   },
   {

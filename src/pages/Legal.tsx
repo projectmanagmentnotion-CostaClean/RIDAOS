@@ -30,7 +30,7 @@ function Legal() {
           {legalSections.map((section) => (
             <article className="content-card legal-card hover-lift" data-animate="panel" key={section}>
               <p className="section-label">{section}</p>
-              <p>Texto pendiente de validacion legal.</p>
+              <p>Texto pendiente de confirmacion legal.</p>
             </article>
           ))}
         </div>

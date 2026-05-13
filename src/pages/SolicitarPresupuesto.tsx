@@ -5,6 +5,7 @@ import CtaPanel from '../components/CtaPanel'
 import PageShell from '../components/PageShell'
 import SectionHeader from '../components/SectionHeader'
 import { getQuoteServices } from '../lib/catalogSelectors'
+import { publicRoutes } from '../lib/navigation'
 import type { ConfiguratorField } from '../types/product'
 
 type QuoteForm = {
@@ -245,18 +246,23 @@ function SolicitarPresupuesto() {
               </div>
               <div className="summary-row summary-row-total">
                 <span>Estado</span>
-                <strong>Solicitud mock preparada</strong>
+                <strong>Solicitud lista para enviar</strong>
               </div>
             </div>
           </article>
 
           {submitted ? (
             <CtaPanel
-              actions={<a className="action-button action-link-button" href="#/contacto">Ir a contacto</a>}
+              actions={
+                <>
+                  <a className="action-button action-link-button" href={publicRoutes.contacto}>Ir a contacto</a>
+                  <a className="card-link" href={publicRoutes.catalogo}>Ver catalogo</a>
+                </>
+              }
               className="success-card quote-success-panel"
               description="Revisaremos tu proyecto y te responderemos con una propuesta personalizada."
               label="Solicitud recibida"
-              title="El flujo comercial esta preparado para la siguiente fase."
+              title="Tu proyecto ya esta listo para recibir una propuesta."
             />
           ) : (
             <article className="content-card hover-lift" data-animate="panel" tabIndex={0}>

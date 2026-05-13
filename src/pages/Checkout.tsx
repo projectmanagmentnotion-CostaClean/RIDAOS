@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import CommercialNotice from '../components/CommercialNotice'
+import { getContinueShoppingHref } from '../lib/navigation'
 import { getOrderItemSummary } from '../lib/products'
 import { submitOrder } from '../services/orderService'
 import { upsertCustomerProfile } from '../services/customerService'
@@ -162,8 +163,8 @@ function Checkout() {
             <p className="section-label">Resumen de carrito</p>
             {cartItems.length === 0 ? (
               <div className="empty-state">
-              <p>No hay items pendientes en este paso.</p>
-                <a className="card-link" href="#/catalogo">
+                <p>No hay items pendientes en este paso.</p>
+                <a className="card-link" href={getContinueShoppingHref()}>
                   Volver al catalogo
                 </a>
               </div>

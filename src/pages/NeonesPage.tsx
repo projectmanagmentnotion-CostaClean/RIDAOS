@@ -10,6 +10,7 @@ import UploadGuidanceBlock from '../components/UploadGuidanceBlock'
 import { getContentByEntryId } from '../catalog/content/contentSelectors'
 import { getCatalogPricingResult } from '../lib/catalogPricingAdapter'
 import { createInitialConfig, getRequiredFieldErrors, updateConfigValue, type ConfigState } from '../lib/configuratorState'
+import { getQuoteHref, publicRoutes } from '../lib/navigation'
 import { getProductById, getProductsByCategory, resolveLegalNoticeItems } from '../lib/products'
 
 function NeonesPage() {
@@ -58,7 +59,7 @@ function NeonesPage() {
       className="neones-page"
       config={config}
       ctaArea={
-        <a className="action-button action-link-button" href={content?.primaryCta.href ?? '#/presupuesto?service=neones'}>
+        <a className="action-button action-link-button" href={content?.primaryCta.href ?? getQuoteHref('neones')}>
           {content?.primaryCta.label ?? 'Solicitar presupuesto'}
         </a>
       }
@@ -83,6 +84,10 @@ function NeonesPage() {
               <li>{selectedProduct.manualReviewRequired ? 'Proyecto sujeto a comprobacion tecnica.' : 'Flujo directo habilitado.'}</li>
               <li>{selectedProduct.upload.required ? 'Archivo requerido.' : 'Archivo opcional para la propuesta inicial.'}</li>
             </ul>
+            <div className="catalog-cta-row">
+              <a className="card-link" href={getQuoteHref('neones')}>Abrir formulario</a>
+              <a className="card-link" href={publicRoutes.contacto}>Contactar</a>
+            </div>
           </article>
         </>
       }

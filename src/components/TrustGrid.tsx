@@ -8,7 +8,7 @@ const defaultTrustItems = [
     description: 'Comprobamos el arte final antes de lanzar la fabricacion cuando el trabajo lo necesita.',
   },
   {
-    title: 'Fabricacion confirmada tras revision tecnica',
+    title: 'Fabricacion confirmada tras comprobacion tecnica',
     description: 'El trabajo avanza con confirmacion tecnica para evitar errores en el resultado final.',
   },
   {

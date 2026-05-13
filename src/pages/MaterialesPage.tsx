@@ -12,6 +12,7 @@ import { addToCart } from '../lib/cart'
 import { createCatalogCartItem } from '../lib/catalogCartAdapter'
 import { getCatalogPricingResult } from '../lib/catalogPricingAdapter'
 import { createInitialConfig, getRequiredFieldErrors, updateConfigValue, type ConfigState } from '../lib/configuratorState'
+import { getContinueShoppingHref, getQuoteHref, publicRoutes } from '../lib/navigation'
 import { getProductById, getProductsByCategory, resolveLegalNoticeItems } from '../lib/products'
 
 function MaterialesPage() {
@@ -82,7 +83,7 @@ function MaterialesPage() {
           >
             {content?.primaryCta.label ?? 'Anadir al carrito'}
           </button>
-          <a className="action-button action-button-muted action-link-button" href={content?.secondaryCta.href ?? '#/presupuesto?service=materiales'}>
+          <a className="action-button action-button-muted action-link-button" href={content?.secondaryCta.href ?? getQuoteHref('materiales')}>
             {content?.secondaryCta.label ?? 'Solicitar presupuesto'}
           </a>
         </>
@@ -97,6 +98,12 @@ function MaterialesPage() {
           {estimate ? <CatalogResultPanel result={estimate} title="Precio estimado" /> : null}
           <CommercialNoticeGroup items={resolveLegalNoticeItems(selectedProduct.legalNotes)} />
           {message ? <p className="inline-notice">{message}</p> : null}
+          {message ? (
+            <div className="catalog-cta-row">
+              <a className="card-link" href={publicRoutes.carrito}>Ir al carrito</a>
+              <a className="card-link" href={getContinueShoppingHref()}>Seguir comprando</a>
+            </div>
+          ) : null}
         </>
       }
       title={content?.h1 ?? 'Materiales y vinilos por m2.'}

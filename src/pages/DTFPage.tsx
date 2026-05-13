@@ -18,6 +18,7 @@ import {
   initUrbanTextMotion,
 } from '../lib/animations'
 import { addToCart } from '../lib/cart'
+import { publicRoutes } from '../lib/navigation'
 import {
   BASE_PRICE_PER_METER,
   calculateDTFPricing,
@@ -371,9 +372,14 @@ function DTFPage() {
 
             {cartMessage ? <p className="inline-notice">{cartMessage}</p> : null}
             {cartMessage ? (
-              <a className="card-link" data-cursor="invert" href="#/carrito">
-                Ir al carrito
-              </a>
+              <div className="catalog-cta-row">
+                <a className="card-link" data-cursor="invert" href={publicRoutes.carrito}>
+                  Ir al carrito
+                </a>
+                <a className="card-link" data-cursor="invert" href={publicRoutes.catalogo}>
+                  Seguir comprando
+                </a>
+              </div>
             ) : null}
           </div>
         </article>
@@ -476,7 +482,12 @@ function DTFPage() {
 
           {simulation ? (
             <CtaPanel
-              actions={<a className="action-button action-link-button" href="#/carrito">Continuar al carrito</a>}
+              actions={
+                <>
+                  <a className="action-button action-link-button" href={publicRoutes.carrito}>Continuar al carrito</a>
+                  <a className="card-link" href={publicRoutes.guia}>Revisar guia de archivos</a>
+                </>
+              }
               className="success-card"
               description={`Metros: ${simulation.meters} | Calidad: ${qualityLabels[simulation.quality]} | Urgencia: ${urgencyLabels[simulation.urgency]} | Archivo: ${simulation.fileName} | Total: ${formatCurrency(simulation.total)}`}
               label="Pedido simulado correctamente"

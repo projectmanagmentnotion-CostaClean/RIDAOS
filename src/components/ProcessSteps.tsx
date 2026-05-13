@@ -1,4 +1,4 @@
-const defaultSteps = ['Configura', 'Sube archivo', 'Revision', 'Produccion', 'Entrega'] as const
+const defaultSteps = ['Configura', 'Sube archivo', 'Comprobacion', 'Fabricacion', 'Entrega'] as const
 
 type ProcessStepsProps = {
   steps?: readonly string[]

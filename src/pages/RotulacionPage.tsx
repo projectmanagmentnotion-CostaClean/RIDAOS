@@ -10,6 +10,7 @@ import UploadGuidanceBlock from '../components/UploadGuidanceBlock'
 import { getContentByEntryId } from '../catalog/content/contentSelectors'
 import { getCatalogPricingResult } from '../lib/catalogPricingAdapter'
 import { createInitialConfig, getRequiredFieldErrors, updateConfigValue, type ConfigState } from '../lib/configuratorState'
+import { getQuoteHref, publicRoutes } from '../lib/navigation'
 import { getProductById, getProductsByCategory, resolveLegalNoticeItems } from '../lib/products'
 
 function RotulacionPage() {
@@ -54,7 +55,7 @@ function RotulacionPage() {
       className="rotulacion-page"
       config={config}
       ctaArea={
-        <a className="action-button action-link-button" href={content?.primaryCta.href ?? '#/presupuesto?service=rotulacion'}>
+        <a className="action-button action-link-button" href={content?.primaryCta.href ?? getQuoteHref('rotulacion')}>
           {content?.primaryCta.label ?? 'Solicitar presupuesto'}
         </a>
       }
@@ -78,6 +79,10 @@ function RotulacionPage() {
               <li>{selectedProduct.manualReviewRequired ? 'Incluye comprobacion tecnica antes de cerrar la propuesta.' : 'Flujo directo habilitado.'}</li>
               <li>{selectedProduct.upload.required ? 'Archivo requerido antes de fabricar.' : 'Archivo opcional para la primera propuesta.'}</li>
             </ul>
+            <div className="catalog-cta-row">
+              <a className="card-link" href={getQuoteHref('rotulacion')}>Abrir formulario</a>
+              <a className="card-link" href={publicRoutes.contacto}>Contactar</a>
+            </div>
           </article>
         </>
       }

@@ -1,3 +1,4 @@
+import { publicRoutes } from '../lib/navigation'
 import { useMemo } from 'react'
 import { useOrderStore } from '../store/useOrderStore'
 
@@ -25,9 +26,9 @@ function MisPedidos() {
     <section className="page account-page">
       <div className="page-hero account-hero">
         <p className="eyebrow">Pedidos</p>
-        <h1>Seguimiento mock del trabajo en curso y del historico reciente.</h1>
+        <h1>Seguimiento del trabajo en curso y del historico reciente.</h1>
         <p>
-          La estructura ya lee pedidos estructurados del historial local para que el backend futuro solo sustituya la fuente de datos.
+          Consulta el estado, la fecha y el importe de tus pedidos en un solo vistazo.
         </p>
       </div>
 
@@ -45,7 +46,7 @@ function MisPedidos() {
               <p>Fecha: {formatDate(order.createdAt)}</p>
               <p>Total: {formatCurrency(order.total)}</p>
             </div>
-            <a className="action-button action-link-button" href="#/mi-cuenta/pedidos/demo">
+            <a className="action-button action-link-button" href={publicRoutes.detallePedido}>
               Ver pedido
             </a>
           </article>

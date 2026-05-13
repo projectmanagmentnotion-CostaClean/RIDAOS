@@ -1,12 +1,13 @@
 import { useMemo } from 'react'
+import { publicRoutes } from '../lib/navigation'
 import { getOrderItemSummary } from '../lib/products'
 import { useOrderStore } from '../store/useOrderStore'
 
 const timeline = [
   'Pedido recibido',
-  'Archivo en revision',
+  'Archivo en comprobacion',
   'Archivo aprobado',
-  'En produccion',
+  'En fabricacion',
   'Listo para recoger/enviar',
 ]
 
@@ -50,9 +51,9 @@ function DetallePedido() {
     <section className="page account-page">
       <div className="page-hero account-hero">
         <p className="eyebrow">Detalle de pedido</p>
-        <h1>Vista completa del pedido y su avance interno.</h1>
+        <h1>Vista completa del pedido y su estado actual.</h1>
         <p>
-          Esta ficha prioriza estado, configuracion y archivo vinculado para que el cliente tenga una lectura directa antes de activar pago o revision real.
+          Esta ficha prioriza estado, configuracion y archivo vinculado para que tengas una lectura clara del pedido.
         </p>
       </div>
 
@@ -76,13 +77,16 @@ function DetallePedido() {
             </div>
             <div className="summary-row summary-row-total">
               <span>Estado de pago</span>
-              <strong>Pendiente de activar</strong>
+              <strong>Se confirmara en el siguiente paso</strong>
             </div>
           </div>
           <div className="form-actions">
             <button className="action-button" disabled type="button">
               Pagar pedido
             </button>
+            <a className="action-button action-button-muted action-link-button" href={publicRoutes.contacto}>
+              Contactar
+            </a>
           </div>
         </article>
 
@@ -91,7 +95,7 @@ function DetallePedido() {
           <div className="premium-file-card">
             <span className="premium-file-format">{item.artwork.formatLabel}</span>
             <h3>{item.artwork.fileName}</h3>
-            <p>{item.artwork.notes || 'Archivo principal asociado al pedido para revision y aprobacion tecnica.'}</p>
+            <p>{item.artwork.notes || 'Archivo principal asociado al pedido para su comprobacion tecnica.'}</p>
           </div>
           <div className="summary-list">
             <div className="summary-row">
@@ -120,8 +124,8 @@ function DetallePedido() {
                 <h3>{step}</h3>
                 <p>
                   {index < completeSteps
-                    ? 'Paso registrado en esta simulacion del area cliente.'
-                    : 'Pendiente de actualizar cuando el pedido avance en produccion.'}
+                    ? 'Paso registrado en el seguimiento actual del pedido.'
+                    : 'Se actualizara cuando el pedido avance al siguiente estado.'}
                 </p>
               </div>
             </div>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { publicRoutes } from '../lib/navigation'
 import { getArtworkHistory } from '../services/uploadService'
 import { useUIStore } from '../store/useUIStore'
 import type { ArtworkUpload } from '../types/backend'
@@ -40,9 +41,9 @@ function HistorialArchivos() {
     <section className="page account-page">
       <div className="page-hero account-hero">
         <p className="eyebrow">Historial de archivos</p>
-        <h1>Repositorio visual mock para arte vinculado a pedidos.</h1>
+        <h1>Archivos vinculados a tus pedidos.</h1>
         <p>
-          Este modulo ya lee archivos vinculados a pedidos estructurados para que la capa real solo cambie el origen de datos.
+          Revisa los archivos ya asociados a cada pedido y accede al trabajo relacionado cuando lo necesites.
         </p>
       </div>
 
@@ -64,7 +65,7 @@ function HistorialArchivos() {
               <p>Pedido: {file.orderId || 'Pendiente'}</p>
               <p>Estado: {file.status}</p>
             </div>
-            <a className="card-link" href="#/mi-cuenta/pedidos/demo">
+            <a className="card-link" href={publicRoutes.detallePedido}>
               Ver pedido relacionado
             </a>
           </article>

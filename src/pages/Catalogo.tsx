@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import CtaPanel from '../components/CtaPanel'
 import ConversionTrustBlock from '../components/ConversionTrustBlock'
 import MetricCard from '../components/MetricCard'
+import MouseMotionVisual from '../components/MouseMotionVisual'
 import PageShell from '../components/PageShell'
 import SeoContentBlock from '../components/SeoContentBlock'
 import SectionHeader from '../components/SectionHeader'
@@ -79,6 +80,23 @@ function Catalogo() {
           title={`${featuredProduct.name} listo para configurar.`}
         />
       ) : null}
+
+      <section className="content-section content-grid-two">
+        <article className="content-card motion-card">
+          <SectionHeader eyebrow="Catalogo visual" title="Lineas principales con lectura clara." />
+          <p>Una vista sobria para distinguir compra directa, presupuesto y comprobacion tecnica sin bloquear la navegacion.</p>
+          <MouseMotionVisual variant="catalog" />
+        </article>
+        <article className="content-card seo-content-block">
+          <p className="section-label">Accesos del catalogo</p>
+          <h3>Elige el flujo adecuado.</h3>
+          <ul className="detail-list">
+            <li>DTF por metro para configurar y avanzar rapido.</li>
+            <li>Productos con tramos claros para compra directa.</li>
+            <li>Servicios a medida para presupuesto personalizado.</li>
+          </ul>
+        </article>
+      </section>
 
       {featuredProduct ? (
         <div className="featured-product-panel flagship-metrics">

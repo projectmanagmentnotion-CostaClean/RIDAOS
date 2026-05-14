@@ -4,6 +4,7 @@ import ConversionTrustBlock from '../components/ConversionTrustBlock'
 import CtaPanel from '../components/CtaPanel'
 import FaqBlock from '../components/FaqBlock'
 import MetricCard from '../components/MetricCard'
+import MouseMotionVisual from '../components/MouseMotionVisual'
 import ObjectionHandlerBlock from '../components/ObjectionHandlerBlock'
 import PageShell from '../components/PageShell'
 import ProcessSteps from '../components/ProcessSteps'
@@ -475,6 +476,22 @@ function DTFPage() {
           <CommercialNoticeGroup noticeKeys={dtfEntry.legalNotes} />
         </div>
       </div>
+
+      <section className="content-section content-grid-two">
+        <article className="content-card motion-card">
+          <SectionHeader eyebrow="Vista del pedido" title="Movimiento visual sin bloquear el configurador." />
+          <p>El seguimiento del cursor solo anima esta capa decorativa. Los campos, enlaces y botones quedan por encima y siguen siendo clicables.</p>
+          <MouseMotionVisual variant="dtf" />
+        </article>
+        <article className="content-card">
+          <SectionHeader eyebrow="Preparacion" title="Archivo, metros y comprobacion en el mismo flujo." />
+          <ul className="detail-list">
+            <li>Define el metraje antes de avanzar.</li>
+            <li>Adjunta el arte final cuando este listo.</li>
+            <li>Confirma el pedido con el resumen visible.</li>
+          </ul>
+        </article>
+      </section>
 
       <section className="content-section" data-animate="reveal" data-scroll-scene="dtf-process">
         <SectionHeader eyebrow="Como funciona" title="Del archivo al pedido en cinco pasos." />

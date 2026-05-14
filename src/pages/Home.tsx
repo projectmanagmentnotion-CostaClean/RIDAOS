@@ -3,6 +3,7 @@ import CtaPanel from '../components/CtaPanel'
 import ConversionTrustBlock from '../components/ConversionTrustBlock'
 import FaqBlock from '../components/FaqBlock'
 import MetricCard from '../components/MetricCard'
+import MouseMotionVisual from '../components/MouseMotionVisual'
 import ObjectionHandlerBlock from '../components/ObjectionHandlerBlock'
 import PageShell from '../components/PageShell'
 import ProcessSteps from '../components/ProcessSteps'
@@ -36,7 +37,7 @@ function Home() {
           titleLines={['RIDAOSPRINT', 'DTF POR', 'METRO']}
         />
 
-        <aside className="content-card home-hero-orbit hover-lift" tabIndex={0}>
+        <aside className="content-card home-hero-orbit hover-lift motion-card" tabIndex={0}>
           <p className="section-label">Pedido directo</p>
           <h2 className="section-heading">Configura DTF por metro sin pasos innecesarios.</h2>
           <div className="hero-orbit-stack">
@@ -61,6 +62,7 @@ function Home() {
               Ver catalogo
             </a>
           </div>
+          <MouseMotionVisual variant="dtf" />
         </aside>
       </div>
 

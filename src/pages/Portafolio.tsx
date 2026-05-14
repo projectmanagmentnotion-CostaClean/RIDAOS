@@ -1,4 +1,5 @@
 import CtaPanel from '../components/CtaPanel'
+import MouseMotionVisual from '../components/MouseMotionVisual'
 import PageShell from '../components/PageShell'
 import SectionHeader from '../components/SectionHeader'
 import { getPublicCtaHref } from '../lib/navigation'
@@ -42,6 +43,10 @@ function Portafolio() {
 
       <section className="portfolio-section">
         <SectionHeader eyebrow="Proyectos" title="Seleccion de trabajos con lectura comercial." />
+        <article className="content-card motion-card">
+          <SectionHeader eyebrow="Movimiento visual" title="Acabados, superficies y propuesta en una vista limpia." />
+          <MouseMotionVisual variant="portfolio" />
+        </article>
         <div className="portfolio-grid">
           {projects.map((project, index) => (
             <article

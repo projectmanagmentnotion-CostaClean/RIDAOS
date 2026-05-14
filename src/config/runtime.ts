@@ -1,8 +1,8 @@
-export type BackendMode = 'mock' | 'supabase'
+export type DataMode = 'demo' | 'supabase'
 
 export const runtimeConfig = {
-  backendMode: 'mock' as BackendMode,
+  dataMode: 'demo' as DataMode,
 }
 
-// When the real backend is introduced, repositories and services will switch on
-// `runtimeConfig.backendMode` and route calls to the Supabase implementation.
+// When the Supabase layer is introduced, repositories and services will switch on
+// `runtimeConfig.dataMode` and route calls to that implementation.

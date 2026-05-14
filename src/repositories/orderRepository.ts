@@ -5,8 +5,8 @@ import type { Order } from '../types/backend'
 const readOrders = () => useOrderStore.getState().orders
 
 export async function listOrders(): Promise<Order[]> {
-  switch (runtimeConfig.backendMode) {
-    case 'mock':
+  switch (runtimeConfig.dataMode) {
+    case 'demo':
       return readOrders()
     case 'supabase':
       // Supabase-backed order listing will plug in here later.
@@ -15,8 +15,8 @@ export async function listOrders(): Promise<Order[]> {
 }
 
 export async function createOrder(order: Order): Promise<Order> {
-  switch (runtimeConfig.backendMode) {
-    case 'mock':
+  switch (runtimeConfig.dataMode) {
+    case 'demo':
       useOrderStore.getState().addOrder(order)
       return order
     case 'supabase':

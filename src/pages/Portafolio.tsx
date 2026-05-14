@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import CtaPanel from '../components/CtaPanel'
 import PageShell from '../components/PageShell'
 import SectionHeader from '../components/SectionHeader'
+import { getPublicCtaHref } from '../lib/navigation'
 import {
   initCinematicScroll,
   initCursorAwareReveals,
@@ -61,7 +62,7 @@ const selectedProjects = [
     label: 'Wrap / Mobility',
     title: 'Vehicle wrap con silueta de flota y capa de lectura urbana.',
     detail: 'Direccion visual y montaje pensados para superficie en movimiento.',
-    href: '#/presupuesto',
+    href: getPublicCtaHref('presupuesto'),
     action: 'Quiero este enfoque',
     visual: 'vehicle',
   },
@@ -70,7 +71,7 @@ const selectedProjects = [
     label: 'Sheet / DTF',
     title: 'DTF textile run con preview abstracto de plancha viva.',
     detail: 'Series cortas y drops visuales listos para ritmo de reposicion.',
-    href: '#/producto/dtf',
+    href: getPublicCtaHref('dtf'),
     action: 'Abrir producto',
     visual: 'dtf',
   },
@@ -79,7 +80,7 @@ const selectedProjects = [
     label: 'Pack / Stickers',
     title: 'Sticker pack y vinilo con mosaico de cortes sugeridos.',
     detail: 'Pack visual para comunidad, retail y activacion de marca.',
-    href: '#/presupuesto',
+    href: getPublicCtaHref('presupuesto'),
     action: 'Solicitar resultado',
     visual: 'stickers',
   },
@@ -273,7 +274,7 @@ function Portafolio() {
                 <span className="meta-label">Resultado</span>
                 <strong>{project.metric}</strong>
               </div>
-              <a className="action-button action-link-button" data-cursor="magnetic" href="#/presupuesto">
+              <a className="action-button action-link-button" data-cursor="magnetic" href={getPublicCtaHref('presupuesto')}>
                 Quiero un resultado asi
               </a>
             </article>
@@ -298,10 +299,10 @@ function Portafolio() {
       <CtaPanel
         actions={
           <>
-            <a className="action-button action-link-button" data-cursor="invert" href="#/presupuesto">
+            <a className="action-button action-link-button" data-cursor="invert" href={getPublicCtaHref('presupuesto')}>
               Quiero un resultado asi
             </a>
-            <a className="card-link" data-cursor="invert" href="#/catalogo">
+            <a className="card-link" data-cursor="invert" href={getPublicCtaHref('catalogo')}>
               Ver catalogo completo
             </a>
           </>

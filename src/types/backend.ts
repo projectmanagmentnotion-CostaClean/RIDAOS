@@ -72,5 +72,5 @@ export type Order = {
   createdAt: string
   status: OrderStatus
   paymentStatus: PaymentStatus
-  source: 'mock_frontend'
+  source: 'demo_frontend'
 }

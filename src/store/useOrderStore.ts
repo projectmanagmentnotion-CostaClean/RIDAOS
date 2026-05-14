@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
-import { mockOrders } from '../repositories/mockData'
+import { demoOrders } from '../repositories/demoData'
 import type { Order } from '../types/backend'
 
 type OrderStore = {
@@ -13,7 +13,7 @@ type OrderStore = {
 export const useOrderStore = create<OrderStore>()(
   persist(
     (set) => ({
-      orders: mockOrders,
+      orders: demoOrders,
       addOrder: (order) => set((state) => ({ orders: [order, ...state.orders] })),
       setOrders: (orders) => set({ orders }),
       updateOrder: (orderId, updater) =>

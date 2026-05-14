@@ -12,7 +12,7 @@ const adminNavigation = [
   { href: '#/admin/orders', label: 'Pedidos' },
   { href: '#/admin/uploads', label: 'Archivos' },
   { href: '#/admin/customers', label: 'Clientes' },
-  { href: '#/admin/production', label: 'Produccion' },
+  { href: '#/admin/production', label: 'Fabricacion' },
 ]
 
 function AdminShell({ title, description, children }: AdminShellProps) {

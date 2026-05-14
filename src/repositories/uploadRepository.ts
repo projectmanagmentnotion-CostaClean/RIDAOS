@@ -7,8 +7,8 @@ function flattenUploads(uploads: ArtworkUpload[]) {
 }
 
 export async function listUploads(): Promise<ArtworkUpload[]> {
-  switch (runtimeConfig.backendMode) {
-    case 'mock': {
+  switch (runtimeConfig.dataMode) {
+    case 'demo': {
       const orders = await listOrders()
       return flattenUploads(orders.flatMap((order) => order.items.map((item) => item.artwork)))
     }

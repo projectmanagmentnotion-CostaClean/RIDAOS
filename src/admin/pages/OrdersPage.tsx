@@ -50,7 +50,7 @@ function OrdersPage() {
       description="Busqueda y filtros para trabajar pedidos por estado, prioridad o cliente."
       title="Pedidos"
     >
-      <AdminSection title="Filtros operativos">
+      <AdminSection title="Filtros internos">
         <AdminFilterBar>
           <AdminSearchInput
             onChange={(value) => setFilters((current) => ({ ...current, search: value }))}

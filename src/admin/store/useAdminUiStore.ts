@@ -10,7 +10,7 @@ import type {
   AdminUploadReviewStatus,
   AdminOrderPriority,
 } from '../types/adminModels'
-import { mockAdminOrderOverrides, mockAdminUploadOverrides } from '../services/mockAdminData'
+import { demoAdminOrderOverrides, demoAdminUploadOverrides } from '../services/demoAdminData'
 
 type AdminUiStore = {
   mobileSidebarOpen: boolean
@@ -35,8 +35,8 @@ export const useAdminUiStore = create<AdminUiStore>()(
   persist(
     (set) => ({
       mobileSidebarOpen: false,
-      orderOverrides: mockAdminOrderOverrides,
-      uploadOverrides: mockAdminUploadOverrides,
+      orderOverrides: demoAdminOrderOverrides,
+      uploadOverrides: demoAdminUploadOverrides,
       toggleMobileSidebar: () =>
         set((state) => ({ mobileSidebarOpen: !state.mobileSidebarOpen })),
       closeMobileSidebar: () => set({ mobileSidebarOpen: false }),

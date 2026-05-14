@@ -29,8 +29,8 @@ function UploadsPage() {
 
   return (
     <AdminShell
-      description="Cola de archivos con estado de revision, notas y acceso al pedido relacionado."
-      title="Revision de uploads"
+      description="Cola de archivos con estado de Comprobacion, notas y acceso al pedido relacionado."
+      title="Comprobacion de uploads"
     >
       <AdminSection title="Archivos recibidos">
         {uploads.length === 0 ? (
@@ -76,7 +76,7 @@ function UploadsPage() {
                   )}
                 </div>
                 <label className="field-group">
-                  <span className="field-label">Estado de revision</span>
+                  <span className="field-label">Estado de Comprobacion</span>
                   <select
                     className="form-input"
                     onChange={async (event) => {
@@ -93,7 +93,7 @@ function UploadsPage() {
                   </select>
                 </label>
                 <label className="field-group">
-                  <span className="field-label">Notas de revision</span>
+                  <span className="field-label">Notas de Comprobacion</span>
                   <textarea
                     className="form-input form-textarea"
                     onBlur={async (event) => {

@@ -11,7 +11,7 @@ const makeComment = (id: string, body: string, createdAt: string): AdminComment 
   createdAt,
 })
 
-export const mockAdminOrderOverrides: Record<string, AdminOrderOverride> = {
+export const demoAdminOrderOverrides: Record<string, AdminOrderOverride> = {
   'RP-24031': {
     priority: 'urgent',
     paymentStatus: 'awaiting_payment',
@@ -33,7 +33,7 @@ export const mockAdminOrderOverrides: Record<string, AdminOrderOverride> = {
     priority: 'normal',
     paymentStatus: 'paid',
     productionStatus: 'printing',
-    notes: 'Textil aprobado y ya en produccion.',
+    notes: 'Textil aprobado y ya en fabricacion.',
     productionNotes: 'Controlar acabado final en segunda pasada.',
   },
   'RP-23970': {
@@ -52,14 +52,14 @@ export const mockAdminOrderOverrides: Record<string, AdminOrderOverride> = {
   },
 }
 
-export const mockAdminUploadOverrides: Record<string, AdminUploadOverride> = {
+export const demoAdminUploadOverrides: Record<string, AdminUploadOverride> = {
   'upload-rp24031': {
     status: 'pending',
     reviewNotes: 'Revisar si el PDF incorpora marcas o capas innecesarias.',
   },
   'upload-rp24018': {
     status: 'approved',
-    reviewNotes: 'Archivo correcto para produccion de lona.',
+    reviewNotes: 'Archivo correcto para fabricacion de lona.',
   },
   'upload-rp23994': {
     status: 'reuploaded',
@@ -75,8 +75,8 @@ export const mockAdminUploadOverrides: Record<string, AdminUploadOverride> = {
   },
 }
 
-export const mockProductionQuickActions = [
+export const demoProductionQuickActions = [
   { label: 'Revisar pedidos urgentes', href: '#/admin/orders?priority=urgent' },
-  { label: 'Abrir revision de archivos', href: '#/admin/uploads' },
-  { label: 'Ver cola de produccion', href: '#/admin/production' },
+  { label: 'Abrir comprobacion de archivos', href: '#/admin/uploads' },
+  { label: 'Ver cola de fabricacion', href: '#/admin/production' },
 ]

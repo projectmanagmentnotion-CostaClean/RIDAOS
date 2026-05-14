@@ -31,12 +31,12 @@ function ProductionPage() {
 
   return (
     <AdminShell
-      description="Cola operativa para aprobar, producir, revisar calidad y marcar listos."
-      title="Produccion"
+      description="Cola flujo para aprobar, producir, revisar calidad y marcar listos."
+      title="Fabricacion"
     >
-      <AdminSection title="Cola de produccion">
+      <AdminSection title="Cola de Fabricacion">
         {orders.length === 0 ? (
-          <EmptyAdminState description="Los pedidos aprobados o en produccion apareceran aqui." title="No hay cola de produccion" />
+          <EmptyAdminState description="Los pedidos aprobados o en Fabricacion apareceran aqui." title="No hay cola de Fabricacion" />
         ) : (
           <div className="admin-production-grid">
             {orders.map((order) => (
@@ -50,7 +50,7 @@ function ProductionPage() {
                 </div>
                 <div className="summary-list">
                   <div className="summary-row">
-                    <span>Produccion</span>
+                    <span>Fabricacion</span>
                     <strong>{order.productionStatus}</strong>
                   </div>
                   <div className="summary-row">
@@ -62,9 +62,9 @@ function ProductionPage() {
                     <strong>{formatCurrency(order.total)}</strong>
                   </div>
                 </div>
-                <p>{order.productionNotes || 'Sin notas de produccion registradas.'}</p>
+                <p>{order.productionNotes || 'Sin notas de Fabricacion registradas.'}</p>
                 <a className="action-button action-link-button" href={`#/admin/orders/${order.id}`}>
-                  Abrir operativa
+                  Abrir flujo
                 </a>
               </article>
             ))}

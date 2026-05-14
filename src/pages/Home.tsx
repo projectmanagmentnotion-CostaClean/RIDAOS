@@ -12,7 +12,7 @@ import TrustGrid from '../components/TrustGrid'
 import UploadGuidanceBlock from '../components/UploadGuidanceBlock'
 import { dtfEntry } from '../catalog/products/dtf'
 import { getContentByEntryId } from '../catalog/content/contentSelectors'
-import { publicRoutes } from '../lib/navigation'
+import { getPublicCtaHref, publicRoutes } from '../lib/navigation'
 import {
   initCinematicScroll,
   initCursorAwareReveals,
@@ -31,7 +31,7 @@ const selectedRows = [
     label: 'Directo / DTF por metro',
     title: 'DTF listo para sheet preview y pedido directo.',
     detail: 'Configuracion, archivo y precio vivo sin salir del flujo.',
-    href: '#/producto/dtf',
+    href: getPublicCtaHref('dtf'),
     action: 'Configurar',
     visual: 'dtf',
   },
@@ -40,7 +40,7 @@ const selectedRows = [
     label: 'Servicio / Vinilos',
     title: 'Vinilo y retail con una propuesta clara desde el primer vistazo.',
     detail: 'Lineas preparadas para presupuesto con preview abstracto y lectura comercial directa.',
-    href: '#/catalogo',
+    href: getPublicCtaHref('catalogo'),
     action: 'Ver linea',
     visual: 'vinyl',
   },

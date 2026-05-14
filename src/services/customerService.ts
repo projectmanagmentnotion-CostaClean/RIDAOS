@@ -6,8 +6,8 @@ import type { CustomerData } from '../types/ecommerce'
 const wait = (delay = 120) => new Promise((resolve) => window.setTimeout(resolve, delay))
 
 export async function getCustomerProfile() {
-  switch (runtimeConfig.backendMode) {
-    case 'mock':
+  switch (runtimeConfig.dataMode) {
+    case 'demo':
       await wait()
       return getCurrentCustomer()
     case 'supabase':
@@ -27,8 +27,8 @@ export async function upsertCustomerProfile(input: CustomerData): Promise<Custom
     updatedAt: new Date().toISOString(),
   }
 
-  switch (runtimeConfig.backendMode) {
-    case 'mock':
+  switch (runtimeConfig.dataMode) {
+    case 'demo':
       await wait()
       return saveCustomer(nextCustomer)
     case 'supabase':

@@ -1,3 +1,5 @@
+import { getPublicCtaHref } from '../lib/navigation'
+
 function NotFoundPage() {
   return (
     <section className="page premium-page">
@@ -13,10 +15,10 @@ function NotFoundPage() {
         <article className="content-card">
           <p className="section-label">Siguiente paso</p>
           <div className="catalog-card-actions">
-            <a className="action-button action-link-button" href="#/catalogo">
+            <a className="action-button action-link-button" href={getPublicCtaHref('catalogo')}>
               Ver catalogo
             </a>
-            <a className="action-button action-button-muted action-link-button" href="#/producto/dtf">
+            <a className="action-button action-button-muted action-link-button" href={getPublicCtaHref('dtf')}>
               Ir a DTF por metro
             </a>
           </div>

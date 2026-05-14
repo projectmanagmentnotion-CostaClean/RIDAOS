@@ -37,7 +37,7 @@ function buildTimeline(order: Order, override?: AdminOrderOverride): AdminTimeli
     timeline.push({
       id: `${order.id}-approved`,
       label: 'Pedido aprobado',
-      detail: 'Revision interna completada.',
+      detail: 'Comprobacion interna completada.',
       timestamp: order.createdAt,
       tone: 'success',
     })
@@ -46,8 +46,8 @@ function buildTimeline(order: Order, override?: AdminOrderOverride): AdminTimeli
   if (override?.productionStatus === 'printing' || override?.status === 'in_production') {
     timeline.push({
       id: `${order.id}-production`,
-      label: 'En produccion',
-      detail: override?.productionNotes || 'Pedido lanzado a cola de produccion.',
+      label: 'En Fabricacion',
+      detail: override?.productionNotes || 'Pedido lanzado a cola de Fabricacion.',
       timestamp: order.createdAt,
       tone: 'default',
     })
@@ -57,7 +57,7 @@ function buildTimeline(order: Order, override?: AdminOrderOverride): AdminTimeli
     timeline.push({
       id: `${order.id}-quality`,
       label: 'Control de calidad',
-      detail: 'Revision final antes de marcar el pedido como listo.',
+      detail: 'Comprobacion final antes de marcar el pedido como listo.',
       timestamp: order.createdAt,
       tone: 'warning',
     })

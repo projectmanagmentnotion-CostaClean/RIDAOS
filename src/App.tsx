@@ -33,6 +33,7 @@ import TextilPage from './pages/TextilPage'
 import { applySEO } from './lib/seo'
 import { initSmoothScroll } from './lib/smoothScroll'
 import { refreshScrollNarrative, syncScrollTriggerWithLenis } from './lib/animations'
+import { getPublicCtaHref, getPublicHref } from './lib/navigation'
 
 type RouteKey =
   | 'home'
@@ -64,20 +65,20 @@ type RouteKey =
   | 'neones'
 
 const routes: Record<string, RouteKey> = {
-  '#/': 'home',
-  '#/catalogo': 'catalogo',
-  '#/producto/dtf': 'dtf',
-  '#/producto/textil': 'textil',
-  '#/producto/papeleria': 'papeleria',
-  '#/producto/materiales': 'materiales',
-  '#/producto/accesorios': 'accesorios',
-  '#/servicios/rotulacion': 'rotulacion',
-  '#/servicios/neones': 'neones',
-  '#/carrito': 'carrito',
+  [getPublicHref('home')]: 'home',
+  [getPublicCtaHref('catalogo')]: 'catalogo',
+  [getPublicCtaHref('dtf')]: 'dtf',
+  [getPublicHref('textil')]: 'textil',
+  [getPublicHref('papeleria')]: 'papeleria',
+  [getPublicHref('materiales')]: 'materiales',
+  [getPublicHref('accesorios')]: 'accesorios',
+  [getPublicHref('rotulacion')]: 'rotulacion',
+  [getPublicHref('neones')]: 'neones',
+  [getPublicCtaHref('carrito')]: 'carrito',
   '#/checkout': 'checkout',
-  '#/guia': 'guia',
+  [getPublicCtaHref('guia')]: 'guia',
   '#/portafolio': 'portafolio',
-  '#/contacto': 'contacto',
+  [getPublicCtaHref('contacto')]: 'contacto',
   '#/legal': 'legal',
   '#/mi-cuenta': 'miCuenta',
   '#/mi-cuenta/pedidos': 'misPedidos',
@@ -90,19 +91,21 @@ const routes: Record<string, RouteKey> = {
   '#/admin/production': 'adminProduction',
   '#/admin/pedidos': 'adminOrders',
   '#/admin/archivos': 'adminUploads',
-  '#/presupuesto': 'presupuesto',
+  [getPublicCtaHref('presupuesto')]: 'presupuesto',
 }
 
 const navigation = [
-  { href: '#/', label: 'Home', route: 'home' as const },
-  { href: '#/catalogo', label: 'Catalogo', route: 'catalogo' as const },
-  { href: '#/producto/dtf', label: 'DTF por metro', route: 'dtf' as const },
-  { href: '#/producto/textil', label: 'Textil', route: 'textil' as const },
+  { href: getPublicHref('home'), label: 'Home', route: 'home' as const },
+  { href: getPublicCtaHref('catalogo'), label: 'Catalogo', route: 'catalogo' as const },
+  { href: getPublicCtaHref('dtf'), label: 'DTF por metro', route: 'dtf' as const },
+  { href: getPublicHref('textil'), label: 'Textil', route: 'textil' as const },
   { href: '#/mi-cuenta', label: 'Mi cuenta', route: 'miCuenta' as const },
   { href: '#/admin', label: 'Admin', route: 'admin' as const },
-  { href: '#/contacto', label: 'Contacto', route: 'contacto' as const },
-  { href: '#/carrito', label: 'Carrito', route: 'carrito' as const },
+  { href: getPublicCtaHref('contacto'), label: 'Contacto', route: 'contacto' as const },
+  { href: getPublicCtaHref('carrito'), label: 'Carrito', route: 'carrito' as const },
 ]
+
+const buildMarker = 'Ridaos build: 9232577+'
 
 const pageComponents: Record<RouteKey, ReactNode> = {
   home: <Home />,
@@ -219,7 +222,7 @@ function App() {
       </div>
       <header className="site-header">
         <nav className="site-nav" aria-label="Principal">
-          <a aria-label="Ir a la pagina de inicio" className="brand" data-cursor="invert" href="#/">
+          <a aria-label="Ir a la pagina de inicio" className="brand" data-cursor="invert" href={getPublicHref('home')}>
             RIDAOSPRINT
           </a>
           <div className="nav-links">
@@ -251,9 +254,10 @@ function App() {
         <div className="footer-links">
           <a data-cursor="invert" href="#/mi-cuenta">Mi cuenta</a>
           <a data-cursor="invert" href="#/admin">Admin</a>
-          <a data-cursor="invert" href="#/guia">Guia de archivos</a>
+          <a data-cursor="invert" href={getPublicCtaHref('guia')}>Guia de archivos</a>
           <a data-cursor="invert" href="#/legal">Legal</a>
         </div>
+        <p className="build-marker">{buildMarker}</p>
       </footer>
     </div>
   )

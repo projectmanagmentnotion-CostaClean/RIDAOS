@@ -1,25 +1,25 @@
 import type { Customer, Order } from '../types/backend'
 
-const mockCustomerTimestamp = '2026-04-01T09:00:00.000Z'
+const demoCustomerTimestamp = '2026-04-01T09:00:00.000Z'
 
-export const mockCustomer: Customer = {
+export const demoCustomer: Customer = {
   id: 'customer-demo',
   name: 'Studio Norte Textil',
   email: 'compras@studionorte.es',
   phone: '+34 600 123 456',
   company: 'Studio Norte Textil',
-  createdAt: mockCustomerTimestamp,
-  updatedAt: mockCustomerTimestamp,
+  createdAt: demoCustomerTimestamp,
+  updatedAt: demoCustomerTimestamp,
 }
 
-export const mockOrders: Order[] = [
+export const demoOrders: Order[] = [
   {
     id: 'RP-24031',
-    customerId: mockCustomer.id,
-    customer: mockCustomer,
+    customerId: demoCustomer.id,
+    customer: demoCustomer,
     createdAt: '2026-04-22T10:00:00.000Z',
     paymentStatus: 'disabled',
-    source: 'mock_frontend',
+    source: 'demo_frontend',
     status: 'pending_review',
     total: 68.3,
     items: [
@@ -49,18 +49,18 @@ export const mockOrders: Order[] = [
           formatLabel: 'PDF',
           status: 'pending_review',
           uploadedAt: '2026-04-22T10:00:00.000Z',
-          notes: 'Archivo principal asociado al pedido demo para revision y aprobacion tecnica.',
+          notes: 'Archivo principal asociado al pedido demo para comprobacion y aprobacion tecnica.',
         },
       },
     ],
   },
   {
     id: 'RP-24018',
-    customerId: mockCustomer.id,
-    customer: mockCustomer,
+    customerId: demoCustomer.id,
+    customer: demoCustomer,
     createdAt: '2026-04-18T09:00:00.000Z',
     paymentStatus: 'pending',
-    source: 'mock_frontend',
+    source: 'demo_frontend',
     status: 'approved',
     total: 245,
     items: [
@@ -72,7 +72,7 @@ export const mockOrders: Order[] = [
           meters: 1,
           quality: 'standard',
           urgency: 'normal',
-          notes: 'Pedido mock de gran formato.',
+          notes: 'Pedido demo de gran formato.',
         },
         pricing: {
           unitPrice: 245,
@@ -96,11 +96,11 @@ export const mockOrders: Order[] = [
   },
   {
     id: 'RP-23994',
-    customerId: mockCustomer.id,
-    customer: mockCustomer,
+    customerId: demoCustomer.id,
+    customer: demoCustomer,
     createdAt: '2026-04-11T09:00:00.000Z',
     paymentStatus: 'pending',
-    source: 'mock_frontend',
+    source: 'demo_frontend',
     status: 'in_production',
     total: 182.5,
     items: [
@@ -112,7 +112,7 @@ export const mockOrders: Order[] = [
           meters: 1,
           quality: 'standard',
           urgency: 'normal',
-          notes: 'Pedido mock textil.',
+          notes: 'Pedido demo textil.',
         },
         pricing: {
           unitPrice: 182.5,
@@ -136,11 +136,11 @@ export const mockOrders: Order[] = [
   },
   {
     id: 'RP-23970',
-    customerId: mockCustomer.id,
-    customer: mockCustomer,
+    customerId: demoCustomer.id,
+    customer: demoCustomer,
     createdAt: '2026-04-04T09:00:00.000Z',
     paymentStatus: 'pending',
-    source: 'mock_frontend',
+    source: 'demo_frontend',
     status: 'ready',
     total: 540,
     items: [
@@ -152,7 +152,7 @@ export const mockOrders: Order[] = [
           meters: 1,
           quality: 'standard',
           urgency: 'normal',
-          notes: 'Pedido mock rotulacion.',
+          notes: 'Pedido demo rotulacion.',
         },
         pricing: {
           unitPrice: 540,
@@ -176,11 +176,11 @@ export const mockOrders: Order[] = [
   },
   {
     id: 'RP-23921',
-    customerId: mockCustomer.id,
-    customer: mockCustomer,
+    customerId: demoCustomer.id,
+    customer: demoCustomer,
     createdAt: '2026-03-27T09:00:00.000Z',
     paymentStatus: 'paid',
-    source: 'mock_frontend',
+    source: 'demo_frontend',
     status: 'completed',
     total: 96,
     items: [
@@ -192,7 +192,7 @@ export const mockOrders: Order[] = [
           meters: 1,
           quality: 'standard',
           urgency: 'normal',
-          notes: 'Pedido mock stickers.',
+          notes: 'Pedido demo stickers.',
         },
         pricing: {
           unitPrice: 96,

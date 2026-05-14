@@ -4,8 +4,8 @@ import { getUploadByOrderId, listUploads } from '../repositories/uploadRepositor
 const wait = (delay = 120) => new Promise((resolve) => window.setTimeout(resolve, delay))
 
 export async function getArtworkHistory() {
-  switch (runtimeConfig.backendMode) {
-    case 'mock':
+  switch (runtimeConfig.dataMode) {
+    case 'demo':
       await wait()
       return listUploads()
     case 'supabase':
@@ -16,8 +16,8 @@ export async function getArtworkHistory() {
 }
 
 export async function getArtworkForOrder(orderId: string) {
-  switch (runtimeConfig.backendMode) {
-    case 'mock':
+  switch (runtimeConfig.dataMode) {
+    case 'demo':
       await wait()
       return getUploadByOrderId(orderId)
     case 'supabase':

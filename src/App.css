@@ -267,6 +267,13 @@ select {
   min-width: 0;
 }
 
+.build-marker {
+  margin: 0;
+  color: rgba(246, 239, 231, 0.58);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}
+
 .nav-links {
   justify-content: flex-end;
   color: rgba(246, 239, 231, 0.78);
@@ -2231,7 +2238,7 @@ select {
 .featured-product-copy,
 .featured-product-panel,
 .guide-copy-block,
-.mock-upload-meta,
+.upload-preview-meta,
 .category-grid,
 .guide-card-grid,
 .format-chip-grid,
@@ -2528,13 +2535,13 @@ select {
   letter-spacing: 0.06em;
 }
 
-.mock-upload-card {
+.upload-preview-card {
   display: grid;
   gap: 18px;
   align-content: start;
 }
 
-.mock-upload-box {
+.upload-preview-box {
   display: grid;
   gap: 18px;
   padding: 28px;
@@ -2545,7 +2552,7 @@ select {
     rgba(10, 10, 10, 0.82);
 }
 
-.mock-upload-icon {
+.upload-preview-icon {
   display: grid;
   place-items: center;
   width: 52px;
@@ -2558,16 +2565,16 @@ select {
   line-height: 1;
 }
 
-.mock-upload-box h3 {
+.upload-preview-box h3 {
   margin: 0;
   font-size: 1.4rem;
 }
 
-.mock-upload-box p {
+.upload-preview-box p {
   margin: 0;
 }
 
-.mock-upload-meta {
+.upload-preview-meta {
   gap: 8px;
   color: rgba(246, 239, 231, 0.6);
   font-size: 0.92rem;
@@ -3088,7 +3095,7 @@ body.lenis {
     justify-content: flex-start;
   }
 
-  .mock-upload-box {
+  .upload-preview-box {
     padding: 22px;
   }
 

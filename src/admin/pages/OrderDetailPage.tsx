@@ -78,7 +78,7 @@ function OrderDetailPage() {
 
   if (!orderId || !order) {
     return (
-      <AdminShell description="Detalle operativo del pedido y sus acciones internas." title="Pedido">
+      <AdminShell description="Detalle interno del pedido y sus acciones internas." title="Pedido">
         <EmptyAdminState description="Revisa el identificador o vuelve al tablero de pedidos." title="Pedido no encontrado" />
       </AdminShell>
     )
@@ -205,7 +205,7 @@ function OrderDetailPage() {
                   </select>
                 </label>
                 <label className="field-group">
-                  <span className="field-label">Produccion</span>
+                  <span className="field-label">Fabricacion</span>
                   <select
                     className="form-input"
                     onChange={async (event) => {
@@ -225,7 +225,7 @@ function OrderDetailPage() {
             </article>
           </AdminSection>
 
-          <AdminSection title="Notas operativas">
+          <AdminSection title="Notas flujos">
             <article className="content-card admin-detail-card">
               <label className="field-group">
                 <span className="field-label">Notas internas</span>
@@ -249,7 +249,7 @@ function OrderDetailPage() {
             </article>
           </AdminSection>
 
-          <AdminSection title="Notas de produccion">
+          <AdminSection title="Notas de Fabricacion">
             <article className="content-card admin-detail-card">
               <label className="field-group">
                 <span className="field-label">Instrucciones internas</span>
@@ -268,7 +268,7 @@ function OrderDetailPage() {
                 }}
                 type="button"
               >
-                Guardar produccion
+                Guardar Fabricacion
               </button>
             </article>
           </AdminSection>
@@ -317,7 +317,7 @@ function OrderDetailPage() {
                 Revisar archivos
               </a>
               <a className="action-button action-button-muted action-link-button" href="#/admin/production">
-                Ver produccion
+                Ver Fabricacion
               </a>
             </div>
             {currentUploads.length > 0 ? (

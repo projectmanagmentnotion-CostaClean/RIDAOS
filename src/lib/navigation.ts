@@ -21,6 +21,27 @@ export const publicRoutes = {
   historialArchivos: '#/mi-cuenta/archivos',
 } as const
 
+export type PublicRouteKey = keyof typeof publicRoutes
+
+export type PublicCtaKey = 'catalogo' | 'dtf' | 'guia' | 'contacto' | 'presupuesto' | 'carrito'
+
+export const publicCtaRoutes: Record<PublicCtaKey, (typeof publicRoutes)[PublicCtaKey]> = {
+  catalogo: publicRoutes.catalogo,
+  dtf: publicRoutes.dtf,
+  guia: publicRoutes.guia,
+  contacto: publicRoutes.contacto,
+  presupuesto: publicRoutes.presupuesto,
+  carrito: publicRoutes.carrito,
+}
+
+export function getPublicHref(route: PublicRouteKey) {
+  return publicRoutes[route]
+}
+
+export function getPublicCtaHref(route: PublicCtaKey) {
+  return publicCtaRoutes[route]
+}
+
 export type QuoteServiceKey =
   | 'textil'
   | 'papeleria'

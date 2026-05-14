@@ -3,6 +3,7 @@ import PageShell from '../components/PageShell'
 import ProcessSteps from '../components/ProcessSteps'
 import SectionHeader from '../components/SectionHeader'
 import TrustGrid from '../components/TrustGrid'
+import { getPublicCtaHref } from '../lib/navigation'
 
 const acceptedFormats = ['PDF', 'AI', 'EPS', 'SVG', 'PNG', 'JPG', 'TIFF', 'ZIP']
 
@@ -74,20 +75,20 @@ function GuiaArchivos() {
           </div>
         </article>
 
-        <article className="content-card mock-upload-card" data-animate="panel">
+        <article className="content-card upload-preview-card" data-animate="panel">
           <p className="section-label">Zona de carga</p>
-          <div className="mock-upload-box" aria-label="Panel visual de carga de archivos no funcional">
-            <div aria-hidden="true" className="mock-upload-icon">
+          <div className="upload-preview-box" aria-label="Panel visual de carga de archivos">
+            <div aria-hidden="true" className="upload-preview-icon">
               +
             </div>
             <h3>Zona de carga visual</h3>
             <p>Arrastra aqui tus artes finales o reune todo en un ZIP. Este panel muestra como se presentara la carga del proyecto.</p>
-            <div className="mock-upload-meta">
+            <div className="upload-preview-meta">
               <span>PDF, AI, EPS, SVG, PNG, JPG, TIFF, ZIP</span>
               <span>Maximo recomendado: estructura limpia por proyecto</span>
             </div>
           </div>
-          <a aria-label="Ir al producto DTF por metro" className="action-button action-link-button" href="#/producto/dtf">
+          <a aria-label="Ir al producto DTF por metro" className="action-button action-link-button" href={getPublicCtaHref('dtf')}>
             Ir a DTF por metro
           </a>
         </article>

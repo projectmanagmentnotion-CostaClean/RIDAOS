@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
-import { mockCustomer } from '../repositories/mockData'
+import { demoCustomer } from '../repositories/demoData'
 import type { Customer } from '../types/backend'
 
 type UserStore = {
@@ -11,7 +11,7 @@ type UserStore = {
 export const useUserStore = create<UserStore>()(
   persist(
     (set) => ({
-      customer: mockCustomer,
+      customer: demoCustomer,
       setCustomer: (customer) => set({ customer }),
     }),
     {

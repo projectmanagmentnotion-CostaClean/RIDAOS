@@ -10,8 +10,8 @@ function buildOrderId() {
 }
 
 export async function listOrderHistory() {
-  switch (runtimeConfig.backendMode) {
-    case 'mock':
+  switch (runtimeConfig.dataMode) {
+    case 'demo':
       await wait()
       return listOrders()
     case 'supabase':
@@ -22,8 +22,8 @@ export async function listOrderHistory() {
 }
 
 export async function getOrderDetail(orderId: string) {
-  switch (runtimeConfig.backendMode) {
-    case 'mock':
+  switch (runtimeConfig.dataMode) {
+    case 'demo':
       await wait()
       return getOrderById(orderId)
     case 'supabase':
@@ -66,11 +66,11 @@ export async function submitOrder(input: {
     createdAt,
     status: 'pending_review',
     paymentStatus: 'disabled',
-    source: 'mock_frontend',
+    source: 'demo_frontend',
   }
 
-  switch (runtimeConfig.backendMode) {
-    case 'mock':
+  switch (runtimeConfig.dataMode) {
+    case 'demo':
       await wait()
       return createOrder(order)
     case 'supabase':

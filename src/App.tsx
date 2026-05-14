@@ -105,7 +105,7 @@ const navigation = [
   { href: getPublicCtaHref('carrito'), label: 'Carrito', route: 'carrito' as const },
 ]
 
-const buildMarker = 'Ridaos build: 9232577+'
+const buildMarker = 'Ridaos build: d548e3f'
 
 const pageComponents: Record<RouteKey, ReactNode> = {
   home: <Home />,

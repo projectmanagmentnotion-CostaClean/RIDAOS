@@ -23,6 +23,7 @@ import Legal from './pages/Legal'
 import MaterialesPage from './pages/MaterialesPage'
 import MiCuenta from './pages/MiCuenta'
 import MisPedidos from './pages/MisPedidos'
+import MotionTest from './pages/MotionTest'
 import NeonesPage from './pages/NeonesPage'
 import PapeleriaPage from './pages/PapeleriaPage'
 import Portafolio from './pages/Portafolio'
@@ -56,6 +57,7 @@ type RouteKey =
   | 'adminCustomers'
   | 'adminProduction'
   | 'presupuesto'
+  | 'motionTest'
   | 'notFound'
   | 'textil'
   | 'papeleria'
@@ -92,6 +94,7 @@ const routes: Record<string, RouteKey> = {
   '#/admin/pedidos': 'adminOrders',
   '#/admin/archivos': 'adminUploads',
   [getPublicCtaHref('presupuesto')]: 'presupuesto',
+  '#/motion-test': 'motionTest',
 }
 
 const navigation = [
@@ -103,6 +106,7 @@ const navigation = [
   { href: '#/admin', label: 'Admin', route: 'admin' as const },
   { href: getPublicCtaHref('contacto'), label: 'Contacto', route: 'contacto' as const },
   { href: getPublicCtaHref('carrito'), label: 'Carrito', route: 'carrito' as const },
+  { href: '#/motion-test', label: 'Motion test', route: 'motionTest' as const },
 ]
 
 const buildMarker = `Ridaos build: ${__RIDAOS_BUILD_HASH__}`
@@ -134,6 +138,7 @@ const pageComponents: Record<RouteKey, ReactNode> = {
   adminCustomers: <CustomersPage />,
   adminProduction: <ProductionPage />,
   presupuesto: <SolicitarPresupuesto />,
+  motionTest: <MotionTest />,
   notFound: <NotFoundPage />,
 }
 

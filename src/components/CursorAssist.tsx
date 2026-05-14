@@ -30,7 +30,8 @@ function CursorAssist() {
   }, [])
 
   return (
-    <div aria-hidden="true" className="cursor-assist">
+    <div aria-hidden="true" className="cursor-assist" data-cursor-assist="active">
+      <span className="cursor-assist__glow" />
       <span className="cursor-assist__ring" />
       <span className="cursor-assist__dot" />
     </div>

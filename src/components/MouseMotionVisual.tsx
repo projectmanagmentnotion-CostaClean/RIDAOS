@@ -24,6 +24,7 @@ function MouseMotionVisual({ className, variant = 'dtf' }: MouseMotionVisualProp
     }
 
     let frame = 0
+    const motionCard = root.closest<HTMLElement>('.motion-card')
 
     const handlePointerMove = (event: PointerEvent) => {
       window.cancelAnimationFrame(frame)
@@ -34,6 +35,8 @@ function MouseMotionVisual({ className, variant = 'dtf' }: MouseMotionVisualProp
 
         root.style.setProperty('--motion-x', x.toFixed(3))
         root.style.setProperty('--motion-y', y.toFixed(3))
+        motionCard?.style.setProperty('--motion-card-x', x.toFixed(3))
+        motionCard?.style.setProperty('--motion-card-y', y.toFixed(3))
       })
     }
 
@@ -49,10 +52,13 @@ function MouseMotionVisual({ className, variant = 'dtf' }: MouseMotionVisualProp
     <div
       aria-hidden="true"
       className={className ? `mouse-motion-visual mouse-motion-visual--${variant} ${className}` : `mouse-motion-visual mouse-motion-visual--${variant}`}
+      data-motion-layer="active"
       ref={rootRef}
     >
+      <span className="mouse-motion-visual__qa">motion active</span>
       <span className="mouse-motion-visual__plate mouse-motion-visual__plate--primary" />
       <span className="mouse-motion-visual__plate mouse-motion-visual__plate--secondary" />
+      <span className="mouse-motion-visual__plate mouse-motion-visual__plate--accent" />
       <span className="mouse-motion-visual__line mouse-motion-visual__line--one" />
       <span className="mouse-motion-visual__line mouse-motion-visual__line--two" />
     </div>

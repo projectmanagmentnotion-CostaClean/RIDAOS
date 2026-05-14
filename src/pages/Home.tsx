@@ -26,48 +26,49 @@ function Home() {
   const homeContent = useMemo(() => getContentByEntryId(dtfEntry.id), [])
 
   return (
-    <PageShell className="hero-page premium-page">
-      <div className="home-hero-stage">
-        <SectionHeader
-          className="premium-hero home-hero-copy type-split"
-          description={homeContent?.intro ?? 'Compra DTF por metro lineal con una base clara para pedidos agiles: configura tu tirada, sube tus disenos y avanza con una experiencia directa y profesional.'}
-          eyebrow={homeContent?.eyebrow ?? 'DTF por metro para pedidos agiles'}
-          hero
-          stickerWords={['DTF', 'pedido']}
-          title={homeContent?.h1 ? `RidaosPrint ${homeContent.h1}` : 'RidaosPrint DTF por metro.'}
-          titleLines={['RIDAOSPRINT', 'DTF POR', 'METRO']}
-        />
+    <PageShell className="hero-page premium-page home-page">
+      <section className="home-fullscreen-hero">
+        <HomeVehicleScrollSequence />
+        <div className="home-hero-stage">
+          <SectionHeader
+            className="premium-hero home-hero-copy type-split"
+            description={homeContent?.intro ?? 'Compra DTF por metro lineal con una base clara para pedidos agiles: configura tu tirada, sube tus disenos y avanza con una experiencia directa y profesional.'}
+            eyebrow={homeContent?.eyebrow ?? 'DTF por metro para pedidos agiles'}
+            hero
+            stickerWords={['DTF', 'pedido']}
+            title={homeContent?.h1 ? `RidaosPrint ${homeContent.h1}` : 'RidaosPrint DTF por metro.'}
+            titleLines={['RIDAOSPRINT', 'DTF POR', 'METRO']}
+          />
 
-        <aside className="content-card home-hero-orbit hover-lift motion-card" tabIndex={0}>
-          <p className="section-label">Pedido directo</p>
-          <h2 className="section-heading">Configura DTF por metro sin pasos innecesarios.</h2>
-          <div className="hero-orbit-stack">
-            <div className="hero-orbit-line">
-              <span className="orbit-dot" />
-              <span>Configuracion por metro lineal</span>
+          <aside className="content-card home-hero-orbit hover-lift motion-card" tabIndex={0}>
+            <p className="section-label">Pedido directo</p>
+            <h2 className="section-heading">Configura DTF por metro sin pasos innecesarios.</h2>
+            <div className="hero-orbit-stack">
+              <div className="hero-orbit-line">
+                <span className="orbit-dot" />
+                <span>Configuracion por metro lineal</span>
+              </div>
+              <div className="hero-orbit-line">
+                <span className="orbit-dot" />
+                <span>Archivo y precio visibles antes de avanzar</span>
+              </div>
+              <div className="hero-orbit-line">
+                <span className="orbit-dot" />
+                <span>Comprobacion tecnica antes de fabricar</span>
+              </div>
             </div>
-            <div className="hero-orbit-line">
-              <span className="orbit-dot" />
-              <span>Archivo y precio visibles antes de avanzar</span>
+            <div className="catalog-cta-row">
+              <a className="action-button action-link-button" href={getPublicCtaHref('dtf')}>
+                {homeContent?.primaryCta.label ?? 'Configurar DTF'}
+              </a>
+              <a className="action-button action-button-muted action-link-button" href={getPublicCtaHref('catalogo')}>
+                Ver catalogo
+              </a>
             </div>
-            <div className="hero-orbit-line">
-              <span className="orbit-dot" />
-              <span>Comprobacion tecnica antes de fabricar</span>
-            </div>
-          </div>
-          <div className="catalog-cta-row">
-            <a className="action-button action-link-button" href={getPublicCtaHref('dtf')}>
-              {homeContent?.primaryCta.label ?? 'Configurar DTF'}
-            </a>
-            <a className="action-button action-button-muted action-link-button" href={getPublicCtaHref('catalogo')}>
-              Ver catalogo
-            </a>
-          </div>
-          <MouseMotionVisual variant="dtf" />
-        </aside>
-      </div>
-
-      <HomeVehicleScrollSequence />
+            <MouseMotionVisual variant="dtf" />
+          </aside>
+        </div>
+      </section>
 
       <div aria-label="Resumen" className="stats-grid">
         {stats.map((stat) => (

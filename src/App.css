@@ -257,6 +257,51 @@ body {
   pointer-events: none;
 }
 
+.home-fullscreen-hero {
+  position: relative;
+  min-height: 100svh;
+  margin: calc(var(--page-shell-top) * -1) calc(50% - 50vw) 0;
+  padding:
+    calc(var(--page-shell-top) + 98px)
+    max(20px, calc(50vw - 560px))
+    clamp(42px, 8vh, 84px);
+  display: grid;
+  align-items: end;
+  overflow: clip;
+  isolation: isolate;
+}
+
+.home-fullscreen-hero .home-vehicle-sequence {
+  position: absolute;
+  inset: 0;
+  min-height: 100%;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.home-fullscreen-hero .home-vehicle-sequence__canvas {
+  transform:
+    scale(calc(1.06 + (var(--vehicle-sequence-progress) * 0.045)))
+    translate3d(calc((var(--vehicle-sequence-progress) - 0.5) * -3.6%), 0, 0);
+}
+
+.home-fullscreen-hero .home-vehicle-sequence__shade {
+  background:
+    radial-gradient(circle at 28% 48%, rgba(4, 4, 4, 0.18), transparent 28%),
+    linear-gradient(90deg, rgba(4, 4, 4, 0.86), rgba(4, 4, 4, 0.34) 44%, rgba(4, 4, 4, 0.72)),
+    linear-gradient(180deg, rgba(4, 4, 4, 0.42), transparent 42%, rgba(4, 4, 4, 0.84));
+}
+
+.home-fullscreen-hero .home-vehicle-sequence__caption {
+  right: max(20px, calc(50vw - 560px));
+  bottom: 24px;
+}
+
+.home-fullscreen-hero .home-hero-stage {
+  z-index: 2;
+}
+
 .home-vehicle-sequence__canvas,
 .home-vehicle-sequence__shade,
 .home-vehicle-sequence__scan {
@@ -370,6 +415,18 @@ body {
 
   .home-vehicle-sequence__canvas {
     transform: scale(1.02);
+  }
+
+  .home-fullscreen-hero {
+    min-height: 100svh;
+    padding:
+      calc(var(--page-shell-top) + 82px)
+      max(20px, calc(50vw - 560px))
+      36px;
+  }
+
+  .home-fullscreen-hero .home-vehicle-sequence__canvas {
+    transform: scale(1.04) translate3d(-8%, 0, 0);
   }
 }
 
@@ -600,7 +657,8 @@ select {
 }
 
 .page-shell {
-  padding: clamp(54px, 9vw, 108px) 0 68px;
+  --page-shell-top: clamp(54px, 9vw, 108px);
+  padding: var(--page-shell-top) 0 68px;
   max-width: 100%;
   min-width: 0;
   overflow-x: clip;
@@ -3210,6 +3268,10 @@ body.lenis {
 
   .home-vehicle-sequence__canvas {
     transform: scale(1.02);
+  }
+
+  .home-fullscreen-hero .home-vehicle-sequence__canvas {
+    transform: scale(1.04) translate3d(-8%, 0, 0);
   }
 
   .editorial-row,

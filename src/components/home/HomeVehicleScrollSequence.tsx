@@ -100,9 +100,9 @@ function HomeVehicleScrollSequence() {
     const getScrollProgress = () => {
       const rect = root.getBoundingClientRect()
       const viewportHeight = window.innerHeight || 1
-      const start = viewportHeight * 0.88
-      const end = -rect.height * 0.24
-      const raw = (start - rect.top) / (start - end)
+      const rootTop = rect.top + window.scrollY
+      const travelDistance = Math.max(viewportHeight * 0.75, rect.height - viewportHeight * 0.14)
+      const raw = (window.scrollY - rootTop) / travelDistance
 
       return Math.min(Math.max(raw, 0), 1)
     }

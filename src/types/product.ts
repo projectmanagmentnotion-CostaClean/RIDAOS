@@ -24,7 +24,7 @@ type BaseConfiguratorField = {
   key: string
   label: string
   required?: boolean
-  placeholder?: string
+  hint?: string
   helpText?: string
 }
 

@@ -45,7 +45,6 @@ function ConfiguratorFieldRenderer({
           max={field.max}
           min={field.min}
           onChange={handleInputChange}
-          placeholder={field.placeholder}
           step={field.step}
           type="number"
           value={value}
@@ -57,7 +56,6 @@ function ConfiguratorFieldRenderer({
           className="form-input"
           id={`config-field-${field.key}`}
           onChange={handleInputChange}
-          placeholder={field.placeholder}
           type="text"
           value={value}
         />
@@ -68,7 +66,6 @@ function ConfiguratorFieldRenderer({
           className="form-input form-textarea"
           id={`config-field-${field.key}`}
           onChange={handleInputChange}
-          placeholder={field.placeholder}
           rows={field.rows ?? 4}
           value={value}
         />

@@ -20,7 +20,7 @@ function CommercialNoticeGroup({
     <article className={`content-card commercial-notice commercial-notice-group ${className}`.trim()}>
       <p className="section-label">Comercial</p>
       <h3>{title}</h3>
-      <ul className="placeholder-list">
+      <ul className="hint-list">
         {resolvedItems.map((item) => (
           <li key={item}>{item}</li>
         ))}

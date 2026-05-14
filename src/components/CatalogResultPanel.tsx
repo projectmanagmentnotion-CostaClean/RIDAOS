@@ -23,14 +23,14 @@ function CatalogResultPanel({ result, title = 'Resultado comercial', className =
       </div>
       {result.quoteRequired ? <p className="catalog-result-pill">Precio a consultar</p> : null}
       {result.breakdown.length > 0 ? (
-        <ul className="placeholder-list catalog-result-list">
+        <ul className="hint-list catalog-result-list">
           {result.breakdown.map((item) => (
             <li key={item}>{item}</li>
           ))}
         </ul>
       ) : null}
       {result.warnings.length > 0 ? (
-        <ul className="placeholder-list catalog-warning-list">
+        <ul className="hint-list catalog-warning-list">
           {result.warnings.map((warning) => (
             <li key={warning}>{warning}</li>
           ))}

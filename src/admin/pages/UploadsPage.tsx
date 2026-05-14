@@ -64,8 +64,8 @@ function UploadsPage() {
                 </div>
                 <div className="admin-upload-preview">
                   {upload.previewable ? (
-                    <div className="image-placeholder image-placeholder-dtf-sheet">
-                      <span className="image-placeholder-label">Preview disponible al conectar storage</span>
+                    <div className="image-hint image-hint-dtf-sheet">
+                      <span className="image-hint-label">Preview disponible al conectar storage</span>
                     </div>
                   ) : (
                     <div className="premium-file-card">

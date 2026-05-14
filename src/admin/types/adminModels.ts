@@ -97,7 +97,7 @@ export type AdminDashboardStats = {
   productionQueue: number
   latestUploads: number
   recentCustomers: number
-  revenuePlaceholder: number
+  revenueHint: number
   orderCounters: Array<{
     key: string
     label: string

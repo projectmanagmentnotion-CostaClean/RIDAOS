@@ -7,5 +7,5 @@ export type ConversionBlock = {
   whatsappPrompt: string
   reviewNotice: string
   qualityProof: string
-  socialProofPlaceholder: string
+  socialProofHint: string
 }

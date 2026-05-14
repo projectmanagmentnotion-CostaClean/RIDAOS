@@ -19,7 +19,7 @@ function UploadGuidanceBlock({
     <article className="content-card upload-guidance-block">
       <p className="section-label">Archivo</p>
       <h3>{title}</h3>
-      <ul className="placeholder-list">
+      <ul className="hint-list">
         {guidance.map((item) => (
           <li key={item}>{item}</li>
         ))}

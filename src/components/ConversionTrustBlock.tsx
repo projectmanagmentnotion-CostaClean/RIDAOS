@@ -16,7 +16,7 @@ function ConversionTrustBlock({ entryId, title = 'Confianza comercial' }: Conver
     <article className="content-card conversion-trust-block">
       <p className="section-label">Confianza</p>
       <h3>{title}</h3>
-      <ul className="placeholder-list">
+      <ul className="hint-list">
         {block.trustBullets.map((item) => (
           <li key={item}>{item}</li>
         ))}

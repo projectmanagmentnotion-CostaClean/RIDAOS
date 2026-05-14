@@ -179,7 +179,7 @@ export function getAdminDashboardStats(orders: AdminOrder[], uploads: AdminUploa
     productionQueue: orders.filter((order) => order.status === 'in_production' || order.status === 'quality_check').length,
     latestUploads: uploads.filter((upload) => upload.status === 'pending' || upload.status === 'reuploaded').length,
     recentCustomers: getAdminCustomerSummaries(orders).slice(0, 5).length,
-    revenuePlaceholder: orders.reduce((sum, order) => sum + order.total, 0),
+    revenueHint: orders.reduce((sum, order) => sum + order.total, 0),
     orderCounters: [
       { key: 'total', label: 'Pedidos totales', value: orders.length },
       { key: 'ready', label: 'Listos', value: orders.filter((order) => order.status === 'ready').length },

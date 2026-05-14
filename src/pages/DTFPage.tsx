@@ -265,27 +265,6 @@ function DTFPage() {
         />
       </section>
 
-      <section className="cinematic-scene dtf-cinematic-scene" data-animate="reveal" data-motion="poster-stack" data-scroll-scene="dtf-cinematic">
-        <div className="cinematic-scene-copy">
-          <p className="eyebrow">Cockpit motion / product preview</p>
-          <div className="cinematic-word cinematic-word-compact type-condensed type-negative" data-cursor="fisheye">
-            <span>PREVIEW</span>
-            <span>FLOW</span>
-          </div>
-        </div>
-        <div className="cinematic-mask" data-cursor="invert">
-          <div aria-label="Imagen placeholder: DTF sheet" className="cinematic-image image-placeholder image-placeholder-dtf-sheet">
-            <span className="image-placeholder-label">Imagen placeholder: DTF sheet</span>
-          </div>
-        </div>
-        <div className="scroll-bridge">
-          <span className="bridge-chip">configura</span>
-          <span className="bridge-chip">previsualiza</span>
-          <span className="bridge-chip">confirma</span>
-          <span className="bridge-chip">entrega</span>
-        </div>
-      </section>
-
       <div className="split-grid dtf-cockpit-layout dtf-layout" data-animate="reveal" data-motion="poster-stack" data-scroll-scene="dtf-cockpit">
         <article className="content-card dtf-cockpit-panel hover-lift" data-animate="panel" data-cursor="invert" data-scroll-scene="dtf-form" tabIndex={0}>
           <SectionHeader eyebrow="Configurador" title="Configura tu pedido DTF." />
@@ -301,7 +280,6 @@ function DTFPage() {
                   setMeters(event.target.value)
                   setErrors((current) => ({ ...current, meters: undefined }))
                 }}
-                placeholder="Ej. 2.5"
                 step="0.1"
                 type="number"
                 value={meters}
@@ -355,7 +333,6 @@ function DTFPage() {
                 id="dtf-notes"
                 className="form-input form-textarea"
                 onChange={(event) => setNotes(event.target.value)}
-                placeholder="Instrucciones de color, corte, orden de trabajo o cualquier detalle util."
                 rows={5}
                 value={notes}
               />
@@ -472,7 +449,7 @@ function DTFPage() {
               <MetricCard className="hover-lift" label="Extras" value={formatCurrency(pricing.extras)} />
               <MetricCard className="hover-lift" label="Total" value={formatCurrency(pricing.total)} />
             </div>
-            <ul className="placeholder-list">
+            <ul className="hint-list">
               <li>Calidad: {qualityLabels[quality]}</li>
               <li>Urgencia: {urgencyLabels[urgency]}</li>
               <li>Archivo: {selectedFile ? selectedFile.name : 'Pendiente de carga'}</li>

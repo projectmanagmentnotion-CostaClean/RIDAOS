@@ -25,7 +25,7 @@ function createSharedBlock(
     whatsappPrompt: 'Si necesitas aclarar un caso especial, deja la referencia lista para atencion directa.',
     reviewNotice: 'Comprobamos archivo, medidas o complejidad antes de cerrar el trabajo.',
     qualityProof: 'Base premium pensada para pedidos serios, no para formularios genericos.',
-    socialProofPlaceholder: 'Espacio reservado para futuros casos reales y pruebas visuales.',
+    socialProofHint: 'Espacio reservado para futuros casos reales y pruebas visuales.',
     ...overrides,
   }
 }
@@ -69,7 +69,7 @@ export const conversionBlocks: ConversionBlock[] = [
     createSharedBlock(entry.id, {
       riskReducer: 'El rango visible evita pedir presupuesto sin contexto economico.',
       productionPromise: 'La rotulacion del vehiculo se confirma con cobertura, medida y propuesta cerrada.',
-      socialProofPlaceholder: 'Reservado para futuros casos de flota, wrap y rotulacion comercial.',
+      socialProofHint: 'Reservado para futuros casos de flota, wrap y rotulacion comercial.',
     }),
   ),
   ...neonesEntries.map((entry) =>

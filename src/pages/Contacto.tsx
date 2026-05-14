@@ -22,7 +22,7 @@ function Contacto() {
       <div className="split-grid">
         <article className="content-card">
           <p className="section-label">Canales</p>
-          <ul className="placeholder-list">
+          <ul className="hint-list">
             <li>Correo comercial para nuevas solicitudes.</li>
             <li>WhatsApp o telefono para seguimiento rapido.</li>
             <li>Formulario web para centralizar la propuesta del proyecto.</li>
@@ -31,7 +31,7 @@ function Contacto() {
 
         <article className="content-card">
           <p className="section-label">Navegacion relacionada</p>
-          <ul className="placeholder-list">
+          <ul className="hint-list">
             <li>
               <a className="card-link" href={publicRoutes.catalogo}>
                 Volver al catalogo

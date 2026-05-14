@@ -27,7 +27,7 @@ function SeoContentBlock({
     <article className="content-card seo-content-block">
       <p className="section-label">{mode === 'useCases' ? 'Casos de uso' : 'Beneficios'}</p>
       <h3>{title ?? (mode === 'useCases' ? 'Donde encaja mejor.' : 'Por que encaja en el flujo.')}</h3>
-      <ul className="placeholder-list">
+      <ul className="hint-list">
         {items.map((item) => (
           <li key={item}>{item}</li>
         ))}

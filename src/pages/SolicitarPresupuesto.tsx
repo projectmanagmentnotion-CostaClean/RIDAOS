@@ -26,19 +26,19 @@ const quoteFields: ConfiguratorField[] = [
     label: 'Detalles del proyecto',
     required: true,
     rows: 5,
-    placeholder: 'Describe acabados, soporte, instalacion, cantidad o cualquier contexto util.',
+    hint: 'Describe acabados, soporte, instalacion, cantidad o cualquier contexto util.',
   },
   {
     key: 'width',
     type: 'text',
     label: 'Ancho (opcional)',
-    placeholder: 'Ej. 320 cm',
+    hint: 'Ej. 320 cm',
   },
   {
     key: 'height',
     type: 'text',
     label: 'Alto (opcional)',
-    placeholder: 'Ej. 180 cm',
+    hint: 'Ej. 180 cm',
   },
   {
     key: 'fileName',
@@ -267,7 +267,7 @@ function SolicitarPresupuesto() {
           ) : (
             <article className="content-card hover-lift" data-animate="panel" tabIndex={0}>
               <SectionHeader eyebrow="Siguiente paso" title="Presupuesto centralizado desde el catalogo." />
-              <ul className="placeholder-list">
+              <ul className="hint-list">
                 <li>Servicio principal derivado del catalogo central.</li>
                 <li>Condiciones comerciales visibles sin duplicar listas manuales.</li>
                 <li>Contacto listo para respuesta comercial posterior.</li>

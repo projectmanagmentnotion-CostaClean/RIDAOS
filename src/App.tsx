@@ -6,8 +6,7 @@ import OrderDetailPage from './admin/pages/OrderDetailPage'
 import OrdersPage from './admin/pages/OrdersPage'
 import ProductionPage from './admin/pages/ProductionPage'
 import UploadsPage from './admin/pages/UploadsPage'
-import CustomCursor from './components/CustomCursor'
-import FrameSequenceIntro from './components/FrameSequenceIntro'
+import CursorAssist from './components/CursorAssist'
 import NotFoundPage from './components/NotFoundPage'
 import RouteErrorBoundary from './components/RouteErrorBoundary'
 import AccesoriosPage from './pages/AccesoriosPage'
@@ -34,6 +33,7 @@ import { applySEO } from './lib/seo'
 import { initSmoothScroll } from './lib/smoothScroll'
 import { refreshScrollNarrative, syncScrollTriggerWithLenis } from './lib/animations'
 import { getPublicCtaHref, getPublicHref } from './lib/navigation'
+import { getCurrentHashRoute, navigateToHashRoute, normalizeHashRoute } from './lib/hashRouting'
 
 type RouteKey =
   | 'home'
@@ -105,7 +105,7 @@ const navigation = [
   { href: getPublicCtaHref('carrito'), label: 'Carrito', route: 'carrito' as const },
 ]
 
-const buildMarker = 'Ridaos build: d548e3f'
+const buildMarker = 'Ridaos build: 44544f2'
 
 const pageComponents: Record<RouteKey, ReactNode> = {
   home: <Home />,
@@ -138,7 +138,7 @@ const pageComponents: Record<RouteKey, ReactNode> = {
 }
 
 function getRouteFromHash(hash: string): RouteKey {
-  const normalizedHash = hash.split('?')[0]
+  const normalizedHash = normalizeHashRoute(hash)
 
   if (!normalizedHash || normalizedHash === '#') {
     return 'home'
@@ -175,18 +175,21 @@ function isNavigationActive(route: RouteKey, itemRoute: (typeof navigation)[numb
 }
 
 function App() {
-  const [route, setRoute] = useState<RouteKey>(() => getRouteFromHash(window.location.hash))
+  const [currentHashRoute, setCurrentHashRoute] = useState(() => getCurrentHashRoute())
+  const [route, setRoute] = useState<RouteKey>(() => getRouteFromHash(currentHashRoute))
 
   useEffect(() => {
     const smoothScroll = initSmoothScroll()
     syncScrollTriggerWithLenis()
 
     if (!window.location.hash || window.location.hash === '#') {
-      window.location.hash = '#/'
+      navigateToHashRoute('#/')
     }
 
     const syncRoute = () => {
-      setRoute(getRouteFromHash(window.location.hash))
+      const nextHashRoute = getCurrentHashRoute()
+      setCurrentHashRoute(nextHashRoute)
+      setRoute(getRouteFromHash(nextHashRoute))
     }
 
     syncRoute()
@@ -205,12 +208,12 @@ function App() {
   }, [route])
 
   useEffect(() => {
-    applySEO(window.location.hash || '#/')
-  }, [route])
+    applySEO(currentHashRoute)
+  }, [currentHashRoute])
 
   return (
     <div className="app-shell">
-      <CustomCursor />
+      <CursorAssist />
       <a className="skip-link" href="#main-content">
         Saltar al contenido
       </a>
@@ -241,8 +244,6 @@ function App() {
         </nav>
       </header>
 
-      {route === 'home' ? <FrameSequenceIntro /> : null}
-
       <main className="page-shell" id="main-content" tabIndex={-1}>
         <RouteErrorBoundary fallback={<NotFoundPage />}>
           {pageComponents[route] ?? <NotFoundPage />}
@@ -258,6 +259,7 @@ function App() {
           <a data-cursor="invert" href="#/legal">Legal</a>
         </div>
         <p className="build-marker">{buildMarker}</p>
+        <p className="route-marker">Current route: {currentHashRoute}</p>
       </footer>
     </div>
   )

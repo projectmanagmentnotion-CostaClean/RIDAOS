@@ -1,3 +1,5 @@
+import { normalizeHashRoute } from './hashRouting'
+
 export const publicRoutes = {
   home: '#/',
   catalogo: '#/catalogo',
@@ -35,11 +37,11 @@ export const publicCtaRoutes: Record<PublicCtaKey, (typeof publicRoutes)[PublicC
 }
 
 export function getPublicHref(route: PublicRouteKey) {
-  return publicRoutes[route]
+  return normalizeHashRoute(publicRoutes[route])
 }
 
 export function getPublicCtaHref(route: PublicCtaKey) {
-  return publicCtaRoutes[route]
+  return normalizeHashRoute(publicCtaRoutes[route])
 }
 
 export type QuoteServiceKey =
@@ -57,9 +59,9 @@ export function getQuoteHref(service?: QuoteServiceKey | string) {
     return publicRoutes.presupuesto
   }
 
-  return `${publicRoutes.presupuesto}?service=${service}`
+  return `${normalizeHashRoute(publicRoutes.presupuesto)}?service=${service}`
 }
 
 export function getContinueShoppingHref() {
-  return publicRoutes.catalogo
+  return getPublicCtaHref('catalogo')
 }

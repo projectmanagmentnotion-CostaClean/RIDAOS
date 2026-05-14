@@ -105,7 +105,7 @@ function TextilPage() {
           {selectedProduct.notes?.length ? (
             <article className="content-card">
               <p className="section-label">Notas del catalogo</p>
-              <ul className="placeholder-list">
+              <ul className="hint-list">
                 {selectedProduct.notes.map((note) => (
                   <li key={note}>{note}</li>
                 ))}

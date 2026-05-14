@@ -75,7 +75,7 @@ function RotulacionPage() {
           <CommercialNoticeGroup items={resolveLegalNoticeItems(selectedProduct.legalNotes)} />
           <article className="content-card">
             <p className="section-label">Resumen del servicio</p>
-            <ul className="placeholder-list">
+            <ul className="hint-list">
               <li>{selectedProduct.manualReviewRequired ? 'Incluye comprobacion tecnica antes de cerrar la propuesta.' : 'Flujo directo habilitado.'}</li>
               <li>{selectedProduct.upload.required ? 'Archivo requerido antes de fabricar.' : 'Archivo opcional para la primera propuesta.'}</li>
             </ul>

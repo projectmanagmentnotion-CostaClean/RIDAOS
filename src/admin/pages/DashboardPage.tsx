@@ -48,7 +48,7 @@ function DashboardPage() {
         <AdminStatCard label="Comprobaciones pendientes" note="Pedidos que requieren decision interna" value={stats?.pendingReviews ?? '...'} />
         <AdminStatCard label="Cola de Fabricacion" note="Pedidos en curso o a punto de entrar" value={stats?.productionQueue ?? '...'} />
         <AdminStatCard label="Ultimos uploads" note="Archivos esperando lectura o ajuste" value={stats?.latestUploads ?? '...'} />
-        <AdminStatCard label="Ingresos demo" note="Placeholder para futura capa real" value={stats ? formatCurrency(stats.revenuePlaceholder) : '...'} />
+        <AdminStatCard label="Ingresos demo" note="hint para futura capa real" value={stats ? formatCurrency(stats.revenueHint) : '...'} />
       </div>
 
       <div className="admin-two-column">

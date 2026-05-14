@@ -1,3 +1,4 @@
+import HomeVehicleScrollSequence from '../components/home/HomeVehicleScrollSequence'
 import MouseMotionVisual from '../components/MouseMotionVisual'
 import PageShell from '../components/PageShell'
 import SectionHeader from '../components/SectionHeader'
@@ -31,6 +32,10 @@ function MotionTest() {
             Confirmar CTA clicable
           </a>
         </article>
+      </section>
+      <section className="content-section motion-test-sequence">
+        <SectionHeader eyebrow="Home sequence" title="Secuencia scroll del vehiculo." />
+        <HomeVehicleScrollSequence />
       </section>
     </PageShell>
   )

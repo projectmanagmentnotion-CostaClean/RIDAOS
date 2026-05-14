@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import CtaPanel from '../components/CtaPanel'
 import ConversionTrustBlock from '../components/ConversionTrustBlock'
 import FaqBlock from '../components/FaqBlock'
+import HomeVehicleScrollSequence from '../components/home/HomeVehicleScrollSequence'
 import MetricCard from '../components/MetricCard'
 import MouseMotionVisual from '../components/MouseMotionVisual'
 import ObjectionHandlerBlock from '../components/ObjectionHandlerBlock'
@@ -65,6 +66,8 @@ function Home() {
           <MouseMotionVisual variant="dtf" />
         </aside>
       </div>
+
+      <HomeVehicleScrollSequence />
 
       <div aria-label="Resumen" className="stats-grid">
         {stats.map((stat) => (

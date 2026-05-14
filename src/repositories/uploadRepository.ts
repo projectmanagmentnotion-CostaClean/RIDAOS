@@ -1,26 +1,10 @@
-import { runtimeConfig } from '../config/runtime'
-import { listOrders } from './orderRepository'
+import { getUploadRepository } from '../infrastructure/repositoryFactory'
 import type { ArtworkUpload } from '../types/backend'
 
-function flattenUploads(uploads: ArtworkUpload[]) {
-  return uploads.sort((left, right) => right.uploadedAt.localeCompare(left.uploadedAt))
-}
-
 export async function listUploads(): Promise<ArtworkUpload[]> {
-  switch (runtimeConfig.dataMode) {
-    case 'demo': {
-      const orders = await listOrders()
-      return flattenUploads(orders.flatMap((order) => order.items.map((item) => item.artwork)))
-    }
-    case 'supabase': {
-      // Supabase-backed upload listing will plug in here later.
-      const orders = await listOrders()
-      return flattenUploads(orders.flatMap((order) => order.items.map((item) => item.artwork)))
-    }
-  }
+  return getUploadRepository().listUploads()
 }
 
 export async function getUploadByOrderId(orderId: string): Promise<ArtworkUpload | undefined> {
-  const uploads = await listUploads()
-  return uploads.find((upload) => upload.orderId === orderId)
+  return getUploadRepository().getUploadByOrderId(orderId)
 }

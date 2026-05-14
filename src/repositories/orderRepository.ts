@@ -1,32 +1,14 @@
-import { runtimeConfig } from '../config/runtime'
-import { useOrderStore } from '../store/useOrderStore'
+import { getOrderRepository } from '../infrastructure/repositoryFactory'
 import type { Order } from '../types/backend'
 
-const readOrders = () => useOrderStore.getState().orders
-
 export async function listOrders(): Promise<Order[]> {
-  switch (runtimeConfig.dataMode) {
-    case 'demo':
-      return readOrders()
-    case 'supabase':
-      // Supabase-backed order listing will plug in here later.
-      return readOrders()
-  }
+  return getOrderRepository().listOrders()
 }
 
 export async function createOrder(order: Order): Promise<Order> {
-  switch (runtimeConfig.dataMode) {
-    case 'demo':
-      useOrderStore.getState().addOrder(order)
-      return order
-    case 'supabase':
-      // Supabase-backed order creation will plug in here later.
-      useOrderStore.getState().addOrder(order)
-      return order
-  }
+  return getOrderRepository().createOrder(order)
 }
 
 export async function getOrderById(orderId: string): Promise<Order | undefined> {
-  const orders = await listOrders()
-  return orders.find((order) => order.id === orderId)
+  return getOrderRepository().getOrderById(orderId)
 }

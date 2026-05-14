@@ -1,5 +1,4 @@
-import { runtimeConfig } from '../config/runtime'
-import { createOrder, getOrderById, listOrders } from '../repositories/orderRepository'
+import { getOrderRepository } from '../infrastructure/repositoryFactory'
 import type { Order } from '../types/backend'
 import type { CartItem, CustomerData } from '../types/ecommerce'
 
@@ -10,27 +9,13 @@ function buildOrderId() {
 }
 
 export async function listOrderHistory() {
-  switch (runtimeConfig.dataMode) {
-    case 'demo':
-      await wait()
-      return listOrders()
-    case 'supabase':
-      // Supabase-backed order history will plug in here later.
-      await wait()
-      return listOrders()
-  }
+  await wait()
+  return getOrderRepository().listOrders()
 }
 
 export async function getOrderDetail(orderId: string) {
-  switch (runtimeConfig.dataMode) {
-    case 'demo':
-      await wait()
-      return getOrderById(orderId)
-    case 'supabase':
-      // Supabase-backed order detail will plug in here later.
-      await wait()
-      return getOrderById(orderId)
-  }
+  await wait()
+  return getOrderRepository().getOrderById(orderId)
 }
 
 export async function submitOrder(input: {
@@ -69,13 +54,6 @@ export async function submitOrder(input: {
     source: 'demo_frontend',
   }
 
-  switch (runtimeConfig.dataMode) {
-    case 'demo':
-      await wait()
-      return createOrder(order)
-    case 'supabase':
-      // Supabase-backed order submission will plug in here later.
-      await wait()
-      return createOrder(order)
-  }
+  await wait()
+  return getOrderRepository().createOrder(order)
 }

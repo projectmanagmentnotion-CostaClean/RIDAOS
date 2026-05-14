@@ -1,24 +1,17 @@
-import { runtimeConfig } from '../config/runtime'
-import { getCurrentCustomer, saveCustomer } from '../repositories/customerRepository'
+import { getCustomerRepository } from '../infrastructure/repositoryFactory'
 import type { Customer } from '../types/backend'
 import type { CustomerData } from '../types/ecommerce'
 
 const wait = (delay = 120) => new Promise((resolve) => window.setTimeout(resolve, delay))
 
 export async function getCustomerProfile() {
-  switch (runtimeConfig.dataMode) {
-    case 'demo':
-      await wait()
-      return getCurrentCustomer()
-    case 'supabase':
-      // Supabase-backed customer service will plug in here later.
-      await wait()
-      return getCurrentCustomer()
-  }
+  await wait()
+  return getCustomerRepository().getCurrentCustomer()
 }
 
 export async function upsertCustomerProfile(input: CustomerData): Promise<Customer> {
-  const current = await getCurrentCustomer()
+  const repository = getCustomerRepository()
+  const current = await repository.getCurrentCustomer()
   const nextCustomer: Customer = {
     ...current,
     name: input.name.trim(),
@@ -27,13 +20,6 @@ export async function upsertCustomerProfile(input: CustomerData): Promise<Custom
     updatedAt: new Date().toISOString(),
   }
 
-  switch (runtimeConfig.dataMode) {
-    case 'demo':
-      await wait()
-      return saveCustomer(nextCustomer)
-    case 'supabase':
-      // Supabase-backed customer service will plug in here later.
-      await wait()
-      return saveCustomer(nextCustomer)
-  }
+  await wait()
+  return repository.saveCustomer(nextCustomer)
 }

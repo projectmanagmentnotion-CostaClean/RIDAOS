@@ -153,6 +153,7 @@ function Checkout() {
             <ul className="hint-list">
               <li>No se realiza pago online en este paso.</li>
               <li>El equipo revisa archivo, cantidad y observaciones antes de fabricar.</li>
+              <li>La produccion y el pago se confirman despues de la comprobacion tecnica.</li>
               <li>Usa datos reales para recibir la confirmacion correctamente.</li>
             </ul>
 

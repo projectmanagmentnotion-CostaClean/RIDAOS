@@ -11,6 +11,14 @@ type UploadMeta = {
   notes?: string
 }
 
+function formatSummaryValue(value: string | number, suffix?: string) {
+  if (value === '' || value === 0) {
+    return null
+  }
+
+  return suffix ? `${value} ${suffix}` : String(value)
+}
+
 function mapProductType(entry: CatalogEntry): CartItem['productType'] {
   switch (entry.category) {
     case 'textil':
@@ -29,12 +37,17 @@ function mapProductType(entry: CatalogEntry): CartItem['productType'] {
 }
 
 function buildSummary(entry: CatalogEntry, config: ConfigState) {
-  const summary: string[] = [entry.name]
-  if (config.quantity) summary.push(`${config.quantity} uds`)
-  if (config.area) summary.push(`${config.area} m2`)
-  if (config.meters) summary.push(`${config.meters} m`)
-  if (config.size) summary.push(config.size)
-  if (config.file) summary.push(config.file)
+  const summary: string[] = [`Producto: ${entry.name}`]
+  const quantity = formatSummaryValue(config.quantity, 'uds')
+  const area = formatSummaryValue(config.area, 'm2')
+  const meters = formatSummaryValue(config.meters, 'm')
+
+  if (quantity) summary.push(`Cantidad: ${quantity}`)
+  if (area) summary.push(`Superficie: ${area}`)
+  if (meters) summary.push(`Metraje: ${meters}`)
+  if (config.size) summary.push(`Tamano: ${config.size}`)
+  if (config.file) summary.push(`Archivo: ${config.file}`)
+
   return summary
 }
 

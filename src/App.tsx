@@ -76,6 +76,7 @@ const routes: Record<string, RouteKey> = {
   [getPublicHref('textil')]: 'textil',
   '#/textil': 'textil',
   [getPublicHref('papeleria')]: 'papeleria',
+  '#/papeleria': 'papeleria',
   [getPublicHref('carteleria')]: 'carteleria',
   '#/carteleria': 'carteleria',
   [getPublicHref('materiales')]: 'materiales',

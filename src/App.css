@@ -3672,6 +3672,50 @@ body.lenis {
   color: rgba(255, 214, 166, 0.86);
 }
 
+.dtf-meter-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.meter-preset-button {
+  appearance: none;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  background: rgba(18, 18, 18, 0.78);
+  color: rgba(246, 239, 231, 0.74);
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease;
+}
+
+.meter-preset-button:hover,
+.meter-preset-button:focus-visible,
+.meter-preset-button.is-selected {
+  transform: translateY(-1px);
+  border-color: rgba(255, 191, 102, 0.32);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
+}
+
+.meter-preset-button.is-selected {
+  color: #ffbf66;
+  background: rgba(255, 176, 66, 0.08);
+}
+
+.dtf-summary-card {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  background: rgba(8, 8, 8, 0.42);
+}
+
 .checkout-notice {
   margin-top: 18px;
 }

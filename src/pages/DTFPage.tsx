@@ -36,6 +36,7 @@ type SimulationResult = {
   urgency: DTFUrgency
   total: number
   fileName: string
+  notes: string
 }
 
 type FilePreview = {
@@ -59,6 +60,7 @@ const urgencyLabels: Record<DTFUrgency, string> = {
 
 const previewableTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml']
 const premiumDocumentFormats = ['PDF', 'AI', 'EPS', 'ZIP', 'TIFF']
+const meterPresets = ['0.5', '1', '2', '5']
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('es-ES', {
     style: 'currency',
@@ -157,6 +159,17 @@ function DTFPage() {
     }
   }, [previewUrl, selectedFile])
 
+  const dtfSummaryItems = useMemo(
+    () => [
+      { label: 'Metraje', value: metersValue > 0 ? `${metersValue} m` : 'Pendiente' },
+      { label: 'Calidad', value: qualityLabels[quality] },
+      { label: 'Urgencia', value: urgencyLabels[urgency] },
+      { label: 'Archivo', value: selectedFile ? selectedFile.name : 'Pendiente de carga' },
+      { label: 'Plazo', value: urgency === 'express' ? 'Se prioriza tras la comprobacion tecnica.' : 'Se agenda tras revisar el archivo.' },
+    ],
+    [metersValue, quality, selectedFile, urgency],
+  )
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextFile = event.target.files?.[0] ?? null
     setSelectedFile(nextFile)
@@ -191,10 +204,11 @@ function DTFPage() {
         quality,
         urgency,
         summary: [
-          `${metersValue} m`,
-          qualityLabels[quality],
-          urgencyLabels[urgency],
-          file.name,
+          'Producto: DTF por metro',
+          `Metraje: ${metersValue} m`,
+          `Calidad: ${qualityLabels[quality]}`,
+          `Urgencia: ${urgencyLabels[urgency]}`,
+          `Archivo: ${file.name}`,
         ],
         notes: notes.trim(),
       },
@@ -220,7 +234,7 @@ function DTFPage() {
 
     addToCart(cartItem)
     setErrors({})
-    setCartMessage('Producto anadido al carrito. Ya puedes revisar el pedido antes de confirmarlo.')
+    setCartMessage('Pedido preparado en tu carrito. En el checkout registras la solicitud y revisamos el archivo antes de confirmar produccion y pago.')
   }
 
   const handleSimulateOrder = () => {
@@ -248,6 +262,7 @@ function DTFPage() {
       urgency,
       total: pricing.total,
       fileName: file.name,
+      notes: notes.trim(),
     })
     setCartMessage('')
   }
@@ -286,6 +301,22 @@ function DTFPage() {
                 type="number"
                 value={meters}
               />
+              <span className="file-meta">Introduce el metraje total. Puedes usar decimales para tiradas cortas.</span>
+              <div className="dtf-meter-presets">
+                {meterPresets.map((preset) => (
+                  <button
+                    className={`meter-preset-button${meters === preset ? ' is-selected' : ''}`}
+                    key={preset}
+                    onClick={() => {
+                      setMeters(preset)
+                      setErrors((current) => ({ ...current, meters: undefined }))
+                    }}
+                    type="button"
+                  >
+                    {preset} m
+                  </button>
+                ))}
+              </div>
               {errors.meters ? <span className="field-error">{errors.meters}</span> : null}
             </label>
 
@@ -300,6 +331,7 @@ function DTFPage() {
                 <option value="standard">Standard</option>
                 <option value="premium">Premium</option>
               </select>
+              <span className="file-meta">Premium aplica un ajuste del 15% sobre el precio base por metro.</span>
             </label>
 
             <label className="field-group" htmlFor="dtf-urgency">
@@ -313,6 +345,7 @@ function DTFPage() {
                 <option value="normal">Normal</option>
                 <option value="express">Express</option>
               </select>
+              <span className="file-meta">Express suma {formatCurrency(8)} y mantiene la comprobacion tecnica previa.</span>
             </label>
 
             <label className="field-group" htmlFor="dtf-file">
@@ -326,6 +359,7 @@ function DTFPage() {
               <span className="file-meta">
                 {selectedFile ? selectedFile.name : 'Ningun archivo seleccionado'}
               </span>
+              <span className="file-meta">Sube el arte final o una version lista para revisar antes de fabricar.</span>
               {errors.file ? <span className="field-error">{errors.file}</span> : null}
             </label>
 
@@ -338,14 +372,34 @@ function DTFPage() {
                 rows={5}
                 value={notes}
               />
+              <span className="file-meta">Anota color, prioridad, referencias de montaje o instrucciones especiales.</span>
             </label>
 
+            <article className="dtf-summary-card">
+              <p className="section-label">Resumen listo para carrito</p>
+              <div className="summary-list compact-summary">
+                {dtfSummaryItems.map((item) => (
+                  <div className="summary-row" key={item.label}>
+                    <span>{item.label}</span>
+                    <strong>{item.value}</strong>
+                  </div>
+                ))}
+                <div className="summary-row summary-row-total">
+                  <span>Total estimado</span>
+                  <strong>{formatCurrency(pricing.total)}</strong>
+                </div>
+              </div>
+              <p className="catalog-result-caption">
+                El pedido pasa por comprobacion tecnica del archivo antes de confirmar produccion y pago.
+              </p>
+            </article>
+
             <div className="form-actions">
-              <button className="action-button action-button-muted" data-cursor="invert" onClick={handleAddToCart} type="button">
-                {dtfContent?.primaryCta.label ?? 'Anadir al carrito'}
-              </button>
               <button className="action-button" data-cursor="invert" onClick={handleSimulateOrder} type="button">
                 {dtfContent?.secondaryCta.label ?? 'Preparar pedido'}
+              </button>
+              <button className="action-button action-button-muted" data-cursor="invert" onClick={handleAddToCart} type="button">
+                {dtfContent?.primaryCta.label ?? 'Anadir al carrito'}
               </button>
             </div>
 
@@ -380,6 +434,15 @@ function DTFPage() {
                   'Adjunta PDF, AI, EPS, SVG, PNG, JPG, TIFF o ZIP.',
                   'Usa notas para indicar prioridad, color o referencias de montaje.',
                   dtfEntry.productionTime ?? 'El plazo final se confirma tras revisar el archivo y la carga de trabajo.',
+                ],
+              },
+              {
+                label: 'Despues del carrito',
+                title: 'El checkout registra la solicitud, no la fabricacion automatica.',
+                items: [
+                  'Revisamos archivo, metraje y observaciones antes de confirmar el pedido.',
+                  'La produccion y el pago se confirman despues de la comprobacion tecnica.',
+                  'Si falta algun dato, el siguiente paso queda claro desde el resumen del carrito.',
                 ],
               },
             ]}
@@ -435,7 +498,7 @@ function DTFPage() {
               </div>
             ) : (
               <div className="empty-state">
-                <p>Selecciona un archivo para activar la previsualizacion del pedido.</p>
+                <p>Selecciona un archivo para ver la pieza, revisar el formato detectado y confirmar el pedido con mas contexto.</p>
               </div>
             )}
           </article>
@@ -453,7 +516,7 @@ function DTFPage() {
               </div>
               <div className="preflight-item">
                 <span>Comprobacion del archivo</span>
-                <strong>Se confirma al revisar el pedido</strong>
+                <strong>Se realiza antes de fabricar</strong>
               </div>
               <div className="preflight-item">
                 <span>Sangrado</span>
@@ -481,7 +544,7 @@ function DTFPage() {
               <li>Notas: {notes.trim() ? 'Incluidas en esta simulacion' : 'Sin notas adicionales'}</li>
             </ul>
             <p className="catalog-result-caption">
-              Referencia comercial antes de la comprobacion tecnica final del archivo.
+              Referencia comercial antes de la comprobacion tecnica final del archivo y de la confirmacion de produccion.
             </p>
           </article>
 
@@ -494,9 +557,9 @@ function DTFPage() {
                 </>
               }
               className="success-card"
-              description={`Metros: ${simulation.meters} | Calidad: ${qualityLabels[simulation.quality]} | Urgencia: ${urgencyLabels[simulation.urgency]} | Archivo: ${simulation.fileName} | Total: ${formatCurrency(simulation.total)}`}
+              description={`Metraje: ${simulation.meters} m | Calidad: ${qualityLabels[simulation.quality]} | Urgencia: ${urgencyLabels[simulation.urgency]} | Archivo: ${simulation.fileName} | Notas: ${simulation.notes || 'Sin notas'} | Total: ${formatCurrency(simulation.total)}`}
               label="Configuracion lista"
-              title="La configuracion esta lista para seguir en el flujo."
+              title="La configuracion esta lista para pasar al carrito."
             />
           ) : null}
 

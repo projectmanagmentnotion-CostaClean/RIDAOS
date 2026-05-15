@@ -45,6 +45,7 @@ const quoteFields: ConfiguratorField[] = [
     type: 'file',
     label: 'Archivo de referencia (opcional)',
     accept: '.pdf,.ai,.eps,.svg,.png,.jpg,.jpeg,.tiff,.zip',
+    hint: 'Adjunta un logo, boceto o arte final si ya lo tienes preparado.',
   },
 ]
 

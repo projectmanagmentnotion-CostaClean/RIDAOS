@@ -65,6 +65,17 @@ function Carrito() {
 
                   <div className="summary-list compact-summary">
                     <div className="summary-row">
+                      <span>Archivo</span>
+                      <strong>{item.artwork.fileName}</strong>
+                    </div>
+                    <div className="summary-row">
+                      <span>Revision</span>
+                      <strong>Comprobacion tecnica antes de fabricar</strong>
+                    </div>
+                  </div>
+
+                  <div className="summary-list compact-summary">
+                    <div className="summary-row">
                       <span>Precio base</span>
                       <strong>
                         {formatCurrency(item.pricing.unitPrice)}

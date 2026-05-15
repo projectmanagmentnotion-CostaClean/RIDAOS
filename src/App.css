@@ -281,7 +281,12 @@ body {
 .home-vehicle-sequence {
   --vehicle-sequence-progress: 0;
   position: relative;
-  min-height: clamp(420px, 72vh, 760px);
+  width: 100%;
+  min-width: 100%;
+  min-height: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
   overflow: clip;
   isolation: isolate;
   background:
@@ -294,12 +299,16 @@ body {
 
 .home-fullscreen-hero {
   position: relative;
+  left: 50%;
+  width: 100vw;
+  min-width: 100vw;
   min-height: 100vh;
   min-height: 100svh;
-  margin: calc((var(--page-shell-top) + 28px) * -1) calc(50% - 50vw) 0;
+  min-height: 100dvh;
+  margin: calc(var(--page-shell-top) * -1) 0 0 calc(-50vw + 50%);
   padding:
     calc(var(--page-shell-top) + 118px)
-    max(20px, calc(50vw - 760px))
+    clamp(24px, 5vw, 76px)
     clamp(42px, 8vh, 84px);
   display: grid;
   align-items: end;
@@ -310,6 +319,9 @@ body {
 .home-fullscreen-hero .home-vehicle-sequence {
   position: absolute;
   inset: 0;
+  width: 100%;
+  min-width: 100%;
+  height: 100%;
   min-height: 100%;
   border: 0;
   border-radius: 0;
@@ -331,7 +343,9 @@ body {
 
 .home-fullscreen-hero .home-hero-stage {
   z-index: 2;
-  width: min(100%, 920px);
+  width: min(100%, 980px);
+  max-width: 100%;
+  padding: 0;
 }
 
 .home-vehicle-sequence__canvas,
@@ -419,7 +433,7 @@ body {
   }
 
   .home-vehicle-sequence {
-    min-height: 340px;
+    min-height: 100%;
   }
 
   .home-vehicle-sequence__canvas {
@@ -428,9 +442,10 @@ body {
 
   .home-fullscreen-hero {
     min-height: 100svh;
+    min-height: 100dvh;
     padding:
       calc(var(--page-shell-top) + 82px)
-      max(20px, calc(50vw - 560px))
+      clamp(20px, 5vw, 34px)
       36px;
   }
 
@@ -693,6 +708,11 @@ select {
   max-width: 100%;
   min-width: 0;
   overflow-x: clip;
+}
+
+.home-page {
+  width: 100%;
+  max-width: 100%;
 }
 
 .page {

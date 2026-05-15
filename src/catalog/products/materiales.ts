@@ -3,8 +3,8 @@ import { defaultCommercialNoticeKeys } from '../notices/legalNotices'
 import type { CatalogEntry, ConfiguratorField } from '../../types/product'
 
 const materialFields: ConfiguratorField[] = [
-  { key: 'product', type: 'variant', label: 'Material', required: true, options: [] },
-  { key: 'area', type: 'area', label: 'Superficie', required: true, min: 0.1, step: 0.1 },
+  { key: 'product', type: 'variant', label: 'Material', required: true, options: [], hint: 'Elige el soporte base antes de calcular la superficie.' },
+  { key: 'area', type: 'area', label: 'Superficie', required: true, min: 0.1, step: 0.1, hint: 'Introduce la superficie aproximada en m2.' },
 ]
 
 export const materialesEntries: CatalogEntry[] = [

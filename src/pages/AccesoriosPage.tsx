@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import CatalogEntryPageTemplate from '../components/CatalogEntryPageTemplate'
 import CatalogResultPanel from '../components/CatalogResultPanel'
 import CommercialNoticeGroup from '../components/CommercialNoticeGroup'
+import ConfiguratorSupportBlock from '../components/ConfiguratorSupportBlock'
 import ConversionTrustBlock from '../components/ConversionTrustBlock'
 import FaqBlock from '../components/FaqBlock'
 import ObjectionHandlerBlock from '../components/ObjectionHandlerBlock'
@@ -93,7 +94,7 @@ function AccesoriosPage() {
           >
             {content?.primaryCta.label ?? 'Anadir al carrito'}
           </button>
-          <a className="action-button action-button-muted action-link-button" href={content?.secondaryCta.href ?? getQuoteHref('materiales')}>
+          <a className="action-button action-button-muted action-link-button" href={content?.secondaryCta.href ?? getQuoteHref('otro')}>
             {content?.secondaryCta.label ?? 'Solicitar presupuesto'}
           </a>
         </>
@@ -104,6 +105,32 @@ function AccesoriosPage() {
       fieldErrors={fieldErrors}
       onConfigChange={handleConfigChange}
       onFileChange={handleFileChange}
+      supportArea={
+        <ConfiguratorSupportBlock
+          sections={[
+            {
+              label: 'Preparacion',
+              title: 'Tirada, formato y acabado sin rodeos.',
+              items: [
+                'Las tiradas visibles estan pensadas para promociones y series cortas.',
+                'Adjunta archivo cuando corte, laminado o forma dependan del arte final.',
+                'Las notas ayudan a indicar brillo, mate o referencias concretas.',
+              ],
+            },
+            {
+              label: 'Siguiente paso',
+              title: 'Compra directa para lotes claros.',
+              items: [
+                estimate?.quoteRequired
+                  ? 'Si la combinacion no encaja en tramo, conviene pasar a presupuesto.'
+                  : 'Cuando la tirada encaja, puedes pasar al carrito con una base clara.',
+                'Los acabados especiales se validan antes de fabricar.',
+                selectedProduct.productionTime ?? 'El plazo final depende de cantidad, archivo y acabado.',
+              ],
+            },
+          ]}
+        />
+      }
       resultArea={
         <>
           {estimate ? <CatalogResultPanel result={estimate} title="Precio" /> : null}

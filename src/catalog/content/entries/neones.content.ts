@@ -17,7 +17,7 @@ function createNeonContent(entry: (typeof neonesEntries)[number]): CatalogSeoCon
     ],
     useCases: [
       'Interiores comerciales, escaparates y piezas de marca.',
-      'Señales decorativas con forma o color personalizado.',
+      'Senales decorativas con forma o color personalizado.',
       'Proyectos que necesitan una comprobacion tecnica antes de fabricarse.',
     ],
     uploadGuidance: [

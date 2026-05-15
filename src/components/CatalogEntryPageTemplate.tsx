@@ -14,6 +14,7 @@ type CatalogEntryPageTemplateProps = {
   fieldErrors?: Partial<Record<string, string>>
   onConfigChange: (key: string, value: string) => void
   onFileChange?: (key: string, file: File | null) => void
+  supportArea?: ReactNode
   resultArea: ReactNode
   ctaArea: ReactNode
   children?: ReactNode
@@ -29,6 +30,7 @@ function CatalogEntryPageTemplate({
   fieldErrors = {},
   onConfigChange,
   onFileChange,
+  supportArea,
   resultArea,
   ctaArea,
   children,
@@ -58,6 +60,8 @@ function CatalogEntryPageTemplate({
 
             <div className="form-actions">{ctaArea}</div>
           </div>
+
+          {supportArea ? <div className="product-config-support">{supportArea}</div> : null}
         </article>
 
         <div className="summary-stack">

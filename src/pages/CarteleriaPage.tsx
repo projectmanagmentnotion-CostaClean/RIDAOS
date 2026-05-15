@@ -14,8 +14,8 @@ import { createInitialConfig, getRequiredFieldErrors, updateConfigValue, type Co
 import { getQuoteHref, publicRoutes } from '../lib/navigation'
 import { getProductById, getProductsByCategory, resolveLegalNoticeItems } from '../lib/products'
 
-function RotulacionPage() {
-  const services = getProductsByCategory('rotulacion')
+function CarteleriaPage() {
+  const services = getProductsByCategory('carteleria')
   const [productId, setProductId] = useState(services[0]?.id ?? '')
   const [config, setConfig] = useState<ConfigState>(() => (services[0] ? createInitialConfig(services[0]) : {}))
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<string, string>>>({})
@@ -47,22 +47,26 @@ function RotulacionPage() {
     setFieldErrors((current) => ({ ...current, [key]: undefined }))
   }
 
+  const handleFileChange = (_key: string, file: File | null) => {
+    setConfig((current) => updateConfigValue(current, 'file', file?.name ?? ''))
+  }
+
   if (!selectedProduct) {
     return null
   }
 
   return (
     <CatalogEntryPageTemplate
-      className="rotulacion-page"
+      className="carteleria-page"
       config={config}
       ctaArea={
-        <a className="action-button action-link-button" href={content?.primaryCta.href ?? getQuoteHref('rotulacion')}>
+        <a className="action-button action-link-button" href={content?.primaryCta.href ?? getQuoteHref('carteleria')}>
           {content?.primaryCta.label ?? 'Solicitar presupuesto'}
         </a>
       }
-      description={content?.intro ?? 'Rotulacion de furgonetas por tramos orientativos y cierre por presupuesto comercial.'}
+      description={content?.intro ?? 'Carteleria y gran formato para proyectos que dependen de medidas, confeccion y uso final.'}
       entry={selectedProduct}
-      eyebrow={content?.eyebrow ?? 'Rotulacion de furgonetas'}
+      eyebrow={content?.eyebrow ?? 'Carteleria'}
       fieldErrors={fieldErrors}
       onConfigChange={(key, value) => {
         handleConfigChange(key, value)
@@ -70,25 +74,26 @@ function RotulacionPage() {
           setFieldErrors(getRequiredFieldErrors(selectedProduct, updateConfigValue(config, key, value)))
         }
       }}
+      onFileChange={handleFileChange}
       supportArea={
         <ConfiguratorSupportBlock
           sections={[
             {
-              label: 'Antes de pedir',
-              title: 'Define cobertura y tamano del vehiculo.',
+              label: 'Que preparar',
+              title: 'Medidas, uso y acabado cambian la propuesta.',
               items: [
-                'El rango visible sirve para situar el proyecto sin empezar desde cero.',
-                'Puedes avanzar sin arte final si ya tienes clara la cobertura.',
-                'La propuesta final confirma materiales, instalacion y tiempos reales.',
+                'Indica ancho, alto y si necesitas ojales, refuerzos o confeccion.',
+                'Adjunta una referencia visual si ya existe arte final o boceto.',
+                'Si la instalacion o el soporte son clave, dejalo indicado desde el inicio.',
               ],
             },
             {
               label: 'Siguiente paso',
-              title: 'Presupuesto adaptado al vehiculo.',
+              title: 'Proyecto preparado para presupuesto serio.',
               items: [
-                'Este servicio no pasa a compra directa porque depende de cobertura y montaje.',
-                'El formulario posterior recoge medidas, referencias y contexto comercial.',
-                'La comprobacion tecnica se hace antes de fabricar e instalar.',
+                'La propuesta final se ajusta tras revisar material, confeccion y uso real.',
+                'El servicio no pasa a compra directa porque depende de medidas y acabado.',
+                'Tras enviar la solicitud, el equipo comercial responde con una propuesta adaptada.',
               ],
             },
           ]}
@@ -96,31 +101,32 @@ function RotulacionPage() {
       }
       resultArea={
         <>
-          {estimate ? <CatalogResultPanel result={estimate} title="Rango orientativo" /> : null}
+          {estimate ? <CatalogResultPanel result={estimate} title="Referencia comercial" /> : null}
           <CommercialNoticeGroup items={resolveLegalNoticeItems(selectedProduct.legalNotes)} />
           <article className="content-card">
             <p className="section-label">Resumen del servicio</p>
             <ul className="hint-list">
-              <li>{selectedProduct.manualReviewRequired ? 'Incluye comprobacion tecnica antes de cerrar la propuesta.' : 'Flujo directo habilitado.'}</li>
-              <li>{selectedProduct.upload.required ? 'Archivo requerido antes de fabricar.' : 'Archivo opcional para la primera propuesta.'}</li>
+              <li>Proyecto de presupuesto, no de compra directa.</li>
+              <li>Archivo opcional para arrancar la propuesta.</li>
+              <li>Confeccion, soporte e instalacion se confirman antes de fabricar.</li>
             </ul>
             <div className="catalog-cta-row">
-              <a className="card-link" href={getQuoteHref('rotulacion')}>Abrir formulario</a>
+              <a className="card-link" href={getQuoteHref('carteleria')}>Abrir formulario</a>
               <a className="card-link" href={publicRoutes.contacto}>Contactar</a>
             </div>
           </article>
         </>
       }
-      title={content?.h1 ?? 'Rotulacion por nivel de cobertura.'}
+      title={content?.h1 ?? 'Carteleria y gran formato.'}
     >
       <SeoContentBlock entryId={selectedProduct.id} />
       <SeoContentBlock entryId={selectedProduct.id} mode="useCases" />
       <UploadGuidanceBlock entryId={selectedProduct.id} />
       <ConversionTrustBlock entryId={selectedProduct.id} />
       <ObjectionHandlerBlock entryId={selectedProduct.id} />
-      <FaqBlock entryId={selectedProduct.id} title="FAQ rotulacion" />
+      <FaqBlock entryId={selectedProduct.id} title="FAQ carteleria" />
     </CatalogEntryPageTemplate>
   )
 }
 
-export default RotulacionPage
+export default CarteleriaPage

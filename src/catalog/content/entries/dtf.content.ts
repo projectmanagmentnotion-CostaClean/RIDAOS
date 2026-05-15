@@ -9,20 +9,20 @@ export const dtfSeoContent: CatalogSeoContent = {
   h1: 'DTF por metro.',
   eyebrow: 'DTF por metro para pedidos agiles',
   intro:
-    'Configura el metraje, sube el archivo y revisa el precio antes de confirmar el siguiente paso del pedido.',
+    'Configura el metraje, carga el archivo y revisa el precio con un flujo claro antes de pasar al carrito.',
   benefits: [
     'Precio base visible desde el inicio.',
-    'Carga de archivo y previsualizacion dentro del flujo.',
-    'Comprobaciones previas listas para confirmar el pedido con seguridad.',
+    'Carga de archivo y previsualizacion en el mismo recorrido.',
+    'Comprobacion tecnica antes de fabricar para evitar rehacer el pedido.',
   ],
   useCases: [
     'Tiradas DTF para textil propio o de cliente.',
-    'Reposiciones rapidas sin rehacer el flujo comercial.',
-    'Pedidos que necesitan revisar el archivo antes de fabricar.',
+    'Reposiciones rapidas que necesitan precio claro y subida de archivo.',
+    'Pedidos que requieren una validacion tecnica antes de fabricar.',
   ],
   uploadGuidance: [
-    'Sube PDF, AI, EPS, SVG, PNG, JPG o ZIP cuando sea posible.',
-    'Incluye notas si necesitas color, corte o prioridad especifica.',
+    'Sube PDF, AI, EPS, SVG, PNG, JPG, TIFF o ZIP cuando sea posible.',
+    'Incluye notas si necesitas color, prioridad o una referencia concreta de produccion.',
     'La comprobacion final del archivo se realiza antes de fabricar.',
   ],
   faq: [

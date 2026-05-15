@@ -7,6 +7,7 @@ export const publicRoutes = {
   textil: '#/producto/textil',
   papeleria: '#/producto/papeleria',
   materiales: '#/producto/materiales',
+  carteleria: '#/servicios/carteleria',
   accesorios: '#/producto/accesorios',
   rotulacion: '#/servicios/rotulacion',
   neones: '#/servicios/neones',

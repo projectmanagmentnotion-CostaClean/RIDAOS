@@ -100,9 +100,9 @@ function Checkout() {
     <section className="page">
       <div className="page-hero">
         <p className="eyebrow">Checkout</p>
-        <h1>Confirma tu solicitud.</h1>
+        <h1>Confirma tu pedido.</h1>
         <p>
-          Revisa los datos del cliente, confirma el resumen y deja el pedido registrado para seguimiento.
+          En este paso registras el pedido y dejas listo el contacto para confirmar archivo, disponibilidad y siguientes pasos.
         </p>
       </div>
 
@@ -150,6 +150,12 @@ function Checkout() {
             {uiError ? <p className="field-error">{uiError}</p> : null}
             {loading ? <p className="inline-notice">Registrando tu solicitud...</p> : null}
 
+            <ul className="hint-list">
+              <li>No se realiza pago online en este paso.</li>
+              <li>El equipo revisa archivo, cantidad y observaciones antes de fabricar.</li>
+              <li>Usa datos reales para recibir la confirmacion correctamente.</li>
+            </ul>
+
             <div className="form-actions">
               <button className="action-button" disabled={loading} onClick={handleSubmit} type="button">
                 Registrar pedido
@@ -175,13 +181,17 @@ function Checkout() {
                     <div className="checkout-item" key={item.id}>
                       <div>
                         <h3>{item.productName}</h3>
-                        <p>{getOrderItemSummary(item).join(' · ') || item.artwork.fileName}</p>
+                        <p>{getOrderItemSummary(item).join(' | ') || item.artwork.fileName}</p>
                       </div>
                       <strong>{formatCurrency(item.pricing.total)}</strong>
                     </div>
                   ))}
                 </div>
                 <div className="summary-list">
+                  <div className="summary-row">
+                    <span>Revision</span>
+                    <strong>Comprobacion tecnica antes de fabricar</strong>
+                  </div>
                   <div className="summary-row summary-row-total">
                     <span>Total</span>
                     <strong>{formatCurrency(cartTotal)}</strong>
@@ -214,7 +224,7 @@ function Checkout() {
                 </div>
                 <div className="summary-row">
                   <span>Estado</span>
-                  <strong>Recibido para revision</strong>
+                  <strong>Recibido para comprobacion tecnica</strong>
                 </div>
                 <div className="summary-row">
                   <span>Items</span>

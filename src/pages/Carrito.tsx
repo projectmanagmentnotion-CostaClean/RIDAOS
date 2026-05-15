@@ -25,7 +25,7 @@ function Carrito() {
         <p className="eyebrow">Carrito</p>
         <h1>Resumen del pedido antes de confirmar.</h1>
         <p>
-          Aqui puedes revisar los articulos configurados antes de pasar al cierre de la solicitud.
+          Revisa cantidades, archivo y observaciones antes de pasar al registro final del pedido.
         </p>
       </div>
 
@@ -95,11 +95,21 @@ function Carrito() {
               <span>Items</span>
               <strong>{items.length}</strong>
             </div>
+            <div className="summary-row">
+              <span>Comprobacion tecnica</span>
+              <strong>{items.some((item) => item.artwork.status === 'pending_review') ? 'Incluida antes de fabricar' : 'No requerida'}</strong>
+            </div>
             <div className="summary-row summary-row-total">
               <span>Total</span>
               <strong>{formatCurrency(cartTotal)}</strong>
             </div>
           </div>
+
+          <ul className="hint-list">
+            <li>El checkout registra tu pedido con los articulos configurados.</li>
+            <li>Los archivos y acabados se comprueban antes de fabricar.</li>
+            <li>Si necesitas ajustar el pedido, puedes volver al catalogo sin romper el flujo.</li>
+          </ul>
 
           <div className="form-actions">
             <button

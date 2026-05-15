@@ -145,7 +145,7 @@ function SolicitarPresupuesto() {
     <PageShell className="quote-page premium-page">
       <SectionHeader
         className="premium-hero quote-hero"
-        description="Solicita una propuesta para servicios, materiales y proyectos a medida desde un formulario unico y claro."
+        description="Solicita una propuesta para servicios, materiales y proyectos a medida desde un formulario unico, claro y orientado a cierre comercial."
         eyebrow="Solicitud de presupuesto"
         hero
         title="Proyectos personalizados con lectura comercial directa."
@@ -244,6 +244,10 @@ function SolicitarPresupuesto() {
                 <span>Archivo</span>
                 <strong>{form.fileName || 'No adjunto'}</strong>
               </div>
+              <div className="summary-row">
+                <span>Contacto</span>
+                <strong>{form.nombre || 'Pendiente'}</strong>
+              </div>
               <div className="summary-row summary-row-total">
                 <span>Estado</span>
                 <strong>Solicitud lista para enviar</strong>
@@ -270,6 +274,7 @@ function SolicitarPresupuesto() {
               <ul className="hint-list">
                 <li>Selecciona el servicio que mejor encaje con tu proyecto.</li>
                 <li>Resume medidas, soporte y necesidades especiales en un solo envio.</li>
+                <li>Adjuntar una referencia visual acelera la lectura del proyecto.</li>
                 <li>El equipo comercial te respondera con una propuesta adaptada.</li>
               </ul>
             </article>

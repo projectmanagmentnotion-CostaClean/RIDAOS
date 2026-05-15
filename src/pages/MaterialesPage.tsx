@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import CatalogEntryPageTemplate from '../components/CatalogEntryPageTemplate'
 import CatalogResultPanel from '../components/CatalogResultPanel'
 import CommercialNoticeGroup from '../components/CommercialNoticeGroup'
+import ConfiguratorSupportBlock from '../components/ConfiguratorSupportBlock'
 import ConversionTrustBlock from '../components/ConversionTrustBlock'
 import FaqBlock from '../components/FaqBlock'
 import ObjectionHandlerBlock from '../components/ObjectionHandlerBlock'
@@ -93,6 +94,32 @@ function MaterialesPage() {
       eyebrow={content?.eyebrow ?? 'Materiales'}
       fieldErrors={fieldErrors}
       onConfigChange={handleConfigChange}
+      supportArea={
+        <ConfiguratorSupportBlock
+          sections={[
+            {
+              label: 'Medicion',
+              title: 'Calcula una base clara por superficie.',
+              items: [
+                'Introduce la superficie total para obtener una referencia inmediata.',
+                'Usa presupuesto cuando el proyecto incluya instalacion, homologacion o medicion real.',
+                'El archivo es util, pero no obligatorio para una primera estimacion.',
+              ],
+            },
+            {
+              label: 'Siguiente paso',
+              title: 'Material directo con salida comercial limpia.',
+              items: [
+                estimate?.quoteRequired
+                  ? 'El proyecto necesita una propuesta adaptada.'
+                  : 'Si el soporte encaja, puedes dejar el material preparado en el carrito.',
+                'Los acabados complejos se revisan antes de fabricar.',
+                selectedProduct.productionTime ?? 'El plazo final depende de soporte, medidas y comprobacion tecnica.',
+              ],
+            },
+          ]}
+        />
+      }
       resultArea={
         <>
           {estimate ? <CatalogResultPanel result={estimate} title="Precio estimado" /> : null}

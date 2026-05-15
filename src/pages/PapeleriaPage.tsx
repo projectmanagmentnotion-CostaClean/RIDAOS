@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import CatalogEntryPageTemplate from '../components/CatalogEntryPageTemplate'
 import CatalogResultPanel from '../components/CatalogResultPanel'
 import CommercialNoticeGroup from '../components/CommercialNoticeGroup'
+import ConfiguratorSupportBlock from '../components/ConfiguratorSupportBlock'
 import ConversionTrustBlock from '../components/ConversionTrustBlock'
 import FaqBlock from '../components/FaqBlock'
 import ObjectionHandlerBlock from '../components/ObjectionHandlerBlock'
@@ -106,6 +107,32 @@ function PapeleriaPage() {
       fieldErrors={fieldErrors}
       onConfigChange={handleConfigChange}
       onFileChange={handleFileChange}
+      supportArea={
+        <ConfiguratorSupportBlock
+          sections={[
+            {
+              label: 'Archivo y tirada',
+              title: 'Confirma la cantidad antes de avanzar.',
+              items: [
+                'Las tiradas visibles ya estan preparadas para una lectura rapida del precio.',
+                'Adjunta el PDF o una referencia si ya tienes el arte final.',
+                'Si el proyecto necesita adaptacion o formato fuera de tramo, la via de presupuesto sigue abierta.',
+              ],
+            },
+            {
+              label: 'Para decidir',
+              title: 'Usa el carrito para piezas cerradas.',
+              items: [
+                estimate?.quoteRequired
+                  ? 'Este formato requiere propuesta personalizada.'
+                  : 'Cuando la tirada encaja, puedes dejar la impresion preparada desde aqui.',
+                'Las notas ayudan a aclarar acabados, caras y necesidades de diseno.',
+                selectedProduct.productionTime ?? 'El plazo se confirma al revisar archivo y acabados.',
+              ],
+            },
+          ]}
+        />
+      }
       resultArea={
         <>
           {estimate ? <CatalogResultPanel result={estimate} title="Precio" /> : null}

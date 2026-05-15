@@ -77,30 +77,30 @@ function Catalogo() {
           className="featured-product-card"
           description={featuredContent?.intro ?? featuredProduct.shortDescription}
           label="Producto destacado"
-          title={`${featuredProduct.name} listo para configurar.`}
+          title={`${featuredProduct.name} listo para configurar y comprar.`}
         />
       ) : null}
 
       <section className="content-section content-grid-two">
         <article className="content-card motion-card">
-          <SectionHeader eyebrow="Catalogo visual" title="Lineas principales con lectura clara." />
-          <p>Una vista clara para distinguir compra directa, propuesta personalizada y comprobacion tecnica sin perder ritmo al navegar.</p>
+          <SectionHeader eyebrow="Catalogo visual" title="Oferta clara antes de entrar en detalle." />
+          <p>Compra directa donde el precio ya esta definido y propuesta personalizada cuando medidas, acabados o instalacion cambian el proyecto.</p>
           <MouseMotionVisual variant="catalog" />
         </article>
         <article className="content-card seo-content-block">
-          <p className="section-label">Accesos del catalogo</p>
-          <h3>Elige el flujo adecuado.</h3>
+          <p className="section-label">Como comprar</p>
+          <h3>Empieza por el flujo que mejor encaje.</h3>
           <ul className="detail-list">
-            <li>DTF por metro para configurar y avanzar rapido.</li>
-            <li>Productos con tramos claros para compra directa.</li>
-            <li>Servicios a medida para presupuesto personalizado.</li>
+            <li>DTF por metro para configurar archivo, metraje y urgencia en un solo paso.</li>
+            <li>Productos con tramos claros para preparar el carrito sin perder tiempo.</li>
+            <li>Servicios a medida con referencia inicial antes de pedir una propuesta.</li>
           </ul>
         </article>
       </section>
 
       {featuredProduct ? (
         <div className="featured-product-panel flagship-metrics">
-          <MetricCard className="featured-metric hover-lift" label="Modalidad" note="Como avanza el pedido" value={featuredProduct.purchaseMode === 'direct' ? 'Compra directa' : 'Configuracion con propuesta'} />
+          <MetricCard className="featured-metric hover-lift" label="Modalidad" note="Como avanza el pedido" value={featuredProduct.purchaseMode === 'direct' ? 'Compra directa' : 'Configuracion guiada'} />
           <MetricCard className="featured-metric hover-lift" label="Precio orientativo" note="Tarifa de partida" value={featuredProduct.basePrice ? `${featuredProduct.basePrice.toFixed(2)} EUR/metro` : 'Consultar'} />
           <MetricCard className="featured-metric hover-lift" label="Revision" note="Antes de fabricar" value={featuredProduct.manualReviewRequired ? 'Comprobacion tecnica' : 'Flujo directo'} />
         </div>
@@ -120,9 +120,9 @@ function Catalogo() {
             <p className="section-label">Catalogo</p>
             <h3>Como se organiza la compra.</h3>
             <ul className="detail-list">
-              <li>Compra directa para productos con precio claro y configuracion controlada.</li>
-              <li>Presupuesto para proyectos donde material, medida o instalacion cambian el resultado final.</li>
-              <li>Comprobacion tecnica cuando el archivo o el soporte lo exigen.</li>
+              <li>Compra directa para productos con precio, formato y cantidad ya definidos.</li>
+              <li>Propuesta personalizada cuando material, medida o instalacion cambian el resultado final.</li>
+              <li>Comprobacion tecnica cuando el archivo, el soporte o el acabado lo exigen.</li>
             </ul>
           </article>
         </section>
@@ -141,7 +141,7 @@ function Catalogo() {
       </section>
 
       <section className="catalog-section">
-        <SectionHeader eyebrow="Servicios y productos" title="Compra o solicita propuesta desde el catalogo." />
+        <SectionHeader eyebrow="Servicios y productos" title="Configura, prepara o solicita propuesta." />
         {categorySections.map((section) => (
           <div className="catalog-section-block" key={section.key}>
             <SectionHeader eyebrow={section.title} title={section.description} />
@@ -162,18 +162,27 @@ function Catalogo() {
                       <StatusBadge status={statusCopy.status}>{statusCopy.label}</StatusBadge>
                       <h2>{entry.name}</h2>
                     </div>
-                    <p>{entry.description}</p>
+                    <p>{entry.shortDescription}</p>
                     {entry.featured ? (
                       <div className="flagship-product-meta">
                         <span>{entry.upload.required ? 'Archivo requerido' : 'Archivo opcional'}</span>
                         <span>{entry.manualReviewRequired ? 'Comprobacion tecnica' : 'Flujo directo'}</span>
-                        <span>{entry.pricingMode}</span>
+                        <span>{entry.pricingMode === 'volume' ? 'Precio por volumen' : entry.pricingMode === 'm2' ? 'Precio por superficie' : entry.pricingMode === 'range' ? 'Rango orientativo' : 'Precio directo'}</span>
                       </div>
                     ) : null}
+                    <div className="catalog-card-meta">
+                      <span>{entry.upload.required ? 'Archivo requerido' : 'Archivo opcional'}</span>
+                      <span>{entry.productionTime ?? 'Plazo segun comprobacion y carga de trabajo'}</span>
+                    </div>
                     <div className="catalog-card-actions">
                       <a className="action-button action-link-button" href={cta.href}>
                         {cta.label}
                       </a>
+                      {entry.route !== cta.href ? (
+                        <a className="card-link" href={entry.route}>
+                          Ver detalles
+                        </a>
+                      ) : null}
                       {cta.type === 'request_quote' ? (
                         <a className="card-link" href={cta.href}>
                           Solicitar presupuesto

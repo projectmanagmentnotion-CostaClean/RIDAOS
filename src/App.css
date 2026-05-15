@@ -2719,6 +2719,14 @@ select {
   gap: 8px;
 }
 
+.catalog-card-meta {
+  display: grid;
+  gap: 8px;
+  color: rgba(246, 239, 231, 0.68);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
 .flagship-product-meta span {
   display: inline-flex;
   padding: 7px 12px;
@@ -3587,6 +3595,20 @@ body.lenis {
   min-width: 0;
 }
 
+.product-config-support,
+.configurator-support-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.product-config-support {
+  margin-top: 18px;
+}
+
+.configurator-support-card {
+  gap: 12px;
+}
+
 .product-page-hero,
 .quote-hero {
   max-width: 860px;
@@ -3638,6 +3660,12 @@ body.lenis {
 .catalog-result-list,
 .catalog-warning-list {
   margin-top: 2px;
+}
+
+.catalog-result-caption {
+  margin: 0;
+  color: rgba(246, 239, 231, 0.68);
+  line-height: 1.6;
 }
 
 .catalog-warning-list li {

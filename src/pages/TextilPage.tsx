@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import CatalogEntryPageTemplate from '../components/CatalogEntryPageTemplate'
 import CatalogResultPanel from '../components/CatalogResultPanel'
 import CommercialNoticeGroup from '../components/CommercialNoticeGroup'
+import ConfiguratorSupportBlock from '../components/ConfiguratorSupportBlock'
 import ConversionTrustBlock from '../components/ConversionTrustBlock'
 import FaqBlock from '../components/FaqBlock'
 import ObjectionHandlerBlock from '../components/ObjectionHandlerBlock'
@@ -98,6 +99,32 @@ function TextilPage() {
       eyebrow={content?.eyebrow ?? 'Estampados / textil'}
       fieldErrors={fieldErrors}
       onConfigChange={handleConfigChange}
+      supportArea={
+        <ConfiguratorSupportBlock
+          sections={[
+            {
+              label: 'Antes de pedir',
+              title: 'Define cantidad, prenda y acabado.',
+              items: [
+                'Cambia de prenda sin salir del configurador.',
+                'Usa notas para tallaje, posiciones de estampacion o prendas aportadas por cliente.',
+                selectedProduct.productionTime ?? 'El plazo final se confirma tras revisar disponibilidad y archivo.',
+              ],
+            },
+            {
+              label: 'Siguiente paso',
+              title: 'Compra directa si encaja, propuesta si necesita ajuste.',
+              items: [
+                estimate?.quoteRequired
+                  ? 'Este caso necesita propuesta personalizada antes de cerrar el pedido.'
+                  : 'Si la configuracion encaja en tramo, puedes pasar al carrito directamente.',
+                'El archivo puede enviarse en este paso o completarse durante la comprobacion tecnica.',
+                'La revision final se hace antes de fabricar.',
+              ],
+            },
+          ]}
+        />
+      }
       resultArea={
         <>
           {estimate ? <CatalogResultPanel result={estimate} title="Estimacion" /> : null}

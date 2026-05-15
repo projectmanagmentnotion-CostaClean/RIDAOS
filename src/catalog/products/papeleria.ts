@@ -3,10 +3,10 @@ import { defaultCommercialNoticeKeys } from '../notices/legalNotices'
 import type { CatalogEntry, ConfiguratorField } from '../../types/product'
 
 const paperFields: ConfiguratorField[] = [
-  { key: 'product', type: 'variant', label: 'Producto', required: true, options: [] },
-  { key: 'quantity', type: 'quantity', label: 'Tirada', required: true, min: 100, step: 50 },
-  { key: 'file', type: 'file', label: 'Archivo', accept: '.pdf,.ai,.eps,.svg,.png,.jpg,.jpeg' },
-  { key: 'notes', type: 'textarea', label: 'Notas', rows: 4 },
+  { key: 'product', type: 'variant', label: 'Producto', required: true, options: [], hint: 'Cambia de pieza sin perder el flujo de compra o presupuesto.' },
+  { key: 'quantity', type: 'quantity', label: 'Tirada', required: true, min: 100, step: 50, hint: 'Selecciona una tirada del catalogo visible.' },
+  { key: 'file', type: 'file', label: 'Archivo', accept: '.pdf,.ai,.eps,.svg,.png,.jpg,.jpeg', hint: 'Adjuntalo si ya tienes el arte final preparado.' },
+  { key: 'notes', type: 'textarea', label: 'Notas', rows: 4, hint: 'Indica acabados, caras o necesidades de diseno.' },
 ]
 
 export const papeleriaEntries: CatalogEntry[] = [

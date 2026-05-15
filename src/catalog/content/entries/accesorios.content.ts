@@ -50,7 +50,7 @@ function createAccesorioContent(entry: (typeof accesoriosEntries)[number]): Cata
     },
     secondaryCta: {
       label: 'Solicitar presupuesto',
-      href: '#/presupuesto?service=materiales',
+      href: '#/presupuesto?service=otro',
     },
   }
 }

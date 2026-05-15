@@ -35,7 +35,7 @@ export const catalogCategories: CatalogCategory[] = [
     key: 'carteleria',
     label: 'Carteleria',
     description: 'Lonas y piezas complejas de gran formato sujetas a medidas y confeccion.',
-    route: '#/presupuesto?service=carteleria',
+    route: '#/servicios/carteleria',
     kind: 'service',
   },
   {

@@ -11,7 +11,7 @@ export const carteleriaEntries: CatalogEntry[] = [
     name: 'Lona impresa',
     description: 'Depende de medidas, cantidades, ojales y confeccion.',
     shortDescription: 'Carteleria de gran formato sujeta a medidas y acabados.',
-    route: '#/presupuesto?service=carteleria',
+    route: '#/servicios/carteleria',
     purchaseMode: 'quote',
     pricingMode: 'quote',
     upload: { required: false, acceptedFormats: [...commonArtworkFormats] },

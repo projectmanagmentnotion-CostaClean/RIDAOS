@@ -3,8 +3,8 @@ import { defaultCommercialNoticeKeys } from '../notices/legalNotices'
 import type { CatalogEntry, ConfiguratorField } from '../../types/product'
 
 const baseFields: ConfiguratorField[] = [
-  { key: 'product', type: 'variant', label: 'Producto', required: true, options: [] },
-  { key: 'quantity', type: 'quantity', label: 'Cantidad', required: true, min: 1, step: 1 },
+  { key: 'product', type: 'variant', label: 'Producto', required: true, options: [], hint: 'Compara prendas sin salir de la pagina.' },
+  { key: 'quantity', type: 'quantity', label: 'Cantidad', required: true, min: 1, step: 1, hint: 'La estimacion se ajusta por tramo de volumen.' },
 ]
 
 export const textilEntries: CatalogEntry[] = [

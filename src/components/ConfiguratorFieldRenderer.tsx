@@ -84,6 +84,7 @@ function ConfiguratorFieldRenderer({
         </>
       ) : null}
 
+      {field.hint ? <span className="file-meta">{field.hint}</span> : null}
       {field.helpText ? <span className="file-meta">{field.helpText}</span> : null}
       {error ? <span className="field-error">{error}</span> : null}
     </label>

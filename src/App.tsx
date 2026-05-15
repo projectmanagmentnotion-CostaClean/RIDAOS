@@ -11,6 +11,7 @@ import NotFoundPage from './components/NotFoundPage'
 import RouteErrorBoundary from './components/RouteErrorBoundary'
 import AccesoriosPage from './pages/AccesoriosPage'
 import Carrito from './pages/Carrito'
+import CarteleriaPage from './pages/CarteleriaPage'
 import Catalogo from './pages/Catalogo'
 import Checkout from './pages/Checkout'
 import Contacto from './pages/Contacto'
@@ -61,6 +62,7 @@ type RouteKey =
   | 'notFound'
   | 'textil'
   | 'papeleria'
+  | 'carteleria'
   | 'materiales'
   | 'accesorios'
   | 'rotulacion'
@@ -74,6 +76,8 @@ const routes: Record<string, RouteKey> = {
   [getPublicHref('textil')]: 'textil',
   '#/textil': 'textil',
   [getPublicHref('papeleria')]: 'papeleria',
+  [getPublicHref('carteleria')]: 'carteleria',
+  '#/carteleria': 'carteleria',
   [getPublicHref('materiales')]: 'materiales',
   '#/materiales': 'materiales',
   [getPublicHref('accesorios')]: 'accesorios',
@@ -121,6 +125,7 @@ const pageComponents: Record<RouteKey, ReactNode> = {
   dtf: <DTFPage />,
   textil: <TextilPage />,
   papeleria: <PapeleriaPage />,
+  carteleria: <CarteleriaPage />,
   materiales: <MaterialesPage />,
   accesorios: <AccesoriosPage />,
   rotulacion: <RotulacionPage />,

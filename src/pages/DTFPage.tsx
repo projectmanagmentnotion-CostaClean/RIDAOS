@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import CommercialNoticeGroup from '../components/CommercialNoticeGroup'
+import ConfiguratorSupportBlock from '../components/ConfiguratorSupportBlock'
 import ConversionTrustBlock from '../components/ConversionTrustBlock'
 import CtaPanel from '../components/CtaPanel'
 import FaqBlock from '../components/FaqBlock'
@@ -360,6 +361,29 @@ function DTFPage() {
               </div>
             ) : null}
           </div>
+
+          <ConfiguratorSupportBlock
+            sections={[
+              {
+                label: 'Compra directa',
+                title: 'Configura el metraje sin perder el control del archivo.',
+                items: [
+                  'El total se recalcula al instante segun metros, calidad y urgencia.',
+                  'La previsualizacion te ayuda a confirmar que has cargado la pieza correcta.',
+                  'La comprobacion tecnica se realiza antes de fabricar, no despues.',
+                ],
+              },
+              {
+                label: 'Antes de cerrar',
+                title: 'Archivo, notas y plazo quedan claros en un solo paso.',
+                items: [
+                  'Adjunta PDF, AI, EPS, SVG, PNG, JPG, TIFF o ZIP.',
+                  'Usa notas para indicar prioridad, color o referencias de montaje.',
+                  dtfEntry.productionTime ?? 'El plazo final se confirma tras revisar el archivo y la carga de trabajo.',
+                ],
+              },
+            ]}
+          />
         </article>
 
         <div className="summary-stack">
@@ -456,6 +480,9 @@ function DTFPage() {
               <li>Archivo: {selectedFile ? selectedFile.name : 'Pendiente de carga'}</li>
               <li>Notas: {notes.trim() ? 'Incluidas en esta simulacion' : 'Sin notas adicionales'}</li>
             </ul>
+            <p className="catalog-result-caption">
+              Referencia comercial antes de la comprobacion tecnica final del archivo.
+            </p>
           </article>
 
           {simulation ? (

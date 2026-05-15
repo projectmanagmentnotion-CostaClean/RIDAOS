@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import CatalogEntryPageTemplate from '../components/CatalogEntryPageTemplate'
 import CatalogResultPanel from '../components/CatalogResultPanel'
 import CommercialNoticeGroup from '../components/CommercialNoticeGroup'
+import ConfiguratorSupportBlock from '../components/ConfiguratorSupportBlock'
 import ConversionTrustBlock from '../components/ConversionTrustBlock'
 import FaqBlock from '../components/FaqBlock'
 import ObjectionHandlerBlock from '../components/ObjectionHandlerBlock'
@@ -74,6 +75,30 @@ function NeonesPage() {
         }
       }}
       onFileChange={handleFileChange}
+      supportArea={
+        <ConfiguratorSupportBlock
+          sections={[
+            {
+              label: 'Referencia visual',
+              title: 'Forma, medida y contexto marcan la propuesta.',
+              items: [
+                'Adjunta logo, boceto o referencia cuando la pieza ya tenga direccion visual.',
+                'Si todavia estas definiendo el proyecto, usa detalles y medidas aproximadas.',
+                'La instalacion y la complejidad final se confirman durante la propuesta.',
+              ],
+            },
+            {
+              label: 'Siguiente paso',
+              title: 'Proyecto orientado a propuesta personalizada.',
+              items: [
+                'Esta pagina sirve para situar el rango y preparar una solicitud clara.',
+                'Los colores, anclajes y materiales se revisan antes de cerrar fabricacion.',
+                'El equipo comercial responde con una propuesta ajustada al proyecto real.',
+              ],
+            },
+          ]}
+        />
+      }
       resultArea={
         <>
           {estimate ? <CatalogResultPanel result={estimate} title="Referencia" /> : null}

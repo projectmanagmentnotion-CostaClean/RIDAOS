@@ -3,8 +3,8 @@ import { defaultCommercialNoticeKeys } from '../notices/legalNotices'
 import type { CatalogEntry, ConfiguratorField } from '../../types/product'
 
 const accessoryBaseFields: ConfiguratorField[] = [
-  { key: 'product', type: 'variant', label: 'Producto', required: true, options: [] },
-  { key: 'quantity', type: 'quantity', label: 'Cantidad', required: true, min: 50, step: 50 },
+  { key: 'product', type: 'variant', label: 'Producto', required: true, options: [], hint: 'Cambia de accesorio segun formato y tirada.' },
+  { key: 'quantity', type: 'quantity', label: 'Cantidad', required: true, min: 50, step: 50, hint: 'La estimacion cambia segun la tirada visible.' },
 ]
 
 export const accesoriosEntries: CatalogEntry[] = [

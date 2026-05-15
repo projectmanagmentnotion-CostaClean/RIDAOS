@@ -66,10 +66,13 @@ function CursorAssist() {
 
       const angle = Math.atan2(velocityY, velocityX || 0.0001) * (180 / Math.PI)
       const velocityMagnitude = Math.min(Math.hypot(velocityX, velocityY), 26)
-      const stretch = 1 + velocityMagnitude / 120
-      const interactiveScale = isInteractive ? 1.08 : 1
-      const salesScale = isSales ? 1.18 : 1
-      const jellyScale = Math.min(interactiveScale * salesScale, 1.28)
+      const stretch = 1 + velocityMagnitude / 85
+      const squeeze = Math.max(0.82, 1 - velocityMagnitude / 180)
+      const interactiveScale = isInteractive ? 1.42 : 1
+      const salesScale = isSales ? 1.34 : 1
+      const jellyScale = Math.min(interactiveScale * salesScale, 1.9)
+      const blobOpacity = isInteractive ? 0.96 : 0.88
+      const lobeDrift = Math.min(velocityMagnitude * 0.34, 10)
 
       root.style.setProperty('--cursor-pointer-x', `${pointerX}px`)
       root.style.setProperty('--cursor-pointer-y', `${pointerY}px`)
@@ -77,7 +80,10 @@ function CursorAssist() {
       root.style.setProperty('--cursor-blob-y', `${blobY}px`)
       root.style.setProperty('--cursor-droplet-rotation', `${angle}deg`)
       root.style.setProperty('--cursor-droplet-stretch', stretch.toFixed(3))
+      root.style.setProperty('--cursor-droplet-squeeze', squeeze.toFixed(3))
       root.style.setProperty('--cursor-jelly-scale', jellyScale.toFixed(3))
+      root.style.setProperty('--cursor-blob-opacity', blobOpacity.toFixed(3))
+      root.style.setProperty('--cursor-lobe-drift', `${lobeDrift.toFixed(2)}px`)
 
       lastPointerX = pointerX
       lastPointerY = pointerY

@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import './App.css'
 import CustomersPage from './admin/pages/CustomersPage'
 import DashboardPage from './admin/pages/DashboardPage'
@@ -192,6 +192,9 @@ function isNavigationActive(route: RouteKey, itemRoute: RouteKey) {
 function App() {
   const [currentHashRoute, setCurrentHashRoute] = useState(() => getCurrentHashRoute())
   const [route, setRoute] = useState<RouteKey>(() => getRouteFromHash(currentHashRoute))
+  const [isHeaderHidden, setIsHeaderHidden] = useState(false)
+  const [isHeaderSolid, setIsHeaderSolid] = useState(false)
+  const lastScrollYRef = useRef(0)
 
   useEffect(() => {
     const smoothScroll = initSmoothScroll()
@@ -226,6 +229,47 @@ function App() {
     applySEO(currentHashRoute)
   }, [currentHashRoute])
 
+  useEffect(() => {
+    let frame = 0
+
+    const syncHeader = () => {
+      frame = 0
+      const currentY = window.scrollY
+      const delta = currentY - lastScrollYRef.current
+      const nearTop = currentY < 48
+
+      setIsHeaderSolid(currentY > 18)
+
+      if (nearTop) {
+        setIsHeaderHidden(false)
+      } else if (delta > 10 && currentY > 140) {
+        setIsHeaderHidden(true)
+      } else if (delta < -10) {
+        setIsHeaderHidden(false)
+      }
+
+      lastScrollYRef.current = currentY
+    }
+
+    const requestHeaderSync = () => {
+      if (frame) {
+        return
+      }
+
+      frame = window.requestAnimationFrame(syncHeader)
+    }
+
+    syncHeader()
+    window.addEventListener('scroll', requestHeaderSync, { passive: true })
+
+    return () => {
+      if (frame) {
+        window.cancelAnimationFrame(frame)
+      }
+      window.removeEventListener('scroll', requestHeaderSync)
+    }
+  }, [])
+
   return (
     <div className="app-shell">
       <CursorAssist />
@@ -238,7 +282,11 @@ function App() {
           <div className="scroll-progress-fill" data-scroll-progress />
         </div>
       </div>
-      <header className="site-header">
+      <header
+        className={`site-header${route === 'home' ? ' site-header--overlay' : ''}${
+          isHeaderHidden ? ' site-header--hidden' : ''
+        }${isHeaderSolid ? ' site-header--solid' : ''}`}
+      >
         <nav className="site-nav" aria-label="Principal">
           <a aria-label="Ir a la pagina de inicio" className="brand" data-cursor="interactive" href={getPublicHref('home')}>
             RIDAOSPRINT

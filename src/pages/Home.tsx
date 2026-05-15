@@ -4,7 +4,6 @@ import ConversionTrustBlock from '../components/ConversionTrustBlock'
 import FaqBlock from '../components/FaqBlock'
 import HomeVehicleScrollSequence from '../components/home/HomeVehicleScrollSequence'
 import MetricCard from '../components/MetricCard'
-import MouseMotionVisual from '../components/MouseMotionVisual'
 import ObjectionHandlerBlock from '../components/ObjectionHandlerBlock'
 import PageShell from '../components/PageShell'
 import ProcessSteps from '../components/ProcessSteps'
@@ -39,10 +38,7 @@ function Home() {
             title={homeContent?.h1 ? `RidaosPrint ${homeContent.h1}` : 'RidaosPrint DTF por metro.'}
             titleLines={['RIDAOSPRINT', 'DTF POR', 'METRO']}
           />
-
-          <aside className="content-card home-hero-orbit hover-lift motion-card" data-cursor-zone="conversion" tabIndex={0}>
-            <p className="section-label">Pedido directo</p>
-            <h2 className="section-heading">Configura DTF por metro sin pasos innecesarios.</h2>
+          <div className="home-hero-direct-flow" data-cursor-zone="conversion">
             <div className="hero-orbit-stack">
               <div className="hero-orbit-line">
                 <span className="orbit-dot" />
@@ -57,7 +53,7 @@ function Home() {
                 <span>Comprobacion tecnica antes de fabricar</span>
               </div>
             </div>
-            <div className="catalog-cta-row">
+            <div className="catalog-cta-row home-hero-actions">
               <a className="action-button action-link-button" data-cursor="sales" href={getPublicCtaHref('dtf')}>
                 {homeContent?.primaryCta.label ?? 'Configurar DTF'}
               </a>
@@ -65,8 +61,7 @@ function Home() {
                 Ver catalogo
               </a>
             </div>
-            <MouseMotionVisual variant="dtf" />
-          </aside>
+          </div>
         </div>
       </section>
 

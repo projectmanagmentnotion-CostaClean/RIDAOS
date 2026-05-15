@@ -25,7 +25,7 @@ function Carrito() {
         <p className="eyebrow">Carrito</p>
         <h1>Resumen del pedido antes de confirmar.</h1>
         <p>
-          Aqui puedes revisar los articulos configurados antes de pasar al cierre del pedido.
+          Aqui puedes revisar los articulos configurados antes de pasar al cierre de la solicitud.
         </p>
       </div>
 
@@ -117,7 +117,7 @@ function Carrito() {
               className={`action-button action-link-button${items.length === 0 ? ' is-disabled' : ''}`}
               href={items.length === 0 ? publicRoutes.carrito : publicRoutes.checkout}
             >
-              Finalizar compra
+              Continuar al checkout
             </a>
           </div>
         </article>

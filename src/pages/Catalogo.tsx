@@ -54,8 +54,8 @@ function Catalogo() {
     <PageShell className="catalog-page premium-page">
       <SectionHeader
         className="catalog-hero premium-hero type-split"
-        description={featuredContent?.metaDescription ?? 'El catalogo marca la estructura completa del ecommerce: que se compra directo, que pasa a propuesta y que requiere archivo o comprobacion tecnica.'}
-        eyebrow={featuredContent?.eyebrow ?? 'Catalogo pro'}
+        description={featuredContent?.metaDescription ?? 'Elige compra directa cuando el precio ya esta definido y solicita propuesta cuando el proyecto necesita medidas, materiales o instalacion a medida.'}
+        eyebrow={featuredContent?.eyebrow ?? 'Catalogo RidaosPrint'}
         hero
         stickerWords={['directa', 'presupuesto']}
         title="Compra directa donde importa, presupuesto donde aporta valor."
@@ -84,7 +84,7 @@ function Catalogo() {
       <section className="content-section content-grid-two">
         <article className="content-card motion-card">
           <SectionHeader eyebrow="Catalogo visual" title="Lineas principales con lectura clara." />
-          <p>Una vista sobria para distinguir compra directa, presupuesto y comprobacion tecnica sin bloquear la navegacion.</p>
+          <p>Una vista clara para distinguir compra directa, propuesta personalizada y comprobacion tecnica sin perder ritmo al navegar.</p>
           <MouseMotionVisual variant="catalog" />
         </article>
         <article className="content-card seo-content-block">
@@ -100,9 +100,9 @@ function Catalogo() {
 
       {featuredProduct ? (
         <div className="featured-product-panel flagship-metrics">
-          <MetricCard className="featured-metric hover-lift" label="Modalidad" note="Fuente: catalogo central" value={featuredProduct.purchaseMode === 'direct' ? 'Compra directa' : 'Hibrido'} />
-          <MetricCard className="featured-metric hover-lift" label="Base actual" note="Tarifa de partida" value={featuredProduct.basePrice ? `${featuredProduct.basePrice.toFixed(2)} EUR/metro` : 'Consultar'} />
-          <MetricCard className="featured-metric hover-lift" label="Comprobacion" note="Lectura comercial" value={featuredProduct.manualReviewRequired ? 'Asistencia tecnica' : 'Flujo directo'} />
+          <MetricCard className="featured-metric hover-lift" label="Modalidad" note="Como avanza el pedido" value={featuredProduct.purchaseMode === 'direct' ? 'Compra directa' : 'Configuracion con propuesta'} />
+          <MetricCard className="featured-metric hover-lift" label="Precio orientativo" note="Tarifa de partida" value={featuredProduct.basePrice ? `${featuredProduct.basePrice.toFixed(2)} EUR/metro` : 'Consultar'} />
+          <MetricCard className="featured-metric hover-lift" label="Revision" note="Antes de fabricar" value={featuredProduct.manualReviewRequired ? 'Comprobacion tecnica' : 'Flujo directo'} />
         </div>
       ) : null}
 

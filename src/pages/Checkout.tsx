@@ -59,7 +59,7 @@ function Checkout() {
     }
 
     if (cartItems.length === 0) {
-      nextErrors.cart = 'Necesitas al menos un item en el carrito para simular el pedido.'
+      nextErrors.cart = 'Necesitas al menos un articulo en el carrito para continuar.'
     }
 
     setErrors(nextErrors)
@@ -89,7 +89,7 @@ function Checkout() {
         phone: '',
       })
     } catch {
-      setError('checkout', 'No se pudo generar el pedido simulado. Intentalo de nuevo.')
+      setError('checkout', 'No se pudo registrar el pedido en este momento. Intentalo de nuevo.')
       setConfirmation(null)
     } finally {
       setLoading('checkout', false)
@@ -100,9 +100,9 @@ function Checkout() {
     <section className="page">
       <div className="page-hero">
         <p className="eyebrow">Checkout</p>
-        <h1>Confirma tu pedido.</h1>
+        <h1>Confirma tu solicitud.</h1>
         <p>
-          Revisa los datos del cliente, confirma el resumen y deja el pedido listo para seguimiento.
+          Revisa los datos del cliente, confirma el resumen y deja el pedido registrado para seguimiento.
         </p>
       </div>
 
@@ -148,11 +148,11 @@ function Checkout() {
 
             {errors.cart ? <p className="field-error">{errors.cart}</p> : null}
             {uiError ? <p className="field-error">{uiError}</p> : null}
-            {loading ? <p className="inline-notice">Procesando pedido simulado...</p> : null}
+            {loading ? <p className="inline-notice">Registrando tu solicitud...</p> : null}
 
             <div className="form-actions">
               <button className="action-button" disabled={loading} onClick={handleSubmit} type="button">
-                Confirmar pedido
+                Registrar pedido
               </button>
             </div>
           </div>
@@ -163,7 +163,7 @@ function Checkout() {
             <p className="section-label">Resumen de carrito</p>
             {cartItems.length === 0 ? (
               <div className="empty-state">
-                <p>No hay items pendientes en este paso.</p>
+                <p>Tu carrito esta vacio. Anade productos antes de pasar a este paso.</p>
                 <a className="card-link" href={getContinueShoppingHref()}>
                   Volver al catalogo
                 </a>
@@ -194,7 +194,7 @@ function Checkout() {
 
           {confirmation ? (
             <article className="content-card success-card">
-              <p className="section-label">Pedido confirmado</p>
+              <p className="section-label">Solicitud registrada</p>
               <div className="summary-list">
                 <div className="summary-row">
                   <span>Pedido</span>
@@ -214,7 +214,7 @@ function Checkout() {
                 </div>
                 <div className="summary-row">
                   <span>Estado</span>
-                  <strong>{confirmation.status}</strong>
+                  <strong>Recibido para revision</strong>
                 </div>
                 <div className="summary-row">
                   <span>Items</span>

@@ -103,10 +103,8 @@ const navigation = [
   { href: getPublicCtaHref('dtf'), label: 'DTF por metro', route: 'dtf' as const },
   { href: getPublicHref('textil'), label: 'Textil', route: 'textil' as const },
   { href: '#/mi-cuenta', label: 'Mi cuenta', route: 'miCuenta' as const },
-  { href: '#/admin', label: 'Admin', route: 'admin' as const },
   { href: getPublicCtaHref('contacto'), label: 'Contacto', route: 'contacto' as const },
   { href: getPublicCtaHref('carrito'), label: 'Carrito', route: 'carrito' as const },
-  { href: '#/motion-test', label: 'Motion test', route: 'motionTest' as const },
 ]
 
 const buildMarker = `Ridaos build: ${__RIDAOS_BUILD_HASH__}`
@@ -160,7 +158,7 @@ function getRouteFromHash(hash: string): RouteKey {
   return routes[normalizedHash] ?? 'notFound'
 }
 
-function isNavigationActive(route: RouteKey, itemRoute: (typeof navigation)[number]['route']) {
+function isNavigationActive(route: RouteKey, itemRoute: RouteKey) {
   if (itemRoute === 'miCuenta') {
     return route === 'miCuenta' || route === 'misPedidos' || route === 'detallePedido' || route === 'historialArchivos'
   }
@@ -256,15 +254,14 @@ function App() {
       </main>
 
       <footer className="site-footer">
-        <p>Base visual RidaosPrint para catalogo, configuracion y checkout.</p>
+        <p>RidaosPrint centraliza catalogo, configuracion y seguimiento del pedido en un mismo recorrido.</p>
         <div className="footer-links">
           <a data-cursor="invert" href="#/mi-cuenta">Mi cuenta</a>
-          <a data-cursor="invert" href="#/admin">Admin</a>
           <a data-cursor="invert" href={getPublicCtaHref('guia')}>Guia de archivos</a>
           <a data-cursor="invert" href="#/legal">Legal</a>
+          <a data-cursor="invert" href={getPublicCtaHref('contacto')}>Contacto</a>
         </div>
         <p className="build-marker">{buildMarker}</p>
-        <p className="route-marker">Current route: {currentHashRoute}</p>
       </footer>
     </div>
   )

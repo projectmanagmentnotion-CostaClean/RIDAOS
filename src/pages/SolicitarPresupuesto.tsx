@@ -116,7 +116,7 @@ function SolicitarPresupuesto() {
     const nextErrors: Partial<Record<keyof QuoteForm, string>> = {}
 
     if (!form.details.trim()) {
-      nextErrors.details = 'Describe el proyecto para poder simular la propuesta.'
+      nextErrors.details = 'Describe el proyecto para que podamos preparar la propuesta.'
     }
 
     if (!form.nombre.trim()) {
@@ -145,7 +145,7 @@ function SolicitarPresupuesto() {
     <PageShell className="quote-page premium-page">
       <SectionHeader
         className="premium-hero quote-hero"
-        description="Presupuesto preparado desde el catalogo central para servicios, materiales y proyectos a medida."
+        description="Solicita una propuesta para servicios, materiales y proyectos a medida desde un formulario unico y claro."
         eyebrow="Solicitud de presupuesto"
         hero
         title="Proyectos personalizados con lectura comercial directa."
@@ -266,11 +266,11 @@ function SolicitarPresupuesto() {
             />
           ) : (
             <article className="content-card hover-lift" data-animate="panel" tabIndex={0}>
-              <SectionHeader eyebrow="Siguiente paso" title="Presupuesto centralizado desde el catalogo." />
+              <SectionHeader eyebrow="Siguiente paso" title="Solicitud clara para recibir propuesta." />
               <ul className="hint-list">
-                <li>Servicio principal derivado del catalogo central.</li>
-                <li>Condiciones comerciales visibles sin duplicar listas manuales.</li>
-                <li>Contacto listo para respuesta comercial posterior.</li>
+                <li>Selecciona el servicio que mejor encaje con tu proyecto.</li>
+                <li>Resume medidas, soporte y necesidades especiales en un solo envio.</li>
+                <li>El equipo comercial te respondera con una propuesta adaptada.</li>
               </ul>
             </article>
           )}

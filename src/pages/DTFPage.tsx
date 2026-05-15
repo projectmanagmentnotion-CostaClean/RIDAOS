@@ -219,7 +219,7 @@ function DTFPage() {
 
     addToCart(cartItem)
     setErrors({})
-    setCartMessage('Producto anadido al carrito local. Ya puedes revisar el pedido en la cesta.')
+    setCartMessage('Producto anadido al carrito. Ya puedes revisar el pedido antes de confirmarlo.')
   }
 
   const handleSimulateOrder = () => {
@@ -468,7 +468,7 @@ function DTFPage() {
               }
               className="success-card"
               description={`Metros: ${simulation.meters} | Calidad: ${qualityLabels[simulation.quality]} | Urgencia: ${urgencyLabels[simulation.urgency]} | Archivo: ${simulation.fileName} | Total: ${formatCurrency(simulation.total)}`}
-              label="Pedido simulado correctamente"
+              label="Configuracion lista"
               title="La configuracion esta lista para seguir en el flujo."
             />
           ) : null}
@@ -479,8 +479,8 @@ function DTFPage() {
 
       <section className="content-section content-grid-two">
         <article className="content-card motion-card">
-          <SectionHeader eyebrow="Vista del pedido" title="Movimiento visual sin bloquear el configurador." />
-          <p>El seguimiento del cursor solo anima esta capa decorativa. Los campos, enlaces y botones quedan por encima y siguen siendo clicables.</p>
+          <SectionHeader eyebrow="Vista del pedido" title="Movimiento visual al servicio del configurador." />
+          <p>La capa visual acompana el recorrido sin interferir con campos, enlaces ni botones del configurador.</p>
           <MouseMotionVisual variant="dtf" />
         </article>
         <article className="content-card">

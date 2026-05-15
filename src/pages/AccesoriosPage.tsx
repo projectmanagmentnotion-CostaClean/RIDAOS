@@ -72,7 +72,7 @@ function AccesoriosPage() {
         formatLabel: fileName === 'Sin archivo adjunto' ? 'PENDIENTE' : 'ARCHIVO',
       }),
     )
-    setMessage('Accesorio anadido al carrito local.')
+    setMessage('Accesorio anadido al carrito.')
   }
 
   if (!selectedProduct) {
@@ -98,7 +98,7 @@ function AccesoriosPage() {
           </a>
         </>
       }
-      description={content?.intro ?? 'Llaveros y pegatinas con tramos directos del catalogo y salida local al carrito.'}
+      description={content?.intro ?? 'Llaveros, pegatinas y piezas pequenas con configuracion rapida y paso directo al carrito.'}
       entry={selectedProduct}
       eyebrow={content?.eyebrow ?? 'Accesorios'}
       fieldErrors={fieldErrors}

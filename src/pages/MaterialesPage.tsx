@@ -62,7 +62,7 @@ function MaterialesPage() {
     }
 
     addToCart(createCatalogCartItem(selectedProduct, config, estimate))
-    setMessage('Estimacion de materiales anadida al carrito.')
+    setMessage('Material anadido al carrito.')
   }
 
   if (!selectedProduct) {
@@ -88,7 +88,7 @@ function MaterialesPage() {
           </a>
         </>
       }
-      description={content?.intro ?? 'Vinilos y materiales por metro cuadrado con lectura defensiva para soportes que siguen yendo por presupuesto.'}
+      description={content?.intro ?? 'Vinilos y materiales por metro cuadrado con lectura clara de medidas, soporte y siguiente paso comercial.'}
       entry={selectedProduct}
       eyebrow={content?.eyebrow ?? 'Materiales'}
       fieldErrors={fieldErrors}

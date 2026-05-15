@@ -4,13 +4,34 @@ import SectionHeader from '../components/SectionHeader'
 import TrustGrid from '../components/TrustGrid'
 
 const legalSections = [
-  'Aviso legal',
-  'Privacidad',
-  'Cookies',
-  'Terminos y condiciones',
-  'Devoluciones',
-  'Envios y recogida',
-  'Archivos y comprobacion tecnica',
+  {
+    title: 'Aviso legal',
+    summary: 'Identificacion del titular, canales de contacto y alcance general del servicio.',
+  },
+  {
+    title: 'Privacidad',
+    summary: 'Tratamiento de datos de contacto, pedidos, archivos y comunicaciones relacionadas con cada proyecto.',
+  },
+  {
+    title: 'Cookies',
+    summary: 'Informacion sobre analitica, preferencias tecnicas y almacenamiento necesario para el recorrido web.',
+  },
+  {
+    title: 'Terminos y condiciones',
+    summary: 'Condiciones aplicables a configuraciones, presupuestos, fabricacion, aprobaciones y entregas.',
+  },
+  {
+    title: 'Devoluciones',
+    summary: 'Criterios de revision de incidencias y alcance de reposiciones en productos personalizados.',
+  },
+  {
+    title: 'Envios y recogida',
+    summary: 'Plazos orientativos, modalidades de entrega y coordinacion de recogidas cuando corresponda.',
+  },
+  {
+    title: 'Archivos y comprobacion tecnica',
+    summary: 'Responsabilidades sobre formato, contenido, aprobacion de arte final y viabilidad de fabricacion.',
+  },
 ]
 
 function Legal() {
@@ -18,31 +39,31 @@ function Legal() {
     <PageShell className="premium-page legal-page">
       <SectionHeader
         className="premium-hero legal-hero"
-        description="Base para los contenidos juridicos y comerciales que acompanaran el flujo de compra y presupuesto."
+        description="Resumen informativo de los puntos legales y comerciales que acompanaran pedidos, presupuestos, archivos y entregas."
         eyebrow="Legal y confianza"
         hero
-        title="Informacion legal clara antes del texto definitivo."
+        title="Informacion legal clara para revisar antes de comprar."
       />
 
       <section className="content-section" data-animate="reveal">
         <SectionHeader eyebrow="Documentos" title="Bloques legales preparados para completar." />
         <div className="legal-grid">
           {legalSections.map((section) => (
-            <article className="content-card legal-card hover-lift" data-animate="panel" key={section}>
-              <p className="section-label">{section}</p>
-              <p>Texto pendiente de confirmacion legal.</p>
+            <article className="content-card legal-card hover-lift" data-animate="panel" key={section.title}>
+              <p className="section-label">{section.title}</p>
+              <p>{section.summary}</p>
             </article>
           ))}
         </div>
       </section>
 
       <section className="content-section" data-animate="reveal">
-        <SectionHeader eyebrow="Confianza" title="Compromisos visibles para el flujo comercial." />
+        <SectionHeader eyebrow="Confianza" title="Compromisos visibles para pedidos y presupuestos." />
         <TrustGrid />
       </section>
 
       <section className="content-section" data-animate="reveal">
-        <SectionHeader eyebrow="Condiciones comerciales" title="Base comercial del catalogo 2026." />
+        <SectionHeader eyebrow="Condiciones comerciales" title="Condiciones visibles antes de confirmar el pedido." />
         <CommercialNotice />
       </section>
     </PageShell>

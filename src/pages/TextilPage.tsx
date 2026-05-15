@@ -67,7 +67,7 @@ function TextilPage() {
         notes: config.notes?.trim() ?? '',
       }),
     )
-    setMessage('Estimacion textil anadida al carrito local.')
+    setMessage('Producto textil anadido al carrito.')
   }
 
   if (!selectedProduct) {
@@ -93,7 +93,7 @@ function TextilPage() {
           </a>
         </>
       }
-      description={content?.intro ?? 'Prendas y accesorios textiles del catalogo 2026 con lectura directa por cantidad y aviso comercial claro.'}
+      description={content?.intro ?? 'Prendas y accesorios textiles con lectura clara por cantidad, acabado y siguiente paso comercial.'}
       entry={selectedProduct}
       eyebrow={content?.eyebrow ?? 'Estampados / textil'}
       fieldErrors={fieldErrors}

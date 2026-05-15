@@ -69,7 +69,7 @@ function MiCuenta() {
         <div className="account-dashboard-grid">
           <article className="content-card account-link-card hover-lift" data-animate="panel" tabIndex={0}>
             <h3>Pedidos guardados</h3>
-            <p>El historial local ya registra pedidos estructurados desde checkout.</p>
+            <p>Aqui puedes revisar los pedidos registrados y retomar su seguimiento.</p>
             <strong>{orders.length} pedidos</strong>
           </article>
           <article className="content-card account-link-card hover-lift" data-animate="panel" tabIndex={0}>

@@ -1,4 +1,5 @@
 import type { OrderItem } from '../../types/backend'
+import type { OrderLifecycleStatus } from '../../domain/orders/order-status.types'
 
 export type AdminOrderStatus =
   | 'pending_review'
@@ -51,6 +52,7 @@ export type AdminOrder = {
   items: OrderItem[]
   total: number
   status: AdminOrderStatus
+  lifecycleStatus: OrderLifecycleStatus
   priority: AdminOrderPriority
   paymentStatus: AdminPaymentStatus
   productionStatus: AdminProductionStatus

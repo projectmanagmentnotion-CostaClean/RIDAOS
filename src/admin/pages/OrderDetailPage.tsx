@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
+import { getOrderItemSummary } from '../../lib/products'
 import AdminSection from '../components/AdminSection'
 import EmptyAdminState from '../components/EmptyAdminState'
 import OrderStatusBadge from '../components/OrderStatusBadge'
 import TimelineBlock from '../components/TimelineBlock'
-import AdminShell from '../layouts/AdminShell'
 import { orderStatusOptions } from '../config/orderStatuses'
+import AdminShell from '../layouts/AdminShell'
 import {
   addAdminInternalComment,
   getAdminOrderDetail,
@@ -15,12 +16,49 @@ import {
   updateAdminPaymentStatus,
   updateAdminProductionStatus,
 } from '../services/orderAdminService'
-import type { AdminOrder, AdminOrderPriority, AdminPaymentStatus, AdminProductionStatus } from '../types/adminModels'
-import { getOrderItemSummary } from '../../lib/products'
+import type {
+  AdminOrder,
+  AdminOrderPriority,
+  AdminPaymentStatus,
+  AdminProductionStatus,
+} from '../types/adminModels'
+import { getLifecycleDescriptorFromAdminStatus } from '../utils/adminLifecycle'
 
 const priorityOptions: AdminOrderPriority[] = ['low', 'normal', 'high', 'urgent']
 const paymentStatusOptions: AdminPaymentStatus[] = ['pending', 'awaiting_payment', 'paid', 'not_required']
-const productionStatusOptions: AdminProductionStatus[] = ['not_started', 'queued', 'printing', 'finishing', 'quality_check', 'ready', 'completed']
+const productionStatusOptions: AdminProductionStatus[] = [
+  'not_started',
+  'queued',
+  'printing',
+  'finishing',
+  'quality_check',
+  'ready',
+  'completed',
+]
+
+const paymentStatusLabels: Record<AdminPaymentStatus, string> = {
+  pending: 'Pendiente de definicion',
+  awaiting_payment: 'Pendiente de cobro',
+  paid: 'Cobro confirmado',
+  not_required: 'No requiere cobro',
+}
+
+const productionStatusLabels: Record<AdminProductionStatus, string> = {
+  not_started: 'Sin lanzar',
+  queued: 'En cola',
+  printing: 'Produccion en curso',
+  finishing: 'Acabado y remate',
+  quality_check: 'Control de calidad',
+  ready: 'Listo para salida',
+  completed: 'Salida cerrada',
+}
+
+const priorityLabels: Record<AdminOrderPriority, string> = {
+  low: 'Baja',
+  normal: 'Normal',
+  high: 'Alta',
+  urgent: 'Urgente',
+}
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('es-ES', {
@@ -75,11 +113,15 @@ function OrderDetailPage() {
   }, [orderId])
 
   const currentUploads = useMemo(() => order?.items.map((item) => item.artwork) ?? [], [order])
+  const lifecycle = order ? getLifecycleDescriptorFromAdminStatus(order.status) : null
 
   if (!orderId || !order) {
     return (
       <AdminShell description="Detalle interno del pedido y sus acciones internas." title="Pedido">
-        <EmptyAdminState description="Revisa el identificador o vuelve al tablero de pedidos." title="Pedido no encontrado" />
+        <EmptyAdminState
+          description="Revisa el identificador o vuelve al tablero de pedidos."
+          title="Pedido no encontrado"
+        />
       </AdminShell>
     )
   }
@@ -91,13 +133,27 @@ function OrderDetailPage() {
 
   return (
     <AdminShell
-      description="Resumen, timeline, archivos y acciones internas para mover el pedido."
+      description="Resumen interno preparado para revisar archivos, mover estados y dejar trazabilidad clara."
       title={`Pedido ${order.id}`}
     >
       <div className="admin-detail-grid">
         <div className="summary-stack">
           <AdminSection title="Resumen del pedido">
             <article className="content-card admin-detail-card">
+              {lifecycle ? (
+                <div className="admin-lifecycle-spotlight">
+                  <div>
+                    <p className="section-label">Lectura publica</p>
+                    <h3>{lifecycle.publicLabel}</h3>
+                    <p>{lifecycle.customerExplanation}</p>
+                  </div>
+                  <div>
+                    <p className="section-label">Siguiente accion interna</p>
+                    <strong>{lifecycle.nextAction.admin}</strong>
+                    <p>{lifecycle.adminExplanation}</p>
+                  </div>
+                </div>
+              ) : null}
               <div className="summary-list">
                 <div className="summary-row">
                   <span>Cliente</span>
@@ -120,14 +176,25 @@ function OrderDetailPage() {
                   <OrderStatusBadge status={order.status} />
                 </div>
                 <div className="summary-row">
+                  <span>Prioridad</span>
+                  <strong>{priorityLabels[order.priority]}</strong>
+                </div>
+                <div className="summary-row">
                   <span>Pago</span>
-                  <strong>{order.paymentStatus}</strong>
+                  <strong>{paymentStatusLabels[order.paymentStatus]}</strong>
+                </div>
+                <div className="summary-row">
+                  <span>Produccion</span>
+                  <strong>{productionStatusLabels[order.productionStatus]}</strong>
                 </div>
               </div>
             </article>
           </AdminSection>
 
-          <AdminSection title="Items y archivos">
+          <AdminSection
+            description="Lectura del pedido, archivo asociado y orientacion para comprobacion o fabricacion."
+            title="Items y archivos"
+          >
             <div className="admin-list-card">
               {order.items.map((item) => (
                 <article className="admin-list-row admin-list-row-block" key={item.id}>
@@ -135,6 +202,9 @@ function OrderDetailPage() {
                     <strong>{item.productName}</strong>
                     <p>{getOrderItemSummary(item).join(' · ')}</p>
                     <small>{item.artwork.fileName}</small>
+                    <p className="admin-inline-note">
+                      Archivo recibido para comprobacion. {item.artwork.notes || 'Pendiente de dejar comentario interno.'}
+                    </p>
                   </div>
                   <strong>{formatCurrency(item.pricing.total)}</strong>
                 </article>
@@ -142,7 +212,10 @@ function OrderDetailPage() {
             </div>
           </AdminSection>
 
-          <AdminSection title="Timeline del pedido">
+          <AdminSection
+            description="Trazabilidad interna del pedido desde entrada hasta salida."
+            title="Timeline del pedido"
+          >
             <article className="content-card admin-detail-card">
               <TimelineBlock items={order.timeline} />
             </article>
@@ -150,7 +223,10 @@ function OrderDetailPage() {
         </div>
 
         <div className="summary-stack">
-          <AdminSection title="Cambiar estado">
+          <AdminSection
+            description="Ajusta estado, prioridad, cobro o fabricacion sin salir del detalle."
+            title="Cambiar estado"
+          >
             <article className="content-card admin-detail-card">
               <div className="configurator-form">
                 <label className="field-group">
@@ -182,7 +258,7 @@ function OrderDetailPage() {
                   >
                     {priorityOptions.map((priority) => (
                       <option key={priority} value={priority}>
-                        {priority}
+                        {priorityLabels[priority]}
                       </option>
                     ))}
                   </select>
@@ -199,7 +275,7 @@ function OrderDetailPage() {
                   >
                     {paymentStatusOptions.map((status) => (
                       <option key={status} value={status}>
-                        {status}
+                        {paymentStatusLabels[status]}
                       </option>
                     ))}
                   </select>
@@ -216,7 +292,7 @@ function OrderDetailPage() {
                   >
                     {productionStatusOptions.map((status) => (
                       <option key={status} value={status}>
-                        {status}
+                        {productionStatusLabels[status]}
                       </option>
                     ))}
                   </select>
@@ -225,7 +301,10 @@ function OrderDetailPage() {
             </article>
           </AdminSection>
 
-          <AdminSection title="Notas flujos">
+          <AdminSection
+            description="Notas operativas del pedido visibles solo dentro del panel interno."
+            title="Notas de seguimiento"
+          >
             <article className="content-card admin-detail-card">
               <label className="field-group">
                 <span className="field-label">Notas internas</span>
@@ -244,12 +323,15 @@ function OrderDetailPage() {
                 }}
                 type="button"
               >
-                Guardar notas
+                Guardar seguimiento
               </button>
             </article>
           </AdminSection>
 
-          <AdminSection title="Notas de Fabricacion">
+          <AdminSection
+            description="Instrucciones de taller, acabados y salida preparadas para futura capa real."
+            title="Notas de fabricacion"
+          >
             <article className="content-card admin-detail-card">
               <label className="field-group">
                 <span className="field-label">Instrucciones internas</span>
@@ -268,12 +350,15 @@ function OrderDetailPage() {
                 }}
                 type="button"
               >
-                Guardar Fabricacion
+                Guardar fabricacion
               </button>
             </article>
           </AdminSection>
 
-          <AdminSection title="Comentarios internos">
+          <AdminSection
+            description="Historial breve de decisiones o incidencias internas asociadas al pedido."
+            title="Comentarios internos"
+          >
             <article className="content-card admin-detail-card">
               <div className="admin-comment-list">
                 {order.internalComments.map((item) => (
@@ -311,17 +396,20 @@ function OrderDetailPage() {
             </article>
           </AdminSection>
 
-          <AdminSection title="Acciones rapidas">
+          <AdminSection
+            description="Accesos directos para continuar con revision de archivos o cola productiva."
+            title="Acciones rapidas"
+          >
             <div className="catalog-card-actions">
               <a className="action-button action-link-button" href="#/admin/uploads">
                 Revisar archivos
               </a>
               <a className="action-button action-button-muted action-link-button" href="#/admin/production">
-                Ver Fabricacion
+                Ver fabricacion
               </a>
             </div>
             {currentUploads.length > 0 ? (
-              <p className="inline-notice">Archivos vinculados: {currentUploads.length}</p>
+              <p className="inline-notice">Archivos vinculados al pedido: {currentUploads.length}</p>
             ) : null}
           </AdminSection>
         </div>

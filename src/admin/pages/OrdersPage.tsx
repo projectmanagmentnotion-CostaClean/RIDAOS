@@ -6,6 +6,7 @@ import EmptyAdminState from '../components/EmptyAdminState'
 import OrderStatusBadge from '../components/OrderStatusBadge'
 import AdminShell from '../layouts/AdminShell'
 import { orderStatusOptions } from '../config/orderStatuses'
+import { getNextAdminAction, getPublicStatusLabel } from '../selectors/orderSelectors'
 import { listAdminOrders } from '../services/orderAdminService'
 import type { AdminOrder, AdminOrderFilters, AdminOrderPriority } from '../types/adminModels'
 
@@ -47,10 +48,13 @@ function OrdersPage() {
 
   return (
     <AdminShell
-      description="Busqueda y filtros para trabajar pedidos por estado, prioridad o cliente."
+      description="Busqueda interna preparada para priorizar pedidos por estado, urgencia, cliente y siguiente accion."
       title="Pedidos"
     >
-      <AdminSection title="Filtros internos">
+      <AdminSection
+        description="Acota la cola por prioridad, estado o cliente sin perder visibilidad del siguiente paso."
+        title="Filtros internos"
+      >
         <AdminFilterBar>
           <AdminSearchInput
             onChange={(value) => setFilters((current) => ({ ...current, search: value }))}
@@ -98,10 +102,13 @@ function OrdersPage() {
         </AdminFilterBar>
       </AdminSection>
 
-      <AdminSection description="Lista filtrable con foco en lectura rapida." title="Listado de pedidos">
+      <AdminSection
+        description="Cada fila muestra estado interno, lectura publica y accion sugerida para el equipo."
+        title="Listado de pedidos"
+      >
         {orders.length === 0 ? (
           <EmptyAdminState
-            description="Prueba otro estado, prioridad o termino de busqueda."
+            description="Prueba otro estado, prioridad o termino de busqueda para recuperar la cola preparada."
             title="No hay pedidos para estos filtros"
           />
         ) : (
@@ -109,10 +116,11 @@ function OrdersPage() {
             <div className="admin-data-row admin-data-row-head">
               <span>Pedido</span>
               <span>Cliente</span>
-              <span>Estado</span>
+              <span>Estado interno</span>
+              <span>Lectura publica</span>
               <span>Prioridad</span>
               <span>Total</span>
-              <span>Uploads</span>
+              <span>Siguiente accion</span>
               <span />
             </div>
             {orders.map((order) => (
@@ -123,9 +131,10 @@ function OrdersPage() {
                   <small>{order.email}</small>
                 </span>
                 <span><OrderStatusBadge status={order.status} /></span>
+                <span>{getPublicStatusLabel(order)}</span>
                 <span className={`priority-pill priority-${order.priority}`}>{order.priority}</span>
                 <span>{formatCurrency(order.total)}</span>
-                <span>{order.uploadIds.length}</span>
+                <span>{getNextAdminAction(order)}</span>
                 <span>
                   <a className="action-button action-link-button" href={`#/admin/orders/${order.id}`}>
                     Ver pedido

@@ -3816,9 +3816,24 @@ body.lenis {
   margin: 0;
 }
 
+.admin-sidebar-head p,
+.admin-topbar-meta p,
+.admin-topbar-meta span,
+.admin-overview-card p,
+.admin-upload-note p,
+.admin-lifecycle-spotlight p {
+  margin: 0;
+}
+
 .admin-sidebar-nav {
   display: grid;
   gap: 10px;
+}
+
+.admin-sidebar-mode {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .admin-sidebar-link {
@@ -3837,6 +3852,11 @@ body.lenis {
   transform: translateY(-1px);
 }
 
+.admin-sidebar-link.is-active {
+  background: rgba(255, 191, 102, 0.16);
+  border: 1px solid rgba(255, 191, 102, 0.22);
+}
+
 .admin-main {
   display: grid;
   gap: 18px;
@@ -3849,6 +3869,23 @@ body.lenis {
   justify-content: space-between;
   gap: 18px;
   padding: 18px 20px;
+}
+
+.admin-topbar-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.admin-topbar-meta span {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(218, 214, 208, 0.74);
+  font-size: 0.82rem;
 }
 
 .admin-topbar p,
@@ -3875,6 +3912,18 @@ body.lenis {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
+}
+
+.admin-overview-strip {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.admin-overview-card {
+  display: grid;
+  gap: 8px;
+  padding: 18px;
 }
 
 .admin-stat-card {
@@ -3946,6 +3995,11 @@ body.lenis {
 .admin-list-row small,
 .timeline-copy span {
   color: rgba(218, 214, 208, 0.64);
+}
+
+.admin-inline-note {
+  color: rgba(218, 214, 208, 0.74);
+  line-height: 1.5;
 }
 
 .admin-list-row-meta {
@@ -4024,6 +4078,7 @@ body.lenis {
 
 .admin-upload-card,
 .admin-production-card,
+.admin-customer-card,
 .admin-detail-card,
 .empty-admin-state {
   display: grid;
@@ -4035,9 +4090,33 @@ body.lenis {
   min-width: 0;
 }
 
+.admin-upload-note {
+  display: grid;
+  gap: 6px;
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
 .admin-detail-grid {
   grid-template-columns: 1.1fr 0.9fr;
   align-items: start;
+}
+
+.admin-lifecycle-spotlight {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255, 191, 102, 0.08);
+  border: 1px solid rgba(255, 191, 102, 0.14);
+}
+
+.admin-customer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
 }
 
 .timeline-block {
@@ -4095,6 +4174,8 @@ body.lenis {
   .admin-two-column,
   .admin-detail-grid,
   .admin-stat-grid,
+  .admin-overview-strip,
+  .admin-lifecycle-spotlight,
   .admin-filter-bar {
     grid-template-columns: 1fr;
   }

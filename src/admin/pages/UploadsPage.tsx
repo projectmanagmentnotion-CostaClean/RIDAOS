@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import AdminSection from '../components/AdminSection'
 import EmptyAdminState from '../components/EmptyAdminState'
+import { uploadReviewStatusConfig, uploadReviewStatusOptions } from '../config/uploadReviewStatuses'
 import AdminShell from '../layouts/AdminShell'
-import { uploadReviewStatusOptions } from '../config/uploadReviewStatuses'
 import { listAdminUploads, updateAdminUploadNotes, updateAdminUploadStatus } from '../services/orderAdminService'
 import type { AdminUploadRecord, AdminUploadReviewStatus } from '../types/adminModels'
 
@@ -29,12 +29,18 @@ function UploadsPage() {
 
   return (
     <AdminShell
-      description="Cola de archivos con estado de Comprobacion, notas y acceso al pedido relacionado."
+      description="Cola interna de archivos preparada para comprobacion tecnica, correcciones y paso a produccion."
       title="Comprobacion de uploads"
     >
-      <AdminSection title="Archivos recibidos">
+      <AdminSection
+        description="Cada tarjeta resume pedido, producto, estado y comentario de revision."
+        title="Archivos recibidos"
+      >
         {uploads.length === 0 ? (
-          <EmptyAdminState description="Los archivos vinculados a pedidos apareceran aqui." title="No hay uploads disponibles" />
+          <EmptyAdminState
+            description="Los archivos vinculados a pedidos apareceran aqui cuando entren nuevos encargos."
+            title="No hay uploads disponibles"
+          />
         ) : (
           <div className="admin-upload-grid">
             {uploads.map((upload) => (
@@ -44,8 +50,8 @@ function UploadsPage() {
                     <p className="section-label">{upload.formatLabel}</p>
                     <h3>{upload.fileName}</h3>
                   </div>
-                  <span className={`status-badge status-${upload.status === 'approved' ? 'success' : upload.status === 'needs_fix' ? 'danger' : 'warning'}`}>
-                    {upload.status}
+                  <span className={`status-badge status-${uploadReviewStatusConfig[upload.status].colorClass}`}>
+                    {uploadReviewStatusConfig[upload.status].label}
                   </span>
                 </div>
                 <div className="summary-list">
@@ -65,15 +71,25 @@ function UploadsPage() {
                 <div className="admin-upload-preview">
                   {upload.previewable ? (
                     <div className="image-hint image-hint-dtf-sheet">
-                      <span className="image-hint-label">Preview disponible al conectar storage</span>
+                      <span className="image-hint-label">Vista previa preparada para futura conexion de storage</span>
                     </div>
                   ) : (
                     <div className="premium-file-card">
                       <span className="premium-file-format">{upload.formatLabel}</span>
                       <h3>{upload.fileName}</h3>
-                      <p>Vista previa pendiente de integracion real con storage.</p>
+                      <p>El panel deja el hueco listo para previsualizacion cuando entre la capa real de almacenamiento.</p>
                     </div>
                   )}
+                </div>
+                <div className="admin-upload-note">
+                  <p className="section-label">Siguiente accion sugerida</p>
+                  <p>
+                    {upload.status === 'approved'
+                      ? 'Pasar el pedido al siguiente paso comercial o productivo.'
+                      : upload.status === 'needs_fix'
+                        ? 'Documentar la incidencia y esperar nueva version.'
+                        : 'Completar la comprobacion tecnica y dejar observacion clara.'}
+                  </p>
                 </div>
                 <label className="field-group">
                   <span className="field-label">Estado de Comprobacion</span>

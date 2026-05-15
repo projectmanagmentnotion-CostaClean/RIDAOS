@@ -9,6 +9,7 @@ import type {
   AdminUploadOverride,
   AdminUploadRecord,
 } from '../types/adminModels'
+import { getLifecycleDescriptorFromAdminStatus, getLifecycleStatusFromAdminStatus } from '../utils/adminLifecycle'
 
 const previewableTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml', 'image/webp']
 
@@ -77,6 +78,8 @@ function buildTimeline(order: Order, override?: AdminOrderOverride): AdminTimeli
 }
 
 export function mapOrderToAdminOrder(order: Order, override?: AdminOrderOverride): AdminOrder {
+  const status = override?.status ?? order.status
+
   return {
     id: order.id,
     customer: order.customer.name,
@@ -85,7 +88,8 @@ export function mapOrderToAdminOrder(order: Order, override?: AdminOrderOverride
     createdAt: order.createdAt,
     items: order.items,
     total: order.total,
-    status: override?.status ?? order.status,
+    status,
+    lifecycleStatus: getLifecycleStatusFromAdminStatus(status),
     priority: override?.priority ?? 'normal',
     paymentStatus: override?.paymentStatus ?? (order.paymentStatus === 'paid' ? 'paid' : order.paymentStatus === 'disabled' ? 'not_required' : 'pending'),
     productionStatus: override?.productionStatus ?? (order.status === 'completed' ? 'completed' : order.status === 'ready' ? 'ready' : order.status === 'in_production' ? 'printing' : 'not_started'),
@@ -192,4 +196,12 @@ export function getProductionOrders(orders: AdminOrder[]) {
   return orders.filter((order) =>
     ['approved', 'awaiting_payment', 'paid', 'in_production', 'quality_check', 'ready'].includes(order.status),
   )
+}
+
+export function getNextAdminAction(order: AdminOrder) {
+  return getLifecycleDescriptorFromAdminStatus(order.status).nextAction.admin
+}
+
+export function getPublicStatusLabel(order: AdminOrder) {
+  return getLifecycleDescriptorFromAdminStatus(order.status).publicLabel
 }

@@ -30,31 +30,48 @@ function CustomersPage() {
 
   return (
     <AdminShell
-      description="Vista de clientes recientes con volumen de pedidos y valor acumulado."
+      description="Vista interna de clientes preparada para seguimiento comercial, recurrencia y contexto operativo."
       title="Clientes"
     >
-      <AdminSection title="Base de clientes">
+      <AdminSection
+        description="Lectura rapida del cliente, su valor acumulado y ultima actividad registrada."
+        title="Base de clientes"
+      >
         {customers.length === 0 ? (
           <EmptyAdminState description="Los clientes apareceran a medida que entren pedidos." title="No hay clientes disponibles" />
         ) : (
-          <div className="admin-data-table">
-            <div className="admin-data-row admin-data-row-head">
-              <span>Cliente</span>
-              <span>Email</span>
-              <span>Telefono</span>
-              <span>Pedidos</span>
-              <span>Valor</span>
-              <span>Ultimo pedido</span>
-            </div>
+          <div className="admin-customer-grid">
             {customers.map((customer) => (
-              <div className="admin-data-row" key={customer.id}>
-                <span>{customer.name}</span>
-                <span>{customer.email}</span>
-                <span>{customer.phone}</span>
-                <span>{customer.totalOrders}</span>
-                <span>{formatCurrency(customer.totalValue)}</span>
-                <span>{new Date(customer.lastOrderAt).toLocaleDateString('es-ES')}</span>
-              </div>
+              <article className="content-card admin-customer-card" key={customer.id}>
+                <div className="order-card-head">
+                  <div>
+                    <p className="section-label">Cliente activo</p>
+                    <h3>{customer.name}</h3>
+                  </div>
+                  <strong>{customer.totalOrders} pedidos</strong>
+                </div>
+                <div className="summary-list">
+                  <div className="summary-row">
+                    <span>Email</span>
+                    <strong>{customer.email}</strong>
+                  </div>
+                  <div className="summary-row">
+                    <span>Telefono</span>
+                    <strong>{customer.phone}</strong>
+                  </div>
+                  <div className="summary-row">
+                    <span>Valor acumulado</span>
+                    <strong>{formatCurrency(customer.totalValue)}</strong>
+                  </div>
+                  <div className="summary-row">
+                    <span>Ultimo pedido</span>
+                    <strong>{new Date(customer.lastOrderAt).toLocaleDateString('es-ES')}</strong>
+                  </div>
+                </div>
+                <p className="admin-inline-note">
+                  Mantener este bloque preparado permite enchufar historial real, notas y roles sin rehacer la lectura del cliente.
+                </p>
+              </article>
             ))}
           </div>
         )}

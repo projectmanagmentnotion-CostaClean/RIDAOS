@@ -19,6 +19,7 @@ function AdminShell({ title, description, children }: AdminShellProps) {
   const mobileSidebarOpen = useAdminUiStore((state) => state.mobileSidebarOpen)
   const toggleMobileSidebar = useAdminUiStore((state) => state.toggleMobileSidebar)
   const closeMobileSidebar = useAdminUiStore((state) => state.closeMobileSidebar)
+  const currentHash = typeof window !== 'undefined' ? window.location.hash : '#/admin'
 
   return (
     <div className="admin-shell">
@@ -26,10 +27,20 @@ function AdminShell({ title, description, children }: AdminShellProps) {
         <div className="admin-sidebar-head">
           <p className="section-label">RidaosPrint</p>
           <h2>Operaciones</h2>
+          <p>Panel interno preparado para flujo mock, revision, cola de fabricacion y seguimiento.</p>
+        </div>
+        <div className="admin-sidebar-mode">
+          <span className="status-badge status-info">Modo interno preparado</span>
+          <span className="status-badge status-muted">Datos mock activos</span>
         </div>
         <nav aria-label="Admin" className="admin-sidebar-nav">
           {adminNavigation.map((item) => (
-            <a className="admin-sidebar-link" href={item.href} key={item.href} onClick={closeMobileSidebar}>
+            <a
+              className={`admin-sidebar-link${currentHash === item.href ? ' is-active' : ''}`}
+              href={item.href}
+              key={item.href}
+              onClick={closeMobileSidebar}
+            >
               {item.label}
             </a>
           ))}
@@ -42,6 +53,11 @@ function AdminShell({ title, description, children }: AdminShellProps) {
             <p className="section-label">Panel interno</p>
             <h1>{title}</h1>
             <p>{description}</p>
+            <div className="admin-topbar-meta">
+              <span>Admin mock</span>
+              <span>Sin conexiones reales activas</span>
+              <span>Preparado para datos y roles futuros</span>
+            </div>
           </div>
           <button
             aria-expanded={mobileSidebarOpen}

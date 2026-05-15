@@ -240,7 +240,7 @@ function App() {
       </div>
       <header className="site-header">
         <nav className="site-nav" aria-label="Principal">
-          <a aria-label="Ir a la pagina de inicio" className="brand" data-cursor="invert" href={getPublicHref('home')}>
+          <a aria-label="Ir a la pagina de inicio" className="brand" data-cursor="interactive" href={getPublicHref('home')}>
             RIDAOSPRINT
           </a>
           <div className="nav-links">
@@ -248,7 +248,7 @@ function App() {
               <a
                 aria-current={isNavigationActive(route, item.route) ? 'page' : undefined}
                 className={isNavigationActive(route, item.route) ? 'is-active' : undefined}
-                data-cursor="invert"
+                data-cursor="interactive"
                 href={item.href}
                 key={item.href}
               >
@@ -268,10 +268,10 @@ function App() {
       <footer className="site-footer">
         <p>RidaosPrint centraliza catalogo, configuracion y seguimiento del pedido en un mismo recorrido.</p>
         <div className="footer-links">
-          <a data-cursor="invert" href="#/mi-cuenta">Mi cuenta</a>
-          <a data-cursor="invert" href={getPublicCtaHref('guia')}>Guia de archivos</a>
-          <a data-cursor="invert" href="#/legal">Legal</a>
-          <a data-cursor="invert" href={getPublicCtaHref('contacto')}>Contacto</a>
+          <a data-cursor="interactive" href="#/mi-cuenta">Mi cuenta</a>
+          <a data-cursor="interactive" href={getPublicCtaHref('guia')}>Guia de archivos</a>
+          <a data-cursor="interactive" href="#/legal">Legal</a>
+          <a data-cursor="interactive" href={getPublicCtaHref('contacto')}>Contacto</a>
         </div>
         <p className="build-marker">{buildMarker}</p>
       </footer>

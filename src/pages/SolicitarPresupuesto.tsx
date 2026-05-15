@@ -153,13 +153,14 @@ function SolicitarPresupuesto() {
       />
 
       <div className="split-grid quote-layout" data-animate="reveal" data-scroll-section>
-        <article className="content-card quote-form-panel hover-lift" data-animate="panel" tabIndex={0}>
+        <article className="content-card quote-form-panel hover-lift" data-animate="panel" data-cursor-zone="conversion" tabIndex={0}>
           <SectionHeader eyebrow="Servicio" title="Define el alcance del proyecto." />
 
           <div className="service-selector-grid">
             {serviceOptions.map((service) => (
               <button
                 className={`service-selector-card${form.service === service.key ? ' is-selected' : ''}`}
+                data-cursor="sales"
                 key={service.key}
                 onClick={() => setField('service', service.key)}
                 type="button"
@@ -218,7 +219,7 @@ function SolicitarPresupuesto() {
             </label>
 
             <div className="form-actions">
-              <button className="action-button" onClick={handleSubmit} type="button">
+              <button className="action-button" data-cursor="sales" onClick={handleSubmit} type="button">
                 Enviar solicitud
               </button>
             </div>
@@ -228,7 +229,7 @@ function SolicitarPresupuesto() {
         <div className="summary-stack">
           <CommercialNotice items={selectedService?.legalNotes ?? []} />
 
-          <article className="content-card quote-summary-panel hover-lift" data-animate="panel" tabIndex={0}>
+          <article className="content-card quote-summary-panel hover-lift" data-animate="panel" data-cursor-zone="conversion" tabIndex={0}>
             <SectionHeader eyebrow="Resumen comercial" title="Lo que recibira el equipo." />
             <div className="summary-list">
               <div className="summary-row">
@@ -270,7 +271,7 @@ function SolicitarPresupuesto() {
               title="Tu proyecto ya esta listo para recibir una propuesta."
             />
           ) : (
-            <article className="content-card hover-lift" data-animate="panel" tabIndex={0}>
+            <article className="content-card hover-lift" data-animate="panel" data-cursor="interactive" tabIndex={0}>
               <SectionHeader eyebrow="Siguiente paso" title="Solicitud clara para recibir propuesta." />
               <ul className="hint-list">
                 <li>Selecciona el servicio que mejor encaje con tu proyecto.</li>

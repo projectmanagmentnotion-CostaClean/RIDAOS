@@ -283,7 +283,7 @@ function DTFPage() {
       </section>
 
       <div className="split-grid dtf-cockpit-layout dtf-layout" data-animate="reveal" data-motion="poster-stack" data-scroll-scene="dtf-cockpit">
-        <article className="content-card dtf-cockpit-panel hover-lift" data-animate="panel" data-cursor="invert" data-scroll-scene="dtf-form" tabIndex={0}>
+        <article className="content-card dtf-cockpit-panel hover-lift" data-animate="panel" data-cursor-zone="conversion" data-scroll-scene="dtf-form" tabIndex={0}>
           <SectionHeader eyebrow="Configurador" title="Configura tu pedido DTF." />
 
           <div className="configurator-form">
@@ -395,10 +395,10 @@ function DTFPage() {
             </article>
 
             <div className="form-actions">
-              <button className="action-button" data-cursor="invert" onClick={handleSimulateOrder} type="button">
+              <button className="action-button" data-cursor="sales" onClick={handleSimulateOrder} type="button">
                 {dtfContent?.secondaryCta.label ?? 'Preparar pedido'}
               </button>
-              <button className="action-button action-button-muted" data-cursor="invert" onClick={handleAddToCart} type="button">
+              <button className="action-button action-button-muted" data-cursor="sales" onClick={handleAddToCart} type="button">
                 {dtfContent?.primaryCta.label ?? 'Anadir al carrito'}
               </button>
             </div>
@@ -406,10 +406,10 @@ function DTFPage() {
             {cartMessage ? <p className="inline-notice">{cartMessage}</p> : null}
             {cartMessage ? (
               <div className="catalog-cta-row">
-                <a className="card-link" data-cursor="invert" href={publicRoutes.carrito}>
+                <a className="card-link" data-cursor="sales" href={publicRoutes.carrito}>
                   Ir al carrito
                 </a>
-                <a className="card-link" data-cursor="invert" href={publicRoutes.catalogo}>
+                <a className="card-link" data-cursor="interactive" href={publicRoutes.catalogo}>
                   Seguir comprando
                 </a>
               </div>
@@ -453,7 +453,7 @@ function DTFPage() {
           <article
             className="content-card file-preview-card hover-lift premium-preview-panel"
             data-animate="panel"
-            data-cursor="invert"
+            data-cursor="interactive"
             data-depth="0.06"
             data-scroll-scene="dtf-preview"
             tabIndex={0}
@@ -462,7 +462,7 @@ function DTFPage() {
             {filePreview ? (
               <div className="file-preview-stack">
                 {filePreview.canPreview && filePreview.objectUrl ? (
-                  <div className="preview-thumbnail-wrap" data-cursor="invert">
+                  <div className="preview-thumbnail-wrap" data-cursor="interactive">
                     <img
                       alt={`Vista previa de ${filePreview.fileName}`}
                       className="preview-thumbnail"
@@ -503,7 +503,7 @@ function DTFPage() {
             )}
           </article>
 
-          <article className="content-card preflight-card hover-lift premium-preflight-panel" data-animate="panel" data-cursor="invert" data-scroll-scene="dtf-preflight" tabIndex={0}>
+          <article className="content-card preflight-card hover-lift premium-preflight-panel" data-animate="panel" data-cursor="interactive" data-scroll-scene="dtf-preflight" tabIndex={0}>
             <SectionHeader eyebrow="Comprobacion previa" title="Resumen claro antes de confirmar el pedido." />
             <div className="preflight-list">
               <div className="preflight-item">
@@ -529,7 +529,7 @@ function DTFPage() {
             </div>
           </article>
 
-          <article className="content-card hover-lift premium-pricing-panel" data-animate="panel" data-cursor="invert" data-scroll-scene="dtf-pricing" tabIndex={0}>
+          <article className="content-card hover-lift premium-pricing-panel" data-animate="panel" data-cursor-zone="conversion" data-scroll-scene="dtf-pricing" tabIndex={0}>
             <SectionHeader eyebrow="Resumen en vivo" title="Precio listo para revisar." />
             <div className="pricing-metric-grid">
               <MetricCard className="hover-lift" label="Base" value={`${formatCurrency(BASE_PRICE_PER_METER)}/metro`} />

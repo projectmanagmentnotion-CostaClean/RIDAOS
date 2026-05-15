@@ -14,7 +14,7 @@ function CatalogResultPanel({ result, title = 'Resultado comercial', className =
       : 'Ajusta los campos obligatorios para activar la siguiente accion.'
 
   return (
-    <article className={`content-card catalog-result-panel ${className}`.trim()}>
+    <article className={`content-card catalog-result-panel ${className}`.trim()} data-cursor-zone="conversion">
       <p className="section-label">Estimacion</p>
       <h3>{title}</h3>
       <div className="summary-list">

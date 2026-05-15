@@ -16,7 +16,7 @@ function ConfiguratorSupportBlock({ sections }: ConfiguratorSupportBlockProps) {
   return (
     <div className="configurator-support-grid">
       {sections.map((section) => (
-        <article className="content-card configurator-support-card" key={`${section.label}-${section.title}`}>
+        <article className="content-card configurator-support-card" data-cursor="interactive" key={`${section.label}-${section.title}`}>
           <p className="section-label">{section.label}</p>
           <h3>{section.title}</h3>
           <ul className="hint-list">

@@ -44,7 +44,7 @@ function CatalogEntryPageTemplate({
       title={title}
     >
       <div className="split-grid product-layout">
-        <article className="content-card product-config-card">
+        <article className="content-card product-config-card" data-cursor-zone="conversion">
           <SectionHeader eyebrow="Configurador" title={`Configura ${entry.name.toLowerCase()}.`} />
           <div className="configurator-form">
             {entry.configuratorFields.map((field) => (

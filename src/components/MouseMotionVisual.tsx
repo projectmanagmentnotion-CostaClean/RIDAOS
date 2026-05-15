@@ -55,7 +55,6 @@ function MouseMotionVisual({ className, variant = 'dtf' }: MouseMotionVisualProp
       data-motion-layer="active"
       ref={rootRef}
     >
-      <span className="mouse-motion-visual__qa">motion active</span>
       <span className="mouse-motion-visual__plate mouse-motion-visual__plate--primary" />
       <span className="mouse-motion-visual__plate mouse-motion-visual__plate--secondary" />
       <span className="mouse-motion-visual__plate mouse-motion-visual__plate--accent" />

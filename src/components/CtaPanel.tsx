@@ -12,6 +12,7 @@ function CtaPanel({ label, title, description, actions, className }: CtaPanelPro
   return (
     <article
       className={className ? `content-card cta-panel ${className}` : 'content-card cta-panel'}
+      data-cursor-zone="conversion"
       data-animate="panel"
       tabIndex={0}
     >

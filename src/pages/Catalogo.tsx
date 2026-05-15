@@ -82,7 +82,7 @@ function Catalogo() {
       ) : null}
 
       <section className="content-section content-grid-two">
-        <article className="content-card motion-card">
+        <article className="content-card motion-card" data-cursor="interactive">
           <SectionHeader eyebrow="Catalogo visual" title="Oferta clara antes de entrar en detalle." />
           <p>Compra directa donde el precio ya esta definido y propuesta personalizada cuando medidas, acabados o instalacion cambian el proyecto.</p>
           <MouseMotionVisual variant="catalog" />
@@ -132,7 +132,7 @@ function Catalogo() {
         <SectionHeader eyebrow="Categorias" title="Lectura rapida de la oferta." />
         <div className="category-grid">
           {catalogCategories.map((category) => (
-            <article className="content-card category-card hover-lift" key={category.key} tabIndex={0}>
+            <article className="content-card category-card hover-lift" data-cursor="interactive" key={category.key} tabIndex={0}>
               <p className="section-label">{category.label}</p>
               <p>{category.description}</p>
             </article>
@@ -155,6 +155,7 @@ function Catalogo() {
                     className={`product-card catalog-product-card hover-lift${
                       entry.featured ? ' flagship-product-card' : ''
                     }`}
+                    data-cursor-zone="conversion"
                     key={entry.id}
                     tabIndex={0}
                   >
@@ -175,7 +176,7 @@ function Catalogo() {
                       <span>{entry.productionTime ?? 'Plazo segun comprobacion y carga de trabajo'}</span>
                     </div>
                     <div className="catalog-card-actions">
-                      <a className="action-button action-link-button" href={cta.href}>
+                      <a className="action-button action-link-button" data-cursor="sales" href={cta.href}>
                         {cta.label}
                       </a>
                       {entry.route !== cta.href ? (

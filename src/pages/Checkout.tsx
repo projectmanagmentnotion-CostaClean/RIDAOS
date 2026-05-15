@@ -107,7 +107,7 @@ function Checkout() {
       </div>
 
       <div className="split-grid cart-layout">
-        <article className="content-card">
+        <article className="content-card" data-cursor-zone="conversion">
           <p className="section-label">Datos del cliente</p>
           <div className="configurator-form">
             <label className="field-group" htmlFor="checkout-name">
@@ -158,7 +158,7 @@ function Checkout() {
             </ul>
 
             <div className="form-actions">
-              <button className="action-button" disabled={loading} onClick={handleSubmit} type="button">
+              <button className="action-button" data-cursor="sales" disabled={loading} onClick={handleSubmit} type="button">
                 Registrar pedido
               </button>
             </div>
@@ -166,7 +166,7 @@ function Checkout() {
         </article>
 
         <div className="summary-stack">
-          <article className="content-card">
+          <article className="content-card" data-cursor-zone="conversion">
             <p className="section-label">Resumen de carrito</p>
             {cartItems.length === 0 ? (
               <div className="empty-state">
@@ -204,7 +204,7 @@ function Checkout() {
           </article>
 
           {confirmation ? (
-            <article className="content-card success-card">
+            <article className="content-card success-card" data-cursor-zone="conversion">
               <p className="section-label">Solicitud registrada</p>
               <div className="summary-list">
                 <div className="summary-row">

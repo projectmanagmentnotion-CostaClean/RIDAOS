@@ -40,7 +40,7 @@ function Home() {
             titleLines={['RIDAOSPRINT', 'DTF POR', 'METRO']}
           />
 
-          <aside className="content-card home-hero-orbit hover-lift motion-card" tabIndex={0}>
+          <aside className="content-card home-hero-orbit hover-lift motion-card" data-cursor-zone="conversion" tabIndex={0}>
             <p className="section-label">Pedido directo</p>
             <h2 className="section-heading">Configura DTF por metro sin pasos innecesarios.</h2>
             <div className="hero-orbit-stack">
@@ -58,10 +58,10 @@ function Home() {
               </div>
             </div>
             <div className="catalog-cta-row">
-              <a className="action-button action-link-button" href={getPublicCtaHref('dtf')}>
+              <a className="action-button action-link-button" data-cursor="sales" href={getPublicCtaHref('dtf')}>
                 {homeContent?.primaryCta.label ?? 'Configurar DTF'}
               </a>
-              <a className="action-button action-button-muted action-link-button" href={getPublicCtaHref('catalogo')}>
+              <a className="action-button action-button-muted action-link-button" data-cursor="interactive" href={getPublicCtaHref('catalogo')}>
                 Ver catalogo
               </a>
             </div>
@@ -94,7 +94,7 @@ function Home() {
           title="Un frente claro para ventas DTF por metro."
         />
 
-        <article className="content-card home-quick-panel hover-lift" tabIndex={0}>
+        <article className="content-card home-quick-panel hover-lift" data-cursor="interactive" tabIndex={0}>
           <SectionHeader title="Accesos rapidos" />
           <ul className="detail-list">
             <li>

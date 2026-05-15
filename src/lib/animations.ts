@@ -814,7 +814,7 @@ export function initCursorAwareReveals(scope: HTMLElement) {
 
   return gsap.context(() => {
     const targets = gsap.utils
-      .toArray<HTMLElement>('[data-cursor="invert"]', scope)
+      .toArray<HTMLElement>('[data-cursor], [data-cursor-zone]', scope)
       .filter((target) => target.offsetParent !== null)
 
     gsap.set(targets, {

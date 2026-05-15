@@ -42,7 +42,7 @@ function Carrito() {
           ) : (
             <div className="cart-items">
               {items.map((item) => (
-                <article className="cart-item-card" key={item.id}>
+                <article className="cart-item-card" data-cursor="interactive" key={item.id}>
                   <div className="cart-item-header">
                     <div>
                       <p className="section-label">{item.productName}</p>
@@ -99,7 +99,7 @@ function Carrito() {
           )}
         </article>
 
-        <article className="content-card">
+        <article className="content-card" data-cursor-zone="conversion">
           <p className="section-label">Resumen</p>
           <div className="summary-list">
             <div className="summary-row">
@@ -131,11 +131,12 @@ function Carrito() {
             >
               Vaciar carrito
             </button>
-            <a className="action-button action-button-muted action-link-button" href={getContinueShoppingHref()}>
+            <a className="action-button action-button-muted action-link-button" data-cursor="interactive" href={getContinueShoppingHref()}>
               Seguir comprando
             </a>
             <a
               className={`action-button action-link-button${items.length === 0 ? ' is-disabled' : ''}`}
+              data-cursor="sales"
               href={items.length === 0 ? publicRoutes.carrito : publicRoutes.checkout}
             >
               Continuar al checkout

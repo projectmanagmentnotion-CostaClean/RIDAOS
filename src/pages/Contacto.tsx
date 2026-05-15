@@ -3,7 +3,7 @@ import { getQuoteHref, publicRoutes } from '../lib/navigation'
 function Contacto() {
   return (
     <section className="page premium-page">
-      <div className="page-hero premium-hero">
+      <div className="page-hero premium-hero content-readable">
         <p className="eyebrow">Contacto</p>
         <h1>Canal directo para pedidos y presupuestos.</h1>
         <p>
@@ -19,8 +19,8 @@ function Contacto() {
         </div>
       </div>
 
-      <div className="split-grid">
-        <article className="content-card">
+      <div className="split-grid section-fluid">
+        <article className="content-card panel-integrated content-readable">
           <p className="section-label">Canales</p>
           <ul className="hint-list">
             <li>Correo comercial para nuevas solicitudes.</li>
@@ -29,7 +29,7 @@ function Contacto() {
           </ul>
         </article>
 
-        <article className="content-card">
+        <article className="content-card panel-integrated content-readable">
           <p className="section-label">Navegacion relacionada</p>
           <ul className="hint-list">
             <li>

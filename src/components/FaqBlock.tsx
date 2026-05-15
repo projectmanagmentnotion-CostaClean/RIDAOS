@@ -15,7 +15,7 @@ function FaqBlock({ entryId, title = 'FAQ' }: FaqBlockProps) {
 
   return (
     <section className="content-section faq-block">
-      <div className="content-card faq-block-header">
+      <div className="content-card panel-integrated faq-block-header">
         <p className="section-label">FAQ</p>
         <h3>{title}</h3>
       </div>

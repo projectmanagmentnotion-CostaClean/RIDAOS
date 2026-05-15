@@ -49,7 +49,7 @@ function Legal() {
         <SectionHeader eyebrow="Documentos" title="Bloques legales preparados para completar." />
         <div className="legal-grid">
           {legalSections.map((section) => (
-            <article className="content-card legal-card hover-lift" data-animate="panel" key={section.title}>
+            <article className="content-card panel-integrated legal-card hover-lift" data-animate="panel" key={section.title}>
               <p className="section-label">{section.title}</p>
               <p>{section.summary}</p>
             </article>

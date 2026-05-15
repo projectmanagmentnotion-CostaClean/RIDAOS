@@ -43,7 +43,7 @@ function CatalogEntryPageTemplate({
       eyebrow={eyebrow}
       title={title}
     >
-      <div className="split-grid product-layout">
+      <div className="split-grid immersive-grid product-layout">
         <article className="content-card product-config-card" data-cursor-zone="conversion">
           <SectionHeader eyebrow="Configurador" title={`Configura ${entry.name.toLowerCase()}.`} />
           <div className="configurator-form">
@@ -61,7 +61,7 @@ function CatalogEntryPageTemplate({
             <div className="form-actions">{ctaArea}</div>
           </div>
 
-          {supportArea ? <div className="product-config-support">{supportArea}</div> : null}
+          {supportArea ? <div className="product-config-support section-fluid">{supportArea}</div> : null}
         </article>
 
         <div className="summary-stack">

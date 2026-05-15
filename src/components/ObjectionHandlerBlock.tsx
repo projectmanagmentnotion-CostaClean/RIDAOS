@@ -17,13 +17,13 @@ function ObjectionHandlerBlock({
 
   return (
     <section className="content-section objection-block">
-      <div className="content-card objection-block-header">
+      <div className="content-card panel-integrated objection-block-header">
         <p className="section-label">Objeciones</p>
         <h3>{title}</h3>
       </div>
       <div className="faq-grid">
         {objections.map((item) => (
-          <article className="content-card faq-card hover-lift" key={item.title}>
+          <article className="content-card panel-integrated faq-card hover-lift" key={item.title}>
             <h3>{item.title}</h3>
             <p>{item.response}</p>
           </article>

@@ -17,7 +17,7 @@ function CommercialNoticeGroup({
   const resolvedItems = items ?? resolveLegalNoticeItems(noticeKeys)
 
   return (
-    <article className={`content-card commercial-notice commercial-notice-group ${className}`.trim()}>
+    <article className={`content-card panel-integrated content-readable commercial-notice commercial-notice-group ${className}`.trim()}>
       <p className="section-label">Comercial</p>
       <h3>{title}</h3>
       <ul className="hint-list">

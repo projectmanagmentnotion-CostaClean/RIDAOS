@@ -16,7 +16,7 @@ function UploadGuidanceBlock({
   }
 
   return (
-    <article className="content-card upload-guidance-block">
+    <article className="content-card panel-integrated content-readable upload-guidance-block">
       <p className="section-label">Archivo</p>
       <h3>{title}</h3>
       <ul className="hint-list">

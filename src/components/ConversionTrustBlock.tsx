@@ -13,7 +13,7 @@ function ConversionTrustBlock({ entryId, title = 'Confianza comercial' }: Conver
   }
 
   return (
-    <article className="content-card conversion-trust-block">
+    <article className="content-card panel-integrated content-readable conversion-trust-block">
       <p className="section-label">Confianza</p>
       <h3>{title}</h3>
       <ul className="hint-list">

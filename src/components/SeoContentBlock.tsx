@@ -24,7 +24,7 @@ function SeoContentBlock({
   }
 
   return (
-    <article className="content-card seo-content-block">
+    <article className="content-card panel-integrated content-readable seo-content-block">
       <p className="section-label">{mode === 'useCases' ? 'Casos de uso' : 'Beneficios'}</p>
       <h3>{title ?? (mode === 'useCases' ? 'Donde encaja mejor.' : 'Por que encaja en el flujo.')}</h3>
       <ul className="hint-list">

@@ -231,7 +231,7 @@ function DTFPage() {
     }
 
     if (!file) {
-      nextErrors.file = 'Selecciona un archivo antes de simular el pedido.'
+      nextErrors.file = 'Selecciona un archivo antes de preparar el pedido.'
     }
 
     setErrors(nextErrors)
@@ -344,7 +344,7 @@ function DTFPage() {
                 {dtfContent?.primaryCta.label ?? 'Anadir al carrito'}
               </button>
               <button className="action-button" data-cursor="invert" onClick={handleSimulateOrder} type="button">
-                {dtfContent?.secondaryCta.label ?? 'Simular pedido'}
+                {dtfContent?.secondaryCta.label ?? 'Preparar pedido'}
               </button>
             </div>
 

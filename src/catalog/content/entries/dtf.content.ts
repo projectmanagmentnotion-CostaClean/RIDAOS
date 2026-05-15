@@ -53,6 +53,6 @@ export const dtfSeoContent: CatalogSeoContent = {
     label: 'Anadir al carrito',
   },
   secondaryCta: {
-    label: 'Simular pedido',
+    label: 'Preparar pedido',
   },
 }

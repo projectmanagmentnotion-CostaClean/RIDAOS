@@ -10,7 +10,7 @@ const projects = [
     title: 'Rotulacion de flota ligera',
     description: 'Cobertura para vehiculo comercial con lectura de marca clara y acabado resistente.',
     tags: ['laminado', 'instalacion', 'flota'],
-    metric: '+42% visibilidad local',
+    metric: '+42% visibilidad en zona',
   },
   {
     category: 'Textil',

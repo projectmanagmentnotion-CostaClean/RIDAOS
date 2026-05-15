@@ -71,7 +71,7 @@ export const textilEntries: CatalogEntry[] = [
     category: 'textil',
     name: 'Gorra camionero',
     description: 'Modelo camionero con tramo por volumen.',
-    shortDescription: 'Gorras por volumen con salida directa al flujo local.',
+    shortDescription: 'Gorras por volumen con paso directo al carrito.',
     route: '#/producto/textil',
     purchaseMode: 'hybrid',
     pricingMode: 'volume',

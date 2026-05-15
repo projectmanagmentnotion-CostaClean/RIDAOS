@@ -36,7 +36,7 @@ export function getCatalogSections(): CatalogSection[] {
     {
       key: 'direct',
       title: 'Compra directa',
-      description: 'Productos que ya pueden entrar en carrito local.',
+      description: 'Productos que ya pueden pasar directamente al carrito.',
       entries: catalogEntries.filter((entry) => entry.catalogGroups?.includes('direct') && !entry.featured),
     },
     {

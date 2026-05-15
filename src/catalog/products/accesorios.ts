@@ -15,7 +15,7 @@ export const accesoriosEntries: CatalogEntry[] = [
     category: 'accesorios',
     name: 'Llavero 6 x 6 cm',
     description: 'Llavero de metacrilato cortado a laser en tirada de 1000 unidades.',
-    shortDescription: 'Accesorio con tirada fija y salida directa al carrito local.',
+    shortDescription: 'Accesorio con tirada fija y paso directo al carrito.',
     route: '#/producto/accesorios',
     purchaseMode: 'direct',
     pricingMode: 'volume',

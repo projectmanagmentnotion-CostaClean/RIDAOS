@@ -26,7 +26,7 @@ body {
   letter-spacing: 0;
 }
 
-.cursor-assist {
+.oil-cursor-root {
   position: fixed;
   top: 0;
   left: 0;
@@ -34,114 +34,62 @@ body {
   height: 0;
   pointer-events: none;
   z-index: 9999;
+  user-select: none;
 }
 
 @media (hover: hover) and (pointer: fine) {
-  html.has-cursor-assist,
-  html.has-cursor-assist body,
-  html.has-cursor-assist a,
-  html.has-cursor-assist button,
-  html.has-cursor-assist input,
-  html.has-cursor-assist textarea,
-  html.has-cursor-assist select,
-  html.has-cursor-assist [role="button"],
-  html.has-cursor-assist [data-cursor],
-  html.has-cursor-assist [data-cursor-zone] {
+  html.has-oil-cursor,
+  html.has-oil-cursor body,
+  html.has-oil-cursor a,
+  html.has-oil-cursor button,
+  html.has-oil-cursor input,
+  html.has-oil-cursor textarea,
+  html.has-oil-cursor select,
+  html.has-oil-cursor [role="button"],
+  html.has-oil-cursor [data-cursor],
+  html.has-oil-cursor [data-cursor-zone] {
     cursor: none;
   }
 }
 
-.cursor-assist__trail,
-.cursor-assist__droplet,
-.cursor-assist__dot {
+.cursor-oil-trail,
+.cursor-oil-drop,
+.cursor-precision-dot {
   position: absolute;
   top: 0;
   left: 0;
   border-radius: 999px;
   pointer-events: none;
-  transform: translate(-50%, -50%);
+  user-select: none;
+  will-change: transform, opacity, border-radius;
 }
 
-.cursor-assist__trail {
-  width: 22px;
-  height: 22px;
+.cursor-oil-trail {
+  width: 18px;
+  height: 18px;
   background: #fff;
   opacity: 0;
   mix-blend-mode: difference;
   z-index: 0;
-  will-change: transform, opacity;
 }
 
-.cursor-assist__droplet {
-  width: 62px;
-  height: 62px;
-  border: 0;
-  border-radius: var(--cursor-flow-radius, 50%);
+.cursor-oil-drop {
+  width: 48px;
+  height: 48px;
   background: #fff;
-  opacity: 1;
   mix-blend-mode: difference;
-  transform:
-    translate3d(calc(var(--cursor-flow-x, -40px) - 50%), calc(var(--cursor-flow-y, -40px) - 50%), 0)
-    rotate(var(--cursor-flow-rotation, 0deg))
-    scaleX(var(--cursor-flow-stretch, 1))
-    scaleY(var(--cursor-flow-squeeze, 1))
-    scale(var(--cursor-flow-scale, 1));
-  transform-origin: center;
+  opacity: 1;
+  border: 0;
+  border-radius: 50%;
   z-index: 1;
-  will-change: transform, border-radius;
-  animation: cursor-jelly-morph 4.6s ease-in-out infinite alternate;
 }
 
-.cursor-assist__droplet::before,
-.cursor-assist__droplet::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: #fff;
-  pointer-events: none;
-}
-
-.cursor-assist__droplet::before {
-  transform:
-    translate3d(calc(var(--cursor-flow-trail-offset, 0px) * -1), 0, 0)
-    scale(var(--cursor-flow-trail-scale, 0.42), calc(var(--cursor-flow-trail-scale, 0.42) * 0.92))
-    rotate(-8deg);
-  transform-origin: center;
-  opacity: var(--cursor-flow-trail-opacity, 0.22);
-}
-
-.cursor-assist__droplet::after {
-  transform:
-    translate3d(calc(var(--cursor-flow-secondary-offset, 0px) * -1), calc(var(--cursor-flow-secondary-offset, 0px) * 0.12), 0)
-    scale(calc(var(--cursor-flow-trail-scale, 0.42) * 0.54), calc(var(--cursor-flow-trail-scale, 0.42) * 0.7))
-    rotate(12deg);
-  transform-origin: center;
-  opacity: calc(var(--cursor-flow-trail-opacity, 0.22) * 0.7);
-}
-
-.cursor-assist__dot {
-  width: 3px;
-  height: 3px;
-  background: #ffffff;
+.cursor-precision-dot {
+  width: 6px;
+  height: 6px;
+  background: rgba(42, 42, 42, 0.96);
   mix-blend-mode: normal;
-  z-index: 4;
-  transform: translate3d(calc(var(--cursor-pointer-x, -40px) - 50%), calc(var(--cursor-pointer-y, -40px) - 50%), 0);
-  will-change: transform;
-}
-
-@keyframes cursor-jelly-morph {
-  0% {
-    border-radius: 50%;
-  }
-
-  50% {
-    border-radius: 46% 54% 48% 52% / 52% 48% 52% 48%;
-  }
-
-  100% {
-    border-radius: 52% 48% 50% 50% / 48% 52% 48% 52%;
-  }
+  z-index: 3;
 }
 
 .mouse-motion-visual {
@@ -438,9 +386,10 @@ body {
 }
 
 @media (hover: none), (pointer: coarse) {
-  .cursor-assist,
-  .cursor-assist__glow,
-  .cursor-assist__droplet,
+  .oil-cursor-root,
+  .cursor-oil-drop,
+  .cursor-precision-dot,
+  .cursor-oil-trail,
   .mouse-motion-visual__plate,
   .mouse-motion-visual__line {
     display: none;
@@ -3501,9 +3450,6 @@ body.lenis {
     display: none;
   }
 
-  .cursor-assist,
-  .cursor-assist__glow,
-  .cursor-assist__droplet,
   .mouse-motion-visual__plate,
   .mouse-motion-visual__line {
     display: none;

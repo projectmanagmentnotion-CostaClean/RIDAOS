@@ -65,8 +65,8 @@ body {
 }
 
 .cursor-oil-trail {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   background: #fff;
   opacity: 0;
   mix-blend-mode: difference;
@@ -74,14 +74,41 @@ body {
 }
 
 .cursor-oil-drop {
-  width: 48px;
-  height: 48px;
+  width: 54px;
+  height: 54px;
   background: #fff;
   mix-blend-mode: difference;
   opacity: 1;
   border: 0;
   border-radius: 50%;
   z-index: 1;
+  isolation: isolate;
+}
+
+.cursor-oil-drop::before,
+.cursor-oil-drop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.cursor-oil-drop::before {
+  transform:
+    translate3d(calc(var(--cursor-oil-tail-offset, 12px) * -1), 0, 0)
+    scale(var(--cursor-oil-tail-scale, 0.48), calc(var(--cursor-oil-tail-scale, 0.48) * 0.88))
+    rotate(-10deg);
+  opacity: var(--cursor-oil-tail-opacity, 0.18);
+}
+
+.cursor-oil-drop::after {
+  transform:
+    translate3d(calc(var(--cursor-oil-secondary-offset, 6px) * -1), calc(var(--cursor-oil-secondary-offset, 6px) * 0.12), 0)
+    scale(calc(var(--cursor-oil-tail-scale, 0.48) * 0.56), calc(var(--cursor-oil-tail-scale, 0.48) * 0.72))
+    rotate(12deg);
+  opacity: calc(var(--cursor-oil-tail-opacity, 0.18) * 0.72);
 }
 
 .cursor-precision-dot {

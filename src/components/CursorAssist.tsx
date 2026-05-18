@@ -80,15 +80,7 @@ function CursorAssist() {
     let motionTween: gsap.core.Tween | null = null
     let scaleTween: gsap.core.Tween | null = null
     let trailIndex = 0
-    const followDuration = reducedMotion ? 0.14 : 0.42
-    const followerXTo = gsap.quickTo(follower, 'x', {
-      duration: followDuration,
-      ease: reducedMotion ? 'power2.out' : 'power4.out',
-    })
-    const followerYTo = gsap.quickTo(follower, 'y', {
-      duration: followDuration,
-      ease: reducedMotion ? 'power2.out' : 'power4.out',
-    })
+    const followEase = reducedMotion ? 0.34 : 0.16
 
     const setCursorClasses = () => {
       root.classList.add('has-oil-cursor')
@@ -133,28 +125,28 @@ function CursorAssist() {
 
       const now = performance.now()
 
-      if (now - lastTrailTime < 42 || speedRatio < 0.18) {
+      if (now - lastTrailTime < 30 || speedRatio < 0.14) {
         return
       }
 
       lastTrailTime = now
       const trail = trailElements[trailIndex % trailElements.length]
       trailIndex += 1
-      const offset = 10 + speedRatio * 16
-      const startScale = 0.58 + speedRatio * 0.3
+      const offset = 14 + speedRatio * 20
+      const startScale = 0.54 + speedRatio * 0.34
 
       gsap.killTweensOf(trail)
       gsap.set(trail, {
         x: follower.x - directionX * offset,
         y: follower.y - directionY * offset,
-        opacity: 0.22 + speedRatio * 0.16,
+        opacity: 0.12 + speedRatio * 0.22,
         scale: startScale,
       })
       gsap.to(trail, {
         opacity: 0,
-        scale: startScale * 1.18,
-        duration: 0.34,
-        ease: 'power2.out',
+        scale: startScale * 1.28,
+        duration: 0.42,
+        ease: 'power3.out',
         overwrite: true,
       })
     }
@@ -183,8 +175,6 @@ function CursorAssist() {
       setters.dotX(pointer.x)
       setters.dotY(pointer.y)
       syncHoverState(event.target)
-      followerXTo(pointer.x)
-      followerYTo(pointer.y)
     }
 
     const handlePointerLeave = () => {
@@ -199,6 +189,8 @@ function CursorAssist() {
     }
 
     const render = () => {
+      follower.x = gsap.utils.interpolate(follower.x, pointer.x, followEase)
+      follower.y = gsap.utils.interpolate(follower.y, pointer.y, followEase)
       const followerDeltaX = follower.x - lastFollowerX
       const followerDeltaY = follower.y - lastFollowerY
       const followerSpeed = Math.min(Math.hypot(followerDeltaX, followerDeltaY), 32)
@@ -219,6 +211,10 @@ function CursorAssist() {
       setters.dropScaleX(Number((motion.scale * motion.stretch).toFixed(4)))
       setters.dropScaleY(Number((motion.scale * motion.squeeze).toFixed(4)))
       setters.dropBorderRadius(radius)
+      drop.style.setProperty('--cursor-oil-tail-offset', `${12 + speedRatio * 16}px`)
+      drop.style.setProperty('--cursor-oil-tail-scale', (0.48 + speedRatio * 0.34).toFixed(3))
+      drop.style.setProperty('--cursor-oil-tail-opacity', (0.18 + speedRatio * 0.24).toFixed(3))
+      drop.style.setProperty('--cursor-oil-secondary-offset', `${6 + speedRatio * 10}px`)
       spawnTrail(directionX, directionY, speedRatio)
 
       lastFollowerX = follower.x
@@ -253,7 +249,6 @@ function CursorAssist() {
       motionTween?.kill()
       scaleTween?.kill()
       gsap.killTweensOf(trailElements)
-      gsap.killTweensOf(follower)
       clearCursorClasses()
     }
   }, [])

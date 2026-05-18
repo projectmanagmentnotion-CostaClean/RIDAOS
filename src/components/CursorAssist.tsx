@@ -101,8 +101,8 @@ function CursorAssist() {
       const deltaTime = Math.min(now - lastTickTime, 34)
       lastTickTime = now
 
-      blobX += (pointerX - blobX) * 0.16
-      blobY += (pointerY - blobY) * 0.16
+      blobX += (pointerX - blobX) * 0.14
+      blobY += (pointerY - blobY) * 0.14
       velocityX += (pointerX - lastPointerX - velocityX) * 0.12
       velocityY += (pointerY - lastPointerY - velocityY) * 0.12
 
@@ -117,12 +117,15 @@ function CursorAssist() {
       const stillRadius = 50
       const radiusX = stillRadius - speedRatio * 14
       const radiusY = stillRadius + speedRatio * 10
-      const trailScale = 0.42 + speedRatio * 0.28
-      const trailOffset = Math.min(10 + velocityMagnitude * 0.42, 22)
-      const secondaryOffset = Math.min(6 + velocityMagnitude * 0.26, 13)
-      const trailOpacity = 0.22 + speedRatio * 0.22
-      const particleScale = 0.34 + speedRatio * 0.26
-      const shouldSpawnTrail = velocityMagnitude > 2.8 && now - lastTrailTime > 34
+      const trailScale = 0.44 + speedRatio * 0.3
+      const trailOffset = Math.min(12 + velocityMagnitude * 0.48, 26)
+      const secondaryOffset = Math.min(8 + velocityMagnitude * 0.3, 16)
+      const trailOpacity = 0.24 + speedRatio * 0.24
+      const particleScale = 0.4 + speedRatio * 0.28
+      const shouldSpawnTrail = velocityMagnitude > 2.2 && now - lastTrailTime > 30
+      const velocityDirectionX = velocityMagnitude > 0.001 ? velocityX / velocityMagnitude : 0
+      const velocityDirectionY = velocityMagnitude > 0.001 ? velocityY / velocityMagnitude : 0
+      const particleOffset = 10 + speedRatio * 12
 
       root.style.setProperty('--cursor-pointer-x', `${pointerX}px`)
       root.style.setProperty('--cursor-pointer-y', `${pointerY}px`)
@@ -143,8 +146,8 @@ function CursorAssist() {
           age: 0,
           life: trailLifetime,
           scale: particleScale,
-          x: blobX,
-          y: blobY,
+          x: blobX - velocityDirectionX * particleOffset,
+          y: blobY - velocityDirectionY * particleOffset,
         })
         lastTrailTime = now
 

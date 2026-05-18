@@ -63,8 +63,8 @@ body {
 }
 
 .cursor-assist__trail {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   background: #fff;
   opacity: 0;
   mix-blend-mode: difference;
@@ -73,8 +73,8 @@ body {
 }
 
 .cursor-assist__droplet {
-  width: 58px;
-  height: 58px;
+  width: 62px;
+  height: 62px;
   border: 0;
   border-radius: var(--cursor-flow-radius, 50%);
   background: #fff;
@@ -121,11 +121,11 @@ body {
 }
 
 .cursor-assist__dot {
-  width: 4px;
-  height: 4px;
-  background: #0b0b0b;
+  width: 3px;
+  height: 3px;
+  background: #ffffff;
   mix-blend-mode: normal;
-  z-index: 3;
+  z-index: 4;
   transform: translate3d(calc(var(--cursor-pointer-x, -40px) - 50%), calc(var(--cursor-pointer-y, -40px) - 50%), 0);
   will-change: transform;
 }

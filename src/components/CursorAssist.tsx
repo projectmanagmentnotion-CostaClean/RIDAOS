@@ -207,6 +207,11 @@ function CursorAssist() {
         : speedRatio > 0.12
           ? '47% 53% 44% 56% / 57% 43% 53% 47%'
           : '50%'
+      const clipPath = speedRatio > 0.42
+        ? 'polygon(18% 7%, 73% 2%, 96% 24%, 92% 58%, 80% 90%, 42% 100%, 11% 83%, 3% 46%, 8% 15%)'
+        : speedRatio > 0.12
+          ? 'polygon(16% 10%, 76% 3%, 95% 26%, 91% 72%, 66% 97%, 24% 90%, 6% 55%, 8% 20%)'
+          : 'polygon(17% 11%, 74% 5%, 93% 24%, 92% 70%, 68% 95%, 25% 90%, 7% 58%, 9% 19%)'
 
       updateDropShape(speedRatio, angle)
       setters.dropX(follower.x)
@@ -216,12 +221,15 @@ function CursorAssist() {
       setters.dropScaleY(Number((motion.scale * motion.squeeze).toFixed(4)))
       setters.dropBorderRadius(radius)
       setters.dropOpacity(Number(motion.opacity.toFixed(3)))
+      drop.style.clipPath = clipPath
       drop.style.setProperty('--cursor-oil-tail-offset', `${14 + speedRatio * 18}px`)
       drop.style.setProperty('--cursor-oil-tail-scale', (0.54 + speedRatio * 0.38).toFixed(3))
       drop.style.setProperty('--cursor-oil-tail-opacity', (0.16 + speedRatio * 0.22).toFixed(3))
       drop.style.setProperty('--cursor-oil-secondary-offset', `${8 + speedRatio * 12}px`)
       drop.style.setProperty('--cursor-oil-core-scale', (0.42 + speedRatio * 0.08).toFixed(3))
       drop.style.setProperty('--cursor-oil-core-opacity', (0.1 + speedRatio * 0.08).toFixed(3))
+      drop.style.setProperty('--cursor-graffiti-skew', `${-6 + speedRatio * 10}deg`)
+      drop.style.setProperty('--cursor-graffiti-accent-opacity', (0.08 + speedRatio * 0.08).toFixed(3))
       spawnTrail(directionX, directionY, speedRatio)
 
       lastFollowerX = follower.x

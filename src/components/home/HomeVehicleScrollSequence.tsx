@@ -31,8 +31,9 @@ function HomeVehicleScrollSequence() {
     let destroyed = false
     let frameRequest = 0
     let resizeRequest = 0
-    let currentFrame = 0
-    let lastDrawnFrame = -1
+    let requestedFrameNumber = 1
+    let currentFrameNumber = 0
+    let lastDrawnFrameNumber = 0
     let resizeObserver: ResizeObserver | null = null
     const scrollSource =
       root.closest<HTMLElement>('.home-sequence-scroll') ??
@@ -61,43 +62,40 @@ function HomeVehicleScrollSequence() {
       context.imageSmoothingQuality = 'high'
     }
 
-    const findClosestLoadedFrame = (frameIndex: number) => {
-      if (loadedImages.has(frameIndex)) {
-        return loadedImages.get(frameIndex) ?? null
-      }
-
-      for (let offset = 1; offset < FRAME_SEQUENCE_TOTAL; offset += 1) {
-        const previous = frameIndex - offset
-        const next = frameIndex + offset
-
-        if (previous >= 0 && loadedImages.has(previous)) {
-          return loadedImages.get(previous) ?? null
-        }
-
-        if (next < FRAME_SEQUENCE_TOTAL && loadedImages.has(next)) {
-          return loadedImages.get(next) ?? null
-        }
-      }
-
-      return null
+    const clampFrameNumber = (frameNumber: number) => {
+      return Math.min(Math.max(Math.round(frameNumber), 1), FRAME_SEQUENCE_TOTAL)
     }
 
-    const drawFrame = (frameIndex: number) => {
-      const image = findClosestLoadedFrame(frameIndex)
+    const getFrameIndex = (frameNumber: number) => clampFrameNumber(frameNumber) - 1
+
+    const syncCanvasDiagnostics = () => {
+      canvas.dataset.currentFrame = String(currentFrameNumber || 0)
+      canvas.dataset.requestedFrame = String(requestedFrameNumber || 0)
+      canvas.dataset.loadedFrame = String(lastDrawnFrameNumber || 0)
+      root.dataset.vehicleFrame = String(currentFrameNumber || 0)
+    }
+
+    const drawFrame = (frameNumber: number) => {
+      const safeFrameNumber = clampFrameNumber(frameNumber)
+      const image = loadedImages.get(getFrameIndex(safeFrameNumber)) ?? null
 
       if (!image) {
+        syncCanvasDiagnostics()
         return
       }
 
-      if (lastDrawnFrame === frameIndex && loadedImages.has(frameIndex)) {
+      if (lastDrawnFrameNumber === safeFrameNumber) {
+        currentFrameNumber = safeFrameNumber
+        syncCanvasDiagnostics()
         return
       }
 
       resizeCanvas()
       drawCoverImage(canvas, context, image, canvas.width, canvas.height)
-      lastDrawnFrame = frameIndex
-      root.style.setProperty('--vehicle-sequence-progress', String(frameIndex / (FRAME_SEQUENCE_TOTAL - 1)))
-      root.dataset.vehicleFrame = String(frameIndex + 1)
+      currentFrameNumber = safeFrameNumber
+      lastDrawnFrameNumber = safeFrameNumber
+      root.style.setProperty('--vehicle-sequence-progress', String((safeFrameNumber - 1) / (FRAME_SEQUENCE_TOTAL - 1)))
+      syncCanvasDiagnostics()
     }
 
     const getScrollProgress = () => {
@@ -117,12 +115,14 @@ function HomeVehicleScrollSequence() {
 
       resizeRequest = window.requestAnimationFrame(() => {
         resizeRequest = 0
-        lastDrawnFrame = -1
-        drawFrame(currentFrame)
+        lastDrawnFrameNumber = 0
+        drawFrame(currentFrameNumber || requestedFrameNumber)
       })
     }
 
-    const loadFrame = (frameIndex: number) => {
+    const loadFrame = (frameNumber: number, priority: 'high' | 'low' = 'low') => {
+      const frameIndex = getFrameIndex(frameNumber)
+
       if (
         frameIndex < 0 ||
         frameIndex >= FRAME_SEQUENCE_TOTAL ||
@@ -134,7 +134,16 @@ function HomeVehicleScrollSequence() {
 
       const image = new Image()
       image.decoding = 'async'
-      image.loading = frameIndex === 0 ? 'eager' : 'lazy'
+
+      if (priority === 'high' || frameIndex === 0) {
+        image.loading = 'eager'
+      }
+
+      if ('fetchPriority' in image) {
+        ;(image as HTMLImageElement & { fetchPriority?: 'high' | 'low' | 'auto' }).fetchPriority =
+          priority === 'high' ? 'high' : 'low'
+      }
+
       loadingFrames.add(frameIndex)
 
       image.onload = () => {
@@ -145,8 +154,16 @@ function HomeVehicleScrollSequence() {
           return
         }
 
-        if (frameIndex === currentFrame || frameIndex === 0 || !findClosestLoadedFrame(currentFrame)) {
-          window.requestAnimationFrame(() => drawFrame(currentFrame))
+        const loadedFrameNumber = frameIndex + 1
+
+        if (
+          loadedFrameNumber === requestedFrameNumber ||
+          loadedFrameNumber === currentFrameNumber ||
+          lastDrawnFrameNumber === 0
+        ) {
+          window.requestAnimationFrame(() => {
+            drawFrame(requestedFrameNumber)
+          })
         }
       }
 
@@ -157,21 +174,20 @@ function HomeVehicleScrollSequence() {
       image.src = getFrameSequenceUrl(frameIndex)
     }
 
-    const queueNearbyFrames = (frameIndex: number) => {
-      loadFrame(frameIndex)
-      loadFrame(frameIndex - 1)
-      loadFrame(frameIndex + 1)
-      loadFrame(frameIndex - 2)
-      loadFrame(frameIndex + 2)
+    const queueNearbyFrames = (frameNumber: number) => {
+      for (let offset = -3; offset <= 8; offset += 1) {
+        loadFrame(frameNumber + offset, 'high')
+      }
     }
 
     const updateFromScroll = () => {
       frameRequest = 0
       const progress = canAnimateVehicleSequence() ? getScrollProgress() : 0
-      const nextFrame = Math.round(progress * (FRAME_SEQUENCE_TOTAL - 1))
-      currentFrame = nextFrame
-      queueNearbyFrames(nextFrame)
-      drawFrame(nextFrame)
+      const nextFrameNumber = 1 + Math.round(progress * (FRAME_SEQUENCE_TOTAL - 1))
+      requestedFrameNumber = clampFrameNumber(nextFrameNumber)
+      syncCanvasDiagnostics()
+      queueNearbyFrames(requestedFrameNumber)
+      drawFrame(requestedFrameNumber)
     }
 
     const requestScrollUpdate = () => {
@@ -183,17 +199,17 @@ function HomeVehicleScrollSequence() {
     }
 
     const preloadFrames = () => {
-      loadFrame(0)
-      loadFrame(FRAME_SEQUENCE_TOTAL - 1)
+      loadFrame(1, 'high')
+      loadFrame(FRAME_SEQUENCE_TOTAL, 'low')
 
-      let nextFrame = 1
+      let nextFrame = 2
       const batch = () => {
         if (destroyed) {
           return
         }
 
         for (let count = 0; count < 10 && nextFrame < FRAME_SEQUENCE_TOTAL; count += 1, nextFrame += 1) {
-          loadFrame(nextFrame)
+          loadFrame(nextFrame, 'low')
         }
 
         if (nextFrame < FRAME_SEQUENCE_TOTAL) {
@@ -205,6 +221,7 @@ function HomeVehicleScrollSequence() {
     }
 
     resizeCanvas()
+    syncCanvasDiagnostics()
     preloadFrames()
     resizeObserver = new ResizeObserver(requestResize)
     resizeObserver.observe(root)

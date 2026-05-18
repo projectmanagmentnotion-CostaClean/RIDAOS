@@ -124,7 +124,6 @@ body {
   width: 5px;
   height: 5px;
   background: #fffaf2;
-  box-shadow: 0 0 0 1px rgba(7, 7, 7, 0.88);
   mix-blend-mode: normal;
   z-index: 3;
   transform: translate3d(calc(var(--cursor-pointer-x, -40px) - 50%), calc(var(--cursor-pointer-y, -40px) - 50%), 0);

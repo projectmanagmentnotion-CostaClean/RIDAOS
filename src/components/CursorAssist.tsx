@@ -67,24 +67,33 @@ function CursorAssist() {
 
       const angle = Math.atan2(velocityY, velocityX || 0.0001) * (180 / Math.PI)
       const velocityMagnitude = Math.min(Math.hypot(velocityX, velocityY), 26)
-      const stretch = 1 + velocityMagnitude / 85
-      const squeeze = Math.max(0.82, 1 - velocityMagnitude / 180)
-      const interactiveScale = isInteractive ? 1.42 : 1
-      const salesScale = isSales ? 1.34 : 1
-      const jellyScale = Math.min(interactiveScale * salesScale, 1.9)
-      const blobOpacity = isInteractive ? 0.96 : 0.88
-      const lobeDrift = Math.min(velocityMagnitude * 0.34, 10)
+      const speedRatio = Math.min(velocityMagnitude / 24, 1)
+      const stretch = 1 + speedRatio * 0.54
+      const squeeze = 1 - speedRatio * 0.28
+      const interactiveScale = isInteractive ? 1.18 : 1
+      const salesScale = isSales ? 1.18 : 1
+      const flowScale = Math.min(interactiveScale * salesScale, 1.52)
+      const stillRadius = 50
+      const radiusX = stillRadius - speedRatio * 14
+      const radiusY = stillRadius + speedRatio * 10
+      const trailScale = 0.42 + speedRatio * 0.28
+      const trailOffset = Math.min(10 + velocityMagnitude * 0.42, 22)
+      const secondaryOffset = Math.min(6 + velocityMagnitude * 0.26, 13)
+      const trailOpacity = 0.22 + speedRatio * 0.22
 
       root.style.setProperty('--cursor-pointer-x', `${pointerX}px`)
       root.style.setProperty('--cursor-pointer-y', `${pointerY}px`)
-      root.style.setProperty('--cursor-blob-x', `${blobX}px`)
-      root.style.setProperty('--cursor-blob-y', `${blobY}px`)
-      root.style.setProperty('--cursor-droplet-rotation', `${angle}deg`)
-      root.style.setProperty('--cursor-droplet-stretch', stretch.toFixed(3))
-      root.style.setProperty('--cursor-droplet-squeeze', squeeze.toFixed(3))
-      root.style.setProperty('--cursor-jelly-scale', jellyScale.toFixed(3))
-      root.style.setProperty('--cursor-blob-opacity', blobOpacity.toFixed(3))
-      root.style.setProperty('--cursor-lobe-drift', `${lobeDrift.toFixed(2)}px`)
+      root.style.setProperty('--cursor-flow-x', `${blobX}px`)
+      root.style.setProperty('--cursor-flow-y', `${blobY}px`)
+      root.style.setProperty('--cursor-flow-rotation', `${angle}deg`)
+      root.style.setProperty('--cursor-flow-stretch', stretch.toFixed(3))
+      root.style.setProperty('--cursor-flow-squeeze', squeeze.toFixed(3))
+      root.style.setProperty('--cursor-flow-scale', flowScale.toFixed(3))
+      root.style.setProperty('--cursor-flow-radius', `${radiusX.toFixed(1)}% ${radiusY.toFixed(1)}% ${radiusX.toFixed(1)}% ${radiusY.toFixed(1)}% / ${radiusY.toFixed(1)}% ${radiusX.toFixed(1)}% ${radiusY.toFixed(1)}% ${radiusX.toFixed(1)}%`)
+      root.style.setProperty('--cursor-flow-trail-scale', trailScale.toFixed(3))
+      root.style.setProperty('--cursor-flow-trail-offset', `${trailOffset.toFixed(2)}px`)
+      root.style.setProperty('--cursor-flow-secondary-offset', `${secondaryOffset.toFixed(2)}px`)
+      root.style.setProperty('--cursor-flow-trail-opacity', trailOpacity.toFixed(3))
 
       lastPointerX = pointerX
       lastPointerY = pointerY
@@ -127,8 +136,6 @@ function CursorAssist() {
   return (
     <div aria-hidden="true" className="cursor-assist" data-cursor-assist="active">
       <span className="cursor-assist__droplet" />
-      <span className="cursor-assist__glow" />
-      <span className="cursor-assist__ring" />
       <span className="cursor-assist__dot" />
     </div>
   )

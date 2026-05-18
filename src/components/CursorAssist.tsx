@@ -133,19 +133,27 @@ function CursorAssist() {
       const trail = trailElements[trailIndex % trailElements.length]
       trailIndex += 1
       const offset = 14 + speedRatio * 20
-      const startScale = 0.54 + speedRatio * 0.34
+      const angle = Math.atan2(directionY, directionX || 0.0001) * (180 / Math.PI)
+      const startScaleX = 0.78 + speedRatio * 0.7
+      const startScaleY = 0.42 + speedRatio * 0.22
+      const drift = 18 + speedRatio * 26
 
       gsap.killTweensOf(trail)
       gsap.set(trail, {
         x: follower.x - directionX * offset,
         y: follower.y - directionY * offset,
-        opacity: 0.12 + speedRatio * 0.22,
-        scale: startScale,
+        opacity: 0.1 + speedRatio * 0.2,
+        scaleX: startScaleX,
+        scaleY: startScaleY,
+        rotation: angle,
       })
       gsap.to(trail, {
+        x: follower.x - directionX * (offset + drift),
+        y: follower.y - directionY * (offset + drift),
         opacity: 0,
-        scale: startScale * 1.28,
-        duration: 0.42,
+        scaleX: startScaleX * 0.72,
+        scaleY: startScaleY * 0.64,
+        duration: 0.46,
         ease: 'power3.out',
         overwrite: true,
       })
@@ -255,7 +263,7 @@ function CursorAssist() {
 
   return (
     <div aria-hidden="true" className="oil-cursor-root">
-      {Array.from({ length: 6 }, (_, index) => (
+      {Array.from({ length: 8 }, (_, index) => (
         <span
           className="cursor-oil-trail"
           key={`oil-cursor-trail-${index}`}

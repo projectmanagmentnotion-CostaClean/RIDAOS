@@ -65,17 +65,18 @@ body {
 }
 
 .cursor-oil-trail {
-  width: 16px;
-  height: 16px;
+  width: 28px;
+  height: 12px;
   background: #fff;
   opacity: 0;
   mix-blend-mode: difference;
   z-index: 0;
+  transform-origin: center;
 }
 
 .cursor-oil-drop {
-  width: 54px;
-  height: 54px;
+  width: 58px;
+  height: 58px;
   background: #fff;
   mix-blend-mode: difference;
   opacity: 1;
@@ -112,11 +113,11 @@ body {
 }
 
 .cursor-precision-dot {
-  width: 6px;
-  height: 6px;
-  background: rgba(42, 42, 42, 0.96);
+  width: 5px;
+  height: 5px;
+  background: rgba(28, 28, 28, 0.98);
   mix-blend-mode: normal;
-  z-index: 3;
+  z-index: 4;
 }
 
 .mouse-motion-visual {

@@ -302,7 +302,7 @@ function App() {
         </nav>
       </header>
 
-      <main className="page-shell" id="main-content" tabIndex={-1}>
+      <main className={`page-shell${route === 'home' ? ' page-shell--home' : ''}`} id="main-content" tabIndex={-1}>
         <RouteErrorBoundary fallback={<NotFoundPage />}>
           {pageComponents[route] ?? <NotFoundPage />}
         </RouteErrorBoundary>

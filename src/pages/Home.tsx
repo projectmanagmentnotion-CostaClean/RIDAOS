@@ -26,40 +26,42 @@ function Home() {
 
   return (
     <PageShell className="hero-page premium-page home-page">
-      <section className="home-fullscreen-hero">
-        <HomeVehicleScrollSequence />
-        <div className="home-hero-stage">
-          <SectionHeader
-            className="premium-hero home-hero-copy type-split"
-            description={homeContent?.intro ?? 'Compra DTF por metro lineal con una base clara para pedidos agiles: configura tu tirada, sube tus disenos y avanza con una experiencia directa y profesional.'}
-            eyebrow={homeContent?.eyebrow ?? 'DTF por metro para pedidos agiles'}
-            hero
-            stickerWords={['DTF', 'pedido']}
-            title={homeContent?.h1 ? `RidaosPrint ${homeContent.h1}` : 'RidaosPrint DTF por metro.'}
-            titleLines={['RIDAOSPRINT', 'DTF POR', 'METRO']}
-          />
-          <div className="home-hero-direct-flow" data-cursor-zone="conversion">
-            <div className="hero-orbit-stack">
-              <div className="hero-orbit-line">
-                <span className="orbit-dot" />
-                <span>Configuracion por metro lineal</span>
+      <section className="home-sequence-scroll">
+        <div className="home-sequence-sticky">
+          <HomeVehicleScrollSequence />
+          <div className="home-hero-stage">
+            <SectionHeader
+              className="premium-hero home-hero-copy type-split"
+              description={homeContent?.intro ?? 'Compra DTF por metro lineal con una base clara para pedidos agiles: configura tu tirada, sube tus disenos y avanza con una experiencia directa y profesional.'}
+              eyebrow={homeContent?.eyebrow ?? 'DTF por metro para pedidos agiles'}
+              hero
+              stickerWords={['DTF', 'pedido']}
+              title={homeContent?.h1 ? `RidaosPrint ${homeContent.h1}` : 'RidaosPrint DTF por metro.'}
+              titleLines={['RIDAOSPRINT', 'DTF POR', 'METRO']}
+            />
+            <div className="home-hero-direct-flow" data-cursor-zone="conversion">
+              <div className="hero-orbit-stack">
+                <div className="hero-orbit-line">
+                  <span className="orbit-dot" />
+                  <span>Configuracion por metro lineal</span>
+                </div>
+                <div className="hero-orbit-line">
+                  <span className="orbit-dot" />
+                  <span>Archivo y precio visibles antes de avanzar</span>
+                </div>
+                <div className="hero-orbit-line">
+                  <span className="orbit-dot" />
+                  <span>Comprobacion tecnica antes de fabricar</span>
+                </div>
               </div>
-              <div className="hero-orbit-line">
-                <span className="orbit-dot" />
-                <span>Archivo y precio visibles antes de avanzar</span>
+              <div className="catalog-cta-row home-hero-actions">
+                <a className="action-button action-link-button" data-cursor="sales" href={getPublicCtaHref('dtf')}>
+                  {homeContent?.primaryCta.label ?? 'Configurar DTF'}
+                </a>
+                <a className="action-button action-button-muted action-link-button" data-cursor="interactive" href={getPublicCtaHref('catalogo')}>
+                  Ver catalogo
+                </a>
               </div>
-              <div className="hero-orbit-line">
-                <span className="orbit-dot" />
-                <span>Comprobacion tecnica antes de fabricar</span>
-              </div>
-            </div>
-            <div className="catalog-cta-row home-hero-actions">
-              <a className="action-button action-link-button" data-cursor="sales" href={getPublicCtaHref('dtf')}>
-                {homeContent?.primaryCta.label ?? 'Configurar DTF'}
-              </a>
-              <a className="action-button action-button-muted action-link-button" data-cursor="interactive" href={getPublicCtaHref('catalogo')}>
-                Ver catalogo
-              </a>
             </div>
           </div>
         </div>

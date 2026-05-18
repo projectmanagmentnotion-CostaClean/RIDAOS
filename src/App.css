@@ -306,6 +306,7 @@ body {
   pointer-events: none;
 }
 
+.home-sequence-scroll,
 .home-fullscreen-hero {
   position: relative;
   width: 100vw;
@@ -315,7 +316,7 @@ body {
   min-height: 220vh;
   min-height: 220svh;
   max-width: none;
-  margin: calc(var(--page-shell-top) * -1) calc(50% - 50vw) 0;
+  margin: 0 calc(50% - 50vw) calc(clamp(26px, 4vw, 52px) * -1);
   padding: 0;
   display: block;
   overflow: visible;
@@ -323,29 +324,45 @@ body {
   border: 0;
   border-radius: 0;
   box-shadow: none;
+  background: #050505;
 }
 
-.home-fullscreen-hero .home-vehicle-sequence {
+.home-sequence-sticky {
   position: sticky;
-  top: calc(var(--page-shell-top) * -1);
-  margin-top: calc(var(--page-shell-top) * -1);
-  width: 100%;
-  min-width: 100%;
+  top: 0;
+  width: 100vw;
+  min-width: 100vw;
   height: 100vh;
   height: 100svh;
   height: 100dvh;
   min-height: 100vh;
   min-height: 100svh;
   min-height: 100dvh;
+  margin: 0;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.home-sequence-sticky .home-vehicle-sequence,
+.home-fullscreen-hero .home-vehicle-sequence {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  min-width: 100%;
+  height: 100%;
+  min-height: 100%;
+  margin: 0;
   border: 0;
   border-radius: 0;
   box-shadow: none;
 }
 
+.home-sequence-sticky .home-vehicle-sequence__canvas,
 .home-fullscreen-hero .home-vehicle-sequence__canvas {
   transform: none;
 }
 
+.home-sequence-sticky .home-vehicle-sequence__shade,
 .home-fullscreen-hero .home-vehicle-sequence__shade {
   background:
     radial-gradient(circle at 28% 48%, rgba(0, 0, 0, 0.16), transparent 30%),
@@ -353,20 +370,16 @@ body {
     linear-gradient(180deg, rgba(3, 3, 3, 0.34), transparent 44%, rgba(3, 3, 3, 0.8));
 }
 
+.home-sequence-sticky .home-hero-stage,
 .home-fullscreen-hero .home-hero-stage {
-  position: sticky;
-  top: calc(var(--page-shell-top) * -1);
+  position: absolute;
+  inset: 0 auto 0 0;
   z-index: 2;
   width: min(100%, 1120px);
   max-width: 100%;
-  height: 100vh;
-  height: 100svh;
-  height: 100dvh;
-  min-height: 100vh;
-  min-height: 100svh;
-  min-height: 100dvh;
-  margin-top: -100vh;
-  margin-top: -100svh;
+  height: 100%;
+  min-height: 100%;
+  margin: 0;
   align-self: stretch;
   display: flex;
   flex-direction: column;
@@ -471,11 +484,13 @@ body {
     transform: none;
   }
 
+  .home-sequence-scroll,
   .home-fullscreen-hero {
     height: 200svh;
     min-height: 200svh;
   }
 
+  .home-sequence-sticky .home-vehicle-sequence__canvas,
   .home-fullscreen-hero .home-vehicle-sequence__canvas {
     transform: none;
   }
@@ -541,7 +556,7 @@ select {
   min-height: 100vh;
   width: 100%;
   max-width: 100%;
-  overflow: hidden;
+  overflow: visible;
   isolation: isolate;
   background:
     radial-gradient(circle at 20% 0%, rgba(255, 174, 0, 0.16), transparent 28%),
@@ -729,12 +744,18 @@ select {
   padding: var(--page-shell-top) 0 clamp(44px, 7vw, 84px);
   max-width: 100%;
   min-width: 0;
-  overflow-x: hidden;
+  overflow: visible;
+}
+
+.page-shell.page-shell--home {
+  --page-shell-top: 0px;
+  padding-top: 0;
 }
 
 .home-page {
   width: 100%;
   max-width: 100%;
+  overflow: visible;
 }
 
 .page:not(.home-page) {
@@ -742,7 +763,7 @@ select {
   margin-inline: auto;
 }
 
-.home-page > :not(.home-fullscreen-hero) {
+.home-page > :not(.home-fullscreen-hero):not(.home-sequence-scroll) {
   width: min(var(--shell-max-width), calc(100% - (var(--shell-gutter) * 2)));
   margin-inline: auto;
 }
@@ -1317,6 +1338,7 @@ select {
   text-shadow: 0 12px 44px rgba(0, 0, 0, 0.56);
 }
 
+.home-sequence-sticky .home-hero-copy h1,
 .home-fullscreen-hero .home-hero-copy h1 {
   display: grid;
   gap: 0.08em;
@@ -1327,11 +1349,13 @@ select {
   overflow-wrap: normal;
 }
 
+.home-sequence-sticky .home-hero-copy h1 .text-line,
 .home-fullscreen-hero .home-hero-copy h1 .text-line {
   width: max-content;
   max-width: 100%;
 }
 
+.home-sequence-sticky .home-hero-copy h1 .text-word,
 .home-fullscreen-hero .home-hero-copy h1 .text-word {
   max-width: none;
   white-space: nowrap;
@@ -1393,6 +1417,10 @@ select {
 
 .home-page .stats-grid {
   margin-top: clamp(30px, 5vw, 76px);
+}
+
+.home-sequence-scroll + .stats-grid {
+  margin-top: 0;
 }
 
 .home-page .premium-value-card,
@@ -3811,35 +3839,42 @@ body.lenis {
     line-height: 1.7;
   }
 
+  .home-sequence-sticky .home-hero-stage,
   .home-fullscreen-hero .home-hero-stage {
     padding:
       clamp(150px, 19vh, 176px)
       clamp(20px, 5vw, 28px)
       34px;
-    height: 100svh;
-    min-height: 100svh;
-    margin-top: -100svh;
+    height: 100%;
+    min-height: 100%;
+    margin-top: 0;
   }
 
+  .home-sequence-sticky .home-hero-copy h1,
   .home-fullscreen-hero .home-hero-copy h1 {
     font-size: clamp(2.05rem, 10vw, 2.45rem);
     line-height: 1.02;
   }
 
+  .home-sequence-sticky .home-hero-copy .eyebrow,
   .home-fullscreen-hero .home-hero-copy .eyebrow {
     font-size: 0.68rem;
     line-height: 1.35;
   }
 
+  .home-sequence-sticky .home-hero-copy .eyebrow .text-line,
   .home-fullscreen-hero .home-hero-copy .eyebrow .text-line {
     width: auto;
   }
 
+  .home-sequence-sticky .home-hero-copy .eyebrow .text-word,
   .home-fullscreen-hero .home-hero-copy .eyebrow .text-word {
     max-width: 100%;
     white-space: normal;
   }
 
+  .home-sequence-sticky .home-hero-copy .section-copy,
+  .home-sequence-sticky .home-hero-direct-flow,
   .home-fullscreen-hero .home-hero-copy .section-copy,
   .home-fullscreen-hero .home-hero-direct-flow {
     max-width: min(100%, 34ch);

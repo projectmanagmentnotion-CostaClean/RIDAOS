@@ -11,7 +11,6 @@ import {
 function canAnimateVehicleSequence() {
   return (
     typeof window !== 'undefined' &&
-    window.matchMedia('(min-width: 768px)').matches &&
     !shouldReduceFrameSequenceMotion()
   )
 }
@@ -35,7 +34,10 @@ function HomeVehicleScrollSequence() {
     let currentFrame = 0
     let lastDrawnFrame = -1
     let resizeObserver: ResizeObserver | null = null
-    const scrollSource = root.closest<HTMLElement>('.home-fullscreen-hero') ?? root
+    const scrollSource =
+      root.closest<HTMLElement>('.home-sequence-scroll') ??
+      root.closest<HTMLElement>('.home-fullscreen-hero') ??
+      root
     const loadedImages = new Map<number, HTMLImageElement>()
     const loadingFrames = new Set<number>()
 
@@ -101,10 +103,9 @@ function HomeVehicleScrollSequence() {
     const getScrollProgress = () => {
       const viewportHeight = window.innerHeight || 1
       const rect = scrollSource.getBoundingClientRect()
-      const sourceTop = rect.top + window.scrollY
       const sourceHeight = Math.max(scrollSource.offsetHeight, rect.height)
-      const travelDistance = Math.max(viewportHeight * 0.9, sourceHeight - viewportHeight)
-      const raw = (window.scrollY - sourceTop) / travelDistance
+      const travelDistance = Math.max(1, sourceHeight - viewportHeight)
+      const raw = Math.min(Math.max(-rect.top, 0), travelDistance) / travelDistance
 
       return Math.min(Math.max(raw, 0), 1)
     }

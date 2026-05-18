@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 function canUseCursorAssist() {
   return (
@@ -9,6 +9,8 @@ function canUseCursorAssist() {
 }
 
 function CursorAssist() {
+  const trailRefs = useRef<Array<HTMLSpanElement | null>>([])
+
   useEffect(() => {
     if (!canUseCursorAssist()) {
       return
@@ -42,6 +44,17 @@ function CursorAssist() {
     let isInteractive = false
     let isSales = false
     let animationFrame = 0
+    let lastTickTime = performance.now()
+    let lastTrailTime = 0
+    const trailLifetime = 360
+    const maxTrailParticles = 8
+    const trailParticles: Array<{
+      age: number
+      life: number
+      scale: number
+      x: number
+      y: number
+    }> = []
 
     const syncHoverState = (target: EventTarget | null) => {
       const element = target instanceof Element ? target : null
@@ -59,7 +72,35 @@ function CursorAssist() {
       }
     }
 
+    const syncTrail = () => {
+      for (let index = 0; index < trailRefs.current.length; index += 1) {
+        const element = trailRefs.current[index]
+        const particle = trailParticles[index]
+
+        if (!element) {
+          continue
+        }
+
+        if (!particle) {
+          element.style.opacity = '0'
+          element.style.transform = 'translate3d(-120px, -120px, 0) scale(0.2)'
+          continue
+        }
+
+        const progress = Math.min(particle.age / particle.life, 1)
+        const opacity = Math.max(0, 0.22 * (1 - progress))
+        const scale = particle.scale * (1 + progress * 0.22)
+
+        element.style.opacity = opacity.toFixed(3)
+        element.style.transform = `translate3d(${particle.x}px, ${particle.y}px, 0) scale(${scale.toFixed(3)})`
+      }
+    }
+
     const tick = () => {
+      const now = performance.now()
+      const deltaTime = Math.min(now - lastTickTime, 34)
+      lastTickTime = now
+
       blobX += (pointerX - blobX) * 0.16
       blobY += (pointerY - blobY) * 0.16
       velocityX += (pointerX - lastPointerX - velocityX) * 0.12
@@ -80,6 +121,8 @@ function CursorAssist() {
       const trailOffset = Math.min(10 + velocityMagnitude * 0.42, 22)
       const secondaryOffset = Math.min(6 + velocityMagnitude * 0.26, 13)
       const trailOpacity = 0.22 + speedRatio * 0.22
+      const particleScale = 0.34 + speedRatio * 0.26
+      const shouldSpawnTrail = velocityMagnitude > 2.8 && now - lastTrailTime > 34
 
       root.style.setProperty('--cursor-pointer-x', `${pointerX}px`)
       root.style.setProperty('--cursor-pointer-y', `${pointerY}px`)
@@ -94,6 +137,31 @@ function CursorAssist() {
       root.style.setProperty('--cursor-flow-trail-offset', `${trailOffset.toFixed(2)}px`)
       root.style.setProperty('--cursor-flow-secondary-offset', `${secondaryOffset.toFixed(2)}px`)
       root.style.setProperty('--cursor-flow-trail-opacity', trailOpacity.toFixed(3))
+
+      if (shouldSpawnTrail) {
+        trailParticles.unshift({
+          age: 0,
+          life: trailLifetime,
+          scale: particleScale,
+          x: blobX,
+          y: blobY,
+        })
+        lastTrailTime = now
+
+        if (trailParticles.length > maxTrailParticles) {
+          trailParticles.length = maxTrailParticles
+        }
+      }
+
+      for (let index = trailParticles.length - 1; index >= 0; index -= 1) {
+        trailParticles[index].age += deltaTime
+
+        if (trailParticles[index].age >= trailParticles[index].life) {
+          trailParticles.splice(index, 1)
+        }
+      }
+
+      syncTrail()
 
       lastPointerX = pointerX
       lastPointerY = pointerY
@@ -135,6 +203,15 @@ function CursorAssist() {
 
   return (
     <div aria-hidden="true" className="cursor-assist" data-cursor-assist="active">
+      {Array.from({ length: 8 }, (_, index) => (
+        <span
+          className="cursor-assist__trail"
+          key={`cursor-trail-${index}`}
+          ref={(element) => {
+            trailRefs.current[index] = element
+          }}
+        />
+      ))}
       <span className="cursor-assist__droplet" />
       <span className="cursor-assist__dot" />
     </div>

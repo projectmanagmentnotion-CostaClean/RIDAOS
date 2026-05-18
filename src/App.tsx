@@ -277,11 +277,6 @@ function App() {
         Saltar al contenido
       </a>
       <div className="app-grid" aria-hidden="true" />
-      <div className="scroll-progress-shell" aria-hidden="true">
-        <div className="scroll-progress-rail">
-          <div className="scroll-progress-fill" data-scroll-progress />
-        </div>
-      </div>
       <header
         className={`site-header${route === 'home' ? ' site-header--overlay' : ''}${
           isHeaderHidden ? ' site-header--hidden' : ''

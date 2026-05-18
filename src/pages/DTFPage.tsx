@@ -541,7 +541,7 @@ function DTFPage() {
               <li>Calidad: {qualityLabels[quality]}</li>
               <li>Urgencia: {urgencyLabels[urgency]}</li>
               <li>Archivo: {selectedFile ? selectedFile.name : 'Pendiente de carga'}</li>
-              <li>Notas: {notes.trim() ? 'Incluidas en esta simulacion' : 'Sin notas adicionales'}</li>
+              <li>Notas: {notes.trim() ? 'Incluidas en esta configuracion' : 'Sin notas adicionales'}</li>
             </ul>
             <p className="catalog-result-caption">
               Referencia comercial antes de la comprobacion tecnica final del archivo y de la confirmacion de produccion.

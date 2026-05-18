@@ -218,7 +218,6 @@ function HomeVehicleScrollSequence() {
     <section className="home-vehicle-sequence" data-home-vehicle-sequence="active" ref={rootRef}>
       <canvas aria-hidden="true" className="home-vehicle-sequence__canvas" ref={canvasRef} />
       <div className="home-vehicle-sequence__shade" aria-hidden="true" />
-      <div className="home-vehicle-sequence__scan" aria-hidden="true" />
     </section>
   )
 }

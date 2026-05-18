@@ -33,8 +33,8 @@ function animateHeadingTargets(scope: HTMLElement) {
 
     gsap.from(segments, {
       autoAlpha: 0,
-      yPercent: 120,
-      duration: 0.9,
+      yPercent: 12,
+      duration: 0.62,
       ease: 'power3.out',
       stagger: 0.05,
       clearProps: 'opacity,transform',
@@ -99,9 +99,9 @@ export function initHeroAnimation(scope: HTMLElement) {
       gsap.from(heroChildren, {
         autoAlpha: 0,
         ...baseRevealSettings,
-        duration: 1,
+        duration: 0.72,
         stagger: 0.12,
-        y: 42,
+        y: 18,
         immediateRender: false,
       })
     })
@@ -129,7 +129,7 @@ export function initRevealAnimations(scope: HTMLElement) {
       ...baseRevealSettings,
       immediateRender: false,
       stagger: 0.08,
-      y: 40,
+      y: 16,
     })
   }, scope)
 }
@@ -157,7 +157,7 @@ export function initPanelAnimations(scope: HTMLElement) {
       immediateRender: false,
       scale: 0.985,
       stagger: 0.06,
-      y: 18,
+      y: 12,
     })
   }, scope)
 }
@@ -182,10 +182,10 @@ export function initLetterMotion(scope: HTMLElement) {
       }
 
       gsap.from(segments, {
-        autoAlpha: 0,
-        yPercent: 118,
-        rotate: () => gsap.utils.random(-7, 7),
-        scale: () => gsap.utils.random(0.94, 1.04),
+      autoAlpha: 0,
+        yPercent: 12,
+        rotate: 0,
+        scale: 1,
         stagger: {
           each: 0.045,
           from: 'start',
@@ -310,7 +310,7 @@ export function initUrbanTextMotion(scope: HTMLElement) {
           return undefined
         }
 
-        const intensity = context.conditions?.desktop ? 1 : 0.68
+        const intensity = context.conditions?.desktop ? 0.42 : 0.24
 
         const heroStages = gsap.utils
           .toArray<HTMLElement>('[data-motion="hero-stage"]', scope)
@@ -387,12 +387,12 @@ export function initUrbanTextMotion(scope: HTMLElement) {
 
           heroTimeline.fromTo(
             lines,
-            {
-              yPercent: 130,
-              xPercent: (index) => (index % 2 === 0 ? -6 : 7),
-              rotate: (index) => (index % 2 === 0 ? -3.5 : 3.5),
-              autoAlpha: 0.28,
-            },
+              {
+                yPercent: 14,
+                xPercent: (index) => (index % 2 === 0 ? -1.5 : 1.5),
+                rotate: 0,
+                autoAlpha: 0.9,
+              },
             {
               yPercent: 0,
               xPercent: 0,
@@ -415,15 +415,13 @@ export function initUrbanTextMotion(scope: HTMLElement) {
 
           gsap.fromTo(
             words,
-            {
-              yPercent: 118,
-              clipPath: 'inset(0 0 100% 0)',
-              autoAlpha: 0.42,
-            },
-            {
-              yPercent: 0,
-              clipPath: 'inset(0 0 0% 0)',
-              autoAlpha: 1,
+              {
+                yPercent: 10,
+                autoAlpha: 0.88,
+              },
+              {
+                yPercent: 0,
+                autoAlpha: 1,
               stagger: 0.035,
               ease: 'none',
               immediateRender: false,
@@ -459,9 +457,9 @@ export function initUrbanTextMotion(scope: HTMLElement) {
             glitchTimeline.fromTo(
               outline,
               {
-                x: -16 * intensity,
-                y: 12 * intensity,
-                autoAlpha: 0.45,
+                x: -6 * intensity,
+                y: 4 * intensity,
+                autoAlpha: 0.6,
               },
               {
                 x: 0,
@@ -606,21 +604,19 @@ export function initUrbanTextMotion(scope: HTMLElement) {
           .toArray<HTMLElement>('[data-motion="poster-stack"]', scope)
           .filter((target) => target.offsetParent !== null)
 
-        posterSections.forEach((section, index) => {
+        posterSections.forEach((section) => {
           gsap.fromTo(
             section,
-            {
-              y: 34 + index * 4,
-              scale: 0.985,
-              rotate: index % 2 === 0 ? -0.7 : 0.7,
-              clipPath: 'inset(4% 4% 4% 4% round 28px)',
-              autoAlpha: 0.82,
+          {
+              y: 12,
+              scale: 1,
+              rotate: 0,
+              autoAlpha: 0.92,
             },
             {
               y: 0,
               scale: 1,
               rotate: 0,
-              clipPath: 'inset(0% 0% 0% 0% round 28px)',
               autoAlpha: 1,
               ease: 'none',
               immediateRender: false,
@@ -792,8 +788,8 @@ export function initEditorialRows(scope: HTMLElement) {
 
       gsap.from(targets, {
         autoAlpha: 0,
-        y: 34,
-        duration: 0.88,
+        y: 14,
+        duration: 0.68,
         delay: index * 0.05,
         ease: 'power3.out',
         stagger: 0.06,
@@ -901,12 +897,10 @@ export function initScrollNarrative(scope: HTMLElement) {
           sceneTimeline.fromTo(
             mask,
             {
-              clipPath: 'inset(10% 10% 10% 10% round 28px)',
-              scale: 0.94,
-            },
-            {
-              clipPath: 'inset(0% 0% 0% 0% round 28px)',
-              scale: 1,
+                scale: 0.98,
+              },
+              {
+                scale: 1,
               ease: 'none',
               immediateRender: false,
             },

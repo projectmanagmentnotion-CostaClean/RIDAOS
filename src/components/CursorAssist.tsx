@@ -14,8 +14,9 @@ function CursorAssist() {
       return
     }
 
-    document.body.classList.add('has-cursor-assist')
     const root = document.documentElement
+    root.classList.add('has-cursor-assist')
+    document.body.classList.add('has-cursor-assist')
     const interactiveSelector = [
       'a',
       'button',
@@ -113,6 +114,7 @@ function CursorAssist() {
     document.addEventListener('pointerleave', handlePointerLeave)
 
     return () => {
+      root.classList.remove('has-cursor-assist')
       document.body.classList.remove('has-cursor-assist', 'cursor-assist-interactive', 'cursor-assist-sales')
       window.cancelAnimationFrame(animationFrame)
       window.removeEventListener('pointermove', handlePointerMove)

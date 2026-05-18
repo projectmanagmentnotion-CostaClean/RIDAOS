@@ -35,6 +35,7 @@ function HomeVehicleScrollSequence() {
     let currentFrame = 0
     let lastDrawnFrame = -1
     let resizeObserver: ResizeObserver | null = null
+    const scrollSource = root.closest<HTMLElement>('.home-fullscreen-hero') ?? root
     const loadedImages = new Map<number, HTMLImageElement>()
     const loadingFrames = new Set<number>()
 
@@ -98,11 +99,12 @@ function HomeVehicleScrollSequence() {
     }
 
     const getScrollProgress = () => {
-      const rect = root.getBoundingClientRect()
       const viewportHeight = window.innerHeight || 1
-      const rootTop = rect.top + window.scrollY
-      const travelDistance = Math.max(viewportHeight * 0.75, rect.height - viewportHeight * 0.14)
-      const raw = (window.scrollY - rootTop) / travelDistance
+      const rect = scrollSource.getBoundingClientRect()
+      const sourceTop = rect.top + window.scrollY
+      const sourceHeight = Math.max(scrollSource.offsetHeight, rect.height)
+      const travelDistance = Math.max(viewportHeight * 0.9, sourceHeight - viewportHeight)
+      const raw = (window.scrollY - sourceTop) / travelDistance
 
       return Math.min(Math.max(raw, 0), 1)
     }

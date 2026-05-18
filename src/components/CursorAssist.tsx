@@ -57,7 +57,7 @@ function CursorAssist() {
     const trailElements = trailRefs.current.filter((element): element is HTMLSpanElement => Boolean(element))
     const pointer = { x: window.innerWidth * 0.5, y: window.innerHeight * 0.5 }
     const follower = { x: pointer.x, y: pointer.y }
-    const motion = { scale: 1, stretch: 1, squeeze: 1, rotation: 0, morph: 0 }
+    const motion = { scale: 1, stretch: 1, squeeze: 1, rotation: 0, morph: 0, opacity: 1 }
     const setters = {
       dropX: gsap.quickSetter(drop, 'x', 'px'),
       dropY: gsap.quickSetter(drop, 'y', 'px'),
@@ -65,6 +65,7 @@ function CursorAssist() {
       dropScaleX: gsap.quickSetter(drop, 'scaleX'),
       dropScaleY: gsap.quickSetter(drop, 'scaleY'),
       dropBorderRadius: gsap.quickSetter(drop, 'borderRadius'),
+      dropOpacity: gsap.quickSetter(drop, 'opacity'),
     }
 
     let rafId = 0
@@ -91,10 +92,11 @@ function CursorAssist() {
     }
 
     const updateTargetScale = () => {
-      const targetScale = isSales ? 1.72 : isInteractive ? 1.32 : 1
+      const targetScale = isSales ? 1.78 : isInteractive ? 1.36 : 1
       scaleTween?.kill()
       scaleTween = gsap.to(motion, {
         scale: targetScale,
+        opacity: isSales ? 0.98 : isInteractive ? 0.94 : 0.9,
         duration: reducedMotion ? 0.16 : 0.24,
         ease: 'power3.out',
         overwrite: true,
@@ -128,17 +130,17 @@ function CursorAssist() {
       lastTrailTime = now
       const trail = trailElements[trailIndex % trailElements.length]
       trailIndex += 1
-      const offset = 14 + speedRatio * 20
+      const offset = 18 + speedRatio * 24
       const angle = Math.atan2(directionY, directionX || 0.0001) * (180 / Math.PI)
-      const startScaleX = 0.78 + speedRatio * 0.7
-      const startScaleY = 0.42 + speedRatio * 0.22
-      const drift = 18 + speedRatio * 26
+      const startScaleX = 0.94 + speedRatio * 0.86
+      const startScaleY = 0.28 + speedRatio * 0.18
+      const drift = 24 + speedRatio * 34
 
       gsap.killTweensOf(trail)
       gsap.set(trail, {
         x: follower.x - directionX * offset,
         y: follower.y - directionY * offset,
-        opacity: 0.1 + speedRatio * 0.2,
+        opacity: 0.08 + speedRatio * 0.16,
         scaleX: startScaleX,
         scaleY: startScaleY,
         rotation: angle,
@@ -149,15 +151,15 @@ function CursorAssist() {
         opacity: 0,
         scaleX: startScaleX * 0.72,
         scaleY: startScaleY * 0.64,
-        duration: 0.46,
+        duration: 0.52,
         ease: 'power3.out',
         overwrite: true,
       })
     }
 
     const updateDropShape = (speedRatio: number, angle: number) => {
-      const targetStretch = reducedMotion ? 1 : 1 + speedRatio * 0.42
-      const targetSqueeze = reducedMotion ? 1 : 1 - speedRatio * 0.24
+      const targetStretch = reducedMotion ? 1 : 1 + speedRatio * 0.48
+      const targetSqueeze = reducedMotion ? 1 : 1 - speedRatio * 0.26
       const targetRotation = reducedMotion ? 0 : angle
       const targetMorph = reducedMotion ? 0 : speedRatio
 
@@ -196,14 +198,14 @@ function CursorAssist() {
       const followerDeltaX = follower.x - lastFollowerX
       const followerDeltaY = follower.y - lastFollowerY
       const followerSpeed = Math.min(Math.hypot(followerDeltaX, followerDeltaY), 32)
-      const speedRatio = clamp(followerSpeed / 18, 0, 1)
+      const speedRatio = clamp(followerSpeed / 16, 0, 1)
       const angle = Math.atan2(followerDeltaY, followerDeltaX || 0.0001) * (180 / Math.PI)
       const directionX = followerSpeed > 0.001 ? followerDeltaX / followerSpeed : 0
       const directionY = followerSpeed > 0.001 ? followerDeltaY / followerSpeed : 0
       const radius = speedRatio > 0.42
-        ? '42% 58% 47% 53% / 59% 41% 56% 44%'
+        ? '40% 60% 46% 54% / 61% 39% 58% 42%'
         : speedRatio > 0.12
-          ? '48% 52% 45% 55% / 55% 45% 52% 48%'
+          ? '47% 53% 44% 56% / 57% 43% 53% 47%'
           : '50%'
 
       updateDropShape(speedRatio, angle)
@@ -213,10 +215,13 @@ function CursorAssist() {
       setters.dropScaleX(Number((motion.scale * motion.stretch).toFixed(4)))
       setters.dropScaleY(Number((motion.scale * motion.squeeze).toFixed(4)))
       setters.dropBorderRadius(radius)
-      drop.style.setProperty('--cursor-oil-tail-offset', `${12 + speedRatio * 16}px`)
-      drop.style.setProperty('--cursor-oil-tail-scale', (0.48 + speedRatio * 0.34).toFixed(3))
-      drop.style.setProperty('--cursor-oil-tail-opacity', (0.18 + speedRatio * 0.24).toFixed(3))
-      drop.style.setProperty('--cursor-oil-secondary-offset', `${6 + speedRatio * 10}px`)
+      setters.dropOpacity(Number(motion.opacity.toFixed(3)))
+      drop.style.setProperty('--cursor-oil-tail-offset', `${14 + speedRatio * 18}px`)
+      drop.style.setProperty('--cursor-oil-tail-scale', (0.54 + speedRatio * 0.38).toFixed(3))
+      drop.style.setProperty('--cursor-oil-tail-opacity', (0.16 + speedRatio * 0.22).toFixed(3))
+      drop.style.setProperty('--cursor-oil-secondary-offset', `${8 + speedRatio * 12}px`)
+      drop.style.setProperty('--cursor-oil-core-scale', (0.42 + speedRatio * 0.08).toFixed(3))
+      drop.style.setProperty('--cursor-oil-core-opacity', (0.1 + speedRatio * 0.08).toFixed(3))
       spawnTrail(directionX, directionY, speedRatio)
 
       lastFollowerX = follower.x

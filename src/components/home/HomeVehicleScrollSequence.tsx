@@ -110,22 +110,6 @@ function HomeVehicleScrollSequence() {
       return Math.min(Math.max(raw, 0), 1)
     }
 
-    const updateFromScroll = () => {
-      frameRequest = 0
-      const progress = canAnimateVehicleSequence() ? getScrollProgress() : 0
-      const nextFrame = Math.round(progress * (FRAME_SEQUENCE_TOTAL - 1))
-      currentFrame = nextFrame
-      drawFrame(nextFrame)
-    }
-
-    const requestScrollUpdate = () => {
-      if (frameRequest) {
-        return
-      }
-
-      frameRequest = window.requestAnimationFrame(updateFromScroll)
-    }
-
     const requestResize = () => {
       if (resizeRequest) {
         window.cancelAnimationFrame(resizeRequest)
@@ -171,6 +155,31 @@ function HomeVehicleScrollSequence() {
       }
 
       image.src = getFrameSequenceUrl(frameIndex)
+    }
+
+    const queueNearbyFrames = (frameIndex: number) => {
+      loadFrame(frameIndex)
+      loadFrame(frameIndex - 1)
+      loadFrame(frameIndex + 1)
+      loadFrame(frameIndex - 2)
+      loadFrame(frameIndex + 2)
+    }
+
+    const updateFromScroll = () => {
+      frameRequest = 0
+      const progress = canAnimateVehicleSequence() ? getScrollProgress() : 0
+      const nextFrame = Math.round(progress * (FRAME_SEQUENCE_TOTAL - 1))
+      currentFrame = nextFrame
+      queueNearbyFrames(nextFrame)
+      drawFrame(nextFrame)
+    }
+
+    const requestScrollUpdate = () => {
+      if (frameRequest) {
+        return
+      }
+
+      frameRequest = window.requestAnimationFrame(updateFromScroll)
     }
 
     const preloadFrames = () => {

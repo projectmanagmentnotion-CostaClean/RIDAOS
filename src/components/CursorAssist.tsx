@@ -72,16 +72,23 @@ function CursorAssist() {
     }
 
     let rafId = 0
-    let lastPointerX = pointer.x
-    let lastPointerY = pointer.y
+    let lastFollowerX = follower.x
+    let lastFollowerY = follower.y
     let lastTrailTime = 0
     let isInteractive = false
     let isSales = false
-    let followerTweenX: gsap.core.Tween | null = null
-    let followerTweenY: gsap.core.Tween | null = null
     let motionTween: gsap.core.Tween | null = null
     let scaleTween: gsap.core.Tween | null = null
     let trailIndex = 0
+    const followDuration = reducedMotion ? 0.14 : 0.42
+    const followerXTo = gsap.quickTo(follower, 'x', {
+      duration: followDuration,
+      ease: reducedMotion ? 'power2.out' : 'power4.out',
+    })
+    const followerYTo = gsap.quickTo(follower, 'y', {
+      duration: followDuration,
+      ease: reducedMotion ? 'power2.out' : 'power4.out',
+    })
 
     const setCursorClasses = () => {
       root.classList.add('has-oil-cursor')
@@ -153,8 +160,8 @@ function CursorAssist() {
     }
 
     const updateDropShape = (speedRatio: number, angle: number) => {
-      const targetStretch = reducedMotion ? 1 : 1 + speedRatio * 0.34
-      const targetSqueeze = reducedMotion ? 1 : 1 - speedRatio * 0.2
+      const targetStretch = reducedMotion ? 1 : 1 + speedRatio * 0.42
+      const targetSqueeze = reducedMotion ? 1 : 1 - speedRatio * 0.24
       const targetRotation = reducedMotion ? 0 : angle
       const targetMorph = reducedMotion ? 0 : speedRatio
 
@@ -176,21 +183,8 @@ function CursorAssist() {
       setters.dotX(pointer.x)
       setters.dotY(pointer.y)
       syncHoverState(event.target)
-
-      followerTweenX?.kill()
-      followerTweenY?.kill()
-      followerTweenX = gsap.to(follower, {
-        x: pointer.x,
-        duration: reducedMotion ? 0.12 : 0.28,
-        ease: 'power3.out',
-        overwrite: true,
-      })
-      followerTweenY = gsap.to(follower, {
-        y: pointer.y,
-        duration: reducedMotion ? 0.12 : 0.28,
-        ease: 'power3.out',
-        overwrite: true,
-      })
+      followerXTo(pointer.x)
+      followerYTo(pointer.y)
     }
 
     const handlePointerLeave = () => {
@@ -205,13 +199,13 @@ function CursorAssist() {
     }
 
     const render = () => {
-      const deltaX = pointer.x - lastPointerX
-      const deltaY = pointer.y - lastPointerY
-      const speed = Math.min(Math.hypot(deltaX, deltaY), 32)
-      const speedRatio = clamp(speed / 24, 0, 1)
-      const angle = Math.atan2(deltaY, deltaX || 0.0001) * (180 / Math.PI)
-      const directionX = speed > 0.001 ? deltaX / speed : 0
-      const directionY = speed > 0.001 ? deltaY / speed : 0
+      const followerDeltaX = follower.x - lastFollowerX
+      const followerDeltaY = follower.y - lastFollowerY
+      const followerSpeed = Math.min(Math.hypot(followerDeltaX, followerDeltaY), 32)
+      const speedRatio = clamp(followerSpeed / 18, 0, 1)
+      const angle = Math.atan2(followerDeltaY, followerDeltaX || 0.0001) * (180 / Math.PI)
+      const directionX = followerSpeed > 0.001 ? followerDeltaX / followerSpeed : 0
+      const directionY = followerSpeed > 0.001 ? followerDeltaY / followerSpeed : 0
       const radius = speedRatio > 0.42
         ? '42% 58% 47% 53% / 59% 41% 56% 44%'
         : speedRatio > 0.12
@@ -227,8 +221,8 @@ function CursorAssist() {
       setters.dropBorderRadius(radius)
       spawnTrail(directionX, directionY, speedRatio)
 
-      lastPointerX = pointer.x
-      lastPointerY = pointer.y
+      lastFollowerX = follower.x
+      lastFollowerY = follower.y
       rafId = window.requestAnimationFrame(render)
     }
 
@@ -256,11 +250,10 @@ function CursorAssist() {
       document.removeEventListener('pointerover', handleHoverSync)
       document.removeEventListener('focusin', handleHoverSync)
       document.removeEventListener('pointerleave', handlePointerLeave)
-      followerTweenX?.kill()
-      followerTweenY?.kill()
       motionTween?.kill()
       scaleTween?.kill()
       gsap.killTweensOf(trailElements)
+      gsap.killTweensOf(follower)
       clearCursorClasses()
     }
   }, [])

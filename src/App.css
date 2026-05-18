@@ -53,8 +53,7 @@ body {
 }
 
 .cursor-oil-trail,
-.cursor-oil-drop,
-.cursor-precision-dot {
+.cursor-oil-drop {
   position: absolute;
   top: 0;
   left: 0;
@@ -110,14 +109,6 @@ body {
     scale(calc(var(--cursor-oil-tail-scale, 0.48) * 0.56), calc(var(--cursor-oil-tail-scale, 0.48) * 0.72))
     rotate(12deg);
   opacity: calc(var(--cursor-oil-tail-opacity, 0.18) * 0.72);
-}
-
-.cursor-precision-dot {
-  width: 5px;
-  height: 5px;
-  background: rgba(28, 28, 28, 0.98);
-  mix-blend-mode: normal;
-  z-index: 4;
 }
 
 .mouse-motion-visual {
@@ -416,7 +407,6 @@ body {
 @media (hover: none), (pointer: coarse) {
   .oil-cursor-root,
   .cursor-oil-drop,
-  .cursor-precision-dot,
   .cursor-oil-trail,
   .mouse-motion-visual__plate,
   .mouse-motion-visual__line {

@@ -37,7 +37,6 @@ function clamp(value: number, min: number, max: number) {
 }
 
 function CursorAssist() {
-  const dotRef = useRef<HTMLSpanElement | null>(null)
   const dropRef = useRef<HTMLSpanElement | null>(null)
   const trailRefs = useRef<Array<HTMLSpanElement | null>>([])
 
@@ -48,10 +47,9 @@ function CursorAssist() {
 
     const root = document.documentElement
     const body = document.body
-    const dot = dotRef.current
     const drop = dropRef.current
 
-    if (!dot || !drop) {
+    if (!drop) {
       return
     }
 
@@ -61,8 +59,6 @@ function CursorAssist() {
     const follower = { x: pointer.x, y: pointer.y }
     const motion = { scale: 1, stretch: 1, squeeze: 1, rotation: 0, morph: 0 }
     const setters = {
-      dotX: gsap.quickSetter(dot, 'x', 'px'),
-      dotY: gsap.quickSetter(dot, 'y', 'px'),
       dropX: gsap.quickSetter(drop, 'x', 'px'),
       dropY: gsap.quickSetter(drop, 'y', 'px'),
       dropRotation: gsap.quickSetter(drop, 'rotation', 'deg'),
@@ -180,8 +176,6 @@ function CursorAssist() {
     const handlePointerMove = (event: PointerEvent) => {
       pointer.x = event.clientX
       pointer.y = event.clientY
-      setters.dotX(pointer.x)
-      setters.dotY(pointer.y)
       syncHoverState(event.target)
     }
 
@@ -230,11 +224,8 @@ function CursorAssist() {
       rafId = window.requestAnimationFrame(render)
     }
 
-    gsap.set(dot, { xPercent: -50, yPercent: -50 })
     gsap.set(drop, { xPercent: -50, yPercent: -50, transformOrigin: '50% 50%' })
     gsap.set(trailElements, { xPercent: -50, yPercent: -50, opacity: 0, scale: 0.5 })
-    setters.dotX(pointer.x)
-    setters.dotY(pointer.y)
     setters.dropX(follower.x)
     setters.dropY(follower.y)
     setCursorClasses()
@@ -273,7 +264,6 @@ function CursorAssist() {
         />
       ))}
       <span className="cursor-oil-drop" ref={dropRef} />
-      <span className="cursor-precision-dot" ref={dotRef} />
     </div>
   )
 }

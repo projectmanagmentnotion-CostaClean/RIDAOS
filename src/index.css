@@ -34,18 +34,30 @@ html {
   will-change: width, height, background-color, transform;
   transform: translate(-50%, -50%);
   position: relative;
-  box-shadow: 0 0 0 0 rgba(57, 255, 20, 0);
 }
 
-.custom-cursor__dot::after {
+.custom-cursor__hover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 11px;
+  height: 11px;
+  border-radius: 999px;
+  background: #ff00b8;
+  opacity: 0;
+  pointer-events: none;
+  will-change: width, height, background-color, opacity, transform;
+  transform: translate(-50%, -50%);
+}
+
+.custom-cursor__hover::after {
   content: '';
   position: absolute;
   inset: -3px;
   border: 2px solid #39ff14;
   border-radius: 999px;
-  opacity: var(--cursor-interest-ring-opacity, 0);
-  transform: scale(0.96);
-  transition: opacity 180ms ease, transform 180ms ease;
+  opacity: 1;
   pointer-events: none;
 }
 

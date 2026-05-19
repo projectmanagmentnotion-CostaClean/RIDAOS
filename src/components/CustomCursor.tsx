@@ -24,6 +24,7 @@ function canUseCustomCursor() {
 function CustomCursor() {
   const cursorRef = useRef<HTMLSpanElement | null>(null)
   const dotRef = useRef<HTMLSpanElement | null>(null)
+  const hoverRef = useRef<HTMLSpanElement | null>(null)
 
   useEffect(() => {
     if (!canUseCustomCursor()) {
@@ -34,8 +35,9 @@ function CustomCursor() {
     const body = document.body
     const cursor = cursorRef.current
     const dot = dotRef.current
+    const hover = hoverRef.current
 
-    if (!cursor || !dot) {
+    if (!cursor || !dot || !hover) {
       return
     }
 
@@ -59,17 +61,17 @@ function CustomCursor() {
       isInterest = interest
       body.classList.toggle('custom-cursor-interest', interest)
 
-      gsap.to(dot, {
+      gsap.to(hover, {
         width: interest ? 68 : 11,
         height: interest ? 68 : 11,
         backgroundColor: interest ? '#ffffff' : '#ff00b8',
+        opacity: interest ? 1 : 0,
         duration: 0.22,
         ease: 'power3.out',
         overwrite: true,
       })
 
-      dot.style.mixBlendMode = 'difference'
-      dot.style.setProperty('--cursor-interest-ring-opacity', interest ? '1' : '0')
+      hover.style.mixBlendMode = interest ? 'difference' : 'normal'
     }
 
     const syncInterest = (target: EventTarget | null) => {
@@ -111,8 +113,13 @@ function CustomCursor() {
       height: 11,
       backgroundColor: '#ff00b8',
     })
-    dot.style.mixBlendMode = 'difference'
-    dot.style.setProperty('--cursor-interest-ring-opacity', '0')
+    gsap.set(hover, {
+      width: 11,
+      height: 11,
+      backgroundColor: '#ff00b8',
+      opacity: 0,
+    })
+    hover.style.mixBlendMode = 'normal'
 
     window.addEventListener('pointermove', handlePointerMove, { passive: true })
     document.addEventListener('pointerover', handlePointerOver, { passive: true })
@@ -126,6 +133,7 @@ function CustomCursor() {
       document.removeEventListener('pointerleave', handlePointerLeave)
       gsap.killTweensOf(cursor)
       gsap.killTweensOf(dot)
+      gsap.killTweensOf(hover)
       root.classList.remove('has-custom-cursor')
       body.classList.remove('has-custom-cursor', 'custom-cursor-interest')
     }
@@ -138,6 +146,7 @@ function CustomCursor() {
       ref={cursorRef}
     >
       <span className="custom-cursor__dot" ref={dotRef} />
+      <span className="custom-cursor__hover" ref={hoverRef} />
     </span>
   )
 }

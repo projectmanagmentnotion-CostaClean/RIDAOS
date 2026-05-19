@@ -62,13 +62,14 @@ function CustomCursor() {
       gsap.to(dot, {
         width: interest ? 68 : 11,
         height: interest ? 68 : 11,
-        backgroundColor: interest ? '#39ff14' : '#ff00b8',
+        backgroundColor: interest ? '#ffffff' : '#ff00b8',
         duration: 0.22,
         ease: 'power3.out',
         overwrite: true,
       })
 
       dot.style.mixBlendMode = 'difference'
+      dot.style.setProperty('--cursor-interest-ring-opacity', interest ? '1' : '0')
     }
 
     const syncInterest = (target: EventTarget | null) => {
@@ -111,6 +112,7 @@ function CustomCursor() {
       backgroundColor: '#ff00b8',
     })
     dot.style.mixBlendMode = 'difference'
+    dot.style.setProperty('--cursor-interest-ring-opacity', '0')
 
     window.addEventListener('pointermove', handlePointerMove, { passive: true })
     document.addEventListener('pointerover', handlePointerOver, { passive: true })

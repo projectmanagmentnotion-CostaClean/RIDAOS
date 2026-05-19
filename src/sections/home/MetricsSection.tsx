@@ -5,7 +5,7 @@ function MetricsSection() {
   return (
     <div aria-label="Resumen" className="stats-grid">
       {homeStats.map((stat) => (
-        <MetricCard className="hover-lift premium-value-card" key={stat.label} label={stat.label} value={stat.value} />
+        <MetricCard className="hover-lift premium-value-card cursor-interest" key={stat.label} label={stat.label} note={stat.note} value={stat.value} />
       ))}
     </div>
   )

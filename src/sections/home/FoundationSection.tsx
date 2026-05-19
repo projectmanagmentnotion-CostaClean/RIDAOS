@@ -16,7 +16,7 @@ function FoundationSection() {
             </a>
           </>
         }
-        className="home-foundation-panel"
+        className="home-foundation-panel cursor-interest"
         description="Pasa del catalogo al pedido con una lectura clara de archivo, precio y siguiente paso."
         label="Pedido claro"
         title="Un frente claro para ventas DTF por metro."

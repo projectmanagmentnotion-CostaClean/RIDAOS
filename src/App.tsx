@@ -1,36 +1,9 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { Suspense, lazy, useEffect, useRef, useState, type ComponentType } from 'react'
 import './App.css'
-import CustomersPage from './admin/pages/CustomersPage'
-import DashboardPage from './admin/pages/DashboardPage'
-import OrderDetailPage from './admin/pages/OrderDetailPage'
-import OrdersPage from './admin/pages/OrdersPage'
-import ProductionPage from './admin/pages/ProductionPage'
-import UploadsPage from './admin/pages/UploadsPage'
 import NotFoundPage from './components/NotFoundPage'
 import RouteErrorBoundary from './components/RouteErrorBoundary'
 import PremiumCursor from './components/system/PremiumCursor'
-import AccesoriosPage from './pages/AccesoriosPage'
-import Carrito from './pages/Carrito'
-import CarteleriaPage from './pages/CarteleriaPage'
-import Catalogo from './pages/Catalogo'
-import Checkout from './pages/Checkout'
-import Contacto from './pages/Contacto'
-import DTFPage from './pages/DTFPage'
-import DetallePedido from './pages/DetallePedido'
-import GuiaArchivos from './pages/GuiaArchivos'
-import HistorialArchivos from './pages/HistorialArchivos'
 import Home from './pages/Home'
-import Legal from './pages/Legal'
-import MaterialesPage from './pages/MaterialesPage'
-import MiCuenta from './pages/MiCuenta'
-import MisPedidos from './pages/MisPedidos'
-import MotionTest from './pages/MotionTest'
-import NeonesPage from './pages/NeonesPage'
-import PapeleriaPage from './pages/PapeleriaPage'
-import Portafolio from './pages/Portafolio'
-import RotulacionPage from './pages/RotulacionPage'
-import SolicitarPresupuesto from './pages/SolicitarPresupuesto'
-import TextilPage from './pages/TextilPage'
 import { applySEO } from './lib/seo'
 import { initSmoothScroll } from './lib/smoothScroll'
 import { refreshScrollNarrative, syncScrollTriggerWithLenis } from './lib/animations'
@@ -119,37 +92,64 @@ const navigation = [
 ]
 
 const buildMarker = `Ridaos build: ${__RIDAOS_BUILD_HASH__}`
+const Catalogo = lazy(() => import('./pages/Catalogo'))
+const DTFPage = lazy(() => import('./pages/DTFPage'))
+const TextilPage = lazy(() => import('./pages/TextilPage'))
+const PapeleriaPage = lazy(() => import('./pages/PapeleriaPage'))
+const CarteleriaPage = lazy(() => import('./pages/CarteleriaPage'))
+const MaterialesPage = lazy(() => import('./pages/MaterialesPage'))
+const AccesoriosPage = lazy(() => import('./pages/AccesoriosPage'))
+const RotulacionPage = lazy(() => import('./pages/RotulacionPage'))
+const NeonesPage = lazy(() => import('./pages/NeonesPage'))
+const Carrito = lazy(() => import('./pages/Carrito'))
+const Checkout = lazy(() => import('./pages/Checkout'))
+const GuiaArchivos = lazy(() => import('./pages/GuiaArchivos'))
+const Portafolio = lazy(() => import('./pages/Portafolio'))
+const Contacto = lazy(() => import('./pages/Contacto'))
+const Legal = lazy(() => import('./pages/Legal'))
+const MiCuenta = lazy(() => import('./pages/MiCuenta'))
+const MisPedidos = lazy(() => import('./pages/MisPedidos'))
+const DetallePedido = lazy(() => import('./pages/DetallePedido'))
+const HistorialArchivos = lazy(() => import('./pages/HistorialArchivos'))
+const SolicitarPresupuesto = lazy(() => import('./pages/SolicitarPresupuesto'))
+const MotionTest = lazy(() => import('./pages/MotionTest'))
+const DashboardPage = lazy(() => import('./admin/pages/DashboardPage'))
+const OrdersPage = lazy(() => import('./admin/pages/OrdersPage'))
+const OrderDetailPage = lazy(() => import('./admin/pages/OrderDetailPage'))
+const UploadsPage = lazy(() => import('./admin/pages/UploadsPage'))
+const CustomersPage = lazy(() => import('./admin/pages/CustomersPage'))
+const ProductionPage = lazy(() => import('./admin/pages/ProductionPage'))
 
-const pageComponents: Record<RouteKey, ReactNode> = {
-  home: <Home />,
-  catalogo: <Catalogo />,
-  dtf: <DTFPage />,
-  textil: <TextilPage />,
-  papeleria: <PapeleriaPage />,
-  carteleria: <CarteleriaPage />,
-  materiales: <MaterialesPage />,
-  accesorios: <AccesoriosPage />,
-  rotulacion: <RotulacionPage />,
-  neones: <NeonesPage />,
-  carrito: <Carrito />,
-  checkout: <Checkout />,
-  guia: <GuiaArchivos />,
-  portafolio: <Portafolio />,
-  contacto: <Contacto />,
-  legal: <Legal />,
-  miCuenta: <MiCuenta />,
-  misPedidos: <MisPedidos />,
-  detallePedido: <DetallePedido />,
-  historialArchivos: <HistorialArchivos />,
-  admin: <DashboardPage />,
-  adminOrders: <OrdersPage />,
-  adminOrderDetail: <OrderDetailPage />,
-  adminUploads: <UploadsPage />,
-  adminCustomers: <CustomersPage />,
-  adminProduction: <ProductionPage />,
-  presupuesto: <SolicitarPresupuesto />,
-  motionTest: <MotionTest />,
-  notFound: <NotFoundPage />,
+const pageComponents: Record<RouteKey, ComponentType> = {
+  home: Home,
+  catalogo: Catalogo,
+  dtf: DTFPage,
+  textil: TextilPage,
+  papeleria: PapeleriaPage,
+  carteleria: CarteleriaPage,
+  materiales: MaterialesPage,
+  accesorios: AccesoriosPage,
+  rotulacion: RotulacionPage,
+  neones: NeonesPage,
+  carrito: Carrito,
+  checkout: Checkout,
+  guia: GuiaArchivos,
+  portafolio: Portafolio,
+  contacto: Contacto,
+  legal: Legal,
+  miCuenta: MiCuenta,
+  misPedidos: MisPedidos,
+  detallePedido: DetallePedido,
+  historialArchivos: HistorialArchivos,
+  admin: DashboardPage,
+  adminOrders: OrdersPage,
+  adminOrderDetail: OrderDetailPage,
+  adminUploads: UploadsPage,
+  adminCustomers: CustomersPage,
+  adminProduction: ProductionPage,
+  presupuesto: SolicitarPresupuesto,
+  motionTest: MotionTest,
+  notFound: NotFoundPage,
 }
 
 function getRouteFromHash(hash: string): RouteKey {
@@ -198,6 +198,15 @@ function isAdminOrLabRoute(route: RouteKey) {
     route === 'adminCustomers' ||
     route === 'adminProduction' ||
     route === 'motionTest'
+  )
+}
+
+function PageLoadingFallback() {
+  return (
+    <section className="page-loading-shell" aria-live="polite">
+      <div className="page-loading-mark" />
+      <p>Cargando seccion…</p>
+    </section>
   )
 }
 
@@ -282,6 +291,8 @@ function App() {
     }
   }, [])
 
+  const ActivePage = pageComponents[route] ?? NotFoundPage
+
   return (
     <div className="app-shell">
       {!isAdminOrLabRoute(route) ? <PremiumCursor /> : null}
@@ -316,7 +327,9 @@ function App() {
 
       <main className={`page-shell${route === 'home' ? ' page-shell--home' : ''}`} id="main-content" tabIndex={-1}>
         <RouteErrorBoundary fallback={<NotFoundPage />}>
-          {pageComponents[route] ?? <NotFoundPage />}
+          <Suspense fallback={<PageLoadingFallback />}>
+            <ActivePage />
+          </Suspense>
         </RouteErrorBoundary>
       </main>
 

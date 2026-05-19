@@ -5,6 +5,7 @@ function FinalCtaSection() {
   return (
     <section className="content-section">
       <CtaPanel
+        className="cursor-interest"
         actions={
           <a className="action-button action-link-button" data-cursor="interest" href={getPublicCtaHref('dtf')}>
             Configurar DTF ahora

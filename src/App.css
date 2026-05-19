@@ -1191,6 +1191,19 @@ select {
   text-shadow: 0 12px 44px rgba(0, 0, 0, 0.56);
 }
 
+.home-hero-copy .eyebrow {
+  max-width: min(100%, 36rem);
+  color: rgba(246, 239, 231, 0.82);
+}
+
+.home-hero-copy .section-copy {
+  max-width: min(100%, 40rem);
+  margin-top: 8px;
+  color: rgba(246, 239, 231, 0.82);
+  font-size: clamp(1rem, 1.5vw, 1.14rem);
+  line-height: 1.72;
+}
+
 .home-sequence-sticky .home-hero-copy h1,
 .home-fullscreen-hero .home-hero-copy h1 {
   display: grid;
@@ -1218,6 +1231,7 @@ select {
   display: grid;
   gap: 18px;
   width: min(100%, 560px);
+  padding: 18px 20px 0 0;
   padding-top: 6px;
   text-shadow: 0 10px 32px rgba(0, 0, 0, 0.52);
 }
@@ -1226,6 +1240,11 @@ select {
   display: grid;
   gap: 12px;
   margin: 0;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(14, 14, 14, 0.5), rgba(14, 14, 14, 0.2));
+  backdrop-filter: blur(16px);
 }
 
 .hero-orbit-line {
@@ -1233,6 +1252,7 @@ select {
   align-items: center;
   gap: 12px;
   color: rgba(246, 239, 231, 0.78);
+  line-height: 1.45;
 }
 
 .orbit-dot {
@@ -1246,12 +1266,14 @@ select {
 
 .home-hero-actions {
   margin-top: 6px;
+  align-items: stretch;
 }
 
 .premium-value-card {
   background:
     linear-gradient(180deg, rgba(255, 191, 102, 0.08), rgba(255, 255, 255, 0.02)),
     rgba(14, 14, 14, 0.88);
+  min-height: 210px;
 }
 
 .home-lower-grid {
@@ -1295,6 +1317,13 @@ select {
   background: rgba(10, 10, 10, 0.34);
   box-shadow: none;
   overflow: visible;
+}
+
+.home-page .premium-value-card:hover,
+.home-page .home-foundation-panel:hover,
+.home-page .home-quick-panel:hover {
+  border-color: rgba(255, 191, 102, 0.18);
+  background: rgba(10, 10, 10, 0.42);
 }
 
 .home-page .premium-value-card::before,
@@ -2593,6 +2622,31 @@ select {
   margin: 10px 0 0;
   color: rgba(246, 239, 231, 0.58);
   line-height: 1.6;
+  max-width: 24ch;
+}
+
+.page-loading-shell {
+  display: grid;
+  place-items: center;
+  gap: 12px;
+  min-height: min(48vh, 420px);
+  color: rgba(246, 239, 231, 0.72);
+  text-align: center;
+}
+
+.page-loading-shell p {
+  margin: 0;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+}
+
+.page-loading-mark {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: #ff00b8;
+  box-shadow: 0 0 0 10px rgba(255, 0, 184, 0.08);
 }
 
 .cta-panel {
@@ -3603,6 +3657,15 @@ body.lenis {
 
   .cinematic-scene {
     padding: 22px;
+  }
+
+  .hero-orbit-stack {
+    padding: 14px;
+  }
+
+  .home-hero-copy .section-copy {
+    max-width: 100%;
+    font-size: 1rem;
   }
 
   .frame-intro {

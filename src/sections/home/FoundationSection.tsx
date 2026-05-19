@@ -1,7 +1,13 @@
 import CtaPanel from '../../components/CtaPanel'
+import { homeFoundationContent } from '../../content/homeContent'
 import SectionHeader from '../../components/SectionHeader'
 import { getPublicCtaHref } from '../../lib/navigation'
 
+/**
+ * Editable Zone: HOME_FOUNDATION
+ * Content: src/content/homeContent.ts
+ * Visual component: src/sections/home/FoundationSection.tsx
+ */
 function FoundationSection() {
   return (
     <div className="split-grid home-lower-grid">
@@ -9,37 +15,29 @@ function FoundationSection() {
         actions={
           <>
             <a className="action-button action-link-button" data-cursor="interest" href={getPublicCtaHref('catalogo')}>
-              Ver catalogo
+              {homeFoundationContent.panelPrimaryCtaLabel}
             </a>
             <a className="card-link" data-cursor="interest" href={getPublicCtaHref('guia')}>
-              Ver guia de archivos
+              {homeFoundationContent.panelSecondaryCtaLabel}
             </a>
           </>
         }
         className="home-foundation-panel cursor-interest"
-        description="Pasa del catalogo al pedido con una lectura clara de archivo, precio y siguiente paso."
-        label="Pedido claro"
-        title="Un frente claro para ventas DTF por metro."
+        description={homeFoundationContent.panelDescription}
+        label={homeFoundationContent.panelLabel}
+        title={homeFoundationContent.panelTitle}
       />
 
       <article className="content-card home-quick-panel hover-lift cursor-interest" data-cursor="interest" tabIndex={0}>
-        <SectionHeader title="Accesos rapidos" />
+        <SectionHeader title={homeFoundationContent.quickPanelTitle} />
         <ul className="detail-list">
-          <li>
-            <a className="card-link" data-cursor="interest" href={getPublicCtaHref('catalogo')}>
-              Ver catalogo
-            </a>
-          </li>
-          <li>
-            <a className="card-link" data-cursor="interest" href={getPublicCtaHref('dtf')}>
-              Abrir pagina DTF por metro
-            </a>
-          </li>
-          <li>
-            <a className="card-link" data-cursor="interest" href={getPublicCtaHref('guia')}>
-              Revisar guia de archivos
-            </a>
-          </li>
+          {homeFoundationContent.quickLinks.map((link) => (
+            <li key={link.label}>
+              <a className="card-link" data-cursor="interest" href={getPublicCtaHref(link.routeKey)}>
+                {link.label}
+              </a>
+            </li>
+          ))}
         </ul>
       </article>
     </div>

@@ -1,6 +1,11 @@
 import MetricCard from '../../components/MetricCard'
 import { homeStats } from './homeData'
 
+/**
+ * Editable Zone: HOME_METRICS
+ * Content: src/content/homeContent.ts
+ * Visual component: src/sections/home/MetricsSection.tsx
+ */
 function MetricsSection() {
   return (
     <div aria-label="Resumen" className="stats-grid">

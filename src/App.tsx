@@ -9,6 +9,7 @@ import { initSmoothScroll } from './lib/smoothScroll'
 import { refreshScrollNarrative, syncScrollTriggerWithLenis } from './lib/animations'
 import { getPublicCtaHref, getPublicHref } from './lib/navigation'
 import { getCurrentHashRoute, navigateToHashRoute, normalizeHashRoute } from './lib/hashRouting'
+import { footerContent, navigationContent } from './content'
 
 type RouteKey =
   | 'home'
@@ -81,15 +82,12 @@ const routes: Record<string, RouteKey> = {
   '#/motion-test': 'motionTest',
 }
 
-const navigation = [
-  { href: getPublicHref('home'), label: 'Home', route: 'home' as const },
-  { href: getPublicCtaHref('catalogo'), label: 'Catalogo', route: 'catalogo' as const },
-  { href: getPublicCtaHref('dtf'), label: 'DTF por metro', route: 'dtf' as const },
-  { href: getPublicHref('textil'), label: 'Textil', route: 'textil' as const },
-  { href: '#/mi-cuenta', label: 'Mi cuenta', route: 'miCuenta' as const },
-  { href: getPublicCtaHref('contacto'), label: 'Contacto', route: 'contacto' as const },
-  { href: getPublicCtaHref('carrito'), label: 'Carrito', route: 'carrito' as const },
-]
+/**
+ * Editable Zone: NAV_MAIN
+ * Content: src/content/navigationContent.ts
+ * Visual component: src/App.tsx
+ */
+const navigation = navigationContent.mainLinks
 
 const buildMarker = `Ridaos build: ${__RIDAOS_BUILD_HASH__}`
 const Catalogo = lazy(() => import('./pages/Catalogo'))
@@ -300,6 +298,7 @@ function App() {
         Saltar al contenido
       </a>
       <div className="app-grid" aria-hidden="true" />
+      {/* Editable Zone: NAV_MAIN | Content: src/content/navigationContent.ts */}
       <header
         className={`site-header${route === 'home' ? ' site-header--overlay' : ''}${
           isHeaderHidden ? ' site-header--hidden' : ''
@@ -307,7 +306,7 @@ function App() {
       >
         <nav className="site-nav" aria-label="Principal">
           <a aria-label="Ir a la pagina de inicio" className="brand" data-cursor="interactive" href={getPublicHref('home')}>
-            RIDAOSPRINT
+            {navigationContent.brandLabel}
           </a>
           <div className="nav-links">
             {navigation.map((item) => (
@@ -333,13 +332,15 @@ function App() {
         </RouteErrorBoundary>
       </main>
 
+      {/* Editable Zone: FOOTER_MAIN | Content: src/content/footerContent.ts */}
       <footer className="site-footer">
-        <p>RidaosPrint centraliza catalogo, configuracion y seguimiento del pedido en un mismo recorrido.</p>
+        <p>{footerContent.description}</p>
         <div className="footer-links">
-          <a data-cursor="interactive" href="#/mi-cuenta">Mi cuenta</a>
-          <a data-cursor="interactive" href={getPublicCtaHref('guia')}>Guia de archivos</a>
-          <a data-cursor="interactive" href="#/legal">Legal</a>
-          <a data-cursor="interactive" href={getPublicCtaHref('contacto')}>Contacto</a>
+          {footerContent.links.map((link) => (
+            <a data-cursor="interactive" href={link.href} key={link.href}>
+              {link.label}
+            </a>
+          ))}
         </div>
         <p className="build-marker">{buildMarker}</p>
       </footer>

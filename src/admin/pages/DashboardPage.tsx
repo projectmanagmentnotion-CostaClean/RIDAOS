@@ -16,6 +16,11 @@ const formatCurrency = (value: number) =>
     currency: 'EUR',
   }).format(value)
 
+/**
+ * Editable Zone: ADMIN_DASHBOARD
+ * Content: src/content/adminMockContent.ts
+ * Visual component: src/admin/pages/DashboardPage.tsx
+ */
 function DashboardPage() {
   const [stats, setStats] = useState<AdminDashboardStats | null>(null)
   const [orders, setOrders] = useState<AdminOrder[]>([])

@@ -13,6 +13,9 @@ import SeoContentBlock from '../components/SeoContentBlock'
 import SectionHeader from '../components/SectionHeader'
 import TrustGrid from '../components/TrustGrid'
 import UploadGuidanceBlock from '../components/UploadGuidanceBlock'
+import { dtfPageContent } from '../content/dtfContent'
+import { faqContent } from '../content/faqContent'
+import { pricingContent } from '../content/pricingContent'
 import { getContentByEntryId } from '../catalog/content/contentSelectors'
 import {
   initCinematicScroll,
@@ -60,11 +63,10 @@ const urgencyLabels: Record<DTFUrgency, string> = {
 
 const previewableTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml']
 const premiumDocumentFormats = ['PDF', 'AI', 'EPS', 'ZIP', 'TIFF']
-const meterPresets = ['0.5', '1', '2', '5']
 const formatCurrency = (value: number) =>
-  new Intl.NumberFormat('es-ES', {
+  new Intl.NumberFormat(pricingContent.locale, {
     style: 'currency',
-    currency: 'EUR',
+    currency: pricingContent.currency,
   }).format(value)
 
 const formatFileSize = (file: File) => {
@@ -89,6 +91,11 @@ const detectFormatLabel = (file: File) => {
   return 'DESCONOCIDO'
 }
 
+/**
+ * Editable Zone: DTF_CONFIGURATOR
+ * Content: src/content/dtfContent.ts
+ * Visual component: src/pages/DTFPage.tsx
+ */
 function DTFPage() {
   const pageRef = useRef<HTMLElement | null>(null)
   const dtfContent = useMemo(() => getContentByEntryId(dtfEntry.id), [])
@@ -273,12 +280,12 @@ function DTFPage() {
         <div className="hero-flash-band" aria-hidden="true" />
         <SectionHeader
           className="premium-hero type-split"
-          description={dtfContent?.intro ?? 'Configura tu pedido por metraje, revisa la pieza antes de enviar y deja el trabajo listo para una comprobacion clara.'}
-          eyebrow={dtfContent?.eyebrow ?? 'Producto principal'}
+          description={dtfContent?.intro ?? dtfPageContent.hero.fallbackDescription}
+          eyebrow={dtfContent?.eyebrow ?? dtfPageContent.hero.fallbackEyebrow}
           hero
           stickerWords={['DTF', 'archivo']}
-          title={dtfContent?.h1 ?? 'DTF por metro.'}
-          titleLines={['DTF', 'POR METRO']}
+          title={dtfContent?.h1 ?? dtfPageContent.hero.fallbackTitle}
+          titleLines={dtfPageContent.hero.titleLines}
         />
       </section>
 
@@ -301,9 +308,9 @@ function DTFPage() {
                 type="number"
                 value={meters}
               />
-              <span className="file-meta">Introduce el metraje total. Puedes usar decimales para tiradas cortas.</span>
+              <span className="file-meta">{dtfPageContent.fieldHelp.meters}</span>
               <div className="dtf-meter-presets">
-                {meterPresets.map((preset) => (
+                {dtfPageContent.meterPresets.map((preset) => (
                   <button
                     className={`meter-preset-button${meters === preset ? ' is-selected' : ''}`}
                     key={preset}
@@ -331,7 +338,7 @@ function DTFPage() {
                 <option value="standard">Standard</option>
                 <option value="premium">Premium</option>
               </select>
-              <span className="file-meta">Premium aplica un ajuste del 15% sobre el precio base por metro.</span>
+              <span className="file-meta">{dtfPageContent.fieldHelp.quality}</span>
             </label>
 
             <label className="field-group" htmlFor="dtf-urgency">
@@ -345,7 +352,7 @@ function DTFPage() {
                 <option value="normal">Normal</option>
                 <option value="express">Express</option>
               </select>
-              <span className="file-meta">Express suma {formatCurrency(8)} y mantiene la comprobacion tecnica previa.</span>
+              <span className="file-meta">{dtfPageContent.fieldHelp.urgency}</span>
             </label>
 
             <label className="field-group" htmlFor="dtf-file">
@@ -357,9 +364,9 @@ function DTFPage() {
                 type="file"
               />
               <span className="file-meta">
-                {selectedFile ? selectedFile.name : 'Ningun archivo seleccionado'}
+                {selectedFile ? selectedFile.name : dtfPageContent.fieldHelp.fileNameFallback}
               </span>
-              <span className="file-meta">Sube el arte final o una version lista para revisar antes de fabricar.</span>
+              <span className="file-meta">{dtfPageContent.fieldHelp.file}</span>
               {errors.file ? <span className="field-error">{errors.file}</span> : null}
             </label>
 
@@ -372,11 +379,11 @@ function DTFPage() {
                 rows={5}
                 value={notes}
               />
-              <span className="file-meta">Anota color, prioridad, referencias de montaje o instrucciones especiales.</span>
+              <span className="file-meta">{dtfPageContent.fieldHelp.notes}</span>
             </label>
 
             <article className="dtf-summary-card">
-              <p className="section-label">Resumen listo para carrito</p>
+              <p className="section-label">{dtfPageContent.summary.label}</p>
               <div className="summary-list compact-summary">
                 {dtfSummaryItems.map((item) => (
                   <div className="summary-row" key={item.label}>
@@ -385,21 +392,21 @@ function DTFPage() {
                   </div>
                 ))}
                 <div className="summary-row summary-row-total">
-                  <span>Total estimado</span>
+                  <span>{dtfPageContent.summary.totalLabel}</span>
                   <strong>{formatCurrency(pricing.total)}</strong>
                 </div>
               </div>
               <p className="catalog-result-caption">
-                El pedido pasa por comprobacion tecnica del archivo antes de confirmar produccion y pago.
+                {dtfPageContent.summary.reviewCaption}
               </p>
             </article>
 
             <div className="form-actions">
               <button className="action-button" data-cursor="sales" onClick={handleSimulateOrder} type="button">
-                {dtfContent?.secondaryCta.label ?? 'Preparar pedido'}
+                {dtfContent?.secondaryCta.label ?? dtfPageContent.actions.prepareLabel}
               </button>
               <button className="action-button action-button-muted" data-cursor="sales" onClick={handleAddToCart} type="button">
-                {dtfContent?.primaryCta.label ?? 'Anadir al carrito'}
+                {dtfContent?.primaryCta.label ?? dtfPageContent.actions.addToCartLabel}
               </button>
             </div>
 
@@ -407,45 +414,27 @@ function DTFPage() {
             {cartMessage ? (
               <div className="catalog-cta-row">
                 <a className="card-link" data-cursor="sales" href={publicRoutes.carrito}>
-                  Ir al carrito
+                  {dtfPageContent.actions.cartLabel}
                 </a>
                 <a className="card-link" data-cursor="interactive" href={publicRoutes.catalogo}>
-                  Seguir comprando
+                  {dtfPageContent.actions.keepShoppingLabel}
                 </a>
               </div>
             ) : null}
           </div>
 
           <ConfiguratorSupportBlock
-            sections={[
-              {
-                label: 'Compra directa',
-                title: 'Configura el metraje sin perder el control del archivo.',
-                items: [
-                  'El total se recalcula al instante segun metros, calidad y urgencia.',
-                  'La previsualizacion te ayuda a confirmar que has cargado la pieza correcta.',
-                  'La comprobacion tecnica se realiza antes de fabricar, no despues.',
-                ],
-              },
-              {
-                label: 'Antes de cerrar',
-                title: 'Archivo, notas y plazo quedan claros en un solo paso.',
-                items: [
-                  'Adjunta PDF, AI, EPS, SVG, PNG, JPG, TIFF o ZIP.',
-                  'Usa notas para indicar prioridad, color o referencias de montaje.',
-                  dtfEntry.productionTime ?? 'El plazo final se confirma tras revisar el archivo y la carga de trabajo.',
-                ],
-              },
-              {
-                label: 'Despues del carrito',
-                title: 'El checkout registra la solicitud, no la fabricacion automatica.',
-                items: [
-                  'Revisamos archivo, metraje y observaciones antes de confirmar el pedido.',
-                  'La produccion y el pago se confirman despues de la comprobacion tecnica.',
-                  'Si falta algun dato, el siguiente paso queda claro desde el resumen del carrito.',
-                ],
-              },
-            ]}
+            sections={dtfPageContent.supportSections.map((section) => ({
+              ...section,
+              items:
+                section.label === 'Antes de cerrar'
+                  ? [
+                      ...section.items,
+                      dtfEntry.productionTime ??
+                        'El plazo final se confirma tras revisar el archivo y la carga de trabajo.',
+                    ]
+                  : section.items,
+            }))}
           />
         </article>
 
@@ -569,42 +558,42 @@ function DTFPage() {
 
       <section className="content-section content-grid-two">
         <article className="content-card motion-card">
-          <SectionHeader eyebrow="Vista del pedido" title="Movimiento visual al servicio del configurador." />
-          <p>La capa visual acompana el recorrido sin interferir con campos, enlaces ni botones del configurador.</p>
+          <SectionHeader eyebrow={dtfPageContent.motionPanel.eyebrow} title={dtfPageContent.motionPanel.title} />
+          <p>{dtfPageContent.motionPanel.description}</p>
           <MouseMotionVisual variant="dtf" />
         </article>
         <article className="content-card">
-          <SectionHeader eyebrow="Preparacion" title="Archivo, metros y comprobacion en el mismo flujo." />
+          <SectionHeader eyebrow={dtfPageContent.preparationPanel.eyebrow} title={dtfPageContent.preparationPanel.title} />
           <ul className="detail-list">
-            <li>Define el metraje antes de avanzar.</li>
-            <li>Adjunta el arte final cuando este listo.</li>
-            <li>Confirma el pedido con el resumen visible.</li>
+            {dtfPageContent.preparationPanel.bullets.map((bullet) => (
+              <li key={bullet}>{bullet}</li>
+            ))}
           </ul>
         </article>
       </section>
 
       <section className="content-section" data-animate="reveal" data-scroll-scene="dtf-process">
-        <SectionHeader eyebrow="Como funciona" title="Del archivo al pedido en cinco pasos." />
+        <SectionHeader eyebrow={dtfPageContent.process.eyebrow} title={dtfPageContent.process.title} />
         <ProcessSteps />
       </section>
 
       <section className="content-section content-grid-two" data-animate="reveal" data-scroll-scene="dtf-content">
-        <SeoContentBlock entryId={dtfEntry.id} title="Por que este flujo convierte mejor." />
-        <SeoContentBlock entryId={dtfEntry.id} mode="useCases" title="Cuando usarlo." />
+        <SeoContentBlock entryId={dtfEntry.id} title={dtfPageContent.seoTitles.why} />
+        <SeoContentBlock entryId={dtfEntry.id} mode="useCases" title={dtfPageContent.seoTitles.useCases} />
       </section>
 
       <section className="content-section content-grid-two" data-animate="reveal" data-scroll-scene="dtf-guidance">
         <UploadGuidanceBlock entryId={dtfEntry.id} />
-        <ConversionTrustBlock entryId={dtfEntry.id} title="Confianza para cerrar el pedido." />
+        <ConversionTrustBlock entryId={dtfEntry.id} title={dtfPageContent.seoTitles.trust} />
       </section>
 
       <section className="content-section" data-animate="reveal" data-scroll-scene="dtf-trust">
-        <SectionHeader eyebrow="Confianza" title="Confirmacion tecnica antes de fabricar." />
+        <SectionHeader eyebrow={dtfPageContent.trust.eyebrow} title={dtfPageContent.trust.title} />
         <TrustGrid />
       </section>
 
-      <ObjectionHandlerBlock entryId={dtfEntry.id} title="Objeciones antes de enviar archivo." />
-      <FaqBlock entryId={dtfEntry.id} title="Dudas frecuentes del configurador." />
+      <ObjectionHandlerBlock entryId={dtfEntry.id} title={faqContent.dtf.objectionsTitle} />
+      <FaqBlock entryId={dtfEntry.id} title={faqContent.dtf.faqTitle} />
     </PageShell>
   )
 }

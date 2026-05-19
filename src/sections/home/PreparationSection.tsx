@@ -1,12 +1,18 @@
 import ConversionTrustBlock from '../../components/ConversionTrustBlock'
 import UploadGuidanceBlock from '../../components/UploadGuidanceBlock'
 import { dtfEntry } from '../../catalog/products/dtf'
+import { homePreparationContent } from '../../content/homeContent'
 
+/**
+ * Editable Zone: HOME_PREPARATION
+ * Content: src/content/homeContent.ts
+ * Visual component: src/sections/home/PreparationSection.tsx
+ */
 function PreparationSection() {
   return (
     <section className="content-section content-grid-two">
-      <UploadGuidanceBlock entryId={dtfEntry.id} title="Como preparar el pedido" />
-      <ConversionTrustBlock entryId={dtfEntry.id} title="Por que RidaosPrint" />
+      <UploadGuidanceBlock entryId={dtfEntry.id} title={homePreparationContent.uploadTitle} />
+      <ConversionTrustBlock entryId={dtfEntry.id} title={homePreparationContent.trustTitle} />
     </section>
   )
 }

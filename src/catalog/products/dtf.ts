@@ -1,5 +1,6 @@
 import { commonArtworkFormats } from '../configurators/commonArtworkFormats'
 import { defaultCommercialNoticeKeys } from '../notices/legalNotices'
+import { DTF_PRICING_CONFIG } from '../../config/pricing/dtfPricing'
 import type { CatalogEntry } from '../../types/product'
 
 export const dtfEntry: CatalogEntry = {
@@ -52,7 +53,7 @@ export const dtfEntry: CatalogEntry = {
   badge: 'Compra directa',
   unitLabel: 'metro',
   productionTime: 'Plazo sujeto a comprobacion tecnica del archivo y carga de trabajo.',
-  basePrice: 14.5,
+  basePrice: DTF_PRICING_CONFIG.basePricePerMeter,
   navigation: { label: 'DTF por metro', primary: true, order: 10 },
   catalogGroups: ['direct', 'textil'],
   visualKey: 'dtf',

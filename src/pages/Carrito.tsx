@@ -2,13 +2,19 @@ import { getContinueShoppingHref, publicRoutes } from '../lib/navigation'
 import { useMemo } from 'react'
 import { getOrderItemSummary } from '../lib/products'
 import { useCartStore } from '../store/useCartStore'
+import { pricingContent } from '../content/pricingContent'
 
 const formatCurrency = (value: number) =>
-  new Intl.NumberFormat('es-ES', {
+  new Intl.NumberFormat(pricingContent.locale, {
     style: 'currency',
-    currency: 'EUR',
+    currency: pricingContent.currency,
   }).format(value)
 
+/**
+ * Editable Zone: CART_DRAWER
+ * Content: src/content/pricingContent.ts
+ * Visual component: src/pages/Carrito.tsx
+ */
 function Carrito() {
   const items = useCartStore((state) => state.items)
   const removeItem = useCartStore((state) => state.removeItem)
@@ -22,10 +28,10 @@ function Carrito() {
   return (
     <section className="page">
       <div className="page-hero">
-        <p className="eyebrow">Carrito</p>
-        <h1>Resumen del pedido antes de confirmar.</h1>
+        <p className="eyebrow">{pricingContent.cart.heroEyebrow}</p>
+        <h1>{pricingContent.cart.heroTitle}</h1>
         <p>
-          Revisa cantidades, archivo y observaciones antes de pasar al registro final del pedido.
+          {pricingContent.cart.heroDescription}
         </p>
       </div>
 
@@ -34,9 +40,9 @@ function Carrito() {
           <p className="section-label">Items</p>
           {items.length === 0 ? (
             <div className="empty-state">
-              <p>El carrito esta vacio por ahora.</p>
+              <p>{pricingContent.cart.emptyState}</p>
               <a className="card-link" href={getContinueShoppingHref()}>
-                Volver al catalogo
+                {pricingContent.cart.continueShoppingLabel}
               </a>
             </div>
           ) : (
@@ -129,17 +135,17 @@ function Carrito() {
               onClick={clearCart}
               type="button"
             >
-              Vaciar carrito
+              {pricingContent.cart.clearCartLabel}
             </button>
             <a className="action-button action-button-muted action-link-button" data-cursor="interactive" href={getContinueShoppingHref()}>
-              Seguir comprando
+              {pricingContent.cart.keepShoppingLabel}
             </a>
             <a
               className={`action-button action-link-button${items.length === 0 ? ' is-disabled' : ''}`}
               data-cursor="sales"
               href={items.length === 0 ? publicRoutes.carrito : publicRoutes.checkout}
             >
-              Continuar al checkout
+              {pricingContent.cart.checkoutLabel}
             </a>
           </div>
         </article>

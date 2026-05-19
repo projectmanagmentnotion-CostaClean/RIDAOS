@@ -7,6 +7,7 @@ import PageShell from '../components/PageShell'
 import SeoContentBlock from '../components/SeoContentBlock'
 import SectionHeader from '../components/SectionHeader'
 import StatusBadge from '../components/StatusBadge'
+import { catalogContent } from '../content/catalogContent'
 import { getContentByEntryId } from '../catalog/content/contentSelectors'
 import {
   getCatalogSections,
@@ -38,6 +39,11 @@ function getStatusCopy(entry: CatalogEntry) {
   }
 }
 
+/**
+ * Editable Zone: CATALOG_GRID
+ * Content: src/content/catalogContent.ts
+ * Visual component: src/pages/Catalogo.tsx
+ */
 function Catalogo() {
   const featuredProduct = useMemo(() => getFeaturedProducts()[0], [])
   const catalogSections = useMemo(() => getCatalogSections(), [])
@@ -54,12 +60,12 @@ function Catalogo() {
     <PageShell className="catalog-page premium-page">
       <SectionHeader
         className="catalog-hero premium-hero type-split"
-        description={featuredContent?.metaDescription ?? 'Elige compra directa cuando el precio ya esta definido y solicita propuesta cuando el proyecto necesita medidas, materiales o instalacion a medida.'}
-        eyebrow={featuredContent?.eyebrow ?? 'Catalogo RidaosPrint'}
+        description={featuredContent?.metaDescription ?? catalogContent.hero.fallbackDescription}
+        eyebrow={featuredContent?.eyebrow ?? catalogContent.hero.fallbackEyebrow}
         hero
-        stickerWords={['directa', 'presupuesto']}
-        title="Compra directa donde importa, presupuesto donde aporta valor."
-        titleLines={['COMPRA DIRECTA', 'DONDE IMPORTA', 'PRESUPUESTO', 'DONDE APORTA VALOR']}
+        stickerWords={catalogContent.hero.stickerWords}
+        title={catalogContent.hero.title}
+        titleLines={catalogContent.hero.titleLines}
       />
 
       {featuredProduct ? (
@@ -70,30 +76,30 @@ function Catalogo() {
                 {featuredContent?.primaryCta.label ?? featuredProduct.cta.label}
               </a>
               <a className="action-button action-button-muted action-link-button" href={getPublicCtaHref('guia')}>
-                {featuredContent?.secondaryCta.label ?? 'Ver guia de archivos'}
+                {featuredContent?.secondaryCta.label ?? catalogContent.featured.secondaryCtaLabel}
               </a>
             </div>
           }
           className="featured-product-card"
           description={featuredContent?.intro ?? featuredProduct.shortDescription}
-          label="Producto destacado"
-          title={`${featuredProduct.name} listo para configurar y comprar.`}
+          label={catalogContent.featured.label}
+          title={`${featuredProduct.name} ${catalogContent.featured.titleSuffix}`}
         />
       ) : null}
 
       <section className="content-section content-grid-two">
         <article className="content-card motion-card" data-cursor="interactive">
-          <SectionHeader eyebrow="Catalogo visual" title="Oferta clara antes de entrar en detalle." />
-          <p>Compra directa donde el precio ya esta definido y propuesta personalizada cuando medidas, acabados o instalacion cambian el proyecto.</p>
+          <SectionHeader eyebrow={catalogContent.visualPanel.eyebrow} title={catalogContent.visualPanel.title} />
+          <p>{catalogContent.visualPanel.description}</p>
           <MouseMotionVisual variant="catalog" />
         </article>
         <article className="content-card seo-content-block">
-          <p className="section-label">Como comprar</p>
-          <h3>Empieza por el flujo que mejor encaje.</h3>
+          <p className="section-label">{catalogContent.flowPanel.label}</p>
+          <h3>{catalogContent.flowPanel.title}</h3>
           <ul className="detail-list">
-            <li>DTF por metro para configurar archivo, metraje y urgencia en un solo paso.</li>
-            <li>Productos con tramos claros para preparar el carrito sin perder tiempo.</li>
-            <li>Servicios a medida con referencia inicial antes de pedir una propuesta.</li>
+            {catalogContent.flowPanel.bullets.map((bullet) => (
+              <li key={bullet}>{bullet}</li>
+            ))}
           </ul>
         </article>
       </section>
@@ -129,7 +135,7 @@ function Catalogo() {
       ) : null}
 
       <section className="catalog-section">
-        <SectionHeader eyebrow="Categorias" title="Lectura rapida de la oferta." />
+        <SectionHeader eyebrow={catalogContent.categorySection.eyebrow} title={catalogContent.categorySection.title} />
         <div className="category-grid">
           {catalogCategories.map((category) => (
             <article className="content-card category-card hover-lift" data-cursor="interactive" key={category.key} tabIndex={0}>
@@ -141,7 +147,7 @@ function Catalogo() {
       </section>
 
       <section className="catalog-section">
-        <SectionHeader eyebrow="Servicios y productos" title="Configura, prepara o solicita propuesta." />
+        <SectionHeader eyebrow={catalogContent.productsSection.eyebrow} title={catalogContent.productsSection.title} />
         {categorySections.map((section) => (
           <div className="catalog-section-block" key={section.key}>
             <SectionHeader eyebrow={section.title} title={section.description} />

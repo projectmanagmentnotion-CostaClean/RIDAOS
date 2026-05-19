@@ -1,12 +1,18 @@
 import FaqBlock from '../../components/FaqBlock'
 import ObjectionHandlerBlock from '../../components/ObjectionHandlerBlock'
 import { dtfEntry } from '../../catalog/products/dtf'
+import { faqContent } from '../../content/faqContent'
 
+/**
+ * Editable Zone: HOME_FAQ
+ * Content: src/content/faqContent.ts
+ * Visual component: src/sections/home/AnswersSection.tsx
+ */
 function AnswersSection() {
   return (
     <>
-      <ObjectionHandlerBlock entryId={dtfEntry.id} title="Respuestas rapidas antes de pedir." />
-      <FaqBlock entryId={dtfEntry.id} title="Preguntas rapidas antes de pedir." />
+      <ObjectionHandlerBlock entryId={dtfEntry.id} title={faqContent.home.objectionsTitle} />
+      <FaqBlock entryId={dtfEntry.id} title={faqContent.home.faqTitle} />
     </>
   )
 }

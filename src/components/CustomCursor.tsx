@@ -61,6 +61,14 @@ function CustomCursor() {
       isInterest = interest
       body.classList.toggle('custom-cursor-interest', interest)
 
+      gsap.to(dot, {
+        opacity: interest ? 0 : 1,
+        scale: interest ? 0.35 : 1,
+        duration: 0.18,
+        ease: 'power3.out',
+        overwrite: true,
+      })
+
       gsap.to(hover, {
         width: interest ? 68 : 11,
         height: interest ? 68 : 11,
@@ -112,6 +120,8 @@ function CustomCursor() {
       width: 11,
       height: 11,
       backgroundColor: '#ff00b8',
+      opacity: 1,
+      scale: 1,
     })
     gsap.set(hover, {
       width: 11,

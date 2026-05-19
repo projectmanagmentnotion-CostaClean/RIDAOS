@@ -1,15 +1,9 @@
 import { useMemo } from 'react'
+import { OrderLifecycleTimeline } from '../features/orders/components/OrderLifecycleTimeline'
+import { getMockLifecycleLabel } from '../features/orders/utils/orderLifecycle'
 import { publicRoutes } from '../lib/navigation'
 import { getOrderItemSummary } from '../lib/products'
 import { useOrderStore } from '../store/useOrderStore'
-
-const timeline = [
-  'Pedido recibido',
-  'Archivo en comprobacion',
-  'Archivo aprobado',
-  'En fabricacion',
-  'Listo para recoger/enviar',
-]
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('es-ES', {
@@ -36,17 +30,6 @@ function DetallePedido() {
   }
 
   const item = order.items[0]
-  const completeSteps =
-    order.status === 'pending_review'
-      ? 2
-      : order.status === 'approved'
-        ? 3
-        : order.status === 'in_production'
-          ? 4
-          : order.status === 'ready' || order.status === 'completed'
-            ? 5
-            : 2
-
   return (
     <section className="page account-page">
       <div className="page-hero account-hero">
@@ -73,7 +56,7 @@ function DetallePedido() {
             ))}
             <div className="summary-row">
               <span>Estado</span>
-              <strong>{order.status}</strong>
+              <strong>{getMockLifecycleLabel(order.status)}</strong>
             </div>
             <div className="summary-row summary-row-total">
               <span>Estado de pago</span>
@@ -116,21 +99,7 @@ function DetallePedido() {
 
       <article className="content-card timeline-card">
         <p className="section-label">Timeline del pedido</p>
-        <div className="order-timeline">
-          {timeline.map((step, index) => (
-            <div className="timeline-step" key={step}>
-              <div className={`timeline-marker${index < completeSteps ? ' is-complete' : ''}`} />
-              <div>
-                <h3>{step}</h3>
-                <p>
-                  {index < completeSteps
-                    ? 'Paso registrado en el seguimiento actual del pedido.'
-                    : 'Se actualizara cuando el pedido avance al siguiente estado.'}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
+        <OrderLifecycleTimeline status={order.status} />
       </article>
     </section>
   )

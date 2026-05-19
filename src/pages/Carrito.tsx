@@ -1,8 +1,11 @@
+import { useState } from 'react'
+import { footerContent, pricingContent } from '../content'
+import { CartLineItem } from '../features/cart/components/CartLineItem'
+import { CartRecommendations } from '../features/cart/components/CartRecommendations'
+import { CartSummaryPanel } from '../features/cart/components/CartSummaryPanel'
+import { useCartSummary } from '../features/cart/hooks/useCartSummary'
 import { getContinueShoppingHref, publicRoutes } from '../lib/navigation'
-import { useMemo } from 'react'
-import { getOrderItemSummary } from '../lib/products'
 import { useCartStore } from '../store/useCartStore'
-import { pricingContent } from '../content/pricingContent'
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat(pricingContent.locale, {
@@ -17,29 +20,37 @@ const formatCurrency = (value: number) =>
  */
 function Carrito() {
   const items = useCartStore((state) => state.items)
+  const couponCode = useCartStore((state) => state.couponCode)
   const removeItem = useCartStore((state) => state.removeItem)
   const clearCart = useCartStore((state) => state.clearCart)
-
-  const cartTotal = useMemo(
-    () => items.reduce((sum, item) => sum + item.pricing.total, 0),
-    [items],
-  )
+  const updateItemQuantity = useCartStore((state) => state.updateItemQuantity)
+  const setCouponCode = useCartStore((state) => state.setCouponCode)
+  const setShippingMethod = useCartStore((state) => state.setShippingMethod)
+  const summary = useCartSummary()
+  const [couponDraft, setCouponDraft] = useState(couponCode)
 
   return (
     <section className="page">
       <div className="page-hero">
         <p className="eyebrow">{pricingContent.cart.heroEyebrow}</p>
         <h1>{pricingContent.cart.heroTitle}</h1>
-        <p>
-          {pricingContent.cart.heroDescription}
-        </p>
+        <p>{pricingContent.cart.heroDescription}</p>
       </div>
 
-      <div className="split-grid cart-layout">
+      <div className="split-grid cart-layout cart-layout--premium">
         <article className="content-card">
-          <p className="section-label">Items</p>
+          <div className="premium-panel-header">
+            <div>
+              <p className="section-label">Items</p>
+              <h2>Lineas preparadas para produccion.</h2>
+            </div>
+            <span className="premium-caption">
+              Persistencia local activa · {summary.lineCount} unidades en cesta
+            </span>
+          </div>
+
           {items.length === 0 ? (
-            <div className="empty-state">
+            <div className="empty-state premium-empty-state">
               <p>{pricingContent.cart.emptyState}</p>
               <a className="card-link" href={getContinueShoppingHref()}>
                 {pricingContent.cart.continueShoppingLabel}
@@ -48,108 +59,66 @@ function Carrito() {
           ) : (
             <div className="cart-items">
               {items.map((item) => (
-                <article className="cart-item-card" data-cursor="interactive" key={item.id}>
-                  <div className="cart-item-header">
-                    <div>
-                      <p className="section-label">{item.productName}</p>
-                      <h3>{formatCurrency(item.pricing.total)}</h3>
-                    </div>
-                    <button
-                      className="action-button action-button-muted action-button-small"
-                      onClick={() => removeItem(item.id)}
-                      type="button"
-                    >
-                      Quitar
-                    </button>
-                  </div>
-
-                  <div className="cart-meta-grid">
-                    {getOrderItemSummary(item).map((line) => (
-                      <p key={`${item.id}-${line}`}>{line}</p>
-                    ))}
-                  </div>
-
-                  <div className="summary-list compact-summary">
-                    <div className="summary-row">
-                      <span>Archivo</span>
-                      <strong>{item.artwork.fileName}</strong>
-                    </div>
-                    <div className="summary-row">
-                      <span>Revision</span>
-                      <strong>Comprobacion tecnica antes de fabricar</strong>
-                    </div>
-                  </div>
-
-                  <div className="summary-list compact-summary">
-                    <div className="summary-row">
-                      <span>Precio base</span>
-                      <strong>
-                        {formatCurrency(item.pricing.unitPrice)}
-                        {item.pricing.unitLabel ? `/${item.pricing.unitLabel}` : ''}
-                      </strong>
-                    </div>
-                    <div className="summary-row">
-                      <span>Subtotal</span>
-                      <strong>{formatCurrency(item.pricing.subtotal)}</strong>
-                    </div>
-                    <div className="summary-row">
-                      <span>Extras</span>
-                      <strong>{formatCurrency(item.pricing.extras)}</strong>
-                    </div>
-                  </div>
-
-                  {item.configuration.notes ? <p className="cart-notes">Notas: {item.configuration.notes}</p> : null}
-                </article>
+                <CartLineItem
+                  formatCurrency={formatCurrency}
+                  item={item}
+                  key={item.id}
+                  onQuantityChange={(quantity) => updateItemQuantity(item.id, quantity)}
+                  onRemove={() => removeItem(item.id)}
+                />
               ))}
             </div>
           )}
         </article>
 
-        <article className="content-card" data-cursor-zone="conversion">
-          <p className="section-label">Resumen</p>
-          <div className="summary-list">
-            <div className="summary-row">
-              <span>Items</span>
-              <strong>{items.length}</strong>
-            </div>
-            <div className="summary-row">
-              <span>Comprobacion tecnica</span>
-              <strong>{items.some((item) => item.artwork.status === 'pending_review') ? 'Incluida antes de fabricar' : 'No requerida'}</strong>
-            </div>
-            <div className="summary-row summary-row-total">
-              <span>Total</span>
-              <strong>{formatCurrency(cartTotal)}</strong>
-            </div>
-          </div>
+        <div className="summary-stack">
+          <CartSummaryPanel
+            couponDraft={couponDraft}
+            formatCurrency={formatCurrency}
+            onCouponApply={() => setCouponCode(couponDraft.trim().toUpperCase())}
+            onCouponDraftChange={setCouponDraft}
+            onShippingChange={setShippingMethod}
+            summary={summary}
+          />
 
-          <ul className="hint-list">
-            <li>El checkout registra tu pedido con los articulos configurados.</li>
-            <li>Los archivos y acabados se comprueban antes de fabricar.</li>
-            <li>Si necesitas ajustar el pedido, puedes volver al catalogo sin romper el flujo.</li>
-          </ul>
+          <article className="content-card premium-cart-cta" data-cursor-zone="conversion">
+            <p className="section-label">Siguiente paso</p>
+            <h3>Cierra el flujo sin perder contexto.</h3>
+            <ul className="hint-list">
+              <li>El checkout mock conserva envio, cupon y lectura del pedido.</li>
+              <li>La comprobacion tecnica sigue siendo el paso previo a cualquier produccion real.</li>
+              <li>{footerContent.description}</li>
+            </ul>
 
-          <div className="form-actions">
-            <button
-              className="action-button action-button-muted"
-              disabled={items.length === 0}
-              onClick={clearCart}
-              type="button"
-            >
-              {pricingContent.cart.clearCartLabel}
-            </button>
-            <a className="action-button action-button-muted action-link-button" data-cursor="interactive" href={getContinueShoppingHref()}>
-              {pricingContent.cart.keepShoppingLabel}
-            </a>
-            <a
-              className={`action-button action-link-button${items.length === 0 ? ' is-disabled' : ''}`}
-              data-cursor="sales"
-              href={items.length === 0 ? publicRoutes.carrito : publicRoutes.checkout}
-            >
-              {pricingContent.cart.checkoutLabel}
-            </a>
-          </div>
-        </article>
+            <div className="form-actions">
+              <button
+                className="action-button action-button-muted"
+                disabled={items.length === 0}
+                onClick={clearCart}
+                type="button"
+              >
+                {pricingContent.cart.clearCartLabel}
+              </button>
+              <a
+                className="action-button action-button-muted action-link-button"
+                data-cursor="interactive"
+                href={getContinueShoppingHref()}
+              >
+                {pricingContent.cart.keepShoppingLabel}
+              </a>
+              <a
+                className={`action-button action-link-button${items.length === 0 ? ' is-disabled' : ''}`}
+                data-cursor="sales"
+                href={items.length === 0 ? publicRoutes.carrito : publicRoutes.checkout}
+              >
+                {pricingContent.cart.checkoutLabel}
+              </a>
+            </div>
+          </article>
+        </div>
       </div>
+
+      <CartRecommendations />
     </section>
   )
 }

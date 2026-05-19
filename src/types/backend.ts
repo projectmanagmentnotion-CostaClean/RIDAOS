@@ -39,6 +39,7 @@ export type ArtworkUpload = {
 
 export type OrderItem = {
   id: string
+  lineQuantity?: number
   productType: 'dtf' | 'textile' | 'paper' | 'material' | 'accessory'
   productName: string
   configuration: {
@@ -50,6 +51,8 @@ export type OrderItem = {
     meters?: number
     quality?: DTFQuality
     urgency?: DTFUrgency
+    turnaroundPreference?: string
+    extras?: string[]
     notes: string
   }
   pricing: {

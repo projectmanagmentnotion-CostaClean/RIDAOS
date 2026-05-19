@@ -1,22 +1,41 @@
 import { useMemo, useState } from 'react'
 import CommercialNotice from '../components/CommercialNotice'
+import { pricingContent } from '../content'
+import { checkoutSteps, paymentMocks } from '../features/cart/data/checkoutMock'
+import { CheckoutStepRail } from '../features/cart/components/CheckoutStepRail'
+import { useCartSummary } from '../features/cart/hooks/useCartSummary'
+import type { CartSummary } from '../features/cart/types/cart.types'
+import { multiplyOrderItemPricing } from '../features/cart/utils/cartPricing'
+import { OrderLifecycleTimeline } from '../features/orders/components/OrderLifecycleTimeline'
 import { getContinueShoppingHref } from '../lib/navigation'
 import { getOrderItemSummary } from '../lib/products'
-import { submitOrder } from '../services/orderService'
 import { upsertCustomerProfile } from '../services/customerService'
+import { submitOrder } from '../services/orderService'
 import { useCartStore } from '../store/useCartStore'
 import { useUIStore } from '../store/useUIStore'
 import type { CustomerData, SimulatedOrder } from '../types/ecommerce'
 
+type CheckoutStep = (typeof checkoutSteps)[number]['id']
+type PaymentMockId = (typeof paymentMocks)[number]['id']
+
 const formatCurrency = (value: number) =>
-  new Intl.NumberFormat('es-ES', {
+  new Intl.NumberFormat(pricingContent.locale, {
     style: 'currency',
-    currency: 'EUR',
+    currency: pricingContent.currency,
   }).format(value)
 
+/**
+ * Editable Zone: CHECKOUT_MOCK_FLOW
+ * Content: src/content/pricingContent.ts
+ * Visual component: src/pages/Checkout.tsx
+ */
 function Checkout() {
   const cartItems = useCartStore((state) => state.items)
   const clearCart = useCartStore((state) => state.clearCart)
+  const summary = useCartSummary()
+  const [step, setStep] = useState<CheckoutStep>('review')
+  const [selectedPayment, setSelectedPayment] = useState<PaymentMockId>(paymentMocks[0].id)
+  const [submittedSummary, setSubmittedSummary] = useState<CartSummary | null>(null)
   const [customer, setCustomer] = useState<CustomerData>({
     name: '',
     email: '',
@@ -30,10 +49,7 @@ function Checkout() {
   const setError = useUIStore((state) => state.setError)
   const clearError = useUIStore((state) => state.clearError)
 
-  const cartTotal = useMemo(
-    () => cartItems.reduce((sum, item) => sum + item.pricing.total, 0),
-    [cartItems],
-  )
+  const canAdvance = useMemo(() => cartItems.length > 0, [cartItems.length])
 
   const handleFieldChange =
     (field: keyof CustomerData) =>
@@ -43,7 +59,7 @@ function Checkout() {
       clearError('checkout')
     }
 
-  const handleSubmit = async () => {
+  const validateCustomer = () => {
     const nextErrors: Partial<Record<keyof CustomerData | 'cart', string>> = {}
 
     if (!customer.name.trim()) {
@@ -63,8 +79,11 @@ function Checkout() {
     }
 
     setErrors(nextErrors)
+    return Object.keys(nextErrors).length === 0
+  }
 
-    if (Object.keys(nextErrors).length > 0) {
+  const handleSubmit = async () => {
+    if (!validateCustomer()) {
       setConfirmation(null)
       return
     }
@@ -74,10 +93,12 @@ function Checkout() {
 
     try {
       const savedCustomer = await upsertCustomerProfile(customer)
+      const normalizedItems = cartItems.map(multiplyOrderItemPricing)
+      setSubmittedSummary(summary)
       const order = await submitOrder({
         customer,
         customerId: savedCustomer.id,
-        items: cartItems,
+        items: normalizedItems,
       })
 
       setConfirmation(order)
@@ -88,6 +109,7 @@ function Checkout() {
         email: '',
         phone: '',
       })
+      setStep('success')
     } catch {
       setError('checkout', 'No se pudo registrar el pedido en este momento. Intentalo de nuevo.')
       setConfirmation(null)
@@ -96,116 +118,131 @@ function Checkout() {
     }
   }
 
+  const activeSummary = submittedSummary ?? summary
+
   return (
     <section className="page">
       <div className="page-hero">
-        <p className="eyebrow">Checkout</p>
-        <h1>Confirma tu pedido.</h1>
-        <p>
-          En este paso registras el pedido y dejas listo el contacto para confirmar archivo, disponibilidad y siguientes pasos.
-        </p>
+        <p className="eyebrow">{pricingContent.checkout.heroEyebrow}</p>
+        <h1>{pricingContent.checkout.heroTitle}</h1>
+        <p>{pricingContent.checkout.heroDescription}</p>
       </div>
 
-      <div className="split-grid cart-layout">
+      <CheckoutStepRail activeStep={step} steps={checkoutSteps} />
+
+      <div className="split-grid cart-layout checkout-layout--premium">
         <article className="content-card" data-cursor-zone="conversion">
-          <p className="section-label">Datos del cliente</p>
-          <div className="configurator-form">
-            <label className="field-group" htmlFor="checkout-name">
-              <span className="field-label">Nombre</span>
-              <input
-                className="form-input"
-                id="checkout-name"
-                onChange={handleFieldChange('name')}
-                type="text"
-                value={customer.name}
-              />
-              {errors.name ? <span className="field-error">{errors.name}</span> : null}
-            </label>
-
-            <label className="field-group" htmlFor="checkout-email">
-              <span className="field-label">Email</span>
-              <input
-                className="form-input"
-                id="checkout-email"
-                onChange={handleFieldChange('email')}
-                type="email"
-                value={customer.email}
-              />
-              {errors.email ? <span className="field-error">{errors.email}</span> : null}
-            </label>
-
-            <label className="field-group" htmlFor="checkout-phone">
-              <span className="field-label">Telefono</span>
-              <input
-                className="form-input"
-                id="checkout-phone"
-                onChange={handleFieldChange('phone')}
-                type="tel"
-                value={customer.phone}
-              />
-              {errors.phone ? <span className="field-error">{errors.phone}</span> : null}
-            </label>
-
-            {errors.cart ? <p className="field-error">{errors.cart}</p> : null}
-            {uiError ? <p className="field-error">{uiError}</p> : null}
-            {loading ? <p className="inline-notice">Registrando tu solicitud...</p> : null}
-
-            <ul className="hint-list">
-              <li>No se realiza pago online en este paso.</li>
-              <li>El equipo revisa archivo, cantidad y observaciones antes de fabricar.</li>
-              <li>La produccion y el pago se confirman despues de la comprobacion tecnica.</li>
-              <li>Usa datos reales para recibir la confirmacion correctamente.</li>
-            </ul>
-
-            <div className="form-actions">
-              <button className="action-button" data-cursor="sales" disabled={loading} onClick={handleSubmit} type="button">
-                Registrar pedido
-              </button>
-            </div>
-          </div>
-        </article>
-
-        <div className="summary-stack">
-          <article className="content-card" data-cursor-zone="conversion">
-            <p className="section-label">Resumen de carrito</p>
-            {cartItems.length === 0 ? (
-              <div className="empty-state">
-                <p>Tu carrito esta vacio. Anade productos antes de pasar a este paso.</p>
-                <a className="card-link" href={getContinueShoppingHref()}>
-                  Volver al catalogo
-                </a>
-              </div>
-            ) : (
-              <>
-                <div className="checkout-list">
-                  {cartItems.map((item) => (
-                    <div className="checkout-item" key={item.id}>
-                      <div>
-                        <h3>{item.productName}</h3>
-                        <p>{getOrderItemSummary(item).join(' | ') || item.artwork.fileName}</p>
+          {step === 'review' ? (
+            <>
+              <p className="section-label">Revision final</p>
+              <h2>{pricingContent.checkout.reviewTitle}</h2>
+              {cartItems.length === 0 ? (
+                <div className="empty-state premium-empty-state">
+                  <p>Tu carrito esta vacio. Anade productos antes de pasar a este paso.</p>
+                  <a className="card-link" href={getContinueShoppingHref()}>
+                    Volver al catalogo
+                  </a>
+                </div>
+              ) : (
+                <>
+                  <div className="checkout-list">
+                    {cartItems.map((item) => (
+                      <div className="checkout-item" key={item.id}>
+                        <div>
+                          <h3>{item.productName}</h3>
+                          <p>{getOrderItemSummary(item).join(' | ') || item.artwork.fileName}</p>
+                        </div>
+                        <strong>{formatCurrency(item.pricing.total * (item.lineQuantity ?? 1))}</strong>
                       </div>
-                      <strong>{formatCurrency(item.pricing.total)}</strong>
-                    </div>
-                  ))}
-                </div>
-                <div className="summary-list">
-                  <div className="summary-row">
-                    <span>Revision</span>
-                    <strong>Comprobacion tecnica antes de fabricar</strong>
+                    ))}
                   </div>
-                  <div className="summary-row summary-row-total">
-                    <span>Total</span>
-                    <strong>{formatCurrency(cartTotal)}</strong>
+                  <ul className="hint-list">
+                    <li>Revisa ahora cantidades, urgencias y extras antes de pedir envio.</li>
+                    <li>El pedido sigue en modo local/mock y no dispara pagos reales.</li>
+                    <li>La comprobacion tecnica se mantiene como primer checkpoint operativo.</li>
+                  </ul>
+                  <div className="form-actions">
+                    <button className="action-button" disabled={!canAdvance} onClick={() => setStep('shipping')} type="button">
+                      Continuar a envio
+                    </button>
                   </div>
-                </div>
-                <CommercialNotice className="checkout-notice" title="Condiciones del pedido" />
-              </>
-            )}
-          </article>
+                </>
+              )}
+            </>
+          ) : null}
 
-          {confirmation ? (
-            <article className="content-card success-card" data-cursor-zone="conversion">
-              <p className="section-label">Solicitud registrada</p>
+          {step === 'shipping' ? (
+            <>
+              <p className="section-label">Envio mock</p>
+              <h2>{pricingContent.checkout.shippingTitle}</h2>
+              <div className="configurator-form">
+                <label className="field-group" htmlFor="checkout-name">
+                  <span className="field-label">Nombre</span>
+                  <input className="form-input" id="checkout-name" onChange={handleFieldChange('name')} type="text" value={customer.name} />
+                  {errors.name ? <span className="field-error">{errors.name}</span> : null}
+                </label>
+                <label className="field-group" htmlFor="checkout-email">
+                  <span className="field-label">Email</span>
+                  <input className="form-input" id="checkout-email" onChange={handleFieldChange('email')} type="email" value={customer.email} />
+                  {errors.email ? <span className="field-error">{errors.email}</span> : null}
+                </label>
+                <label className="field-group" htmlFor="checkout-phone">
+                  <span className="field-label">Telefono</span>
+                  <input className="form-input" id="checkout-phone" onChange={handleFieldChange('phone')} type="tel" value={customer.phone} />
+                  {errors.phone ? <span className="field-error">{errors.phone}</span> : null}
+                </label>
+                {errors.cart ? <p className="field-error">{errors.cart}</p> : null}
+                <ul className="hint-list">
+                  <li>Los datos solo se guardan en la simulacion local del pedido.</li>
+                  <li>El metodo de envio ya fue calculado en el carrito y se conserva aqui.</li>
+                </ul>
+                <div className="form-actions">
+                  <button className="action-button action-button-muted" onClick={() => setStep('review')} type="button">
+                    Volver a revision
+                  </button>
+                  <button className="action-button" onClick={() => setStep('payment')} type="button">
+                    Continuar a pago mock
+                  </button>
+                </div>
+              </div>
+            </>
+          ) : null}
+
+          {step === 'payment' ? (
+            <>
+              <p className="section-label">Pago mock</p>
+              <h2>{pricingContent.checkout.paymentTitle}</h2>
+              <div className="shipping-option-list payment-option-list">
+                {paymentMocks.map((payment) => (
+                  <button
+                    className={`shipping-option${selectedPayment === payment.id ? ' is-active' : ''}`}
+                    key={payment.id}
+                    onClick={() => setSelectedPayment(payment.id)}
+                    type="button"
+                  >
+                    <strong>{payment.label}</strong>
+                    <span>{payment.description}</span>
+                  </button>
+                ))}
+              </div>
+              {uiError ? <p className="field-error">{uiError}</p> : null}
+              {loading ? <p className="inline-notice">Registrando tu solicitud...</p> : null}
+              <CommercialNotice className="checkout-notice" title="Condiciones del pedido" />
+              <div className="form-actions">
+                <button className="action-button action-button-muted" onClick={() => setStep('shipping')} type="button">
+                  Volver a envio
+                </button>
+                <button className="action-button" data-cursor="sales" disabled={loading} onClick={handleSubmit} type="button">
+                  Registrar pedido mock
+                </button>
+              </div>
+            </>
+          ) : null}
+
+          {step === 'success' && confirmation ? (
+            <>
+              <p className="section-label">Confirmacion</p>
+              <h2>{pricingContent.checkout.successTitle}</h2>
               <div className="summary-list">
                 <div className="summary-row">
                   <span>Pedido</span>
@@ -216,26 +253,58 @@ function Checkout() {
                   <strong>{confirmation.customer.name}</strong>
                 </div>
                 <div className="summary-row">
-                  <span>Email</span>
-                  <strong>{confirmation.customer.email}</strong>
-                </div>
-                <div className="summary-row">
-                  <span>Telefono</span>
-                  <strong>{confirmation.customer.phone}</strong>
-                </div>
-                <div className="summary-row">
-                  <span>Estado</span>
-                  <strong>Recibido para comprobacion tecnica</strong>
-                </div>
-                <div className="summary-row">
-                  <span>Items</span>
-                  <strong>{confirmation.items.length}</strong>
+                  <span>Metodo de pago mock</span>
+                  <strong>{paymentMocks.find((item) => item.id === selectedPayment)?.label}</strong>
                 </div>
                 <div className="summary-row summary-row-total">
-                  <span>Total</span>
+                  <span>Total registrado</span>
                   <strong>{formatCurrency(confirmation.total)}</strong>
                 </div>
               </div>
+              <OrderLifecycleTimeline status={confirmation.status} />
+            </>
+          ) : null}
+        </article>
+
+        <div className="summary-stack">
+          <article className="content-card premium-cart-summary" data-cursor-zone="conversion">
+            <p className="section-label">Resumen de checkout</p>
+            <div className="summary-list">
+              <div className="summary-row">
+                <span>Subtotal</span>
+                <strong>{formatCurrency(activeSummary.subtotal)}</strong>
+              </div>
+              <div className="summary-row">
+                <span>Envio mock</span>
+                <strong>{formatCurrency(activeSummary.shipping.price)}</strong>
+              </div>
+              <div className="summary-row">
+                <span>Impuestos mock</span>
+                <strong>{formatCurrency(activeSummary.taxes)}</strong>
+              </div>
+              <div className="summary-row">
+                <span>Cupon</span>
+                <strong>{activeSummary.coupon ? activeSummary.coupon.code : 'Sin cupon'}</strong>
+              </div>
+              <div className="summary-row summary-row-total">
+                <span>Total checkout</span>
+                <strong>{formatCurrency(activeSummary.total)}</strong>
+              </div>
+            </div>
+            <ul className="hint-list">
+              <li>Sin Stripe. Sin auth real. Sin datos remotos.</li>
+              <li>Shipping, taxes y payment son simulaciones locales preparadas para la capa real.</li>
+              <li>El pedido se guarda en el historial mock y alimenta el timeline operativo.</li>
+            </ul>
+          </article>
+
+          {confirmation ? (
+            <article className="content-card success-card" data-cursor-zone="conversion">
+              <p className="section-label">Siguiente lectura</p>
+              <p>
+                El pedido ya puede verse desde el historial mock con el estado inicial de revision de
+                archivo y produccion preparada.
+              </p>
             </article>
           ) : null}
         </div>

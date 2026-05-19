@@ -25,6 +25,10 @@ export const dtfPageContent = {
     reviewCaption:
       'El pedido pasa por comprobacion tecnica del archivo antes de confirmar produccion y pago.',
   },
+  progress: {
+    eyebrow: 'Recorrido guiado',
+    title: 'Configura, carga y valida con una lectura mas clara.',
+  },
   actions: {
     prepareLabel: 'Preparar pedido',
     addToCartLabel: 'Anadir al carrito',

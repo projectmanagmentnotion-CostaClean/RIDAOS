@@ -144,6 +144,29 @@ Ejemplos:
 - Contenido editable: `src/content/pricingContent.ts`
 - Controla: copy del hero del carrito y labels base de continuidad comercial
 
+## CHECKOUT_MOCK_FLOW
+
+- Archivo visual: `src/pages/Checkout.tsx`
+- Contenido editable: `src/content/pricingContent.ts`
+- Controla: titulares, copy base y narrativa del flujo mock de revision, envio, pago y confirmacion
+
+Ejemplos:
+
+- `Cambia el titular de CHECKOUT_MOCK_FLOW`
+- `Ajusta el copy del paso de pago mock`
+
+## PRODUCT_RECOMMENDATIONS
+
+- Archivo visual: `src/features/cart/data/cartRecommendations.ts`
+- Contenido editable: `src/features/cart/data/cartRecommendations.ts`
+- Controla: recomendaciones premium y cross-sell mostrados en el carrito
+
+## ORDER_LIFECYCLE_MOCK
+
+- Archivo visual: `src/features/orders/utils/orderLifecycle.ts`
+- Contenido editable: `src/features/orders/utils/orderLifecycle.ts`
+- Controla: etiquetas y orden del timeline mock de seguimiento del pedido
+
 ## ADMIN_DASHBOARD
 
 - Archivo visual: `src/admin/pages/DashboardPage.tsx`

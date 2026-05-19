@@ -8,7 +8,7 @@ export function getCart(): CartItem[] {
 export function addToCart(item: CartItem): CartItem[] {
   const store = useCartStore.getState()
   store.addItem(item)
-  return store.items.concat(item)
+  return useCartStore.getState().items
 }
 
 export function removeFromCart(id: string): CartItem[] {
@@ -22,5 +22,10 @@ export function clearCart() {
 }
 
 export function getCartTotal(items: CartItem[] = getCart()) {
-  return items.reduce((sum, item) => sum + item.pricing.total, 0)
+  return items.reduce((sum, item) => sum + item.pricing.total * (item.lineQuantity ?? 1), 0)
+}
+
+export function updateCartItemQuantity(id: string, quantity: number) {
+  useCartStore.getState().updateItemQuantity(id, quantity)
+  return useCartStore.getState().items
 }

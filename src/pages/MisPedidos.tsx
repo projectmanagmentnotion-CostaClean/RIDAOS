@@ -1,4 +1,5 @@
 import { publicRoutes } from '../lib/navigation'
+import { getMockLifecycleLabel } from '../features/orders/utils/orderLifecycle'
 import { useMemo } from 'react'
 import { useOrderStore } from '../store/useOrderStore'
 
@@ -40,7 +41,7 @@ function MisPedidos() {
                 <p className="section-label">{order.id}</p>
                 <h3>{order.items[0]?.productName ?? 'Pedido'}</h3>
               </div>
-              <span className={`status-badge status-${order.status}`}>{order.status}</span>
+              <span className={`status-badge status-${order.status}`}>{getMockLifecycleLabel(order.status)}</span>
             </div>
             <div className="order-meta-grid">
               <p>Fecha: {formatDate(order.createdAt)}</p>

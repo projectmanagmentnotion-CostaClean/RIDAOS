@@ -1,10 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import CommercialNoticeGroup from '../components/CommercialNoticeGroup'
 import ConfiguratorSupportBlock from '../components/ConfiguratorSupportBlock'
 import ConversionTrustBlock from '../components/ConversionTrustBlock'
 import CtaPanel from '../components/CtaPanel'
 import FaqBlock from '../components/FaqBlock'
-import MetricCard from '../components/MetricCard'
 import MouseMotionVisual from '../components/MouseMotionVisual'
 import ObjectionHandlerBlock from '../components/ObjectionHandlerBlock'
 import PageShell from '../components/PageShell'
@@ -13,83 +12,27 @@ import SeoContentBlock from '../components/SeoContentBlock'
 import SectionHeader from '../components/SectionHeader'
 import TrustGrid from '../components/TrustGrid'
 import UploadGuidanceBlock from '../components/UploadGuidanceBlock'
+import { dtfEntry } from '../catalog/products/dtf'
+import { getContentByEntryId } from '../catalog/content/contentSelectors'
 import { dtfPageContent } from '../content/dtfContent'
 import { faqContent } from '../content/faqContent'
 import { pricingContent } from '../content/pricingContent'
-import { getContentByEntryId } from '../catalog/content/contentSelectors'
-import {
-  initCinematicScroll,
-  initCursorAwareReveals,
-  initUrbanTextMotion,
-} from '../lib/animations'
-import { addToCart } from '../lib/cart'
+import { DtfOptionCards } from '../features/dtf/components/DtfOptionCards'
+import { DtfPresetSelector } from '../features/dtf/components/DtfPresetSelector'
+import { DtfProgressSteps } from '../features/dtf/components/DtfProgressSteps'
+import { DtfStickySummaryCard } from '../features/dtf/components/DtfStickySummaryCard'
+import { useDtfConfiguratorState } from '../features/dtf/hooks/useDtfConfiguratorState'
+import { initCinematicScroll, initCursorAwareReveals, initUrbanTextMotion } from '../lib/animations'
 import { publicRoutes } from '../lib/navigation'
-import {
-  BASE_PRICE_PER_METER,
-  calculateDTFPricing,
-  type DTFQuality,
-  type DTFUrgency,
-} from '../lib/pricing'
-import { dtfEntry } from '../catalog/products/dtf'
-import type { CartItem } from '../types/ecommerce'
+import { BASE_PRICE_PER_METER } from '../lib/pricing'
 
-type SimulationResult = {
-  meters: number
-  quality: DTFQuality
-  urgency: DTFUrgency
-  total: number
-  fileName: string
-  notes: string
-}
-
-type FilePreview = {
-  canPreview: boolean
-  fileName: string
-  fileType: string
-  fileSizeLabel: string
-  formatLabel: string
-  objectUrl?: string
-}
-
-const qualityLabels: Record<DTFQuality, string> = {
-  standard: 'Standard',
-  premium: 'Premium',
-}
-
-const urgencyLabels: Record<DTFUrgency, string> = {
-  normal: 'Normal',
-  express: 'Express',
-}
-
-const previewableTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml']
-const premiumDocumentFormats = ['PDF', 'AI', 'EPS', 'ZIP', 'TIFF']
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat(pricingContent.locale, {
     style: 'currency',
     currency: pricingContent.currency,
   }).format(value)
 
-const formatFileSize = (file: File) => {
-  if (file.size < 1024 * 1024) {
-    return `${Math.max(file.size / 1024, 0.1).toFixed(1)} KB`
-  }
-
-  return `${(file.size / (1024 * 1024)).toFixed(2)} MB`
-}
-
-const detectFormatLabel = (file: File) => {
-  const extension = file.name.split('.').pop()?.toUpperCase()
-
-  if (extension) {
-    return extension
-  }
-
-  if (file.type) {
-    return file.type.toUpperCase()
-  }
-
-  return 'DESCONOCIDO'
-}
+const premiumDocumentFormats = ['PDF', 'AI', 'EPS', 'ZIP', 'TIFF']
 
 /**
  * Editable Zone: DTF_CONFIGURATOR
@@ -99,37 +42,29 @@ const detectFormatLabel = (file: File) => {
 function DTFPage() {
   const pageRef = useRef<HTMLElement | null>(null)
   const dtfContent = useMemo(() => getContentByEntryId(dtfEntry.id), [])
-  const [meters, setMeters] = useState('1')
-  const [quality, setQuality] = useState<DTFQuality>('standard')
-  const [urgency, setUrgency] = useState<DTFUrgency>('normal')
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [notes, setNotes] = useState('')
-  const [errors, setErrors] = useState<{ meters?: string; file?: string }>({})
-  const [simulation, setSimulation] = useState<SimulationResult | null>(null)
-  const [cartMessage, setCartMessage] = useState('')
-
-  const metersValue = Number(meters)
-  const pricing = useMemo(
-    () => calculateDTFPricing(metersValue, quality, urgency),
-    [metersValue, quality, urgency],
-  )
-
-  const previewUrl = useMemo(() => {
-    if (!selectedFile || !previewableTypes.includes(selectedFile.type)) {
-      return null
-    }
-
-    return URL.createObjectURL(selectedFile)
-  }, [selectedFile])
-
-  useEffect(
-    () => () => {
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl)
-      }
-    },
-    [previewUrl],
-  )
+  const {
+    meters,
+    setMeters,
+    quality,
+    setQuality,
+    urgency,
+    setUrgency,
+    turnaroundPreference,
+    setTurnaroundPreference,
+    setFile,
+    notes,
+    setNotes,
+    selectedExtras,
+    toggleExtra,
+    errors,
+    simulation,
+    cartMessage,
+    pricing,
+    filePreview,
+    summaryItems,
+    handleAddToCart,
+    handleSimulateOrder,
+  } = useDtfConfiguratorState()
 
   useEffect(() => {
     const scope = pageRef.current
@@ -149,131 +84,6 @@ function DTFPage() {
     }
   }, [])
 
-  const filePreview = useMemo<FilePreview | null>(() => {
-    if (!selectedFile) {
-      return null
-    }
-
-    const formatLabel = detectFormatLabel(selectedFile)
-
-    return {
-      canPreview: Boolean(previewUrl) && previewableTypes.includes(selectedFile.type),
-      fileName: selectedFile.name,
-      fileType: selectedFile.type || 'Tipo no detectado',
-      fileSizeLabel: formatFileSize(selectedFile),
-      formatLabel,
-      objectUrl: previewUrl ?? undefined,
-    }
-  }, [previewUrl, selectedFile])
-
-  const dtfSummaryItems = useMemo(
-    () => [
-      { label: 'Metraje', value: metersValue > 0 ? `${metersValue} m` : 'Pendiente' },
-      { label: 'Calidad', value: qualityLabels[quality] },
-      { label: 'Urgencia', value: urgencyLabels[urgency] },
-      { label: 'Archivo', value: selectedFile ? selectedFile.name : 'Pendiente de carga' },
-      { label: 'Plazo', value: urgency === 'express' ? 'Se prioriza tras la comprobacion tecnica.' : 'Se agenda tras revisar el archivo.' },
-    ],
-    [metersValue, quality, selectedFile, urgency],
-  )
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const nextFile = event.target.files?.[0] ?? null
-    setSelectedFile(nextFile)
-    setErrors((current) => ({ ...current, file: undefined }))
-  }
-
-  const handleAddToCart = () => {
-    const file = selectedFile
-    const nextErrors: { meters?: string; file?: string } = {}
-
-    if (!(metersValue > 0)) {
-      nextErrors.meters = 'Introduce un metraje mayor que 0.'
-    }
-
-    if (!file) {
-      nextErrors.file = 'Selecciona un archivo antes de anadir al carrito.'
-    }
-
-    setErrors(nextErrors)
-
-    if (Object.keys(nextErrors).length > 0 || !file) {
-      return
-    }
-
-    const itemId = `dtf-${Date.now()}`
-    const cartItem: CartItem = {
-      id: itemId,
-      productType: 'dtf',
-      productName: 'DTF por metro',
-      configuration: {
-        meters: metersValue,
-        quality,
-        urgency,
-        summary: [
-          'Producto: DTF por metro',
-          `Metraje: ${metersValue} m`,
-          `Calidad: ${qualityLabels[quality]}`,
-          `Urgencia: ${urgencyLabels[urgency]}`,
-          `Archivo: ${file.name}`,
-        ],
-        notes: notes.trim(),
-      },
-      pricing: {
-        unitPrice: BASE_PRICE_PER_METER,
-        unitLabel: 'metro',
-        subtotal: pricing.subtotal,
-        extras: pricing.extras,
-        total: pricing.total,
-      },
-      artwork: {
-        id: `upload-${Date.now()}`,
-        itemId,
-        fileName: file.name,
-        fileType: file.type || 'application/octet-stream',
-        fileSize: file.size,
-        formatLabel: detectFormatLabel(file),
-        status: 'pending_review',
-        uploadedAt: new Date().toISOString(),
-        notes: notes.trim(),
-      },
-    }
-
-    addToCart(cartItem)
-    setErrors({})
-    setCartMessage('Pedido preparado en tu carrito. En el checkout registras la solicitud y revisamos el archivo antes de confirmar produccion y pago.')
-  }
-
-  const handleSimulateOrder = () => {
-    const nextErrors: { meters?: string; file?: string } = {}
-    const file = selectedFile
-
-    if (!(metersValue > 0)) {
-      nextErrors.meters = 'Introduce un metraje mayor que 0.'
-    }
-
-    if (!file) {
-      nextErrors.file = 'Selecciona un archivo antes de preparar el pedido.'
-    }
-
-    setErrors(nextErrors)
-
-    if (Object.keys(nextErrors).length > 0 || !file) {
-      setSimulation(null)
-      return
-    }
-
-    setSimulation({
-      meters: metersValue,
-      quality,
-      urgency,
-      total: pricing.total,
-      fileName: file.name,
-      notes: notes.trim(),
-    })
-    setCartMessage('')
-  }
-
   return (
     <PageShell className="premium-page" ref={pageRef}>
       <section className="dtf-hero-stage" data-motion="hero-stage" data-scroll-scene="dtf-hero">
@@ -289,9 +99,28 @@ function DTFPage() {
         />
       </section>
 
-      <div className="split-grid dtf-cockpit-layout dtf-layout" data-animate="reveal" data-motion="poster-stack" data-scroll-scene="dtf-cockpit">
-        <article className="content-card dtf-cockpit-panel hover-lift" data-animate="panel" data-cursor-zone="conversion" data-scroll-scene="dtf-form" tabIndex={0}>
-          <SectionHeader eyebrow="Configurador" title="Configura tu pedido DTF." />
+      <section className="content-section premium-progress-section">
+        <div>
+          <p className="section-label">{dtfPageContent.progress.eyebrow}</p>
+          <h2>{dtfPageContent.progress.title}</h2>
+        </div>
+        <DtfProgressSteps />
+      </section>
+
+      <div
+        className="split-grid dtf-cockpit-layout dtf-layout"
+        data-animate="reveal"
+        data-motion="poster-stack"
+        data-scroll-scene="dtf-cockpit"
+      >
+        <article
+          className="content-card dtf-cockpit-panel hover-lift"
+          data-animate="panel"
+          data-cursor-zone="conversion"
+          data-scroll-scene="dtf-form"
+          tabIndex={0}
+        >
+          <SectionHeader eyebrow="Configurador" title="Configura un pedido DTF con lectura de taller." />
 
           <div className="configurator-form">
             <label className="field-group" htmlFor="dtf-meters">
@@ -300,71 +129,41 @@ function DTFPage() {
                 id="dtf-meters"
                 className="form-input"
                 min="0"
-                onChange={(event) => {
-                  setMeters(event.target.value)
-                  setErrors((current) => ({ ...current, meters: undefined }))
-                }}
+                onChange={(event) => setMeters(event.target.value)}
                 step="0.1"
                 type="number"
                 value={meters}
               />
               <span className="file-meta">{dtfPageContent.fieldHelp.meters}</span>
-              <div className="dtf-meter-presets">
-                {dtfPageContent.meterPresets.map((preset) => (
-                  <button
-                    className={`meter-preset-button${meters === preset ? ' is-selected' : ''}`}
-                    key={preset}
-                    onClick={() => {
-                      setMeters(preset)
-                      setErrors((current) => ({ ...current, meters: undefined }))
-                    }}
-                    type="button"
-                  >
-                    {preset} m
-                  </button>
-                ))}
-              </div>
+              <DtfPresetSelector
+                onSelect={setMeters}
+                presets={dtfPageContent.meterPresets}
+                value={meters}
+              />
               {errors.meters ? <span className="field-error">{errors.meters}</span> : null}
             </label>
 
-            <label className="field-group" htmlFor="dtf-quality">
-              <span className="field-label">Calidad</span>
-              <select
-                id="dtf-quality"
-                className="form-input"
-                onChange={(event) => setQuality(event.target.value as DTFQuality)}
-                value={quality}
-              >
-                <option value="standard">Standard</option>
-                <option value="premium">Premium</option>
-              </select>
-              <span className="file-meta">{dtfPageContent.fieldHelp.quality}</span>
-            </label>
-
-            <label className="field-group" htmlFor="dtf-urgency">
-              <span className="field-label">Urgencia</span>
-              <select
-                id="dtf-urgency"
-                className="form-input"
-                onChange={(event) => setUrgency(event.target.value as DTFUrgency)}
-                value={urgency}
-              >
-                <option value="normal">Normal</option>
-                <option value="express">Express</option>
-              </select>
-              <span className="file-meta">{dtfPageContent.fieldHelp.urgency}</span>
-            </label>
+            <DtfOptionCards
+              onQualityChange={setQuality}
+              onToggleExtra={toggleExtra}
+              onTurnaroundChange={setTurnaroundPreference}
+              onUrgencyChange={setUrgency}
+              quality={quality}
+              selectedExtras={selectedExtras}
+              turnaroundPreference={turnaroundPreference}
+              urgency={urgency}
+            />
 
             <label className="field-group" htmlFor="dtf-file">
               <span className="field-label">Archivo</span>
               <input
                 id="dtf-file"
                 className="form-input form-input-file"
-                onChange={handleFileChange}
+                onChange={(event) => setFile(event.target.files?.[0] ?? null)}
                 type="file"
               />
               <span className="file-meta">
-                {selectedFile ? selectedFile.name : dtfPageContent.fieldHelp.fileNameFallback}
+                {filePreview?.fileName ?? dtfPageContent.fieldHelp.fileNameFallback}
               </span>
               <span className="file-meta">{dtfPageContent.fieldHelp.file}</span>
               {errors.file ? <span className="field-error">{errors.file}</span> : null}
@@ -382,30 +181,16 @@ function DTFPage() {
               <span className="file-meta">{dtfPageContent.fieldHelp.notes}</span>
             </label>
 
-            <article className="dtf-summary-card">
-              <p className="section-label">{dtfPageContent.summary.label}</p>
-              <div className="summary-list compact-summary">
-                {dtfSummaryItems.map((item) => (
-                  <div className="summary-row" key={item.label}>
-                    <span>{item.label}</span>
-                    <strong>{item.value}</strong>
-                  </div>
-                ))}
-                <div className="summary-row summary-row-total">
-                  <span>{dtfPageContent.summary.totalLabel}</span>
-                  <strong>{formatCurrency(pricing.total)}</strong>
-                </div>
-              </div>
-              <p className="catalog-result-caption">
-                {dtfPageContent.summary.reviewCaption}
-              </p>
-            </article>
-
             <div className="form-actions">
               <button className="action-button" data-cursor="sales" onClick={handleSimulateOrder} type="button">
                 {dtfContent?.secondaryCta.label ?? dtfPageContent.actions.prepareLabel}
               </button>
-              <button className="action-button action-button-muted" data-cursor="sales" onClick={handleAddToCart} type="button">
+              <button
+                className="action-button action-button-muted"
+                data-cursor="sales"
+                onClick={handleAddToCart}
+                type="button"
+              >
                 {dtfContent?.primaryCta.label ?? dtfPageContent.actions.addToCartLabel}
               </button>
             </div>
@@ -439,6 +224,15 @@ function DTFPage() {
         </article>
 
         <div className="summary-stack">
+          <DtfStickySummaryCard
+            base={`${formatCurrency(BASE_PRICE_PER_METER)}/metro`}
+            extras={formatCurrency(pricing.extras)}
+            fileReady={Boolean(filePreview)}
+            subtotal={formatCurrency(pricing.subtotal)}
+            summaryItems={summaryItems}
+            total={formatCurrency(pricing.total)}
+          />
+
           <article
             className="content-card file-preview-card hover-lift premium-preview-panel"
             data-animate="panel"
@@ -466,7 +260,10 @@ function DTFPage() {
                         : 'ARCHIVO'}
                     </span>
                     <h3>{filePreview.fileName}</h3>
-                    <p>El navegador no genera miniatura directa. Aun asi, el archivo queda listo para revisarlo antes de confirmar el trabajo.</p>
+                    <p>
+                      El navegador no genera miniatura directa. Aun asi, el archivo queda listo para
+                      revisarlo antes de confirmar el trabajo.
+                    </p>
                   </div>
                 )}
 
@@ -486,13 +283,22 @@ function DTFPage() {
                 </div>
               </div>
             ) : (
-              <div className="empty-state">
-                <p>Selecciona un archivo para ver la pieza, revisar el formato detectado y confirmar el pedido con mas contexto.</p>
+              <div className="empty-state premium-empty-state">
+                <p>
+                  Carga una pieza para activar la miniatura, validar formato y dejar el panel listo
+                  para la comprobacion tecnica.
+                </p>
               </div>
             )}
           </article>
 
-          <article className="content-card preflight-card hover-lift premium-preflight-panel" data-animate="panel" data-cursor="interactive" data-scroll-scene="dtf-preflight" tabIndex={0}>
+          <article
+            className="content-card preflight-card hover-lift premium-preflight-panel"
+            data-animate="panel"
+            data-cursor="interactive"
+            data-scroll-scene="dtf-preflight"
+            tabIndex={0}
+          >
             <SectionHeader eyebrow="Comprobacion previa" title="Resumen claro antes de confirmar el pedido." />
             <div className="preflight-list">
               <div className="preflight-item">
@@ -501,15 +307,15 @@ function DTFPage() {
               </div>
               <div className="preflight-item">
                 <span>Archivo seleccionado</span>
-                <strong>{selectedFile ? 'Si' : 'Pendiente'}</strong>
+                <strong>{filePreview ? 'Si' : 'Pendiente'}</strong>
               </div>
               <div className="preflight-item">
-                <span>Comprobacion del archivo</span>
-                <strong>Se realiza antes de fabricar</strong>
+                <span>Turnaround</span>
+                <strong>{turnaroundPreference}</strong>
               </div>
               <div className="preflight-item">
-                <span>Sangrado</span>
-                <strong>Se revisa si el trabajo lo necesita</strong>
+                <span>Extras</span>
+                <strong>{selectedExtras.length ? selectedExtras.join(' · ') : 'Sin extras'}</strong>
               </div>
               <div className="preflight-item">
                 <span>Resolucion</span>
@@ -518,35 +324,26 @@ function DTFPage() {
             </div>
           </article>
 
-          <article className="content-card hover-lift premium-pricing-panel" data-animate="panel" data-cursor-zone="conversion" data-scroll-scene="dtf-pricing" tabIndex={0}>
-            <SectionHeader eyebrow="Resumen en vivo" title="Precio listo para revisar." />
-            <div className="pricing-metric-grid">
-              <MetricCard className="hover-lift" label="Base" value={`${formatCurrency(BASE_PRICE_PER_METER)}/metro`} />
-              <MetricCard className="hover-lift" label="Subtotal" value={formatCurrency(pricing.subtotal)} />
-              <MetricCard className="hover-lift" label="Extras" value={formatCurrency(pricing.extras)} />
-              <MetricCard className="hover-lift" label="Total" value={formatCurrency(pricing.total)} />
-            </div>
-            <ul className="hint-list">
-              <li>Calidad: {qualityLabels[quality]}</li>
-              <li>Urgencia: {urgencyLabels[urgency]}</li>
-              <li>Archivo: {selectedFile ? selectedFile.name : 'Pendiente de carga'}</li>
-              <li>Notas: {notes.trim() ? 'Incluidas en esta configuracion' : 'Sin notas adicionales'}</li>
-            </ul>
-            <p className="catalog-result-caption">
-              Referencia comercial antes de la comprobacion tecnica final del archivo y de la confirmacion de produccion.
-            </p>
-          </article>
-
           {simulation ? (
             <CtaPanel
               actions={
                 <>
-                  <a className="action-button action-link-button" href={publicRoutes.carrito}>Continuar al carrito</a>
-                  <a className="card-link" href={publicRoutes.guia}>Revisar guia de archivos</a>
+                  <a className="action-button action-link-button" href={publicRoutes.carrito}>
+                    Continuar al carrito
+                  </a>
+                  <a className="card-link" href={publicRoutes.guia}>
+                    Revisar guia de archivos
+                  </a>
                 </>
               }
               className="success-card"
-              description={`Metraje: ${simulation.meters} m | Calidad: ${qualityLabels[simulation.quality]} | Urgencia: ${urgencyLabels[simulation.urgency]} | Archivo: ${simulation.fileName} | Notas: ${simulation.notes || 'Sin notas'} | Total: ${formatCurrency(simulation.total)}`}
+              description={`Metraje: ${simulation.meters} m | Calidad: ${
+                simulation.quality === 'premium' ? 'Premium' : 'Standard'
+              } | Urgencia: ${simulation.urgency === 'express' ? 'Express' : 'Normal'} | Turnaround: ${
+                simulation.turnaroundPreference
+              } | Archivo: ${simulation.fileName} | Notas: ${simulation.notes || 'Sin notas'} | Total: ${formatCurrency(
+                simulation.total,
+              )}`}
               label="Configuracion lista"
               title="La configuracion esta lista para pasar al carrito."
             />

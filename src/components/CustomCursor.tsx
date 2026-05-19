@@ -64,7 +64,7 @@ function CustomCursor() {
       gsap.to(hover, {
         width: interest ? 68 : 11,
         height: interest ? 68 : 11,
-        backgroundColor: interest ? '#ffffff' : '#ff00b8',
+        backgroundColor: '#39ff14',
         opacity: interest ? 1 : 0,
         duration: 0.22,
         ease: 'power3.out',
@@ -116,7 +116,7 @@ function CustomCursor() {
     gsap.set(hover, {
       width: 11,
       height: 11,
-      backgroundColor: '#ff00b8',
+      backgroundColor: '#39ff14',
       opacity: 0,
     })
     hover.style.mixBlendMode = 'normal'

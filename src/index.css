@@ -51,16 +51,6 @@ html {
   transform: translate(-50%, -50%);
 }
 
-.custom-cursor__hover::after {
-  content: '';
-  position: absolute;
-  inset: -3px;
-  border: 2px solid #39ff14;
-  border-radius: 999px;
-  opacity: 1;
-  pointer-events: none;
-}
-
 @media (hover: hover) and (pointer: fine) {
   html.has-custom-cursor,
   html.has-custom-cursor body,

@@ -64,7 +64,7 @@ function CustomCursor() {
       gsap.to(hover, {
         width: interest ? 68 : 11,
         height: interest ? 68 : 11,
-        backgroundColor: '#39ff14',
+        backgroundColor: '#ffffff',
         opacity: interest ? 1 : 0,
         duration: 0.22,
         ease: 'power3.out',

@@ -10,15 +10,20 @@ html {
   scroll-behavior: smooth;
 }
 
+/* ================================
+   Premium GSAP Cursor
+================================ */
 @media (hover: hover) and (pointer: fine) {
-  html,
-  body,
-  a,
-  button,
-  input[type="submit"],
-  [role="button"],
-  [data-cursor="interest"],
-  .cursor-interest {
+  html.has-premium-cursor,
+  html.has-premium-cursor body,
+  html.has-premium-cursor a,
+  html.has-premium-cursor button,
+  html.has-premium-cursor input[type="submit"],
+  html.has-premium-cursor [role="button"],
+  html.has-premium-cursor [data-cursor="interest"],
+  html.has-premium-cursor .cursor-interest,
+  html.has-premium-cursor [data-cursor],
+  html.has-premium-cursor [data-cursor-zone] {
     cursor: none;
   }
 
@@ -44,14 +49,16 @@ html {
     display: none !important;
   }
 
-  html,
-  body,
-  a,
-  button,
-  input[type="submit"],
-  [role="button"],
-  [data-cursor="interest"],
-  .cursor-interest {
+  html.has-premium-cursor,
+  html.has-premium-cursor body,
+  html.has-premium-cursor a,
+  html.has-premium-cursor button,
+  html.has-premium-cursor input[type="submit"],
+  html.has-premium-cursor [role="button"],
+  html.has-premium-cursor [data-cursor="interest"],
+  html.has-premium-cursor .cursor-interest,
+  html.has-premium-cursor [data-cursor],
+  html.has-premium-cursor [data-cursor-zone] {
     cursor: auto;
   }
 }

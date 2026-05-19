@@ -6,9 +6,9 @@ import OrderDetailPage from './admin/pages/OrderDetailPage'
 import OrdersPage from './admin/pages/OrdersPage'
 import ProductionPage from './admin/pages/ProductionPage'
 import UploadsPage from './admin/pages/UploadsPage'
-import CustomCursor from './components/CustomCursor'
 import NotFoundPage from './components/NotFoundPage'
 import RouteErrorBoundary from './components/RouteErrorBoundary'
+import PremiumCursor from './components/system/PremiumCursor'
 import AccesoriosPage from './pages/AccesoriosPage'
 import Carrito from './pages/Carrito'
 import CarteleriaPage from './pages/CarteleriaPage'
@@ -189,6 +189,18 @@ function isNavigationActive(route: RouteKey, itemRoute: RouteKey) {
   return route === itemRoute
 }
 
+function isAdminOrLabRoute(route: RouteKey) {
+  return (
+    route === 'admin' ||
+    route === 'adminOrders' ||
+    route === 'adminOrderDetail' ||
+    route === 'adminUploads' ||
+    route === 'adminCustomers' ||
+    route === 'adminProduction' ||
+    route === 'motionTest'
+  )
+}
+
 function App() {
   const [currentHashRoute, setCurrentHashRoute] = useState(() => getCurrentHashRoute())
   const [route, setRoute] = useState<RouteKey>(() => getRouteFromHash(currentHashRoute))
@@ -272,7 +284,7 @@ function App() {
 
   return (
     <div className="app-shell">
-      <CustomCursor />
+      {!isAdminOrLabRoute(route) ? <PremiumCursor /> : null}
       <a className="skip-link" href="#main-content">
         Saltar al contenido
       </a>

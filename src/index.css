@@ -49,6 +49,21 @@ html {
   pointer-events: none;
   will-change: width, height, background-color, opacity, transform;
   transform: translate(-50%, -50%);
+  isolation: isolate;
+}
+
+.custom-cursor__hover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: #fff;
+  opacity: var(--cursor-hover-blend-opacity, 0);
+  transform: scale(var(--cursor-hover-blend-scale, 1));
+  transform-origin: center;
+  mix-blend-mode: difference;
+  pointer-events: none;
+  will-change: transform, opacity;
 }
 
 @media (hover: hover) and (pointer: fine) {

@@ -80,6 +80,8 @@ function CustomCursor() {
       })
 
       hover.style.mixBlendMode = interest ? 'difference' : 'normal'
+      hover.style.setProperty('--cursor-hover-blend-opacity', interest ? '0.92' : '0')
+      hover.style.setProperty('--cursor-hover-blend-scale', interest ? '1.28' : '1')
     }
 
     const syncInterest = (target: EventTarget | null) => {
@@ -130,6 +132,8 @@ function CustomCursor() {
       opacity: 0,
     })
     hover.style.mixBlendMode = 'normal'
+    hover.style.setProperty('--cursor-hover-blend-opacity', '0')
+    hover.style.setProperty('--cursor-hover-blend-scale', '1')
 
     window.addEventListener('pointermove', handlePointerMove, { passive: true })
     document.addEventListener('pointerover', handlePointerOver, { passive: true })

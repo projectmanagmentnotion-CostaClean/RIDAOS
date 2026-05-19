@@ -23,6 +23,7 @@ function canUseCustomCursor() {
 
 function CustomCursor() {
   const cursorRef = useRef<HTMLSpanElement | null>(null)
+  const dotRef = useRef<HTMLSpanElement | null>(null)
 
   useEffect(() => {
     if (!canUseCustomCursor()) {
@@ -32,8 +33,9 @@ function CustomCursor() {
     const root = document.documentElement
     const body = document.body
     const cursor = cursorRef.current
+    const dot = dotRef.current
 
-    if (!cursor) {
+    if (!cursor || !dot) {
       return
     }
 
@@ -57,7 +59,7 @@ function CustomCursor() {
       isInterest = interest
       body.classList.toggle('custom-cursor-interest', interest)
 
-      gsap.to(cursor, {
+      gsap.to(dot, {
         width: interest ? 68 : 11,
         height: interest ? 68 : 11,
         backgroundColor: interest ? '#39ff14' : '#ff00b8',
@@ -66,7 +68,7 @@ function CustomCursor() {
         overwrite: true,
       })
 
-      cursor.style.mixBlendMode = interest ? 'difference' : 'normal'
+      dot.style.mixBlendMode = interest ? 'difference' : 'normal'
     }
 
     const syncInterest = (target: EventTarget | null) => {
@@ -101,12 +103,14 @@ function CustomCursor() {
       y: pointer.y,
       xPercent: -50,
       yPercent: -50,
+      opacity: 1,
+    })
+    gsap.set(dot, {
       width: 11,
       height: 11,
       backgroundColor: '#ff00b8',
-      opacity: 1,
     })
-    cursor.style.mixBlendMode = 'normal'
+    dot.style.mixBlendMode = 'normal'
 
     window.addEventListener('pointermove', handlePointerMove, { passive: true })
     document.addEventListener('pointerover', handlePointerOver, { passive: true })
@@ -119,6 +123,7 @@ function CustomCursor() {
       document.removeEventListener('focusin', handlePointerOver)
       document.removeEventListener('pointerleave', handlePointerLeave)
       gsap.killTweensOf(cursor)
+      gsap.killTweensOf(dot)
       root.classList.remove('has-custom-cursor')
       body.classList.remove('has-custom-cursor', 'custom-cursor-interest')
     }
@@ -129,7 +134,9 @@ function CustomCursor() {
       aria-hidden="true"
       className="custom-cursor"
       ref={cursorRef}
-    />
+    >
+      <span className="custom-cursor__dot" ref={dotRef} />
+    </span>
   )
 }
 

@@ -14,16 +14,25 @@ html {
   position: fixed;
   top: 0;
   left: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  user-select: none;
+  z-index: 10000;
+  opacity: 0;
+  will-change: transform;
+}
+
+.custom-cursor__dot {
+  display: block;
   width: 11px;
   height: 11px;
   border: 0;
   border-radius: 999px;
   background: #ff00b8;
   pointer-events: none;
-  user-select: none;
-  z-index: 10000;
-  opacity: 0;
-  will-change: transform, width, height, background-color;
+  will-change: width, height, background-color, transform;
+  transform: translate(-50%, -50%);
 }
 
 @media (hover: hover) and (pointer: fine) {

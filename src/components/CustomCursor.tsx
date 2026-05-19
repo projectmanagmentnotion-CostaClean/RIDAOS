@@ -60,11 +60,12 @@ function CustomCursor() {
     const applyCursorState = (interest: boolean) => {
       isInterest = interest
       body.classList.toggle('custom-cursor-interest', interest)
+      cursor.classList.toggle('custom-cursor--interest', interest)
 
       gsap.to(dot, {
         opacity: interest ? 0 : 1,
-        scale: interest ? 0.35 : 1,
-        duration: 0.18,
+        scale: interest ? 0 : 1,
+        duration: 0.12,
         ease: 'power3.out',
         overwrite: true,
       })
@@ -80,8 +81,6 @@ function CustomCursor() {
       })
 
       hover.style.mixBlendMode = interest ? 'difference' : 'normal'
-      hover.style.setProperty('--cursor-hover-blend-opacity', interest ? '0.92' : '0')
-      hover.style.setProperty('--cursor-hover-blend-scale', interest ? '1.28' : '1')
     }
 
     const syncInterest = (target: EventTarget | null) => {
@@ -132,8 +131,6 @@ function CustomCursor() {
       opacity: 0,
     })
     hover.style.mixBlendMode = 'normal'
-    hover.style.setProperty('--cursor-hover-blend-opacity', '0')
-    hover.style.setProperty('--cursor-hover-blend-scale', '1')
 
     window.addEventListener('pointermove', handlePointerMove, { passive: true })
     document.addEventListener('pointerover', handlePointerOver, { passive: true })
@@ -148,6 +145,7 @@ function CustomCursor() {
       gsap.killTweensOf(cursor)
       gsap.killTweensOf(dot)
       gsap.killTweensOf(hover)
+      cursor.classList.remove('custom-cursor--interest')
       root.classList.remove('has-custom-cursor')
       body.classList.remove('has-custom-cursor', 'custom-cursor-interest')
     }

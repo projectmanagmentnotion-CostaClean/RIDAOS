@@ -31,9 +31,12 @@ html {
   border-radius: 999px;
   background: #ff00b8;
   pointer-events: none;
-  will-change: width, height, background-color, transform;
+  will-change: opacity, transform;
   transform: translate(-50%, -50%);
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
 }
 
 .custom-cursor__hover {
@@ -49,21 +52,12 @@ html {
   pointer-events: none;
   will-change: width, height, background-color, opacity, transform;
   transform: translate(-50%, -50%);
-  isolation: isolate;
+  z-index: 2;
 }
 
-.custom-cursor__hover::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: #fff;
-  opacity: var(--cursor-hover-blend-opacity, 0);
-  transform: scale(var(--cursor-hover-blend-scale, 1));
-  transform-origin: center;
-  mix-blend-mode: difference;
-  pointer-events: none;
-  will-change: transform, opacity;
+.custom-cursor--interest .custom-cursor__dot {
+  opacity: 0 !important;
+  transform: translate(-50%, -50%) scale(0) !important;
 }
 
 @media (hover: hover) and (pointer: fine) {

@@ -68,7 +68,7 @@ function CustomCursor() {
         overwrite: true,
       })
 
-      dot.style.mixBlendMode = interest ? 'difference' : 'normal'
+      dot.style.mixBlendMode = 'difference'
     }
 
     const syncInterest = (target: EventTarget | null) => {
@@ -110,7 +110,7 @@ function CustomCursor() {
       height: 11,
       backgroundColor: '#ff00b8',
     })
-    dot.style.mixBlendMode = 'normal'
+    dot.style.mixBlendMode = 'difference'
 
     window.addEventListener('pointermove', handlePointerMove, { passive: true })
     document.addEventListener('pointerover', handlePointerOver, { passive: true })

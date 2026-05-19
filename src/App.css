@@ -616,7 +616,7 @@ select {
   margin-inline: auto;
 }
 
-.home-page > :not(.home-fullscreen-hero):not(.home-sequence-scroll) {
+.home-page > :not(.home-fullscreen-hero):not(.home-sequence-scroll):not(.cinematic-home-scroll) {
   width: min(var(--shell-max-width), calc(100% - (var(--shell-gutter) * 2)));
   margin-inline: auto;
 }

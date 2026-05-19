@@ -9,7 +9,7 @@ import { homeTrustContent } from '../../content/homeContent'
  */
 function TrustSection() {
   return (
-    <section className="content-section">
+    <section className="content-section" data-zone="HOME_TRUST">
       <SectionHeader eyebrow={homeTrustContent.eyebrow} title={homeTrustContent.title} />
       <TrustGrid />
     </section>

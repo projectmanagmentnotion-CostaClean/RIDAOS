@@ -1,0 +1,234 @@
+/* ================================
+   Cinematic Home Scroll System
+================================ */
+
+.cinematic-home-scroll {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  width: 100vw;
+  margin: 0;
+  pointer-events: none;
+  opacity: 1;
+  isolation: isolate;
+}
+
+.cinematic-home-scroll__viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.cinematic-scene-layer {
+  position: absolute;
+  opacity: 0;
+  will-change: transform, opacity;
+  filter: saturate(1.06);
+}
+
+.cinematic-scene-layer::after {
+  content: '';
+  position: absolute;
+  inset: 12%;
+  border-radius: 999px;
+  background: radial-gradient(circle, var(--scene-accent), transparent 68%);
+  opacity: 0.55;
+}
+
+.cinematic-scene-orb,
+.cinematic-scene-placeholder,
+.cinematic-scene-shimmer {
+  position: absolute;
+  inset: 0;
+}
+
+.cinematic-scene-orb {
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.16), transparent 72%);
+  mix-blend-mode: screen;
+}
+
+.cinematic-scene-placeholder {
+  display: grid;
+  place-items: center;
+}
+
+.cinematic-scene-outline,
+.cinematic-scene-shape {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.cinematic-scene-outline {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+}
+
+.cinematic-scene-shape {
+  inset: 10%;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.02)),
+    rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  clip-path: polygon(14% 22%, 76% 8%, 92% 44%, 82% 86%, 26% 94%, 8% 58%);
+}
+
+.cinematic-scene-copy {
+  position: absolute;
+  inset: auto 16px 16px;
+  display: grid;
+  gap: 4px;
+  color: rgba(246, 239, 231, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.66rem;
+}
+
+.cinematic-scene-copy small {
+  color: rgba(246, 239, 231, 0.42);
+  letter-spacing: 0.08em;
+}
+
+.cinematic-scene-shimmer {
+  background: linear-gradient(110deg, transparent 25%, rgba(255, 255, 255, 0.18), transparent 74%);
+  opacity: 0.18;
+}
+
+.scene-hero-cinematic {
+  top: 12vh;
+  right: clamp(4vw, 9vw, 12vw);
+  width: clamp(200px, 24vw, 360px);
+  height: clamp(200px, 24vw, 360px);
+}
+
+.scene-hero-cinematic .cinematic-scene-shape {
+  clip-path: polygon(18% 16%, 82% 8%, 94% 50%, 78% 90%, 22% 88%, 10% 42%);
+}
+
+.scene-textile-dtf {
+  top: 42vh;
+  left: clamp(4vw, 8vw, 10vw);
+  width: clamp(220px, 22vw, 320px);
+  height: clamp(280px, 30vw, 420px);
+}
+
+.scene-textile-dtf .cinematic-scene-shape {
+  clip-path: polygon(22% 8%, 72% 8%, 86% 28%, 82% 88%, 18% 94%, 10% 28%);
+}
+
+.scene-vehicle-wrap {
+  top: 58vh;
+  right: clamp(2vw, 5vw, 7vw);
+  width: clamp(260px, 34vw, 520px);
+  height: clamp(140px, 18vw, 260px);
+}
+
+.scene-vehicle-wrap .cinematic-scene-shape {
+  clip-path: polygon(8% 58%, 22% 28%, 68% 18%, 92% 44%, 86% 72%, 54% 84%, 14% 82%);
+}
+
+.scene-production-detail {
+  top: 86vh;
+  left: clamp(10vw, 16vw, 20vw);
+  width: clamp(240px, 28vw, 420px);
+  height: clamp(180px, 20vw, 280px);
+}
+
+.scene-production-detail .cinematic-scene-shape {
+  clip-path: polygon(10% 18%, 88% 8%, 94% 66%, 78% 92%, 12% 86%, 4% 42%);
+}
+
+.scene-final-brand {
+  bottom: 10vh;
+  right: clamp(8vw, 14vw, 18vw);
+  width: clamp(180px, 22vw, 300px);
+  height: clamp(180px, 22vw, 300px);
+}
+
+.scene-final-brand .cinematic-scene-shape {
+  clip-path: polygon(50% 4%, 88% 18%, 94% 54%, 70% 92%, 28% 96%, 6% 56%, 16% 16%);
+}
+
+.home-page > * {
+  position: relative;
+  z-index: 2;
+}
+
+.home-page > .cinematic-home-scroll {
+  z-index: 1;
+}
+
+@media (max-width: 1023px) {
+  .cinematic-scene-copy {
+    opacity: 0.78;
+  }
+
+  .scene-hero-cinematic {
+    top: 14vh;
+    right: 4vw;
+    width: clamp(180px, 28vw, 280px);
+    height: clamp(180px, 28vw, 280px);
+  }
+
+  .scene-textile-dtf {
+    top: 48vh;
+    left: 2vw;
+  }
+
+  .scene-vehicle-wrap {
+    top: 66vh;
+    right: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .cinematic-home-scroll {
+    opacity: 0.82;
+  }
+
+  .cinematic-scene-copy {
+    display: none;
+  }
+
+  .scene-hero-cinematic {
+    top: 18vh;
+    right: -10vw;
+    width: 180px;
+    height: 180px;
+  }
+
+  .scene-textile-dtf {
+    top: 58vh;
+    left: -6vw;
+    width: 180px;
+    height: 220px;
+  }
+
+  .scene-vehicle-wrap {
+    top: 76vh;
+    right: -16vw;
+    width: 220px;
+    height: 120px;
+  }
+
+  .scene-production-detail {
+    top: 108vh;
+    left: -8vw;
+    width: 180px;
+    height: 130px;
+  }
+
+  .scene-final-brand {
+    bottom: 8vh;
+    right: -4vw;
+    width: 150px;
+    height: 150px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cinematic-home-scroll {
+    display: none;
+  }
+}

@@ -10,7 +10,7 @@ import { getPublicCtaHref } from '../../lib/navigation'
  */
 function FoundationSection() {
   return (
-    <div className="split-grid home-lower-grid">
+    <div className="split-grid home-lower-grid" data-scene="TEXTILE_DTF_TRANSITION" data-zone="HOME_FOUNDATION">
       <CtaPanel
         actions={
           <>

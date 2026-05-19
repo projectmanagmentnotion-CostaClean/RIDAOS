@@ -10,7 +10,7 @@ import { homePreparationContent } from '../../content/homeContent'
  */
 function PreparationSection() {
   return (
-    <section className="content-section content-grid-two">
+    <section className="content-section content-grid-two" data-zone="HOME_PREPARATION">
       <UploadGuidanceBlock entryId={dtfEntry.id} title={homePreparationContent.uploadTitle} />
       <ConversionTrustBlock entryId={dtfEntry.id} title={homePreparationContent.trustTitle} />
     </section>

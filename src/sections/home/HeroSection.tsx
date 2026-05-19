@@ -15,7 +15,7 @@ type HeroSectionProps = {
  */
 function HeroSection({ content }: HeroSectionProps) {
   return (
-    <section className="home-sequence-scroll">
+    <section className="home-sequence-scroll" data-scene="HERO_CINEMATIC" data-zone="HOME_HERO">
       <div className="home-sequence-sticky">
         <HomeVehicleScrollSequence />
         <div className="home-hero-stage">

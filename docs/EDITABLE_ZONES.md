@@ -76,6 +76,20 @@ Ejemplos:
 - Contenido editable: `src/content/bannerContent.ts`
 - Controla: label, titulo, descripcion y CTA final de home
 
+## CINEMATIC_SCROLL_SYSTEM
+
+- Archivo visual: `src/motion/cinematic/CinematicHomeScroll.tsx`
+- Escenas: `src/motion/cinematic/cinematicScenes.ts`
+- Assets esperados: `src/motion/cinematic/cinematicAssets.ts`
+- Hook motion: `src/motion/cinematic/useCinematicScroll.ts`
+- Controla: overlays decorativos, placeholders de escenas, profundidad y transiciones de scroll de la home
+
+Ejemplos:
+
+- `Edita TEXTILE_DTF_TRANSITION`
+- `Cambia la entrada del coche en VEHICLE_WRAP_TRANSITION`
+- `Anade mas profundidad al HERO_CINEMATIC`
+
 ## NAV_MAIN
 
 - Archivo visual: `src/App.tsx`

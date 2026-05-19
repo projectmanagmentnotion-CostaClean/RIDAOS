@@ -9,7 +9,7 @@ import SectionHeader from '../../components/SectionHeader'
  */
 function ProcessSection() {
   return (
-    <section className="content-section">
+    <section className="content-section" data-scene="VEHICLE_WRAP_TRANSITION" data-zone="HOME_PROCESS">
       <SectionHeader eyebrow={homeProcessContent.eyebrow} title={homeProcessContent.title} />
       <ProcessSteps />
     </section>

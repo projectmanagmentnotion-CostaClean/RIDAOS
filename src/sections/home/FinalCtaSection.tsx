@@ -9,7 +9,7 @@ import { getPublicCtaHref } from '../../lib/navigation'
  */
 function FinalCtaSection() {
   return (
-    <section className="content-section">
+    <section className="content-section" data-scene="FINAL_BRAND_REVEAL" data-zone="HOME_FINAL_CTA">
       <CtaPanel
         className="cursor-interest"
         actions={

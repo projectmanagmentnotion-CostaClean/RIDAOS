@@ -83,6 +83,14 @@ export const siteMap: EditableZone[] = [
     type: 'section',
   },
   {
+    id: 'CINEMATIC_SCROLL_SYSTEM',
+    label: 'Sistema cinematografico de scroll',
+    description: 'Capas decorativas, escenas GSAP + ScrollTrigger y placeholders de assets para la home.',
+    filePath: 'src/motion/cinematic/CinematicHomeScroll.tsx',
+    editableContentPath: 'src/motion/cinematic/cinematicScenes.ts',
+    type: 'config',
+  },
+  {
     id: 'NAV_MAIN',
     label: 'Navegacion principal',
     description: 'Marca, enlaces visibles y orden de la navegacion publica.',

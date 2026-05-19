@@ -1,7 +1,8 @@
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 import PageShell from '../components/PageShell'
 import { getContentByEntryId } from '../catalog/content/contentSelectors'
 import { dtfEntry } from '../catalog/products/dtf'
+import CinematicHomeScroll from '../motion/cinematic/CinematicHomeScroll'
 import AnswersSection from '../sections/home/AnswersSection'
 import EditorialSection from '../sections/home/EditorialSection'
 import FinalCtaSection from '../sections/home/FinalCtaSection'
@@ -25,10 +26,12 @@ import TrustSection from '../sections/home/TrustSection'
  * - HOME_FINAL_CTA
  */
 function Home() {
+  const pageRef = useRef<HTMLElement | null>(null)
   const homeContent = useMemo(() => getContentByEntryId(dtfEntry.id), [])
 
   return (
-    <PageShell className="hero-page premium-page home-page">
+    <PageShell className="hero-page premium-page home-page" ref={pageRef}>
+      <CinematicHomeScroll scopeRef={pageRef} />
       {/* HERO SECTION */}
       <HeroSection content={homeContent} />
 

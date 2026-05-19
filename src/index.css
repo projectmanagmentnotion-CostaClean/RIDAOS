@@ -9,3 +9,35 @@
 html {
   scroll-behavior: smooth;
 }
+
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 11px;
+  height: 11px;
+  border: 0;
+  border-radius: 999px;
+  background: #ff00b8;
+  pointer-events: none;
+  user-select: none;
+  z-index: 10000;
+  opacity: 0;
+  will-change: transform, width, height, background-color;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html.has-custom-cursor,
+  html.has-custom-cursor body,
+  html.has-custom-cursor a,
+  html.has-custom-cursor button,
+  html.has-custom-cursor input,
+  html.has-custom-cursor textarea,
+  html.has-custom-cursor select,
+  html.has-custom-cursor [role="button"],
+  html.has-custom-cursor [data-cursor],
+  html.has-custom-cursor [data-cursor-zone],
+  html.has-custom-cursor .cursor-interest {
+    cursor: none;
+  }
+}

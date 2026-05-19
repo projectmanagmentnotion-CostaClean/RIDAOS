@@ -6,7 +6,7 @@ import OrderDetailPage from './admin/pages/OrderDetailPage'
 import OrdersPage from './admin/pages/OrdersPage'
 import ProductionPage from './admin/pages/ProductionPage'
 import UploadsPage from './admin/pages/UploadsPage'
-import CursorAssist from './components/CursorAssist'
+import CustomCursor from './components/CustomCursor'
 import NotFoundPage from './components/NotFoundPage'
 import RouteErrorBoundary from './components/RouteErrorBoundary'
 import AccesoriosPage from './pages/AccesoriosPage'
@@ -272,7 +272,7 @@ function App() {
 
   return (
     <div className="app-shell">
-      <CursorAssist />
+      <CustomCursor />
       <a className="skip-link" href="#main-content">
         Saltar al contenido
       </a>

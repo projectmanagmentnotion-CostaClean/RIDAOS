@@ -1,0 +1,628 @@
+import { getQuoteHref, publicRoutes } from '../../../../lib/navigation'
+import type { ProductExperienceConfig } from '../types/productExperience.types'
+
+export const productExperienceContent: Record<string, ProductExperienceConfig> = {
+  textil: {
+    key: 'textil',
+    className: 'textil-page',
+    sections: ['hero', 'gallery', 'configurator', 'specs', 'story', 'recommendations', 'faq', 'final-cta', 'sticky-summary'],
+    faqTitle: 'FAQ textil',
+    fallbackEyebrow: 'Estampados / textil',
+    fallbackTitle: 'Textil listo para estimar.',
+    fallbackDescription: 'Prendas y accesorios textiles con lectura clara por cantidad, acabado y siguiente paso comercial.',
+    heroStickerWords: ['textil', 'drop'],
+    supportSections: [
+      {
+        label: 'Antes de pedir',
+        title: 'Define cantidad, prenda y acabado.',
+        items: [
+          'Cambia de prenda sin salir del configurador.',
+          'Usa notas para tallaje, posiciones de estampacion o prendas aportadas por cliente.',
+          'La revision final se hace antes de fabricar.',
+        ],
+      },
+      {
+        label: 'Siguiente paso',
+        title: 'Compra directa si encaja, propuesta si necesita ajuste.',
+        items: [
+          'Si la configuracion encaja en tramo, puedes pasar al carrito directamente.',
+          'El archivo puede enviarse en este paso o completarse durante la comprobacion tecnica.',
+          'La propuesta sigue disponible cuando el pedido se sale del tramo visible.',
+        ],
+      },
+    ],
+    storyBlocks: [
+      {
+        id: 'textil-story-1',
+        eyebrow: 'Storytelling',
+        title: 'Una ficha pensada para drops, reposiciones y tiradas cortas.',
+        description: 'La lectura mezcla cantidad, acabado y archivo en un flujo unico para que el producto no dependa de una pagina distinta cada vez.',
+        bullets: [
+          'Escala por volumen sin ocultar el siguiente paso comercial.',
+          'Pensada para prendas base, merchandising y activaciones.',
+          'Lista para absorber variantes y addons futuros sin rehacer la interfaz.',
+        ],
+      },
+    ],
+    galleryFrames: [
+      {
+        id: 'textil-gallery-1',
+        label: 'Mock editorial',
+        title: 'Prenda hero',
+        description: 'Placeholder para hoodie o camiseta transparente en la siguiente fase.',
+      },
+      {
+        id: 'textil-gallery-2',
+        label: 'Detalle',
+        title: 'Acabado y tacto',
+        description: 'Espacio reservado para textura, tinta o costura en enfoque macro.',
+      },
+    ],
+    processSteps: [
+      { id: 'brief', title: 'Seleccion', description: 'Elige base, tirada y acabado antes de pedir.' },
+      { id: 'artwork', title: 'Archivo', description: 'Adjunta o deja pendiente el arte segun el momento del proyecto.' },
+      { id: 'review', title: 'Revision', description: 'La comprobacion tecnica sigue separada del cierre de carrito.' },
+    ],
+    finalCta: {
+      label: 'Cierre del producto',
+      title: 'Listo para sumar prendas al carrito o saltar a una propuesta.',
+      description: 'El producto ya vive en una plantilla reusable para variantes futuras, addons y galerias cinematograficas.',
+      primaryLabel: 'Ir al carrito',
+      primaryHref: publicRoutes.carrito,
+      secondaryLabel: 'Solicitar presupuesto',
+      secondaryHref: getQuoteHref('textil'),
+    },
+    recommendations: [
+      {
+        id: 'dtf-upgrade',
+        title: 'Combinar con DTF por metro',
+        description: 'Prepara transferencias y prendas desde el mismo flujo comercial.',
+        href: publicRoutes.dtf,
+        priceLabel: 'Configurable',
+        tag: 'Cross-sell',
+      },
+      {
+        id: 'quote-brand-pack',
+        title: 'Activacion completa',
+        description: 'Si el proyecto necesita mas soportes, salta a presupuesto guiado.',
+        href: getQuoteHref('textil'),
+        priceLabel: 'Propuesta mock',
+        tag: 'Expansion',
+      },
+    ],
+  },
+  papeleria: {
+    key: 'papeleria',
+    className: 'papeleria-page',
+    sections: ['hero', 'gallery', 'configurator', 'specs', 'story', 'recommendations', 'faq', 'final-cta', 'sticky-summary'],
+    faqTitle: 'FAQ papeleria',
+    fallbackEyebrow: 'Papeleria',
+    fallbackTitle: 'Papeleria de tirada corta y media.',
+    fallbackDescription: 'Tarjetas y flyers con tiradas concretas del PDF 2026 y aviso de diseno por separado.',
+    heroStickerWords: ['print', 'run'],
+    supportSections: [
+      {
+        label: 'Archivo y tirada',
+        title: 'Confirma la cantidad antes de avanzar.',
+        items: [
+          'Las tiradas visibles ya estan preparadas para una lectura rapida del precio.',
+          'Adjunta el PDF o una referencia si ya tienes el arte final.',
+          'Si el proyecto necesita adaptacion o formato fuera de tramo, la via de presupuesto sigue abierta.',
+        ],
+      },
+      {
+        label: 'Para decidir',
+        title: 'Usa el carrito para piezas cerradas.',
+        items: [
+          'Cuando la tirada encaja, puedes dejar la impresion preparada desde aqui.',
+          'Las notas ayudan a aclarar acabados, caras y necesidades de diseno.',
+          'El plazo se confirma al revisar archivo y acabados.',
+        ],
+      },
+    ],
+    storyBlocks: [
+      {
+        id: 'paper-story-1',
+        eyebrow: 'Storytelling',
+        title: 'Una ficha para tiradas claras, no para esconder precios.',
+        description: 'Separa la lectura comercial del arte final y deja lista la arquitectura para papeleria premium, invitaciones o series cortas.',
+        bullets: [
+          'Tramos legibles sin tablas dispersas.',
+          'Archivo opcional cuando todavia estas cerrando el diseño.',
+          'Preparada para añadir acabados editoriales en la siguiente fase.',
+        ],
+      },
+    ],
+    galleryFrames: [
+      {
+        id: 'paper-gallery-1',
+        label: 'Mock editorial',
+        title: 'Pila de piezas',
+        description: 'Placeholder para tarjetas, flyers o papeleria desplegada.',
+      },
+      {
+        id: 'paper-gallery-2',
+        label: 'Macro',
+        title: 'Textura y tintas',
+        description: 'Espacio reservado para detalle de gramaje o barniz.',
+      },
+    ],
+    processSteps: [
+      { id: 'quantity', title: 'Tirada', description: 'Se fija el tramo visible desde el primer paso.' },
+      { id: 'artwork', title: 'Archivo', description: 'Se adjunta o se deja pendiente para revisión interna.' },
+      { id: 'output', title: 'Salida', description: 'Carrito directo si la combinación es cerrada.' },
+    ],
+    finalCta: {
+      label: 'Cierre del producto',
+      title: 'Papeleria lista para carrito o propuesta adicional.',
+      description: 'La plantilla ya soporta storytelling, galeria y comparativas sin recrear toda la página.',
+      primaryLabel: 'Ir al carrito',
+      primaryHref: publicRoutes.carrito,
+      secondaryLabel: 'Solicitar presupuesto',
+      secondaryHref: getQuoteHref('papeleria'),
+    },
+    recommendations: [
+      {
+        id: 'signage-bundle',
+        title: 'Extender a carteleria',
+        description: 'Completa la campaña con piezas de gran formato y propuesta guiada.',
+        href: '#/carteleria',
+        priceLabel: 'Proyecto',
+        tag: 'Bundle',
+      },
+      {
+        id: 'quote-print-pack',
+        title: 'Proyecto mixto',
+        description: 'Cruza papeleria con soportes a medida desde el presupuesto mock.',
+        href: getQuoteHref('papeleria'),
+        priceLabel: 'Propuesta mock',
+        tag: 'Expansion',
+      },
+    ],
+  },
+  materiales: {
+    key: 'materiales',
+    className: 'materiales-page',
+    sections: ['hero', 'gallery', 'configurator', 'specs', 'story', 'recommendations', 'faq', 'final-cta', 'sticky-summary'],
+    faqTitle: 'FAQ materiales',
+    fallbackEyebrow: 'Materiales',
+    fallbackTitle: 'Materiales y vinilos por m2.',
+    fallbackDescription: 'Vinilos y materiales por metro cuadrado con lectura clara de medidas, soporte y siguiente paso comercial.',
+    heroStickerWords: ['vinilo', 'm2'],
+    supportSections: [
+      {
+        label: 'Medicion',
+        title: 'Calcula una base clara por superficie.',
+        items: [
+          'Introduce la superficie total para obtener una referencia inmediata.',
+          'Usa presupuesto cuando el proyecto incluya instalacion, homologacion o medicion real.',
+          'El archivo es util, pero no obligatorio para una primera estimacion.',
+        ],
+      },
+      {
+        label: 'Siguiente paso',
+        title: 'Material directo con salida comercial limpia.',
+        items: [
+          'Si el soporte encaja, puedes dejar el material preparado en el carrito.',
+          'Los acabados complejos se revisan antes de fabricar.',
+          'El plazo final depende de soporte, medidas y comprobacion tecnica.',
+        ],
+      },
+    ],
+    storyBlocks: [
+      {
+        id: 'materials-story-1',
+        eyebrow: 'Storytelling',
+        title: 'Soportes, vinilos y acabados dentro de una misma gramática visual.',
+        description: 'Esta plantilla deja sitio a comparativas, texturas y overlays para que el producto no se reduzca a un simple formulario.',
+        bullets: [
+          'Base reutilizable para vinilos, rigid media o materiales tecnicos.',
+          'Pensada para añadir muestras visuales y before/after sin tocar la lógica.',
+          'Compatible con pricing por m2 y variantes futuras.',
+        ],
+      },
+    ],
+    galleryFrames: [
+      {
+        id: 'materials-gallery-1',
+        label: 'Mock editorial',
+        title: 'Lamina de material',
+        description: 'Placeholder para superficie, soporte o vinilo recortado.',
+      },
+      {
+        id: 'materials-gallery-2',
+        label: 'Detalle',
+        title: 'Acabado del material',
+        description: 'Espacio para textura, adhesivo o corte en primer plano.',
+      },
+    ],
+    processSteps: [
+      { id: 'measure', title: 'Superficie', description: 'El cálculo arranca desde el area del soporte.' },
+      { id: 'support', title: 'Soporte', description: 'Se encuadra el material antes de cerrar el pedido.' },
+      { id: 'review', title: 'Revision', description: 'El acabado técnico se valida después del carrito.' },
+    ],
+    finalCta: {
+      label: 'Cierre del producto',
+      title: 'Materiales listos para carrito o salto a propuesta.',
+      description: 'La estructura ya permite sumar galerías de muestras y comparativas más complejas.',
+      primaryLabel: 'Ir al carrito',
+      primaryHref: publicRoutes.carrito,
+      secondaryLabel: 'Solicitar presupuesto',
+      secondaryHref: getQuoteHref('materiales'),
+    },
+    recommendations: [
+      {
+        id: 'wrap-upgrade',
+        title: 'Escalar a wrapping',
+        description: 'Si el material acaba en flota o fachada, continua con una propuesta a medida.',
+        href: '#/rotulacion',
+        priceLabel: 'Servicio',
+        tag: 'Cross-sell',
+      },
+      {
+        id: 'signage-direct',
+        title: 'Completar con carteleria',
+        description: 'Anade soportes impresos o piezas de gran formato al mismo proyecto.',
+        href: '#/carteleria',
+        priceLabel: 'Proyecto',
+        tag: 'Bundle',
+      },
+    ],
+  },
+  accesorios: {
+    key: 'accesorios',
+    className: 'accesorios-page',
+    sections: ['hero', 'gallery', 'configurator', 'specs', 'story', 'recommendations', 'faq', 'final-cta', 'sticky-summary'],
+    faqTitle: 'FAQ accesorios',
+    fallbackEyebrow: 'Accesorios',
+    fallbackTitle: 'Accesorios con lectura rapida.',
+    fallbackDescription: 'Llaveros, pegatinas y piezas pequeñas con configuración rápida y paso directo al carrito.',
+    heroStickerWords: ['promo', 'pack'],
+    supportSections: [
+      {
+        label: 'Preparacion',
+        title: 'Tirada, formato y acabado sin rodeos.',
+        items: [
+          'Las tiradas visibles estan pensadas para promociones y series cortas.',
+          'Adjunta archivo cuando corte, laminado o forma dependan del arte final.',
+          'Las notas ayudan a indicar brillo, mate o referencias concretas.',
+        ],
+      },
+      {
+        label: 'Siguiente paso',
+        title: 'Compra directa para lotes claros.',
+        items: [
+          'Cuando la tirada encaja, puedes pasar al carrito con una base clara.',
+          'Los acabados especiales se validan antes de fabricar.',
+          'El plazo final depende de cantidad, archivo y acabado.',
+        ],
+      },
+    ],
+    storyBlocks: [
+      {
+        id: 'accessories-story-1',
+        eyebrow: 'Storytelling',
+        title: 'Pequeño formato, misma exigencia premium.',
+        description: 'La capa de producto ya no trata accesorios como una excepción: puede crecer con galerías, comparativas y addons sin meter lógica en la página.',
+        bullets: [
+          'Útil para stickers, llaveros y promo packs.',
+          'Lista para bundles y sugerencias contextuales.',
+          'Mantiene lectura rápida sin sacrificar estructura.',
+        ],
+      },
+    ],
+    galleryFrames: [
+      {
+        id: 'accessories-gallery-1',
+        label: 'Mock editorial',
+        title: 'Pack de producto',
+        description: 'Placeholder para lote de accesorios, sticker sheet o llavero.',
+      },
+      {
+        id: 'accessories-gallery-2',
+        label: 'Detalle',
+        title: 'Acabado y corte',
+        description: 'Espacio reservado para borde, laminado o troquel.',
+      },
+    ],
+    processSteps: [
+      { id: 'pick', title: 'Seleccion', description: 'Se elige el accesorio y la tirada visible.' },
+      { id: 'file', title: 'Archivo', description: 'Se adjunta cuando el corte o la forma dependen del arte.' },
+      { id: 'cart', title: 'Carrito', description: 'La línea se registra lista para el checkout mock.' },
+    ],
+    finalCta: {
+      label: 'Cierre del producto',
+      title: 'Accesorios listos para carrito o ampliación de proyecto.',
+      description: 'La arquitectura ya deja preparado el salto a storytelling visual más rico por producto.',
+      primaryLabel: 'Ir al carrito',
+      primaryHref: publicRoutes.carrito,
+      secondaryLabel: 'Solicitar presupuesto',
+      secondaryHref: getQuoteHref('otro'),
+    },
+    recommendations: [
+      {
+        id: 'paper-bundle',
+        title: 'Completar con papeleria',
+        description: 'Cruza promo packs con tarjetas, flyers o inserts de campaña.',
+        href: '#/papeleria',
+        priceLabel: 'Cross-sell',
+        tag: 'Bundle',
+      },
+      {
+        id: 'contact-upgrade',
+        title: 'Proyecto especial',
+        description: 'Si el accesorio se sale del tramo, deriva a propuesta mock.',
+        href: getQuoteHref('otro'),
+        priceLabel: 'Propuesta mock',
+        tag: 'Servicio',
+      },
+    ],
+  },
+  carteleria: {
+    key: 'carteleria',
+    className: 'carteleria-page',
+    sections: ['hero', 'gallery', 'configurator', 'specs', 'story', 'recommendations', 'faq', 'final-cta', 'sticky-summary'],
+    faqTitle: 'FAQ carteleria',
+    fallbackEyebrow: 'Carteleria',
+    fallbackTitle: 'Carteleria y gran formato.',
+    fallbackDescription: 'Carteleria y gran formato para proyectos que dependen de medidas, confeccion y uso final.',
+    heroStickerWords: ['signage', 'big-format'],
+    supportSections: [
+      {
+        label: 'Que preparar',
+        title: 'Medidas, uso y acabado cambian la propuesta.',
+        items: [
+          'Indica ancho, alto y si necesitas ojales, refuerzos o confeccion.',
+          'Adjunta una referencia visual si ya existe arte final o boceto.',
+          'Si la instalacion o el soporte son clave, dejalo indicado desde el inicio.',
+        ],
+      },
+      {
+        label: 'Siguiente paso',
+        title: 'Proyecto preparado para presupuesto serio.',
+        items: [
+          'La propuesta final se ajusta tras revisar material, confeccion y uso real.',
+          'El servicio no pasa a compra directa porque depende de medidas y acabado.',
+          'Tras enviar la solicitud, el equipo comercial responde con una propuesta adaptada.',
+        ],
+      },
+    ],
+    storyBlocks: [
+      {
+        id: 'signage-story-1',
+        eyebrow: 'Storytelling',
+        title: 'Una base escalable para gran formato, no solo un formulario de presupuesto.',
+        description: 'Esta capa permite combinar referencias visuales, proceso y comparativas sin rehacer cada servicio a mano.',
+        bullets: [
+          'Pensada para lonas, paneles y proyectos de instalación.',
+          'Preparada para antes/después y overlays de medidas.',
+          'Separa el valor comercial de la mecánica del presupuesto.',
+        ],
+      },
+    ],
+    galleryFrames: [
+      {
+        id: 'signage-gallery-1',
+        label: 'Mock editorial',
+        title: 'Lona o panel hero',
+        description: 'Placeholder para pieza gran formato en espacio real.',
+      },
+      {
+        id: 'signage-gallery-2',
+        label: 'Detalle',
+        title: 'Confección y soporte',
+        description: 'Espacio para ojales, bastidor o anclaje en primer plano.',
+      },
+    ],
+    processSteps: [
+      { id: 'measure', title: 'Medidas', description: 'Se fija tamaño, uso y soporte previsto.' },
+      { id: 'scope', title: 'Alcance', description: 'La propuesta toma forma según confección e instalación.' },
+      { id: 'quote', title: 'Propuesta', description: 'El cierre ocurre en el flujo comercial mock.' },
+    ],
+    finalCta: {
+      label: 'Cierre del producto',
+      title: 'Carteleria preparada para avanzar a propuesta.',
+      description: 'La nueva arquitectura soporta escenas visuales más ricas sin sacrificar SEO ni edición por zonas.',
+      primaryLabel: 'Solicitar presupuesto',
+      primaryHref: getQuoteHref('carteleria'),
+      secondaryLabel: 'Contactar',
+      secondaryHref: publicRoutes.contacto,
+    },
+    recommendations: [
+      {
+        id: 'materials-upgrade',
+        title: 'Ver materiales y vinilos',
+        description: 'Si el proyecto necesita soportes definidos, abre la capa de materiales.',
+        href: '#/materiales',
+        priceLabel: 'Referencia',
+        tag: 'Support',
+      },
+      {
+        id: 'wrap-cross',
+        title: 'Cruzar con rotulación',
+        description: 'Escala a flota o fachada cuando el soporte sale del gran formato estándar.',
+        href: '#/rotulacion',
+        priceLabel: 'Servicio',
+        tag: 'Expansion',
+      },
+    ],
+  },
+  rotulacion: {
+    key: 'rotulacion',
+    className: 'rotulacion-page',
+    sections: ['hero', 'gallery', 'configurator', 'specs', 'story', 'recommendations', 'faq', 'final-cta', 'sticky-summary'],
+    faqTitle: 'FAQ rotulacion',
+    fallbackEyebrow: 'Rotulacion de furgonetas',
+    fallbackTitle: 'Rotulacion por nivel de cobertura.',
+    fallbackDescription: 'Rotulacion de furgonetas por tramos orientativos y cierre por presupuesto comercial.',
+    heroStickerWords: ['wrap', 'fleet'],
+    supportSections: [
+      {
+        label: 'Antes de pedir',
+        title: 'Define cobertura y tamano del vehiculo.',
+        items: [
+          'El rango visible sirve para situar el proyecto sin empezar desde cero.',
+          'Puedes avanzar sin arte final si ya tienes clara la cobertura.',
+          'La propuesta final confirma materiales, instalacion y tiempos reales.',
+        ],
+      },
+      {
+        label: 'Siguiente paso',
+        title: 'Presupuesto adaptado al vehiculo.',
+        items: [
+          'Este servicio no pasa a compra directa porque depende de cobertura y montaje.',
+          'El formulario posterior recoge medidas, referencias y contexto comercial.',
+          'La comprobacion tecnica se hace antes de fabricar e instalar.',
+        ],
+      },
+    ],
+    storyBlocks: [
+      {
+        id: 'wrap-story-1',
+        eyebrow: 'Storytelling',
+        title: 'Preparado para una experiencia de wrapping más cinematográfica.',
+        description: 'La plantilla ya separa hero, visuales, configuración y CTA para que luego podamos meter assets del vehículo, parallax y comparativas sin rehacer la lógica.',
+        bullets: [
+          'Pensada para flota, cobertura parcial y wrapping integral.',
+          'Lista para escenas con coche transparente en siguientes fases.',
+          'Mantiene claro el salto entre rango orientativo y propuesta final.',
+        ],
+      },
+    ],
+    galleryFrames: [
+      {
+        id: 'wrap-gallery-1',
+        label: 'Mock editorial',
+        title: 'Vehículo hero',
+        description: 'Placeholder para coche o furgoneta con capa de rotulación.',
+      },
+      {
+        id: 'wrap-gallery-2',
+        label: 'Detalle',
+        title: 'Cobertura y remates',
+        description: 'Espacio reservado para plano de remate, unión o textura vinilo.',
+      },
+    ],
+    processSteps: [
+      { id: 'coverage', title: 'Cobertura', description: 'Se define el alcance visual del vehículo.' },
+      { id: 'vehicle', title: 'Vehículo', description: 'La configuración ordena tamaño, referencias y necesidades.' },
+      { id: 'proposal', title: 'Propuesta', description: 'El cierre queda en el circuito mock de presupuesto.' },
+    ],
+    finalCta: {
+      label: 'Cierre del producto',
+      title: 'Rotulación lista para la siguiente fase cinematográfica.',
+      description: 'La capa visual y de contenido ya está separada para absorber coche real, comparativas y proceso sin romper la página.',
+      primaryLabel: 'Solicitar presupuesto',
+      primaryHref: getQuoteHref('rotulacion'),
+      secondaryLabel: 'Contactar',
+      secondaryHref: publicRoutes.contacto,
+    },
+    recommendations: [
+      {
+        id: 'vinyl-materials',
+        title: 'Ver materiales compatibles',
+        description: 'Abre la capa de materiales si primero necesitas definir soporte o laminado.',
+        href: '#/materiales',
+        priceLabel: 'Soportes',
+        tag: 'Support',
+      },
+      {
+        id: 'neon-branding',
+        title: 'Extender a branding luminoso',
+        description: 'Cruza la flota con neones o rótulos si el proyecto lo pide.',
+        href: '#/neones',
+        priceLabel: 'Expansion',
+        tag: 'Bundle',
+      },
+    ],
+  },
+  neones: {
+    key: 'neones',
+    className: 'neones-page',
+    sections: ['hero', 'gallery', 'configurator', 'specs', 'story', 'recommendations', 'faq', 'final-cta', 'sticky-summary'],
+    faqTitle: 'FAQ neones',
+    fallbackEyebrow: 'Neones',
+    fallbackTitle: 'Neones y carteleria luminosa.',
+    fallbackDescription: 'Neones y rotulos decorativos sujetos a medida, colores y complejidad de diseno.',
+    heroStickerWords: ['neon', 'light'],
+    supportSections: [
+      {
+        label: 'Referencia visual',
+        title: 'Forma, medida y contexto marcan la propuesta.',
+        items: [
+          'Adjunta logo, boceto o referencia cuando la pieza ya tenga direccion visual.',
+          'Si todavia estas definiendo el proyecto, usa detalles y medidas aproximadas.',
+          'La instalacion y la complejidad final se confirman durante la propuesta.',
+        ],
+      },
+      {
+        label: 'Siguiente paso',
+        title: 'Proyecto orientado a propuesta personalizada.',
+        items: [
+          'Esta pagina sirve para situar el rango y preparar una solicitud clara.',
+          'Los colores, anclajes y materiales se revisan antes de cerrar fabricacion.',
+          'El equipo comercial responde con una propuesta ajustada al proyecto real.',
+        ],
+      },
+    ],
+    storyBlocks: [
+      {
+        id: 'neon-story-1',
+        eyebrow: 'Storytelling',
+        title: 'Una ficha lista para branding luminoso con más capas visuales.',
+        description: 'La experiencia ya está preparada para overlays flotantes, comparativas de luz y hero editorial sin mezclarlo con la lógica del presupuesto.',
+        bullets: [
+          'Base válida para neones de interior, eventos y retail.',
+          'Escalable con assets transparentes y escenas de glow controlado.',
+          'Mantiene el producto indexable y editable por zonas.',
+        ],
+      },
+    ],
+    galleryFrames: [
+      {
+        id: 'neon-gallery-1',
+        label: 'Mock editorial',
+        title: 'Rótulo hero',
+        description: 'Placeholder para pieza luminosa en pared o escaparate.',
+      },
+      {
+        id: 'neon-gallery-2',
+        label: 'Detalle',
+        title: 'Tubo, soporte y luz',
+        description: 'Espacio para conexiones, glow y anclaje en primer plano.',
+      },
+    ],
+    processSteps: [
+      { id: 'concept', title: 'Concepto', description: 'Se define mensaje, escala y contexto de uso.' },
+      { id: 'specs', title: 'Especificación', description: 'La propuesta recoge colores, materiales y montaje.' },
+      { id: 'proposal', title: 'Propuesta', description: 'La salida sigue en el flujo comercial mock.' },
+    ],
+    finalCta: {
+      label: 'Cierre del producto',
+      title: 'Neones listos para una siguiente iteración visual más rica.',
+      description: 'La arquitectura permite sumar assets reales, animación y comparativas sin reescribir la ficha.',
+      primaryLabel: 'Solicitar presupuesto',
+      primaryHref: getQuoteHref('neones'),
+      secondaryLabel: 'Contactar',
+      secondaryHref: publicRoutes.contacto,
+    },
+    recommendations: [
+      {
+        id: 'signage-cross',
+        title: 'Cruzar con carteleria',
+        description: 'Si el proyecto necesita piezas impresas o soportes físicos, abre gran formato.',
+        href: '#/carteleria',
+        priceLabel: 'Proyecto',
+        tag: 'Bundle',
+      },
+      {
+        id: 'branding-contact',
+        title: 'Proyecto integral',
+        description: 'Combina iluminación, rotulación y soportes desde una propuesta única.',
+        href: publicRoutes.contacto,
+        priceLabel: 'Consultoría',
+        tag: 'Expansion',
+      },
+    ],
+  },
+}

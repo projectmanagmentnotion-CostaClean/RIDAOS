@@ -134,9 +134,57 @@ Ejemplos:
 
 ## PRODUCT_DETAIL
 
-- Archivo visual: `src/catalog/products.ts`
-- Contenido editable: `src/catalog/products.ts`
-- Controla: estructura editable de productos mock y metadatos base
+- Archivo visual: `src/features/products/product-detail/ProductExperiencePage.tsx`
+- Contenido editable: `src/features/products/product-detail/data/productExperienceContent.ts`
+- Controla: composición premium del detalle configurable, storytelling, recomendaciones y CTA final
+
+## PRODUCT_HERO
+
+- Archivo visual: `src/features/products/product-detail/sections/ProductHeroSection.tsx`
+- Contenido editable: `src/features/products/product-detail/data/productExperienceContent.ts`
+- Controla: eyebrow, titular, intro y sticker words de cada familia de producto
+
+## PRODUCT_GALLERY
+
+- Archivo visual: `src/features/products/product-detail/sections/ProductGallerySection.tsx`
+- Contenido editable: `src/features/products/product-detail/data/productExperienceContent.ts`
+- Controla: placeholders visuales, orden y narrativa de galería
+
+## PRODUCT_CONFIGURATOR
+
+- Archivo visual: `src/features/products/product-detail/sections/ProductConfiguratorSection.tsx`
+- Contenido editable: `src/features/products/product-detail/data/productExperienceContent.ts`
+- Controla: soporte contextual del configurador y CTA principal del producto
+
+## PRODUCT_SPECS
+
+- Archivo visual: `src/features/products/product-detail/sections/ProductSpecsSection.tsx`
+- Contenido editable: `src/features/products/product-detail/data/productExperienceContent.ts`
+- Controla: lectura rápida de compra, pricing y archivo
+
+## PRODUCT_STORY
+
+- Archivo visual: `src/features/products/product-detail/sections/ProductStorySection.tsx`
+- Contenido editable: `src/features/products/product-detail/data/productExperienceContent.ts`
+- Controla: bloques editoriales y storytelling del detalle
+
+## PRODUCT_RECOMMENDATIONS
+
+- Archivo visual: `src/features/products/product-detail/sections/ProductRecommendationsSection.tsx`
+- Contenido editable: `src/features/products/product-detail/data/productExperienceContent.ts`
+- Controla: cross-sell, bundle y recomendaciones premium
+
+## PRODUCT_FAQ
+
+- Archivo visual: `src/features/products/product-detail/sections/ProductFaqSection.tsx`
+- Contenido editable: `src/features/products/product-detail/data/productExperienceContent.ts`
+- Controla: FAQ, objeciones, guidance y confianza del detalle
+
+## PRODUCT_FINAL_CTA
+
+- Archivo visual: `src/features/products/product-detail/sections/ProductFinalCtaSection.tsx`
+- Contenido editable: `src/features/products/product-detail/data/productExperienceContent.ts`
+- Controla: bloque final de cierre del producto
 
 ## CART_DRAWER
 
@@ -155,7 +203,7 @@ Ejemplos:
 - `Cambia el titular de CHECKOUT_MOCK_FLOW`
 - `Ajusta el copy del paso de pago mock`
 
-## PRODUCT_RECOMMENDATIONS
+## CART_RECOMMENDATIONS
 
 - Archivo visual: `src/features/cart/data/cartRecommendations.ts`
 - Contenido editable: `src/features/cart/data/cartRecommendations.ts`

@@ -4743,7 +4743,114 @@ body.lenis {
   margin-top: 8px;
 }
 
+/* ================================
+   Product Experience System
+================================ */
+
+.product-experience-page {
+  gap: 28px;
+}
+
+.product-experience-hero,
+.product-experience-gallery,
+.product-experience-story,
+.product-experience-process,
+.product-experience-recommendations {
+  display: grid;
+  gap: 18px;
+}
+
+.product-experience-layout {
+  align-items: start;
+}
+
+.product-experience-gallery__grid,
+.product-experience-specs,
+.product-experience-story__grid,
+.product-experience-process__timeline {
+  display: grid;
+  gap: 16px;
+}
+
+.product-experience-gallery__grid {
+  grid-template-columns: 1.1fr 0.9fr;
+}
+
+.product-experience-specs {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.product-spec-card,
+.product-process-step,
+.product-final-cta,
+.sticky-summary-panel--product {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.product-spec-card h3,
+.product-process-step h3,
+.product-experience-process__header h2 {
+  margin: 0;
+}
+
+.product-spec-card p,
+.product-process-step p,
+.product-experience-process__header p {
+  margin: 0;
+}
+
+.product-process-step {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+  padding: 20px;
+}
+
+.product-process-step__index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  background: rgba(255, 191, 102, 0.12);
+  color: #fff0db;
+  font-weight: 700;
+}
+
+.product-experience-process__header {
+  display: grid;
+  gap: 8px;
+}
+
+.product-final-cta .content-card {
+  background: transparent;
+}
+
+.sticky-summary-panel--product {
+  display: grid;
+  gap: 18px;
+}
+
+.sticky-summary-panel--product .content-card,
+.product-gallery-frame,
+.product-story-panel {
+  border-radius: 20px;
+}
+
+.product-gallery-frame__visual,
+.product-story-panel,
+.product-spec-card {
+  will-change: transform;
+}
+
 @media (max-width: 1080px) {
+  .product-experience-gallery__grid,
+  .product-experience-specs {
+    grid-template-columns: 1fr;
+  }
+
   .commerce-recommendations__grid,
   .dtf-option-grid,
   .checkout-step-rail {
@@ -4786,6 +4893,10 @@ body.lenis {
 }
 
 @media (max-width: 760px) {
+  .product-process-step {
+    grid-template-columns: 1fr;
+  }
+
   .coupon-row,
   .recommendation-card__footer,
   .premium-progress-section {

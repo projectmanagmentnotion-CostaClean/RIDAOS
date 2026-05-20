@@ -221,6 +221,18 @@ Ejemplos:
 - Contenido editable: `src/content/adminMockContent.ts`
 - Controla: acciones rapidas y textos mock del panel
 
+## ADMIN_CONTENT_STUDIO
+
+- Archivo visual: `src/admin/pages/ContentStudioPage.tsx`
+- Mapa maestro: `src/config/siteMap.ts`
+- Controla: simulacion de edicion mock/local de zonas, contenido, pricing, catalogo, motion y admin
+
+Uso:
+
+- `Abre ADMIN_CONTENT_STUDIO`
+- `Edita HOME_HERO desde el CMS mock`
+- `Resetea PRODUCT_CONFIGURATOR a defaults`
+
 ## ADMIN_ORDERS
 
 - Archivo visual: `src/content/adminMockContent.ts`
@@ -256,3 +268,16 @@ Ejemplos:
 - `src/content/faqContent.ts`: titulos FAQ
 - `src/content/bannerContent.ts`: bloques promocionales
 - `src/content/adminMockContent.ts`: panel interno mock
+
+## CMS mock interno
+
+- Ruta admin: `#/admin/content`
+- Repositorio mock: `src/features/cms/services/mockContentRepository.ts`
+- Contrato futuro: `src/features/cms/services/futureSupabaseContentRepository.ts`
+- Definiciones por documento: `src/features/cms/data/cmsDefaultDocuments.ts`
+
+Ejemplos:
+
+- `Busca HOME_HERO en el CMS mock`
+- `Exporta el snapshot local del CMS`
+- `Resetea CART_DRAWER al contenido por defecto`

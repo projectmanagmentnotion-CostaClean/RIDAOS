@@ -1,4 +1,4 @@
-export type EditableZoneType = 'section' | 'data' | 'config' | 'page' | 'admin' | 'commerce'
+export type EditableZoneType = 'section' | 'data' | 'config' | 'page' | 'admin' | 'commerce' | 'motion'
 
 export type EditableZone = {
   id: string
@@ -88,7 +88,7 @@ export const siteMap: EditableZone[] = [
     description: 'Capas decorativas, escenas GSAP + ScrollTrigger y placeholders de assets para la home.',
     filePath: 'src/motion/cinematic/CinematicHomeScroll.tsx',
     editableContentPath: 'src/motion/cinematic/cinematicScenes.ts',
-    type: 'config',
+    type: 'motion',
   },
   {
     id: 'NAV_MAIN',
@@ -240,6 +240,14 @@ export const siteMap: EditableZone[] = [
     description: 'Mensajes y acciones rapidas del panel interno preparado.',
     filePath: 'src/admin/pages/DashboardPage.tsx',
     editableContentPath: 'src/content/adminMockContent.ts',
+    type: 'admin',
+  },
+  {
+    id: 'ADMIN_CONTENT_STUDIO',
+    label: 'CMS interno mock',
+    description: 'Studio local para simular edicion por zonas sin persistencia externa.',
+    filePath: 'src/admin/pages/ContentStudioPage.tsx',
+    editableContentPath: 'src/config/siteMap.ts',
     type: 'admin',
   },
   {

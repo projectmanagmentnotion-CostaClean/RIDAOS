@@ -26,6 +26,7 @@ type RouteKey =
   | 'detallePedido'
   | 'historialArchivos'
   | 'admin'
+  | 'adminContent'
   | 'adminOrders'
   | 'adminOrderDetail'
   | 'adminUploads'
@@ -71,6 +72,7 @@ const routes: Record<string, RouteKey> = {
   '#/mi-cuenta/pedidos/demo': 'detallePedido',
   '#/mi-cuenta/archivos': 'historialArchivos',
   '#/admin': 'admin',
+  '#/admin/content': 'adminContent',
   '#/admin/orders': 'adminOrders',
   '#/admin/uploads': 'adminUploads',
   '#/admin/customers': 'adminCustomers',
@@ -112,6 +114,7 @@ const HistorialArchivos = lazy(() => import('./pages/HistorialArchivos'))
 const SolicitarPresupuesto = lazy(() => import('./pages/SolicitarPresupuesto'))
 const MotionTest = lazy(() => import('./pages/MotionTest'))
 const DashboardPage = lazy(() => import('./admin/pages/DashboardPage'))
+const ContentStudioPage = lazy(() => import('./admin/pages/ContentStudioPage'))
 const OrdersPage = lazy(() => import('./admin/pages/OrdersPage'))
 const OrderDetailPage = lazy(() => import('./admin/pages/OrderDetailPage'))
 const UploadsPage = lazy(() => import('./admin/pages/UploadsPage'))
@@ -140,6 +143,7 @@ const pageComponents: Record<RouteKey, ComponentType> = {
   detallePedido: DetallePedido,
   historialArchivos: HistorialArchivos,
   admin: DashboardPage,
+  adminContent: ContentStudioPage,
   adminOrders: OrdersPage,
   adminOrderDetail: OrderDetailPage,
   adminUploads: UploadsPage,
@@ -176,6 +180,7 @@ function isNavigationActive(route: RouteKey, itemRoute: RouteKey) {
   if (itemRoute === 'admin') {
     return (
       route === 'admin' ||
+      route === 'adminContent' ||
       route === 'adminOrders' ||
       route === 'adminOrderDetail' ||
       route === 'adminUploads' ||
@@ -188,10 +193,11 @@ function isNavigationActive(route: RouteKey, itemRoute: RouteKey) {
 }
 
 function isAdminOrLabRoute(route: RouteKey) {
-  return (
-    route === 'admin' ||
-    route === 'adminOrders' ||
-    route === 'adminOrderDetail' ||
+    return (
+      route === 'admin' ||
+      route === 'adminContent' ||
+      route === 'adminOrders' ||
+      route === 'adminOrderDetail' ||
     route === 'adminUploads' ||
     route === 'adminCustomers' ||
     route === 'adminProduction' ||

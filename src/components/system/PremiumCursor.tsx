@@ -125,6 +125,7 @@ function PremiumCursor() {
     }
 
     const handlePointerMove = (event: PointerEvent) => {
+      showCursor()
       xTo(event.clientX)
       yTo(event.clientY)
       setInterestState(Boolean(isInterestTarget(event.target)))

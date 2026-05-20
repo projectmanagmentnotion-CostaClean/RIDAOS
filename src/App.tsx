@@ -191,19 +191,6 @@ function isNavigationActive(route: RouteKey, itemRoute: RouteKey) {
   return route === itemRoute
 }
 
-function isAdminOrLabRoute(route: RouteKey) {
-    return (
-      route === 'admin' ||
-      route === 'adminContent' ||
-      route === 'adminOrders' ||
-      route === 'adminOrderDetail' ||
-    route === 'adminUploads' ||
-    route === 'adminCustomers' ||
-    route === 'adminProduction' ||
-    route === 'motionTest'
-  )
-}
-
 function PageLoadingFallback() {
   return (
     <section className="page-loading-shell" aria-live="polite">
@@ -306,7 +293,7 @@ function App() {
 
   return (
     <div className="app-shell">
-      {!isAdminOrLabRoute(route) ? <PremiumCursor /> : null}
+      <PremiumCursor />
       <a className="skip-link" href="#main-content">
         Saltar al contenido
       </a>

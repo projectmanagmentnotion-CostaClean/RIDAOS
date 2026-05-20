@@ -5,7 +5,8 @@ import type { CmsDocument, CmsSnapshot, CmsZoneStatus, CmsZoneView } from '../ty
 import { cloneCmsPayload } from '../utils/cmsSerialization'
 import { isCmsSnapshot } from '../utils/cmsValidation'
 
-const STORAGE_KEY = 'ridaosprint-mock-cms:v1'
+export const CMS_MOCK_STORAGE_KEY = 'ridaosprint-mock-cms:v1'
+export const CMS_MOCK_STORAGE_EVENT = 'ridaosprint:cms-storage-updated'
 
 type StoredOverride = {
   sourcePath: string
@@ -35,7 +36,7 @@ function readStoredState(): StoredState {
     return { version: 1, overrides: {} }
   }
 
-  const raw = storage.getItem(STORAGE_KEY)
+  const raw = storage.getItem(CMS_MOCK_STORAGE_KEY)
 
   if (!raw) {
     return { version: 1, overrides: {} }
@@ -64,7 +65,11 @@ function writeStoredState(state: StoredState) {
     return
   }
 
-  storage.setItem(STORAGE_KEY, JSON.stringify(state))
+  storage.setItem(CMS_MOCK_STORAGE_KEY, JSON.stringify(state))
+
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent(CMS_MOCK_STORAGE_EVENT))
+  }
 }
 
 function buildResolvedDocuments(): CmsDocument[] {

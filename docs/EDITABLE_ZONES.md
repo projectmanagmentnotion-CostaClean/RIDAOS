@@ -275,9 +275,31 @@ Uso:
 - Repositorio mock: `src/features/cms/services/mockContentRepository.ts`
 - Contrato futuro: `src/features/cms/services/futureSupabaseContentRepository.ts`
 - Definiciones por documento: `src/features/cms/data/cmsDefaultDocuments.ts`
+- Preview bridge: `src/features/cms-preview/`
 
 Ejemplos:
 
 - `Busca HOME_HERO en el CMS mock`
 - `Exporta el snapshot local del CMS`
 - `Resetea CART_DRAWER al contenido por defecto`
+
+## Zonas con preview activo
+
+Estas zonas ya pueden leer overrides mock cuando el preview esta activo:
+
+- `HOME_HERO`
+- `HOME_FINAL_CTA`
+- `NAV_MAIN`
+- `FOOTER_MAIN`
+- `DTF_CONFIGURATOR`
+- `CATALOG_GRID`
+
+Activacion:
+
+- `?cmsPreview=1`
+- o desde `#/admin/content`
+
+Desactivacion:
+
+- `?cmsPreview=0`
+- o desde `#/admin/content`

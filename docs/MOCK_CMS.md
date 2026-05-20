@@ -6,6 +6,18 @@ Este CMS interno existe para **simular la edicion de contenido, pricing, catalog
 
 - `#/admin/content`
 
+## Preview bridge
+
+El storefront puede leer overrides mock de forma opcional desde localStorage.
+
+- Activar con query: `?cmsPreview=1`
+- Desactivar con query: `?cmsPreview=0`
+- Flag persistente: `ridaosprint-cms-preview-enabled`
+
+La lectura del snapshot mock sigue usando:
+
+- `ridaosprint-mock-cms:v1`
+
 ## Como funciona
 
 El studio trabaja contra un repositorio desacoplado:
@@ -46,6 +58,19 @@ Solo hace esto:
 - Admin mock content
 - Escenas cinematicas y assets esperados
 
+## Que zonas ya leen preview
+
+Primera fase integrada:
+
+- `HOME_HERO`
+- `HOME_FINAL_CTA`
+- `NAV_MAIN`
+- `FOOTER_MAIN`
+- `DTF_CONFIGURATOR`
+- `CATALOG_GRID`
+
+El resto sigue leyendo contenido estatico hasta la siguiente fase.
+
 ## Que NO edita todavia
 
 - No escribe en disco
@@ -62,6 +87,20 @@ Se guarda en:
 
 - `localStorage`
 - clave: `ridaosprint-mock-cms:v1`
+
+## Como activar preview
+
+Opciones:
+
+1. Abrir la web con `?cmsPreview=1`
+2. Desde `#/admin/content`, usar `Activar preview`
+
+## Como desactivar preview
+
+Opciones:
+
+1. Abrir la web con `?cmsPreview=0`
+2. Desde `#/admin/content`, usar `Desactivar preview`
 
 ## Exportar
 
@@ -108,6 +147,8 @@ Cuando llegue la fase real:
 2. Se conecta a tablas por documento o por zona.
 3. El `ContentStudioPage` deja de depender de `localStorage`.
 4. El storefront puede empezar a leer contenido dinámico desde un loader/repository.
+
+En esta fase ya existe el puente, pero solo para unas pocas zonas y siempre con fallback al contenido fuente.
 
 ## Ejemplos de peticiones
 

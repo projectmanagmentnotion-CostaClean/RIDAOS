@@ -8,6 +8,7 @@ import SeoContentBlock from '../components/SeoContentBlock'
 import SectionHeader from '../components/SectionHeader'
 import StatusBadge from '../components/StatusBadge'
 import { catalogContent } from '../content/catalogContent'
+import { useCmsPreviewDocument } from '../features/cms-preview'
 import { getContentByEntryId } from '../catalog/content/contentSelectors'
 import {
   getCatalogSections,
@@ -45,6 +46,7 @@ function getStatusCopy(entry: CatalogEntry) {
  * Visual component: src/pages/Catalogo.tsx
  */
 function Catalogo() {
+  const previewCatalogContent = useCmsPreviewDocument('src/content/catalogContent.ts', catalogContent)
   const featuredProduct = useMemo(() => getFeaturedProducts()[0], [])
   const catalogSections = useMemo(() => getCatalogSections(), [])
   const categorySections = useMemo(
@@ -60,12 +62,12 @@ function Catalogo() {
     <PageShell className="catalog-page premium-page">
       <SectionHeader
         className="catalog-hero premium-hero type-split"
-        description={featuredContent?.metaDescription ?? catalogContent.hero.fallbackDescription}
-        eyebrow={featuredContent?.eyebrow ?? catalogContent.hero.fallbackEyebrow}
+        description={previewCatalogContent.hero.fallbackDescription}
+        eyebrow={previewCatalogContent.hero.fallbackEyebrow}
         hero
-        stickerWords={catalogContent.hero.stickerWords}
-        title={catalogContent.hero.title}
-        titleLines={catalogContent.hero.titleLines}
+        stickerWords={previewCatalogContent.hero.stickerWords}
+        title={previewCatalogContent.hero.title}
+        titleLines={previewCatalogContent.hero.titleLines}
       />
 
       {featuredProduct ? (
@@ -76,28 +78,28 @@ function Catalogo() {
                 {featuredContent?.primaryCta.label ?? featuredProduct.cta.label}
               </a>
               <a className="action-button action-button-muted action-link-button" href={getPublicCtaHref('guia')}>
-                {featuredContent?.secondaryCta.label ?? catalogContent.featured.secondaryCtaLabel}
+                {featuredContent?.secondaryCta.label ?? previewCatalogContent.featured.secondaryCtaLabel}
               </a>
             </div>
           }
           className="featured-product-card"
-          description={featuredContent?.intro ?? featuredProduct.shortDescription}
-          label={catalogContent.featured.label}
-          title={`${featuredProduct.name} ${catalogContent.featured.titleSuffix}`}
+          description={featuredProduct.shortDescription}
+          label={previewCatalogContent.featured.label}
+          title={`${featuredProduct.name} ${previewCatalogContent.featured.titleSuffix}`}
         />
       ) : null}
 
       <section className="content-section content-grid-two">
         <article className="content-card motion-card" data-cursor="interactive">
-          <SectionHeader eyebrow={catalogContent.visualPanel.eyebrow} title={catalogContent.visualPanel.title} />
-          <p>{catalogContent.visualPanel.description}</p>
+          <SectionHeader eyebrow={previewCatalogContent.visualPanel.eyebrow} title={previewCatalogContent.visualPanel.title} />
+          <p>{previewCatalogContent.visualPanel.description}</p>
           <MouseMotionVisual variant="catalog" />
         </article>
         <article className="content-card seo-content-block">
-          <p className="section-label">{catalogContent.flowPanel.label}</p>
-          <h3>{catalogContent.flowPanel.title}</h3>
+          <p className="section-label">{previewCatalogContent.flowPanel.label}</p>
+          <h3>{previewCatalogContent.flowPanel.title}</h3>
           <ul className="detail-list">
-            {catalogContent.flowPanel.bullets.map((bullet) => (
+            {previewCatalogContent.flowPanel.bullets.map((bullet) => (
               <li key={bullet}>{bullet}</li>
             ))}
           </ul>
@@ -135,7 +137,7 @@ function Catalogo() {
       ) : null}
 
       <section className="catalog-section">
-        <SectionHeader eyebrow={catalogContent.categorySection.eyebrow} title={catalogContent.categorySection.title} />
+        <SectionHeader eyebrow={previewCatalogContent.categorySection.eyebrow} title={previewCatalogContent.categorySection.title} />
         <div className="category-grid">
           {catalogCategories.map((category) => (
             <article className="content-card category-card hover-lift" data-cursor="interactive" key={category.key} tabIndex={0}>
@@ -147,7 +149,7 @@ function Catalogo() {
       </section>
 
       <section className="catalog-section">
-        <SectionHeader eyebrow={catalogContent.productsSection.eyebrow} title={catalogContent.productsSection.title} />
+        <SectionHeader eyebrow={previewCatalogContent.productsSection.eyebrow} title={previewCatalogContent.productsSection.title} />
         {categorySections.map((section) => (
           <div className="catalog-section-block" key={section.key}>
             <SectionHeader eyebrow={section.title} title={section.description} />

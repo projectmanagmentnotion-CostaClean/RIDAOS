@@ -10,6 +10,7 @@ import { refreshScrollNarrative, syncScrollTriggerWithLenis } from './lib/animat
 import { getPublicCtaHref, getPublicHref } from './lib/navigation'
 import { getCurrentHashRoute, navigateToHashRoute, normalizeHashRoute } from './lib/hashRouting'
 import { footerContent, navigationContent } from './content'
+import { useCmsPreviewDocument } from './features/cms-preview'
 
 type RouteKey =
   | 'home'
@@ -89,8 +90,6 @@ const routes: Record<string, RouteKey> = {
  * Content: src/content/navigationContent.ts
  * Visual component: src/App.tsx
  */
-const navigation = navigationContent.mainLinks
-
 const buildMarker = `Ridaos build: ${__RIDAOS_BUILD_HASH__}`
 const Catalogo = lazy(() => import('./pages/Catalogo'))
 const DTFPage = lazy(() => import('./pages/DTFPage'))
@@ -296,6 +295,14 @@ function App() {
   }, [])
 
   const ActivePage = pageComponents[route] ?? NotFoundPage
+  const previewNavigation = useCmsPreviewDocument(
+    'src/content/navigationContent.ts',
+    navigationContent,
+  )
+  const previewFooter = useCmsPreviewDocument(
+    'src/content/footerContent.ts',
+    footerContent,
+  )
 
   return (
     <div className="app-shell">
@@ -312,10 +319,10 @@ function App() {
       >
         <nav className="site-nav" aria-label="Principal">
           <a aria-label="Ir a la pagina de inicio" className="brand" data-cursor="interactive" href={getPublicHref('home')}>
-            {navigationContent.brandLabel}
+            {previewNavigation.brandLabel}
           </a>
           <div className="nav-links">
-            {navigation.map((item) => (
+            {previewNavigation.mainLinks.map((item) => (
               <a
                 aria-current={isNavigationActive(route, item.route) ? 'page' : undefined}
                 className={isNavigationActive(route, item.route) ? 'is-active' : undefined}
@@ -340,9 +347,9 @@ function App() {
 
       {/* Editable Zone: FOOTER_MAIN | Content: src/content/footerContent.ts */}
       <footer className="site-footer">
-        <p>{footerContent.description}</p>
+        <p>{previewFooter.description}</p>
         <div className="footer-links">
-          {footerContent.links.map((link) => (
+          {previewFooter.links.map((link) => (
             <a data-cursor="interactive" href={link.href} key={link.href}>
               {link.label}
             </a>

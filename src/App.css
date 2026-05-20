@@ -4868,6 +4868,10 @@ body.lenis {
   gap: 10px;
 }
 
+.cms-preview-actions {
+  margin-top: 12px;
+}
+
 .cms-filter-chip {
   border: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;

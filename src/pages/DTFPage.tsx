@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import CommercialNoticeGroup from '../components/CommercialNoticeGroup'
 import ConfiguratorSupportBlock from '../components/ConfiguratorSupportBlock'
 import ConversionTrustBlock from '../components/ConversionTrustBlock'
@@ -13,10 +13,10 @@ import SectionHeader from '../components/SectionHeader'
 import TrustGrid from '../components/TrustGrid'
 import UploadGuidanceBlock from '../components/UploadGuidanceBlock'
 import { dtfEntry } from '../catalog/products/dtf'
-import { getContentByEntryId } from '../catalog/content/contentSelectors'
 import { dtfPageContent } from '../content/dtfContent'
 import { faqContent } from '../content/faqContent'
 import { pricingContent } from '../content/pricingContent'
+import { useCmsPreviewDocument } from '../features/cms-preview'
 import { DtfOptionCards } from '../features/dtf/components/DtfOptionCards'
 import { DtfPresetSelector } from '../features/dtf/components/DtfPresetSelector'
 import { DtfProgressSteps } from '../features/dtf/components/DtfProgressSteps'
@@ -41,7 +41,7 @@ const premiumDocumentFormats = ['PDF', 'AI', 'EPS', 'ZIP', 'TIFF']
  */
 function DTFPage() {
   const pageRef = useRef<HTMLElement | null>(null)
-  const dtfContent = useMemo(() => getContentByEntryId(dtfEntry.id), [])
+  const previewDtfContent = useCmsPreviewDocument('src/content/dtfContent.ts', dtfPageContent)
   const {
     meters,
     setMeters,
@@ -90,19 +90,19 @@ function DTFPage() {
         <div className="hero-flash-band" aria-hidden="true" />
         <SectionHeader
           className="premium-hero type-split"
-          description={dtfContent?.intro ?? dtfPageContent.hero.fallbackDescription}
-          eyebrow={dtfContent?.eyebrow ?? dtfPageContent.hero.fallbackEyebrow}
+          description={previewDtfContent.hero.fallbackDescription}
+          eyebrow={previewDtfContent.hero.fallbackEyebrow}
           hero
           stickerWords={['DTF', 'archivo']}
-          title={dtfContent?.h1 ?? dtfPageContent.hero.fallbackTitle}
-          titleLines={dtfPageContent.hero.titleLines}
+          title={previewDtfContent.hero.fallbackTitle}
+          titleLines={previewDtfContent.hero.titleLines}
         />
       </section>
 
       <section className="content-section premium-progress-section">
         <div>
-          <p className="section-label">{dtfPageContent.progress.eyebrow}</p>
-          <h2>{dtfPageContent.progress.title}</h2>
+          <p className="section-label">{previewDtfContent.progress.eyebrow}</p>
+          <h2>{previewDtfContent.progress.title}</h2>
         </div>
         <DtfProgressSteps />
       </section>
@@ -134,10 +134,10 @@ function DTFPage() {
                 type="number"
                 value={meters}
               />
-              <span className="file-meta">{dtfPageContent.fieldHelp.meters}</span>
+              <span className="file-meta">{previewDtfContent.fieldHelp.meters}</span>
               <DtfPresetSelector
                 onSelect={setMeters}
-                presets={dtfPageContent.meterPresets}
+                presets={previewDtfContent.meterPresets}
                 value={meters}
               />
               {errors.meters ? <span className="field-error">{errors.meters}</span> : null}
@@ -162,10 +162,8 @@ function DTFPage() {
                 onChange={(event) => setFile(event.target.files?.[0] ?? null)}
                 type="file"
               />
-              <span className="file-meta">
-                {filePreview?.fileName ?? dtfPageContent.fieldHelp.fileNameFallback}
-              </span>
-              <span className="file-meta">{dtfPageContent.fieldHelp.file}</span>
+              <span className="file-meta">{filePreview?.fileName ?? previewDtfContent.fieldHelp.fileNameFallback}</span>
+              <span className="file-meta">{previewDtfContent.fieldHelp.file}</span>
               {errors.file ? <span className="field-error">{errors.file}</span> : null}
             </label>
 
@@ -178,12 +176,12 @@ function DTFPage() {
                 rows={5}
                 value={notes}
               />
-              <span className="file-meta">{dtfPageContent.fieldHelp.notes}</span>
+              <span className="file-meta">{previewDtfContent.fieldHelp.notes}</span>
             </label>
 
             <div className="form-actions">
               <button className="action-button" data-cursor="sales" onClick={handleSimulateOrder} type="button">
-                {dtfContent?.secondaryCta.label ?? dtfPageContent.actions.prepareLabel}
+                {previewDtfContent.actions.prepareLabel}
               </button>
               <button
                 className="action-button action-button-muted"
@@ -191,7 +189,7 @@ function DTFPage() {
                 onClick={handleAddToCart}
                 type="button"
               >
-                {dtfContent?.primaryCta.label ?? dtfPageContent.actions.addToCartLabel}
+                {previewDtfContent.actions.addToCartLabel}
               </button>
             </div>
 
@@ -199,17 +197,17 @@ function DTFPage() {
             {cartMessage ? (
               <div className="catalog-cta-row">
                 <a className="card-link" data-cursor="sales" href={publicRoutes.carrito}>
-                  {dtfPageContent.actions.cartLabel}
+                  {previewDtfContent.actions.cartLabel}
                 </a>
                 <a className="card-link" data-cursor="interactive" href={publicRoutes.catalogo}>
-                  {dtfPageContent.actions.keepShoppingLabel}
+                  {previewDtfContent.actions.keepShoppingLabel}
                 </a>
               </div>
             ) : null}
           </div>
 
           <ConfiguratorSupportBlock
-            sections={dtfPageContent.supportSections.map((section) => ({
+            sections={previewDtfContent.supportSections.map((section) => ({
               ...section,
               items:
                 section.label === 'Antes de cerrar'
@@ -336,18 +334,18 @@ function DTFPage() {
                   </a>
                 </>
               }
-              className="success-card"
+            className="success-card"
               description={`Metraje: ${simulation.meters} m | Calidad: ${
                 simulation.quality === 'premium' ? 'Premium' : 'Standard'
               } | Urgencia: ${simulation.urgency === 'express' ? 'Express' : 'Normal'} | Turnaround: ${
                 simulation.turnaroundPreference
               } | Archivo: ${simulation.fileName} | Notas: ${simulation.notes || 'Sin notas'} | Total: ${formatCurrency(
-                simulation.total,
-              )}`}
-              label="Configuracion lista"
-              title="La configuracion esta lista para pasar al carrito."
-            />
-          ) : null}
+              simulation.total,
+            )}`}
+            label="Configuracion lista"
+            title="La configuracion esta lista para pasar al carrito."
+          />
+        ) : null}
 
           <CommercialNoticeGroup noticeKeys={dtfEntry.legalNotes} />
         </div>
@@ -355,14 +353,14 @@ function DTFPage() {
 
       <section className="content-section content-grid-two">
         <article className="content-card motion-card">
-          <SectionHeader eyebrow={dtfPageContent.motionPanel.eyebrow} title={dtfPageContent.motionPanel.title} />
-          <p>{dtfPageContent.motionPanel.description}</p>
+          <SectionHeader eyebrow={previewDtfContent.motionPanel.eyebrow} title={previewDtfContent.motionPanel.title} />
+          <p>{previewDtfContent.motionPanel.description}</p>
           <MouseMotionVisual variant="dtf" />
         </article>
         <article className="content-card">
-          <SectionHeader eyebrow={dtfPageContent.preparationPanel.eyebrow} title={dtfPageContent.preparationPanel.title} />
+          <SectionHeader eyebrow={previewDtfContent.preparationPanel.eyebrow} title={previewDtfContent.preparationPanel.title} />
           <ul className="detail-list">
-            {dtfPageContent.preparationPanel.bullets.map((bullet) => (
+            {previewDtfContent.preparationPanel.bullets.map((bullet) => (
               <li key={bullet}>{bullet}</li>
             ))}
           </ul>
@@ -370,22 +368,22 @@ function DTFPage() {
       </section>
 
       <section className="content-section" data-animate="reveal" data-scroll-scene="dtf-process">
-        <SectionHeader eyebrow={dtfPageContent.process.eyebrow} title={dtfPageContent.process.title} />
+        <SectionHeader eyebrow={previewDtfContent.process.eyebrow} title={previewDtfContent.process.title} />
         <ProcessSteps />
       </section>
 
       <section className="content-section content-grid-two" data-animate="reveal" data-scroll-scene="dtf-content">
-        <SeoContentBlock entryId={dtfEntry.id} title={dtfPageContent.seoTitles.why} />
-        <SeoContentBlock entryId={dtfEntry.id} mode="useCases" title={dtfPageContent.seoTitles.useCases} />
+        <SeoContentBlock entryId={dtfEntry.id} title={previewDtfContent.seoTitles.why} />
+        <SeoContentBlock entryId={dtfEntry.id} mode="useCases" title={previewDtfContent.seoTitles.useCases} />
       </section>
 
       <section className="content-section content-grid-two" data-animate="reveal" data-scroll-scene="dtf-guidance">
         <UploadGuidanceBlock entryId={dtfEntry.id} />
-        <ConversionTrustBlock entryId={dtfEntry.id} title={dtfPageContent.seoTitles.trust} />
+        <ConversionTrustBlock entryId={dtfEntry.id} title={previewDtfContent.seoTitles.trust} />
       </section>
 
       <section className="content-section" data-animate="reveal" data-scroll-scene="dtf-trust">
-        <SectionHeader eyebrow={dtfPageContent.trust.eyebrow} title={dtfPageContent.trust.title} />
+        <SectionHeader eyebrow={previewDtfContent.trust.eyebrow} title={previewDtfContent.trust.title} />
         <TrustGrid />
       </section>
 

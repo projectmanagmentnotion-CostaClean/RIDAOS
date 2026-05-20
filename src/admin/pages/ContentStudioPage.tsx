@@ -10,6 +10,7 @@ import { CmsStudioSummary } from '../../features/cms/components/CmsStudioSummary
 import { CmsZoneList } from '../../features/cms/components/CmsZoneList'
 import { useContentStudio } from '../../features/cms/hooks/useContentStudio'
 import type { CmsDocumentType } from '../../features/cms/types/cms'
+import { useCmsPreview } from '../../features/cms-preview'
 
 const filterOptions: Array<{ value: CmsDocumentType | 'all'; label: string }> = [
   { value: 'all', label: 'Todo' },
@@ -28,6 +29,7 @@ const filterOptions: Array<{ value: CmsDocumentType | 'all'; label: string }> = 
  * Visual component: src/admin/pages/ContentStudioPage.tsx
  */
 function ContentStudioPage() {
+  const { enabled: previewEnabled, setEnabled: setPreviewEnabled } = useCmsPreview()
   const {
     allZones,
     zones,
@@ -135,6 +137,28 @@ function ContentStudioPage() {
           <p className="section-label">Mock / local only</p>
           <h3>Este panel no escribe en disco ni toca el storefront en vivo.</h3>
           <p>Guarda snapshots mock en localStorage y prepara la futura capa de repositorio real sin activar Supabase.</p>
+          <div className="catalog-card-actions cms-preview-actions">
+            <span className={`status-badge ${previewEnabled ? 'status-info' : 'status-muted'}`}>
+              Preview {previewEnabled ? 'activo' : 'inactivo'}
+            </span>
+            <button
+              className="action-button action-button-muted"
+              onClick={() => setPreviewEnabled(true)}
+              type="button"
+            >
+              Activar preview
+            </button>
+            <button
+              className="action-button action-button-muted"
+              onClick={() => setPreviewEnabled(false)}
+              type="button"
+            >
+              Desactivar preview
+            </button>
+            <a className="action-button action-link-button" href="?cmsPreview=1#/">
+              Abrir home en preview
+            </a>
+          </div>
         </article>
         <article className="content-card admin-overview-card cms-studio-banner">
           <p className="section-label">Seam futuro</p>

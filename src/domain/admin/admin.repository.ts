@@ -30,7 +30,7 @@ export interface AdminRepository {
   listCustomers(): Promise<AdminCustomerRecord[]>
   listProductionQueue(): Promise<AdminOrderRecord[]>
   getDashboardOverview(): Promise<AdminDashboardOverview>
-  addInternalComment(orderId: string, body: string, category?: 'internal' | 'qa' | 'production'): Promise<AdminOrderRecord | null>
+  addInternalComment(orderId: string, body: string, category?: 'internal' | 'qa' | 'production' | 'service'): Promise<AdminOrderRecord | null>
   patchOrder(orderId: string, patch: AdminOrderLifecyclePatch): Promise<AdminOrderRecord | null>
   patchUpload(uploadId: string, patch: AdminUploadReviewPatch): Promise<AdminUploadQueueItem | null>
 }

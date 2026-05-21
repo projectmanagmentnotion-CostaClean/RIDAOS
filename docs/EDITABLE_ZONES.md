@@ -262,6 +262,42 @@ Uso:
 - `Edita HOME_HERO desde el CMS mock`
 - `Resetea PRODUCT_CONFIGURATOR a defaults`
 
+## ADMIN_CLIENT_SERVICE
+
+- Archivo visual: `src/admin/pages/ClientServicePage.tsx`
+- Contenido editable: `src/features/operations/client-service/mock/clientServiceMockData.ts`
+- Controla: tickets, approvals, SLA, escalados y vistas de service internas
+
+## ADMIN_SLA_MONITOR
+
+- Archivo visual: `src/features/operations/client-service/sla/slaSelectors.ts`
+- Contenido editable: `src/features/operations/client-service/mock/clientServiceMockData.ts`
+- Controla: estados SLA, riesgo, breached y recommendation interna
+
+## ADMIN_ARTWORK_APPROVALS
+
+- Archivo visual: `src/features/operations/client-service/approvals/approvalFlow.ts`
+- Contenido editable: `src/features/operations/client-service/mock/clientServiceMockData.ts`
+- Controla: flujo de approval del artwork, bloqueo a produccion y cambios solicitados
+
+## ADMIN_RESPONSE_TEMPLATES
+
+- Archivo visual: `src/features/operations/client-service/templates/responseTemplates.ts`
+- Contenido editable: `src/features/operations/client-service/templates/responseTemplates.ts`
+- Controla: previews de respuesta a cliente y tono de comunicacion mock
+
+## ADMIN_CUSTOMER_ISSUES
+
+- Archivo visual: `src/features/operations/client-service/mock/clientServiceMockData.ts`
+- Contenido editable: `src/features/operations/client-service/mock/clientServiceMockData.ts`
+- Controla: tipos de incidencia y labels del workflow de service
+
+## ADMIN_ESCALATION_PANEL
+
+- Archivo visual: `src/features/operations/client-service/escalation/escalationRules.ts`
+- Contenido editable: `src/features/operations/client-service/mock/clientServiceMockData.ts`
+- Controla: niveles de escalado y recomendaciones operativas mock
+
 ## ADMIN_ORDERS
 
 - Archivo visual: `src/content/adminMockContent.ts`
@@ -350,6 +386,7 @@ Uso:
 - Notas: `notes/`
 - Timeline: `timeline/`
 - Filtros: `filters/`
+- Client service: `client-service/`
 - Servicios y hooks: `services/`, `hooks/`
 
 Ejemplos:

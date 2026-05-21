@@ -1,8 +1,11 @@
 import type {
+  AdminApprovalState,
   AdminCustomerSummary,
   AdminDashboardStats,
   AdminDeliveryMethod,
   AdminDeliveryWindow,
+  AdminEscalationLevel,
+  AdminIncidentType,
   AdminOrder,
   AdminOrderFilters,
   AdminOrderPriority,
@@ -10,7 +13,9 @@ import type {
   AdminPackingStatus,
   AdminPaymentStatus,
   AdminProductionStatus,
+  AdminSlaStatus,
   AdminShippingStatus,
+  AdminTicketStatus,
   AdminUploadRecord,
   AdminUploadReviewStatus,
 } from '../../admin/types/adminModels'
@@ -45,6 +50,14 @@ export type AdminOrderLifecyclePatch = {
   customerContactPreference?: 'phone' | 'email' | 'whatsapp_mock'
   deliveryIncident?: string
   handoffTimeline?: import('../../admin/types/adminModels').AdminTimelineItem[]
+  ticketStatus?: AdminTicketStatus
+  slaStatus?: AdminSlaStatus
+  approvalState?: AdminApprovalState
+  escalationLevel?: AdminEscalationLevel
+  incidentType?: AdminIncidentType
+  serviceNotes?: string
+  approvalTimeline?: import('../../admin/types/adminModels').AdminTimelineItem[]
+  serviceTimeline?: import('../../admin/types/adminModels').AdminTimelineItem[]
 }
 export type AdminUploadReviewPatch = {
   status?: AdminUploadReviewStatus

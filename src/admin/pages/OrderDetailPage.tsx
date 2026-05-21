@@ -12,26 +12,38 @@ import { getCapacityMeta, recommendSchedulingSlot } from '../../features/operati
 import { deliveryMethodLabels, deliveryWindowLabels, packingStatusLabels } from '../../features/operations/dispatch/dispatchMockData'
 import { buildDeliveryMessagePreviews, getNextShippingStatus } from '../../features/operations/dispatch/dispatchService'
 import DeliveryMessagePreviewCard from '../../features/operations/delivery/DeliveryMessagePreviewCard'
+import ClientServiceTemplatePreviewList from '../../features/operations/client-service/components/ClientServiceTemplatePreviewList'
+import { getNextApprovalState } from '../../features/operations/client-service/approvals/approvalFlow'
+import { approvalStateLabels, escalationLevelLabels, incidentTypeLabels, slaStatusLabels, ticketStatusLabels } from '../../features/operations/client-service/mock/clientServiceMockData'
+import { getClientServiceSummaryMeta, getClientServiceTemplatePreviewData } from '../../features/operations/client-service/services/clientServiceService'
 import InternalNotesComposer from '../../features/operations/notes/InternalNotesComposer'
 import ProductionPipelineTimeline from '../../features/operations/timeline/ProductionPipelineTimeline'
 import { getOperationsOrderDetail, getOperationsOrders } from '../../features/operations/services/operationsService'
 import type { OperationsFilters, OperationsOrderRecord } from '../../features/operations/types/operations'
 import {
   addAdminInternalComment,
+  patchAdminOrderClientService,
   patchAdminOrderDispatch,
   patchAdminOrderSchedule,
   saveAdminOrderNotes,
   saveAdminProductionNotes,
+  saveAdminServiceNotes,
   updateAdminOrderPriority,
   updateAdminOrderStatus,
   updateAdminPaymentStatus,
   updateAdminProductionStatus,
 } from '../services/orderAdminService'
 import type {
+  AdminApprovalState,
+  AdminEscalationLevel,
+  AdminIncidentType,
   AdminOrder,
   AdminOrderPriority,
   AdminPaymentStatus,
   AdminProductionStatus,
+  AdminSlaStatus,
+  AdminTicketStatus,
+  AdminTimelineItem,
 } from '../types/adminModels'
 import { getLifecycleDescriptorFromAdminStatus } from '../utils/adminLifecycle'
 
@@ -105,6 +117,7 @@ function OrderDetailPage() {
   const [allOrders, setAllOrders] = useState<OperationsOrderRecord[]>([])
   const [notesDraft, setNotesDraft] = useState('')
   const [productionNotesDraft, setProductionNotesDraft] = useState('')
+  const [serviceNotesDraft, setServiceNotesDraft] = useState('')
   const capacityMeta = useMemo(() => getCapacityMeta(), [])
 
   useEffect(() => {
@@ -139,6 +152,7 @@ function OrderDetailPage() {
         setAllOrders(orders)
         setNotesDraft(data?.notes ?? '')
         setProductionNotesDraft(data?.productionNotes ?? '')
+        setServiceNotesDraft(data?.serviceNotes ?? '')
       }
     })
 
@@ -154,6 +168,8 @@ function OrderDetailPage() {
     [allOrders, order],
   )
   const deliveryMessages = useMemo(() => (order ? buildDeliveryMessagePreviews(order) : []), [order])
+  const clientServiceMeta = useMemo(() => (order ? getClientServiceSummaryMeta(order) : null), [order])
+  const clientServiceTemplates = useMemo(() => (order ? getClientServiceTemplatePreviewData(order) : []), [order])
 
   if (!orderId || !order) {
     return (
@@ -182,6 +198,47 @@ function OrderDetailPage() {
     ])
     setOrder(next)
     setAllOrders(orders)
+    setServiceNotesDraft(next?.serviceNotes ?? '')
+  }
+
+  const appendServiceTimelineEntry = async (
+    label: string,
+    detail: string,
+    tone: AdminTimelineItem['tone'] = 'default',
+  ) => {
+    await patchAdminOrderClientService(order.id, {
+      serviceTimeline: [
+        ...order.serviceTimeline,
+        {
+          id: `${order.id}-service-${Date.now()}`,
+          label,
+          detail,
+          timestamp: new Date().toISOString(),
+          tone,
+        },
+      ],
+    })
+    await refreshOrder()
+  }
+
+  const appendApprovalTimelineEntry = async (
+    label: string,
+    detail: string,
+    tone: AdminTimelineItem['tone'] = 'default',
+  ) => {
+    await patchAdminOrderClientService(order.id, {
+      approvalTimeline: [
+        ...order.approvalTimeline,
+        {
+          id: `${order.id}-approval-${Date.now()}`,
+          label,
+          detail,
+          timestamp: new Date().toISOString(),
+          tone,
+        },
+      ],
+    })
+    await refreshOrder()
   }
 
   return (
@@ -273,6 +330,22 @@ function OrderDetailPage() {
                 <div className="summary-row">
                   <span>Tracking</span>
                   <strong>{order.trackingCode || 'Sin tracking mock'}</strong>
+                </div>
+                <div className="summary-row">
+                  <span>Ticket</span>
+                  <strong>{clientServiceMeta?.ticketLabel}</strong>
+                </div>
+                <div className="summary-row">
+                  <span>SLA</span>
+                  <strong>{clientServiceMeta?.slaLabel}</strong>
+                </div>
+                <div className="summary-row">
+                  <span>Approval</span>
+                  <strong>{clientServiceMeta?.approvalLabel}</strong>
+                </div>
+                <div className="summary-row">
+                  <span>Escalado</span>
+                  <strong>{clientServiceMeta?.escalationLabel}</strong>
                 </div>
               </div>
             </article>
@@ -492,6 +565,188 @@ function OrderDetailPage() {
                 </div>
               ) : null}
             </article>
+          </AdminSection>
+
+          <AdminSection
+            description="Panel premium de atencion al cliente, approvals, SLA e incidencias listo para migrar a datos reales."
+            title="Client service panel"
+          >
+            <article className="content-card admin-detail-card">
+              <div className="configurator-form">
+                <label className="field-group">
+                  <span className="field-label">Ticket status</span>
+                  <select
+                    className="form-input"
+                    onChange={async (event) => {
+                      await patchAdminOrderClientService(order.id, { ticketStatus: event.target.value as AdminTicketStatus })
+                      await refreshOrder()
+                    }}
+                    value={order.ticketStatus}
+                  >
+                    {Object.entries(ticketStatusLabels).map(([value, label]) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="field-group">
+                  <span className="field-label">SLA</span>
+                  <select
+                    className="form-input"
+                    onChange={async (event) => {
+                      await patchAdminOrderClientService(order.id, { slaStatus: event.target.value as AdminSlaStatus })
+                      await refreshOrder()
+                    }}
+                    value={order.slaStatus}
+                  >
+                    {Object.entries(slaStatusLabels).map(([value, label]) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="field-group">
+                  <span className="field-label">Approval state</span>
+                  <select
+                    className="form-input"
+                    onChange={async (event) => {
+                      await patchAdminOrderClientService(order.id, { approvalState: event.target.value as AdminApprovalState })
+                      await refreshOrder()
+                    }}
+                    value={order.approvalState}
+                  >
+                    {Object.entries(approvalStateLabels).map(([value, label]) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="field-group">
+                  <span className="field-label">Escalation</span>
+                  <select
+                    className="form-input"
+                    onChange={async (event) => {
+                      await patchAdminOrderClientService(order.id, { escalationLevel: event.target.value as AdminEscalationLevel })
+                      await refreshOrder()
+                    }}
+                    value={order.escalationLevel}
+                  >
+                    {Object.entries(escalationLevelLabels).map(([value, label]) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="field-group">
+                  <span className="field-label">Incident type</span>
+                  <select
+                    className="form-input"
+                    onChange={async (event) => {
+                      await patchAdminOrderClientService(order.id, { incidentType: event.target.value as AdminIncidentType })
+                      await refreshOrder()
+                    }}
+                    value={order.incidentType}
+                  >
+                    {Object.entries(incidentTypeLabels).map(([value, label]) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+              <label className="field-group">
+                <span className="field-label">Seguimiento service</span>
+                <textarea
+                  className="form-input form-textarea"
+                  onChange={(event) => setServiceNotesDraft(event.target.value)}
+                  rows={3}
+                  value={serviceNotesDraft}
+                />
+              </label>
+              <div className="catalog-card-actions">
+                <button
+                  className="action-button"
+                  onClick={async () => {
+                    await saveAdminServiceNotes(order.id, serviceNotesDraft)
+                    await refreshOrder()
+                  }}
+                  type="button"
+                >
+                  Guardar service notes
+                </button>
+                <button
+                  className="action-button action-button-muted"
+                  onClick={async () => {
+                    const nextApproval = getNextApprovalState(order.approvalState)
+                    await patchAdminOrderClientService(order.id, { approvalState: nextApproval })
+                    await appendApprovalTimelineEntry('Approval actualizada', `El artwork pasa a ${approvalStateLabels[nextApproval]}.`, 'success')
+                  }}
+                  type="button"
+                >
+                  Avanzar approval
+                </button>
+                <button
+                  className="action-button action-button-muted"
+                  onClick={async () => {
+                    await patchAdminOrderClientService(order.id, {
+                      approvalState: 'changes_requested',
+                      ticketStatus: 'waiting_customer',
+                    })
+                    await appendApprovalTimelineEntry('Cambios solicitados', 'Se ha pedido una nueva version del archivo al cliente.', 'warning')
+                  }}
+                  type="button"
+                >
+                  Pedir cambios
+                </button>
+                <button
+                  className="action-button action-button-muted"
+                  onClick={async () => {
+                    await patchAdminOrderClientService(order.id, {
+                      ticketStatus: 'escalated',
+                      escalationLevel: 'urgent',
+                    })
+                    await appendServiceTimelineEntry('Caso escalado', 'Se ha marcado el pedido como escalado para revision prioritaria.', 'warning')
+                  }}
+                  type="button"
+                >
+                  Escalar caso
+                </button>
+              </div>
+              <div className="admin-upload-note">
+                <strong>Recommendation</strong>
+                <p>{clientServiceMeta?.escalationRecommendation}</p>
+              </div>
+            </article>
+          </AdminSection>
+
+          <AdminSection
+            description="Historial mock de approval e incidencia para mantener trazabilidad operativa."
+            title="Approvals e incident timeline"
+          >
+            <article className="content-card admin-detail-card">
+              <div className="summary-stack">
+                <div className="admin-upload-note">
+                  <strong>Approval history</strong>
+                  <TimelineBlock items={order.approvalTimeline} />
+                </div>
+                <div className="admin-upload-note">
+                  <strong>Incident timeline</strong>
+                  <TimelineBlock items={order.serviceTimeline} />
+                </div>
+              </div>
+            </article>
+          </AdminSection>
+
+          <AdminSection
+            description="Templates premium de respuesta al cliente. Solo preview local, sin envios reales."
+            title="Response templates"
+          >
+            <ClientServiceTemplatePreviewList items={clientServiceTemplates} />
           </AdminSection>
 
           <AdminSection

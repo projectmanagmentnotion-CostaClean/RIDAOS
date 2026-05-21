@@ -168,7 +168,15 @@ export const mockAdminRepository: AdminRepository = {
       patch.deliveryWindow ||
       patch.customerContactPreference ||
       typeof patch.deliveryIncident === 'string' ||
-      patch.handoffTimeline
+      patch.handoffTimeline ||
+      patch.ticketStatus ||
+      patch.slaStatus ||
+      patch.approvalState ||
+      patch.escalationLevel ||
+      patch.incidentType ||
+      typeof patch.serviceNotes === 'string' ||
+      patch.approvalTimeline ||
+      patch.serviceTimeline
     ) {
       adminStore.updateOrderOverride(orderId, {
         operatorId: patch.operatorId,
@@ -183,6 +191,14 @@ export const mockAdminRepository: AdminRepository = {
         customerContactPreference: patch.customerContactPreference,
         deliveryIncident: patch.deliveryIncident,
         handoffTimeline: patch.handoffTimeline,
+        ticketStatus: patch.ticketStatus,
+        slaStatus: patch.slaStatus,
+        approvalState: patch.approvalState,
+        escalationLevel: patch.escalationLevel,
+        incidentType: patch.incidentType,
+        serviceNotes: patch.serviceNotes,
+        approvalTimeline: patch.approvalTimeline,
+        serviceTimeline: patch.serviceTimeline,
       })
     }
     return getOrderDetail(orderId)

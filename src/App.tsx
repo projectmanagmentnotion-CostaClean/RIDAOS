@@ -28,6 +28,7 @@ type RouteKey =
   | 'historialArchivos'
   | 'admin'
   | 'adminContent'
+  | 'adminService'
   | 'adminOrders'
   | 'adminOrderDetail'
   | 'adminUploads'
@@ -74,6 +75,7 @@ const routes: Record<string, RouteKey> = {
   '#/mi-cuenta/archivos': 'historialArchivos',
   '#/admin': 'admin',
   '#/admin/content': 'adminContent',
+  '#/admin/service': 'adminService',
   '#/admin/orders': 'adminOrders',
   '#/admin/uploads': 'adminUploads',
   '#/admin/customers': 'adminCustomers',
@@ -114,6 +116,7 @@ const SolicitarPresupuesto = lazy(() => import('./pages/SolicitarPresupuesto'))
 const MotionTest = lazy(() => import('./pages/MotionTest'))
 const DashboardPage = lazy(() => import('./admin/pages/DashboardPage'))
 const ContentStudioPage = lazy(() => import('./admin/pages/ContentStudioPage'))
+const ClientServicePage = lazy(() => import('./admin/pages/ClientServicePage'))
 const OrdersPage = lazy(() => import('./admin/pages/OrdersPage'))
 const OrderDetailPage = lazy(() => import('./admin/pages/OrderDetailPage'))
 const UploadsPage = lazy(() => import('./admin/pages/UploadsPage'))
@@ -143,6 +146,7 @@ const pageComponents: Record<RouteKey, ComponentType> = {
   historialArchivos: HistorialArchivos,
   admin: DashboardPage,
   adminContent: ContentStudioPage,
+  adminService: ClientServicePage,
   adminOrders: OrdersPage,
   adminOrderDetail: OrderDetailPage,
   adminUploads: UploadsPage,
@@ -180,6 +184,7 @@ function isNavigationActive(route: RouteKey, itemRoute: RouteKey) {
     return (
       route === 'admin' ||
       route === 'adminContent' ||
+      route === 'adminService' ||
       route === 'adminOrders' ||
       route === 'adminOrderDetail' ||
       route === 'adminUploads' ||

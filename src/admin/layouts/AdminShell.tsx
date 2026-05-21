@@ -10,6 +10,7 @@ type AdminShellProps = {
 const adminNavigation = [
   { href: '#/admin', label: 'Operations' },
   { href: '#/admin/content', label: 'Content Studio' },
+  { href: '#/admin/service', label: 'Client service' },
   { href: '#/admin/orders', label: 'Pedidos' },
   { href: '#/admin/uploads', label: 'Artwork review' },
   { href: '#/admin/customers', label: 'Clientes' },

@@ -9,6 +9,7 @@ const categoryLabels: Record<AdminCommentCategory, string> = {
   internal: 'Interna',
   qa: 'QA',
   production: 'Produccion',
+  service: 'Service',
 }
 
 function InternalNotesComposer({ onSubmit }: InternalNotesComposerProps) {

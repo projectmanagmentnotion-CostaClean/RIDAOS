@@ -1,10 +1,12 @@
 import type { Order } from '../../types/backend'
 import type {
+  AdminApprovalState,
   AdminArtworkStatus,
   AdminCustomerSummary,
   AdminDeliveryMethod,
   AdminDeliveryWindow,
   AdminDashboardStats,
+  AdminIncidentType,
   AdminMachineAssignment,
   AdminOrder,
   AdminOrderFilters,
@@ -13,6 +15,7 @@ import type {
   AdminPackingStatus,
   AdminSchedulingWindow,
   AdminShippingStatus,
+  AdminTicketStatus,
   AdminTimelineItem,
   AdminUploadOverride,
   AdminUploadRecord,
@@ -20,6 +23,8 @@ import type {
 import { getLifecycleDescriptorFromAdminStatus, getLifecycleStatusFromAdminStatus } from '../utils/adminLifecycle'
 import { operationsRosterByProductType } from '../../features/operations/mock/operationsMockData'
 import { capacityMachines, capacityOperators, capacityWindows, defaultMachineByProductType } from '../../features/operations/capacity/capacityMockData'
+import { deriveEscalationLevel } from '../../features/operations/client-service/escalation/escalationRules'
+import { deriveSlaStatus } from '../../features/operations/client-service/sla/slaSelectors'
 
 const previewableTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml', 'image/webp']
 
@@ -79,6 +84,58 @@ function getDeliveryMethod(productType: Order['items'][number]['productType']): 
     return 'own_route'
   }
   return 'pickup'
+}
+
+function getIncidentType(order: Order, status: AdminOrder['status'], shippingStatus: AdminShippingStatus): AdminIncidentType {
+  if (status === 'needs_changes') {
+    return 'customer_change_request'
+  }
+  if (!order.items.length || !order.items[0]?.artwork?.fileName) {
+    return 'missing_information'
+  }
+  if (shippingStatus === 'shipped') {
+    return 'delivery_delay'
+  }
+  if (order.items[0]?.productType === 'dtf') {
+    return 'artwork_invalid'
+  }
+  return 'production_quality_review'
+}
+
+function getTicketStatus(status: AdminOrder['status'], shippingStatus: AdminShippingStatus): AdminTicketStatus {
+  if (status === 'completed' || shippingStatus === 'delivered') {
+    return 'resolved'
+  }
+  if (status === 'needs_changes') {
+    return 'waiting_customer'
+  }
+  if (status === 'pending_review') {
+    return 'waiting_internal'
+  }
+  return 'open'
+}
+
+function getApprovalState(status: AdminOrder['status'], productionStatus: AdminOrder['productionStatus']): AdminApprovalState {
+  if (status === 'needs_changes') {
+    return 'changes_requested'
+  }
+  if (
+    productionStatus === 'printing' ||
+    productionStatus === 'finishing' ||
+    productionStatus === 'quality_check' ||
+    productionStatus === 'ready' ||
+    productionStatus === 'completed' ||
+    status === 'in_production' ||
+    status === 'quality_check' ||
+    status === 'ready' ||
+    status === 'completed'
+  ) {
+    return 'production_locked'
+  }
+  if (status === 'approved' || status === 'awaiting_payment' || status === 'paid') {
+    return 'approved_for_production'
+  }
+  return 'pending_review'
 }
 
 function getPackingStatus(shippingStatus: AdminShippingStatus): AdminPackingStatus {
@@ -275,6 +332,131 @@ function buildHandoffTimeline(
   return items
 }
 
+function buildApprovalTimeline(
+  order: Order,
+  approvalState: AdminApprovalState,
+  override?: AdminOrderOverride,
+): AdminTimelineItem[] {
+  if (override?.approvalTimeline?.length) {
+    return override.approvalTimeline
+  }
+
+  const items: AdminTimelineItem[] = [
+    {
+      id: `${order.id}-approval-intake`,
+      label: 'Artwork recibido',
+      detail: 'El pedido entra en la cola de approval mock.',
+      timestamp: order.createdAt,
+      tone: 'default',
+    },
+  ]
+
+  if (approvalState === 'changes_requested' || approvalState === 'customer_updated_artwork') {
+    items.push({
+      id: `${order.id}-approval-changes`,
+      label: 'Cambios solicitados',
+      detail: 'Se ha pedido nueva version o ajuste tecnico del archivo.',
+      timestamp: order.createdAt,
+      tone: 'warning',
+    })
+  }
+
+  if (approvalState === 'approved_for_production' || approvalState === 'production_locked') {
+    items.push({
+      id: `${order.id}-approval-approved`,
+      label: 'Aprobado para produccion',
+      detail: 'El artwork queda listo para scheduling y fabricacion.',
+      timestamp: order.createdAt,
+      tone: 'success',
+    })
+  }
+
+  if (approvalState === 'production_locked') {
+    items.push({
+      id: `${order.id}-approval-locked`,
+      label: 'Produccion bloqueada',
+      detail: 'Solo se admiten cambios criticos desde este punto.',
+      timestamp: order.createdAt,
+      tone: 'default',
+    })
+  }
+
+  if (approvalState === 'rejected') {
+    items.push({
+      id: `${order.id}-approval-rejected`,
+      label: 'Artwork rechazado',
+      detail: 'El archivo queda rechazado hasta nueva decision interna.',
+      timestamp: order.createdAt,
+      tone: 'warning',
+    })
+  }
+
+  return items
+}
+
+function buildServiceTimeline(
+  order: Order,
+  incidentType: AdminIncidentType,
+  ticketStatus: AdminTicketStatus,
+  override?: AdminOrderOverride,
+): AdminTimelineItem[] {
+  if (override?.serviceTimeline?.length) {
+    return override.serviceTimeline
+  }
+
+  const items: AdminTimelineItem[] = [
+    {
+      id: `${order.id}-service-opened`,
+      label: 'Caso operativo abierto',
+      detail: `Motivo principal: ${incidentType}.`,
+      timestamp: order.createdAt,
+      tone: 'default',
+    },
+  ]
+
+  if (ticketStatus === 'waiting_customer') {
+    items.push({
+      id: `${order.id}-service-waiting-customer`,
+      label: 'Esperando respuesta del cliente',
+      detail: 'Hay una accion pendiente por parte del cliente.',
+      timestamp: order.createdAt,
+      tone: 'warning',
+    })
+  }
+
+  if (ticketStatus === 'waiting_internal' || ticketStatus === 'open') {
+    items.push({
+      id: `${order.id}-service-internal`,
+      label: 'Revision interna activa',
+      detail: 'El equipo esta revisando la incidencia o el approval.',
+      timestamp: order.createdAt,
+      tone: 'default',
+    })
+  }
+
+  if (ticketStatus === 'escalated') {
+    items.push({
+      id: `${order.id}-service-escalated`,
+      label: 'Caso escalado',
+      detail: 'El caso se ha elevado por SLA o impacto operativo.',
+      timestamp: order.createdAt,
+      tone: 'warning',
+    })
+  }
+
+  if (ticketStatus === 'resolved') {
+    items.push({
+      id: `${order.id}-service-resolved`,
+      label: 'Caso resuelto',
+      detail: 'El flujo de atencion queda cerrado a nivel mock.',
+      timestamp: order.createdAt,
+      tone: 'success',
+    })
+  }
+
+  return items
+}
+
 export function mapOrderToAdminOrder(order: Order, override?: AdminOrderOverride): AdminOrder {
   const status = override?.status ?? order.status
   const priority = override?.priority ?? 'normal'
@@ -288,6 +470,12 @@ export function mapOrderToAdminOrder(order: Order, override?: AdminOrderOverride
   const deliveryMethod = override?.deliveryMethod ?? getDeliveryMethod(productType)
   const deliveryWindow = override?.deliveryWindow ?? getDeliveryWindow(deliveryMethod)
   const packingStatus = override?.packingStatus ?? getPackingStatus(shippingStatus)
+  const incidentType = override?.incidentType ?? getIncidentType(order, status, shippingStatus)
+  const ticketStatus = override?.ticketStatus ?? getTicketStatus(status, shippingStatus)
+  const slaStatus = override?.slaStatus ?? deriveSlaStatus({ dueDate: getDueDate(order, priority), status })
+  const approvalState = override?.approvalState ?? getApprovalState(status, productionStatus)
+  const escalationLevel =
+    override?.escalationLevel ?? deriveEscalationLevel(priority, slaStatus, ticketStatus, incidentType)
 
   return {
     id: order.id,
@@ -320,6 +508,14 @@ export function mapOrderToAdminOrder(order: Order, override?: AdminOrderOverride
     customerContactPreference: override?.customerContactPreference ?? 'email',
     deliveryIncident: override?.deliveryIncident,
     handoffTimeline: buildHandoffTimeline(order, shippingStatus, deliveryMethod, override),
+    ticketStatus,
+    slaStatus,
+    approvalState,
+    escalationLevel,
+    incidentType,
+    serviceNotes: override?.serviceNotes ?? '',
+    approvalTimeline: buildApprovalTimeline(order, approvalState, override),
+    serviceTimeline: buildServiceTimeline(order, incidentType, ticketStatus, override),
     tags: Array.from(
       new Set([
         ...(operationsRosterByProductType[productType]?.fallbackTags ?? [productType]),

@@ -4506,6 +4506,13 @@ body.lenis {
   color: rgba(218, 214, 208, 0.74);
 }
 
+.admin-message-preview-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 /* ================================
    Advanced Commerce Mock System
 ================================ */

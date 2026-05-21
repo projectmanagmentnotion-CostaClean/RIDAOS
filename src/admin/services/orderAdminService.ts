@@ -1,8 +1,11 @@
 import { getAdminRepository } from '../../infrastructure/repositoryFactory'
 import type {
+  AdminApprovalState,
   AdminCommentCategory,
   AdminDeliveryMethod,
   AdminDeliveryWindow,
+  AdminEscalationLevel,
+  AdminIncidentType,
   AdminOrderFilters,
   AdminSchedulingWindow,
   AdminOrderPriority,
@@ -10,7 +13,9 @@ import type {
   AdminPackingStatus,
   AdminPaymentStatus,
   AdminProductionStatus,
+  AdminSlaStatus,
   AdminShippingStatus,
+  AdminTicketStatus,
   AdminTimelineItem,
   AdminUploadReviewStatus,
 } from '../types/adminModels'
@@ -57,6 +62,11 @@ export async function saveAdminProductionNotes(orderId: string, notes: string) {
   return getAdminRepository().saveProductionNotes(orderId, notes)
 }
 
+export async function saveAdminServiceNotes(orderId: string, notes: string) {
+  await wait(60)
+  return getAdminRepository().patchOrder(orderId, { serviceNotes: notes })
+}
+
 export async function addAdminInternalComment(orderId: string, body: string, category?: AdminCommentCategory) {
   await wait(60)
   return getAdminRepository().addInternalComment(orderId, body, category)
@@ -88,6 +98,24 @@ export async function patchAdminOrderDispatch(
     customerContactPreference?: 'phone' | 'email' | 'whatsapp_mock'
     deliveryIncident?: string
     handoffTimeline?: AdminTimelineItem[]
+  },
+) {
+  await wait(60)
+  return getAdminRepository().patchOrder(orderId, patch)
+}
+
+export async function patchAdminOrderClientService(
+  orderId: string,
+  patch: {
+    ticketStatus?: AdminTicketStatus
+    slaStatus?: AdminSlaStatus
+    approvalState?: AdminApprovalState
+    escalationLevel?: AdminEscalationLevel
+    incidentType?: AdminIncidentType
+    serviceNotes?: string
+    approvalTimeline?: AdminTimelineItem[]
+    serviceTimeline?: AdminTimelineItem[]
+    priority?: AdminOrderPriority
   },
 ) {
   await wait(60)

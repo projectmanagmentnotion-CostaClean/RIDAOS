@@ -25,6 +25,7 @@ type AdminUiStore = {
   setProductionStatus: (orderId: string, productionStatus: AdminProductionStatus) => void
   setOrderNotes: (orderId: string, notes: string) => void
   setProductionNotes: (orderId: string, productionNotes: string) => void
+  setServiceNotes: (orderId: string, serviceNotes: string) => void
   addInternalComment: (orderId: string, comment: AdminComment) => void
   updateUploadOverride: (uploadId: string, patch: AdminUploadOverride) => void
   setUploadStatus: (uploadId: string, status: AdminUploadReviewStatus) => void
@@ -107,6 +108,16 @@ export const useAdminUiStore = create<AdminUiStore>()(
             [orderId]: {
               ...state.orderOverrides[orderId],
               productionNotes,
+            },
+          },
+        })),
+      setServiceNotes: (orderId, serviceNotes) =>
+        set((state) => ({
+          orderOverrides: {
+            ...state.orderOverrides,
+            [orderId]: {
+              ...state.orderOverrides[orderId],
+              serviceNotes,
             },
           },
         })),

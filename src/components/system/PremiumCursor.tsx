@@ -28,7 +28,32 @@ function isInterestTarget(target: EventTarget | null) {
 
 function PremiumCursor() {
   const cursorRef = useRef<HTMLDivElement | null>(null)
-  const [enabled] = useState(() => canUsePremiumCursor())
+  const [enabled, setEnabled] = useState(false)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return
+    }
+
+    const hoverQuery = window.matchMedia('(hover: hover)')
+    const pointerQuery = window.matchMedia('(pointer: fine)')
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+
+    const syncEnabled = () => {
+      setEnabled(canUsePremiumCursor())
+    }
+
+    syncEnabled()
+    hoverQuery.addEventListener('change', syncEnabled)
+    pointerQuery.addEventListener('change', syncEnabled)
+    motionQuery.addEventListener('change', syncEnabled)
+
+    return () => {
+      hoverQuery.removeEventListener('change', syncEnabled)
+      pointerQuery.removeEventListener('change', syncEnabled)
+      motionQuery.removeEventListener('change', syncEnabled)
+    }
+  }, [])
 
   useEffect(() => {
     if (!enabled) {
@@ -124,11 +149,19 @@ function PremiumCursor() {
       })
     }
 
-    const handlePointerMove = (event: PointerEvent) => {
+    const moveCursor = (x: number, y: number, target: EventTarget | null) => {
       showCursor()
-      xTo(event.clientX)
-      yTo(event.clientY)
-      setInterestState(Boolean(isInterestTarget(event.target)))
+      xTo(x)
+      yTo(y)
+      setInterestState(Boolean(isInterestTarget(target)))
+    }
+
+    const handlePointerMove = (event: PointerEvent) => {
+      moveCursor(event.clientX, event.clientY, event.target)
+    }
+
+    const handleMouseMove = (event: MouseEvent) => {
+      moveCursor(event.clientX, event.clientY, event.target)
     }
 
     const handlePointerOver = (event: Event) => {
@@ -156,8 +189,11 @@ function PremiumCursor() {
     }
 
     window.addEventListener('pointermove', handlePointerMove, { passive: true })
+    window.addEventListener('mousemove', handleMouseMove, { passive: true })
     window.addEventListener('pointerenter', showCursor)
     window.addEventListener('pointerleave', hideCursor)
+    window.addEventListener('mouseenter', showCursor)
+    window.addEventListener('mouseleave', hideCursor)
     document.addEventListener('pointerover', handlePointerOver, { passive: true })
     document.addEventListener('pointerout', handlePointerOut, { passive: true })
     document.addEventListener('focusin', handleFocusIn)
@@ -165,8 +201,11 @@ function PremiumCursor() {
 
     return () => {
       window.removeEventListener('pointermove', handlePointerMove)
+      window.removeEventListener('mousemove', handleMouseMove)
       window.removeEventListener('pointerenter', showCursor)
       window.removeEventListener('pointerleave', hideCursor)
+      window.removeEventListener('mouseenter', showCursor)
+      window.removeEventListener('mouseleave', hideCursor)
       document.removeEventListener('pointerover', handlePointerOver)
       document.removeEventListener('pointerout', handlePointerOut)
       document.removeEventListener('focusin', handleFocusIn)

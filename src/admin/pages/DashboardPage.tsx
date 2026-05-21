@@ -9,6 +9,8 @@ import { useOperationsCapacity } from '../../features/operations/hooks/useOperat
 import DispatchDashboardWidgets from '../../features/operations/dispatch/DispatchDashboardWidgets'
 import { useOperationsDispatch } from '../../features/operations/hooks/useOperationsDispatch'
 import { useOperationsDashboard } from '../../features/operations/hooks/useOperationsDashboard'
+import ClientServiceDashboardWidgets from '../../features/operations/client-service/components/ClientServiceDashboardWidgets'
+import { useOperationsClientService } from '../../features/operations/client-service/hooks/useOperationsClientService'
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('es-ES', {
@@ -23,6 +25,8 @@ const formatCurrency = (value: number) =>
  * - ADMIN_CAPACITY_DASHBOARD
  * - ADMIN_OPERATOR_WORKLOAD
  * - ADMIN_DISPATCH_DASHBOARD
+ * - ADMIN_CLIENT_SERVICE
+ * - ADMIN_SLA_MONITOR
  * Content: src/content/adminMockContent.ts
  * Operations: src/features/operations/mock/operationsMockData.ts
  * Visual component: src/admin/pages/DashboardPage.tsx
@@ -31,6 +35,7 @@ function DashboardPage() {
   const dashboard = useOperationsDashboard()
   const { capacity } = useOperationsCapacity()
   const { dashboard: dispatch } = useOperationsDispatch()
+  const { dashboard: clientService } = useOperationsClientService()
 
   return (
     <AdminShell
@@ -76,6 +81,15 @@ function DashboardPage() {
           title="Despacho y entrega"
         >
           <DispatchDashboardWidgets data={dispatch} />
+        </AdminSection>
+      ) : null}
+
+      {clientService ? (
+        <AdminSection
+          description="Open tickets, approvals pendientes, SLA y escalados bajo la misma lectura operativa."
+          title="Client service y approvals"
+        >
+          <ClientServiceDashboardWidgets data={clientService} />
         </AdminSection>
       ) : null}
 

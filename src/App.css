@@ -4400,6 +4400,74 @@ body.lenis {
   margin-top: 4px;
 }
 
+.admin-capacity-list {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-scheduling-board {
+  display: grid;
+  gap: 16px;
+}
+
+.admin-scheduling-day {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+}
+
+.admin-scheduling-day__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.admin-scheduling-day__head h3 {
+  margin: 0;
+}
+
+.admin-scheduling-deliveries,
+.admin-scheduling-machine-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.admin-scheduling-deliveries {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.admin-scheduling-chip,
+.admin-scheduling-slot {
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.admin-scheduling-chip span,
+.admin-scheduling-slot small {
+  color: rgba(218, 214, 208, 0.68);
+}
+
+.admin-scheduling-window {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-scheduling-slot.is-overloaded {
+  border-color: rgba(255, 118, 87, 0.28);
+  background: rgba(255, 118, 87, 0.08);
+}
+
+.admin-scheduling-conflicts {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+}
+
 /* ================================
    Advanced Commerce Mock System
 ================================ */

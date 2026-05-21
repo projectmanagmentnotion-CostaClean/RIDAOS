@@ -1,6 +1,8 @@
 import { getAdminDashboardOverview, getAdminOrderDetail, listAdminOrders, listAdminUploads, listProductionQueue } from '../../../admin/services/orderAdminService'
 import type { OperationsDashboardData, OperationsFilters, OperationsOrderRecord, OperationsUploadRecord } from '../types/operations'
 import { buildOperationsDashboard, enrichOperationsOrder, enrichOperationsUpload, filterOperationsOrders, getProductionStats } from './operationsMappers'
+import { buildCapacityBoard } from '../capacity/capacitySelectors'
+import { buildSchedulingBoard } from '../scheduling/schedulingService'
 
 export async function getOperationsOrders(filters: OperationsFilters): Promise<OperationsOrderRecord[]> {
   const orders = await listAdminOrders({
@@ -38,4 +40,15 @@ export async function getProductionOperations() {
     orders,
     stats: getProductionStats(orders),
   }
+}
+
+export async function getOperationsCapacityBoard() {
+  const orders = (await listAdminOrders()).map(enrichOperationsOrder)
+  const today = new Date().toISOString().slice(0, 10)
+  return buildCapacityBoard(orders, today)
+}
+
+export async function getOperationsSchedulingBoard() {
+  const orders = (await listAdminOrders()).map(enrichOperationsOrder)
+  return buildSchedulingBoard(orders)
 }

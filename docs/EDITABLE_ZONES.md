@@ -232,6 +232,18 @@ Ejemplos:
 - `Cambia las quick actions del ADMIN_OPERATIONS_DASHBOARD`
 - `Ajusta el lenguaje del activity feed operativo`
 
+## ADMIN_CAPACITY_DASHBOARD
+
+- Archivo visual: `src/admin/pages/DashboardPage.tsx`
+- Contenido editable: `src/features/operations/capacity/capacityMockData.ts`
+- Controla: capacidad del dia, proximas entregas, alertas de sobrecarga y jobs sin asignar
+
+## ADMIN_OPERATOR_WORKLOAD
+
+- Archivo visual: `src/features/operations/capacity/CapacityDashboardWidgets.tsx`
+- Contenido editable: `src/features/operations/capacity/capacityMockData.ts`
+- Controla: reparto de carga, horas disponibles y urgentes por operador
+
 ## ADMIN_CONTENT_STUDIO
 
 - Archivo visual: `src/admin/pages/ContentStudioPage.tsx`
@@ -267,6 +279,18 @@ Uso:
 - Archivo visual: `src/admin/pages/ProductionPage.tsx`
 - Contenido editable: `src/features/operations/mock/operationsMockData.ts`
 - Controla: etapas del pipeline, resumen por fase y textos del flujo productivo
+
+## ADMIN_SCHEDULING_BOARD
+
+- Archivo visual: `src/admin/pages/ProductionPage.tsx`
+- Contenido editable: `src/features/operations/scheduling/schedulingService.ts`
+- Controla: vista semanal mock, entregas, conflictos de planning y relacion entre cola y due dates
+
+## ADMIN_MACHINE_SLOTS
+
+- Archivo visual: `src/features/operations/scheduling/SchedulingBoard.tsx`
+- Contenido editable: `src/features/operations/capacity/capacityMockData.ts`
+- Controla: maquinas, ventanas y capacidad por slot mock
 
 ## ADMIN_ORDER_DETAIL
 

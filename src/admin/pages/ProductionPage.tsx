@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import AdminStatCard from '../components/AdminStatCard'
 import AdminSection from '../components/AdminSection'
 import EmptyAdminState from '../components/EmptyAdminState'
@@ -6,9 +5,12 @@ import OrderStatusBadge from '../components/OrderStatusBadge'
 import AdminShell from '../layouts/AdminShell'
 import { productionStageDefinitions, shippingStatusLabels } from '../../features/operations/mock/operationsMockData'
 import ProductionStageSummary from '../../features/operations/production/ProductionStageSummary'
+import SchedulingBoard from '../../features/operations/scheduling/SchedulingBoard'
+import { useOperationsCapacity } from '../../features/operations/hooks/useOperationsCapacity'
 import ProductionPipelineTimeline from '../../features/operations/timeline/ProductionPipelineTimeline'
 import { getProductionOperations } from '../../features/operations/services/operationsService'
 import type { OperationsOrderRecord } from '../../features/operations/types/operations'
+import { useEffect, useState } from 'react'
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('es-ES', {
@@ -17,13 +19,17 @@ const formatCurrency = (value: number) =>
   }).format(value)
 
 /**
- * Editable Zone: ADMIN_PRODUCTION_PIPELINE
+ * Editable Zones:
+ * - ADMIN_PRODUCTION_PIPELINE
+ * - ADMIN_SCHEDULING_BOARD
+ * - ADMIN_MACHINE_SLOTS
  * Content: src/features/operations/mock/operationsMockData.ts
  * Visual component: src/admin/pages/ProductionPage.tsx
  */
 function ProductionPage() {
   const [orders, setOrders] = useState<OperationsOrderRecord[]>([])
   const [stats, setStats] = useState<Awaited<ReturnType<typeof getProductionOperations>>['stats'] | null>(null)
+  const { schedule } = useOperationsCapacity()
 
   useEffect(() => {
     let cancelled = false
@@ -112,6 +118,15 @@ function ProductionPage() {
           </div>
         )}
       </AdminSection>
+
+      {schedule ? (
+        <AdminSection
+          description="Board semanal mock con slots por maquina, entregas previstas y conflictos de capacidad."
+          title="Scheduling board"
+        >
+          <SchedulingBoard board={schedule} />
+        </AdminSection>
+      ) : null}
     </AdminShell>
   )
 }

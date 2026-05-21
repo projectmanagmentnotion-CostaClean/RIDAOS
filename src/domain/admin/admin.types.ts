@@ -28,6 +28,10 @@ export type AdminOrderLifecyclePatch = {
   productionStatus?: AdminProductionStatus
   notes?: string
   productionNotes?: string
+  operatorId?: string
+  machineId?: string
+  scheduledDate?: string
+  scheduledWindow?: import('../../admin/types/adminModels').AdminSchedulingWindow
 }
 export type AdminUploadReviewPatch = {
   status?: AdminUploadReviewStatus

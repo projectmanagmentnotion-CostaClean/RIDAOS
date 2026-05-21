@@ -153,6 +153,19 @@ export const mockAdminRepository: AdminRepository = {
     if (typeof patch.productionNotes === 'string') {
       adminStore.setProductionNotes(orderId, patch.productionNotes)
     }
+    if (
+      patch.operatorId ||
+      patch.machineId ||
+      typeof patch.scheduledDate === 'string' ||
+      patch.scheduledWindow
+    ) {
+      adminStore.updateOrderOverride(orderId, {
+        operatorId: patch.operatorId,
+        machineId: patch.machineId,
+        scheduledDate: patch.scheduledDate,
+        scheduledWindow: patch.scheduledWindow,
+      })
+    }
     return getOrderDetail(orderId)
   },
   async patchUpload(uploadId: string, patch: AdminUploadReviewPatch) {

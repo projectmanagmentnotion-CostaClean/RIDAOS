@@ -2,6 +2,7 @@ import { getAdminRepository } from '../../infrastructure/repositoryFactory'
 import type {
   AdminCommentCategory,
   AdminOrderFilters,
+  AdminSchedulingWindow,
   AdminOrderPriority,
   AdminOrderStatus,
   AdminPaymentStatus,
@@ -54,6 +55,20 @@ export async function saveAdminProductionNotes(orderId: string, notes: string) {
 export async function addAdminInternalComment(orderId: string, body: string, category?: AdminCommentCategory) {
   await wait(60)
   return getAdminRepository().addInternalComment(orderId, body, category)
+}
+
+export async function patchAdminOrderSchedule(
+  orderId: string,
+  patch: {
+    operatorId?: string
+    machineId?: string
+    scheduledDate?: string
+    scheduledWindow?: AdminSchedulingWindow
+    priority?: AdminOrderPriority
+  },
+) {
+  await wait(60)
+  return getAdminRepository().patchOrder(orderId, patch)
 }
 
 export async function listAdminUploads() {

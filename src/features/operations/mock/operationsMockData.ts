@@ -1,4 +1,5 @@
 import type { AdminOperator } from '../../../admin/types/adminModels'
+import { capacityMachines, capacityOperators } from '../capacity/capacityMockData'
 import type {
   OperationsQuickAction,
   OperationsReviewAction,
@@ -6,23 +7,9 @@ import type {
   ProductionStageDefinition,
 } from '../types/operations'
 
-const pressOperator: AdminOperator = {
-  id: 'operator-laura',
-  name: 'Laura M.',
-  role: 'Mesa de revision',
-}
-
-const productionOperator: AdminOperator = {
-  id: 'operator-sergio',
-  name: 'Sergio R.',
-  role: 'Produccion DTF',
-}
-
-const finishingOperator: AdminOperator = {
-  id: 'operator-noa',
-  name: 'Noa C.',
-  role: 'Acabados y salida',
-}
+const pressOperator = capacityOperators.find((operator) => operator.id === 'operator-laura') as AdminOperator
+const productionOperator = capacityOperators.find((operator) => operator.id === 'operator-sergio') as AdminOperator
+const finishingOperator = capacityOperators.find((operator) => operator.id === 'operator-noa') as AdminOperator
 
 export const operationsRosterByProductType: Record<string, OperationsRosterAssignment> = {
   dtf: {
@@ -52,6 +39,8 @@ export const operationsQuickActions: OperationsQuickAction[] = [
   { label: 'Abrir revision de artes', href: '#/admin/uploads', tone: 'default' },
   { label: 'Mover cola de produccion', href: '#/admin/production', tone: 'success' },
 ]
+
+export const machineStatusLabels = Object.fromEntries(capacityMachines.map((machine) => [machine.id, machine.label])) as Record<string, string>
 
 export const productionStageDefinitions: ProductionStageDefinition[] = [
   { key: 'new', label: 'Nuevo', description: 'Pedido recibido y pendiente de triage.' },

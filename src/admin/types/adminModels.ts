@@ -36,6 +36,14 @@ export type AdminOperator = {
   role: string
 }
 
+export type AdminMachineType = 'dtf_press' | 'cut_plotter' | 'large_format_printer' | 'laminator' | 'prep_table'
+export type AdminSchedulingWindow = 'morning' | 'midday' | 'afternoon'
+export type AdminMachineAssignment = {
+  id: string
+  label: string
+  type: AdminMachineType
+}
+
 export type AdminComment = {
   id: string
   author: string
@@ -70,6 +78,9 @@ export type AdminOrder = {
   artworkStatus: AdminArtworkStatus
   shippingStatus: AdminShippingStatus
   operator: AdminOperator
+  machine: AdminMachineAssignment
+  scheduledDate: string
+  scheduledWindow: AdminSchedulingWindow
   tags: string[]
   notes: string
   uploadIds: string[]
@@ -137,6 +148,10 @@ export type AdminOrderOverride = {
   notes?: string
   productionNotes?: string
   internalComments?: AdminComment[]
+  operatorId?: string
+  machineId?: string
+  scheduledDate?: string
+  scheduledWindow?: AdminSchedulingWindow
 }
 
 export type AdminUploadOverride = {

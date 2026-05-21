@@ -4,6 +4,8 @@ import OrderStatusBadge from '../components/OrderStatusBadge'
 import AdminShell from '../layouts/AdminShell'
 import OperationsActivityFeed from '../../features/operations/dashboard/OperationsActivityFeed'
 import OperationsKpiGrid from '../../features/operations/dashboard/OperationsKpiGrid'
+import CapacityDashboardWidgets from '../../features/operations/capacity/CapacityDashboardWidgets'
+import { useOperationsCapacity } from '../../features/operations/hooks/useOperationsCapacity'
 import { useOperationsDashboard } from '../../features/operations/hooks/useOperationsDashboard'
 
 const formatCurrency = (value: number) =>
@@ -16,12 +18,15 @@ const formatCurrency = (value: number) =>
  * Editable Zones:
  * - ADMIN_DASHBOARD
  * - ADMIN_OPERATIONS_DASHBOARD
+ * - ADMIN_CAPACITY_DASHBOARD
+ * - ADMIN_OPERATOR_WORKLOAD
  * Content: src/content/adminMockContent.ts
  * Operations: src/features/operations/mock/operationsMockData.ts
  * Visual component: src/admin/pages/DashboardPage.tsx
  */
 function DashboardPage() {
   const dashboard = useOperationsDashboard()
+  const { capacity } = useOperationsCapacity()
 
   return (
     <AdminShell
@@ -51,6 +56,15 @@ function DashboardPage() {
           <p>La lectura del panel ya es operativa sin conectar Supabase, sockets ni storage externo.</p>
         </article>
       </div>
+
+      {capacity ? (
+        <AdminSection
+          description="Capacidad diaria mock, carga por operador, cola por maquina y entregas cercanas preparadas para scheduling real."
+          title="Capacidad y carga operativa"
+        >
+          <CapacityDashboardWidgets data={capacity} />
+        </AdminSection>
+      ) : null}
 
       <div className="admin-two-column">
         <AdminSection

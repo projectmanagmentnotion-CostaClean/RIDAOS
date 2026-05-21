@@ -7,12 +7,15 @@ import TimelineBlock from '../components/TimelineBlock'
 import { orderStatusOptions } from '../config/orderStatuses'
 import AdminShell from '../layouts/AdminShell'
 import { artworkStatusLabels, productionStageDefinitions, shippingStatusLabels } from '../../features/operations/mock/operationsMockData'
+import { capacityWindows } from '../../features/operations/capacity/capacityMockData'
+import { getCapacityMeta, recommendSchedulingSlot } from '../../features/operations/capacity/capacitySelectors'
 import InternalNotesComposer from '../../features/operations/notes/InternalNotesComposer'
 import ProductionPipelineTimeline from '../../features/operations/timeline/ProductionPipelineTimeline'
-import { getOperationsOrderDetail } from '../../features/operations/services/operationsService'
-import type { OperationsOrderRecord } from '../../features/operations/types/operations'
+import { getOperationsOrderDetail, getOperationsOrders } from '../../features/operations/services/operationsService'
+import type { OperationsFilters, OperationsOrderRecord } from '../../features/operations/types/operations'
 import {
   addAdminInternalComment,
+  patchAdminOrderSchedule,
   saveAdminOrderNotes,
   saveAdminProductionNotes,
   updateAdminOrderPriority,
@@ -93,8 +96,10 @@ function getOrderIdFromHash(hash: string) {
 function OrderDetailPage() {
   const [orderId, setOrderId] = useState(() => getOrderIdFromHash(window.location.hash))
   const [order, setOrder] = useState<OperationsOrderRecord | null>(null)
+  const [allOrders, setAllOrders] = useState<OperationsOrderRecord[]>([])
   const [notesDraft, setNotesDraft] = useState('')
   const [productionNotesDraft, setProductionNotesDraft] = useState('')
+  const capacityMeta = useMemo(() => getCapacityMeta(), [])
 
   useEffect(() => {
     const sync = () => setOrderId(getOrderIdFromHash(window.location.hash))
@@ -110,9 +115,22 @@ function OrderDetailPage() {
       return
     }
 
-    void getOperationsOrderDetail(orderId).then((data) => {
+    void Promise.all([
+      getOperationsOrderDetail(orderId),
+      getOperationsOrders({
+        search: '',
+        status: 'all',
+        priority: 'all',
+        category: 'all',
+        artworkStatus: 'all',
+        shippingStatus: 'all',
+        stage: 'all',
+        sort: 'newest',
+      } as OperationsFilters),
+    ]).then(([data, orders]) => {
       if (!cancelled) {
         setOrder(data)
+        setAllOrders(orders)
         setNotesDraft(data?.notes ?? '')
         setProductionNotesDraft(data?.productionNotes ?? '')
       }
@@ -125,6 +143,10 @@ function OrderDetailPage() {
 
   const currentUploads = useMemo(() => order?.items.map((item) => item.artwork) ?? [], [order])
   const lifecycle = order ? getLifecycleDescriptorFromAdminStatus(order.status) : null
+  const slotRecommendation = useMemo(
+    () => (order ? recommendSchedulingSlot(order, allOrders.filter((item) => item.id !== order.id)) : null),
+    [allOrders, order],
+  )
 
   if (!orderId || !order) {
     return (
@@ -138,8 +160,21 @@ function OrderDetailPage() {
   }
 
   const refreshOrder = async () => {
-    const next = await getOperationsOrderDetail(order.id)
+    const [next, orders] = await Promise.all([
+      getOperationsOrderDetail(order.id),
+      getOperationsOrders({
+        search: '',
+        status: 'all',
+        priority: 'all',
+        category: 'all',
+        artworkStatus: 'all',
+        shippingStatus: 'all',
+        stage: 'all',
+        sort: 'newest',
+      } as OperationsFilters),
+    ])
     setOrder(next)
+    setAllOrders(orders)
   }
 
   return (
@@ -213,6 +248,16 @@ function OrderDetailPage() {
                 <div className="summary-row">
                   <span>Operador</span>
                   <strong>{order.operator.name}</strong>
+                </div>
+                <div className="summary-row">
+                  <span>Maquina</span>
+                  <strong>{order.machine.label}</strong>
+                </div>
+                <div className="summary-row">
+                  <span>Slot</span>
+                  <strong>
+                    {new Date(order.scheduledDate).toLocaleDateString('es-ES')} · {capacityWindows.find((item) => item.key === order.scheduledWindow)?.label ?? order.scheduledWindow}
+                  </strong>
                 </div>
               </div>
             </article>
@@ -334,6 +379,103 @@ function OrderDetailPage() {
                   </select>
                 </label>
               </div>
+            </article>
+          </AdminSection>
+
+          <AdminSection
+            description="Asigna operador, maquina y ventana mock con persistencia local para preparar el salto a scheduling real."
+            title="Asignacion operativa"
+          >
+            <article className="content-card admin-detail-card">
+              <div className="configurator-form">
+                <label className="field-group">
+                  <span className="field-label">Operador</span>
+                  <select
+                    className="form-input"
+                    onChange={async (event) => {
+                      await patchAdminOrderSchedule(order.id, { operatorId: event.target.value })
+                      await refreshOrder()
+                    }}
+                    value={order.operator.id}
+                  >
+                    {capacityMeta.operators.map((operator) => (
+                      <option key={operator.id} value={operator.id}>
+                        {operator.name} · {operator.role}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="field-group">
+                  <span className="field-label">Maquina</span>
+                  <select
+                    className="form-input"
+                    onChange={async (event) => {
+                      await patchAdminOrderSchedule(order.id, { machineId: event.target.value })
+                      await refreshOrder()
+                    }}
+                    value={order.machine.id}
+                  >
+                    {capacityMeta.machines.map((machine) => (
+                      <option key={machine.id} value={machine.id}>
+                        {machine.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="field-group">
+                  <span className="field-label">Fecha planificada</span>
+                  <input
+                    className="form-input"
+                    onChange={async (event) => {
+                      await patchAdminOrderSchedule(order.id, { scheduledDate: event.target.value })
+                      await refreshOrder()
+                    }}
+                    type="date"
+                    value={order.scheduledDate.slice(0, 10)}
+                  />
+                </label>
+                <label className="field-group">
+                  <span className="field-label">Ventana</span>
+                  <select
+                    className="form-input"
+                    onChange={async (event) => {
+                      await patchAdminOrderSchedule(order.id, { scheduledWindow: event.target.value as typeof order.scheduledWindow })
+                      await refreshOrder()
+                    }}
+                    value={order.scheduledWindow}
+                  >
+                    {capacityMeta.windows.map((window) => (
+                      <option key={window.key} value={window.key}>
+                        {window.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+              {slotRecommendation ? (
+                <div className="admin-upload-note">
+                  <strong>Slot recomendado</strong>
+                  <p>
+                    {new Date(slotRecommendation.date).toLocaleDateString('es-ES')} · {capacityMeta.windows.find((item) => item.key === slotRecommendation.window)?.label} · {slotRecommendation.machine.label}
+                  </p>
+                  <p>{slotRecommendation.note}</p>
+                  <button
+                    className="action-button action-button-muted"
+                    onClick={async () => {
+                      await patchAdminOrderSchedule(order.id, {
+                        operatorId: slotRecommendation.operator.id,
+                        machineId: slotRecommendation.machine.id,
+                        scheduledDate: slotRecommendation.date,
+                        scheduledWindow: slotRecommendation.window,
+                      })
+                      await refreshOrder()
+                    }}
+                    type="button"
+                  >
+                    Aplicar recomendacion
+                  </button>
+                </div>
+              ) : null}
             </article>
           </AdminSection>
 

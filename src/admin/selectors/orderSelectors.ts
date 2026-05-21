@@ -3,10 +3,12 @@ import type {
   AdminArtworkStatus,
   AdminCustomerSummary,
   AdminDashboardStats,
+  AdminMachineAssignment,
   AdminOrder,
   AdminOrderFilters,
   AdminOrderOverride,
   AdminOperator,
+  AdminSchedulingWindow,
   AdminShippingStatus,
   AdminTimelineItem,
   AdminUploadOverride,
@@ -14,6 +16,7 @@ import type {
 } from '../types/adminModels'
 import { getLifecycleDescriptorFromAdminStatus, getLifecycleStatusFromAdminStatus } from '../utils/adminLifecycle'
 import { operationsRosterByProductType } from '../../features/operations/mock/operationsMockData'
+import { capacityMachines, capacityOperators, capacityWindows, defaultMachineByProductType } from '../../features/operations/capacity/capacityMockData'
 
 const previewableTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml', 'image/webp']
 
@@ -78,6 +81,28 @@ function getOperator(productType: Order['items'][number]['productType']): AdminO
       role: 'Operacion interna',
     }
   )
+}
+
+function getMachine(productType: Order['items'][number]['productType'], override?: AdminOrderOverride): AdminMachineAssignment {
+  const preferredType = defaultMachineByProductType[productType]
+  const machine =
+    (override?.machineId ? capacityMachines.find((item) => item.id === override.machineId) : null) ??
+    capacityMachines.find((item) => item.type === preferredType) ??
+    capacityMachines[0]
+
+  return {
+    id: machine.id,
+    label: machine.label,
+    type: machine.type,
+  }
+}
+
+function getSchedulingWindow(productType: Order['items'][number]['productType'], override?: AdminOrderOverride): AdminSchedulingWindow {
+  if (override?.scheduledWindow) {
+    return override.scheduledWindow
+  }
+
+  return productType === 'dtf' || productType === 'textile' ? 'midday' : productType === 'accessory' ? 'afternoon' : 'morning'
 }
 
 function buildTimeline(order: Order, override?: AdminOrderOverride): AdminTimelineItem[] {
@@ -152,6 +177,8 @@ export function mapOrderToAdminOrder(order: Order, override?: AdminOrderOverride
   const artworkStatus = getArtworkStatus(order, status)
   const shippingStatus = getShippingStatus(status, productionStatus)
   const productType = order.items[0]?.productType ?? 'dtf'
+  const scheduledWindow = getSchedulingWindow(productType, override)
+  const scheduledDate = override?.scheduledDate ?? getDueDate(order, priority).slice(0, 10)
 
   return {
     id: order.id,
@@ -170,12 +197,18 @@ export function mapOrderToAdminOrder(order: Order, override?: AdminOrderOverride
     productionStatus,
     artworkStatus,
     shippingStatus,
-    operator: getOperator(productType),
+    operator:
+      (override?.operatorId ? capacityOperators.find((operator) => operator.id === override.operatorId) : null) ??
+      getOperator(productType),
+    machine: getMachine(productType, override),
+    scheduledDate,
+    scheduledWindow,
     tags: Array.from(
       new Set([
         ...(operationsRosterByProductType[productType]?.fallbackTags ?? [productType]),
         ...(priority === 'urgent' ? ['24h'] : []),
         ...(order.items.some((item) => item.artwork.fileType === 'application/pdf') ? ['pdf'] : []),
+        ...((capacityWindows.find((window) => window.key === scheduledWindow)?.label ? [capacityWindows.find((window) => window.key === scheduledWindow)!.label.toLowerCase()] : [])),
       ]),
     ),
     notes: override?.notes ?? '',

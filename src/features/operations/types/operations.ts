@@ -1,9 +1,11 @@
 import type {
   AdminArtworkStatus,
   AdminCommentCategory,
+  AdminMachineAssignment,
   AdminOperator,
   AdminOrder,
   AdminOrderPriority,
+  AdminSchedulingWindow,
   AdminShippingStatus,
   AdminUploadRecord,
 } from '../../../admin/types/adminModels'
@@ -77,6 +79,72 @@ export type OperationsDashboardData = {
   quickActions: OperationsQuickAction[]
 }
 
+export type OperatorWorkload = {
+  operator: AdminOperator
+  capacityHours: number
+  scheduledJobs: number
+  urgentJobs: number
+  usedHours: number
+  remainingHours: number
+  overloaded: boolean
+}
+
+export type MachineSlot = {
+  id: string
+  machine: AdminMachineAssignment
+  date: string
+  window: AdminSchedulingWindow
+  order?: OperationsOrderRecord
+  overloaded?: boolean
+}
+
+export type DailyCapacitySnapshot = {
+  date: string
+  usedCapacity: number
+  remainingCapacity: number
+  totalCapacity: number
+  overloaded: boolean
+  unassignedJobs: number
+}
+
+export type DeliveryPlanningItem = {
+  date: string
+  items: OperationsOrderRecord[]
+}
+
+export type SchedulingBoardDay = {
+  date: string
+  label: string
+  deliveries: OperationsOrderRecord[]
+  machineSlots: MachineSlot[]
+}
+
+export type SchedulingConflict = {
+  id: string
+  level: 'warning' | 'critical'
+  message: string
+  orderIds: string[]
+}
+
+export type SchedulingBoardData = {
+  days: SchedulingBoardDay[]
+  conflicts: SchedulingConflict[]
+}
+
+export type CapacityBoardData = {
+  today: DailyCapacitySnapshot
+  upcomingDeliveries: OperationsOrderRecord[]
+  operatorWorkload: OperatorWorkload[]
+  machineQueue: Array<{
+    machine: AdminMachineAssignment
+    queuedJobs: number
+    overloaded: boolean
+  }>
+  unassignedJobs: OperationsOrderRecord[]
+  overloadedOperators: OperatorWorkload[]
+  deliveryPlanning: DeliveryPlanningItem[]
+}
+
 export type OperationsNoteInput = {
   body: string
   category: AdminCommentCategory
@@ -90,4 +158,13 @@ export type OperationsReviewAction = {
 export type OperationsRosterAssignment = {
   operator: AdminOperator
   fallbackTags: string[]
+}
+
+export type SlotRecommendation = {
+  date: string
+  window: AdminSchedulingWindow
+  machine: AdminMachineAssignment
+  operator: AdminOperator
+  conflictLevel: 'clear' | 'busy'
+  note: string
 }

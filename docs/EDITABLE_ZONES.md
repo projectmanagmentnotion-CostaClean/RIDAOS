@@ -132,6 +132,36 @@ Ejemplos:
 - `Agrega opcion urgente 24h con suplemento`
 - `Cambia el texto de ayuda del campo archivo`
 
+## ARTWORK_UPLOAD_FLOW
+
+- Archivo visual: `src/features/artwork-upload/components/ArtworkUploadFlow.tsx`
+- Reglas: `src/features/artwork-upload/product-rules/artworkProductRules.ts`
+- Controla: pasos del flujo de subida, revisión automática mock, confirmación y puente a carrito
+
+## ARTWORK_PREVIEW_CANVAS
+
+- Archivo visual: `src/features/artwork-upload/preview/PrintPreviewCanvas.tsx`
+- Reglas: `src/features/artwork-upload/product-rules/artworkProductRules.ts`
+- Controla: vista local del arte con línea de corte, sangrado, zona segura y orientación
+
+## ARTWORK_VALIDATION_RULES
+
+- Archivo visual: `src/features/artwork-upload/validation/validateArtworkFile.ts`
+- Reglas: `src/features/artwork-upload/product-rules/artworkProductRules.ts`
+- Controla: checks mock de formato, peso, resolución, orientación, cutline y margen
+
+## ARTWORK_PRODUCT_GUIDES
+
+- Archivo visual: `src/features/artwork-upload/product-rules/artworkProductRules.ts`
+- Contenido editable: `src/features/artwork-upload/product-rules/artworkProductRules.ts`
+- Controla: guías específicas de tarjetas, pegatinas, DTF, vinilo, cartelería, textil y papelería
+
+## ARTWORK_RECOMMENDATIONS
+
+- Archivo visual: `src/features/artwork-upload/validation/validateArtworkFile.ts`
+- Contenido editable: `src/features/artwork-upload/product-rules/artworkProductRules.ts`
+- Controla: mensajes inteligentes para corrección y revisión del archivo
+
 ## PRODUCT_DETAIL
 
 - Archivo visual: `src/features/products/product-detail/ProductExperiencePage.tsx`

@@ -1,5 +1,6 @@
 import { uploadReviewStatusConfig, uploadReviewStatusOptions } from '../../../admin/config/uploadReviewStatuses'
 import type { AdminUploadReviewStatus } from '../../../admin/types/adminModels'
+import { artworkReviewChecklist } from '../../artwork-upload'
 import { getArtworkStatusLabel } from '../services/operationsMappers'
 import type { OperationsUploadRecord } from '../types/operations'
 
@@ -52,6 +53,21 @@ function ArtworkReviewCard({ upload, onStatusChange, onNotesChange }: ArtworkRev
           </div>
         )}
       </div>
+      {upload.previewSummary ? (
+        <div className="admin-upload-note">
+          <strong>Preview artwork</strong>
+          <p>
+            {upload.previewSummary.workflowStatus} · {upload.previewSummary.estimatedPhysicalSizeLabel}
+          </p>
+          <ul className="hint-list">
+            {upload.previewSummary.checks.slice(0, 3).map((check) => (
+              <li key={check.id}>
+                {check.label}: {check.message}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
       <label className="field-group">
         <span className="field-label">Estado de revision</span>
         <select
@@ -75,10 +91,24 @@ function ArtworkReviewCard({ upload, onStatusChange, onNotesChange }: ArtworkRev
           rows={3}
         />
       </label>
+      <div className="admin-upload-note">
+        <strong>Checklist de producción</strong>
+        <ul className="hint-list">
+          {artworkReviewChecklist.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </div>
       <div className="catalog-card-actions">
         <a className="action-button action-link-button" href={`#/admin/orders/${upload.orderId}`}>
           Abrir pedido
         </a>
+        <button className="action-button action-button-muted" onClick={() => void onStatusChange('approved')} type="button">
+          Aprobar archivo
+        </button>
+        <button className="action-button action-button-muted" onClick={() => void onStatusChange('needs_fix')} type="button">
+          Solicitar correccion
+        </button>
         <span className={`status-badge status-${upload.validationState === 'blocked' ? 'danger' : upload.validationState === 'warning' ? 'warning' : 'success'}`}>
           {upload.validationState === 'blocked' ? 'Bloqueado' : upload.validationState === 'warning' ? 'Pendiente' : 'Listo'}
         </span>

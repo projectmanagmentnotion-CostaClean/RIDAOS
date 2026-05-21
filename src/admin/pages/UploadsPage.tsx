@@ -12,6 +12,10 @@ import ArtworkReviewCard from '../../features/operations/uploads/ArtworkReviewCa
  * Editable Zone: ADMIN_UPLOAD_REVIEW
  * Content: src/features/operations/mock/operationsMockData.ts
  * Visual component: src/admin/pages/UploadsPage.tsx
+ * Artwork system:
+ * - ARTWORK_PREVIEW_CANVAS
+ * - ARTWORK_VALIDATION_RULES
+ * - ARTWORK_RECOMMENDATIONS
  */
 function UploadsPage() {
   const { uploads, setUploads } = useOperationsUploads()

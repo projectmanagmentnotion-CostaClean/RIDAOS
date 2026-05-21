@@ -5218,3 +5218,145 @@ body.lenis {
     flex-direction: column;
   }
 }
+/* ================================
+   Professional Artwork Upload + Print Preview
+================================ */
+
+.artwork-upload-flow {
+  display: grid;
+  gap: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.artwork-upload-flow__steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.artwork-upload-flow__step {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.artwork-upload-flow__step span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 0.75rem;
+}
+
+.artwork-upload-flow__step.is-complete {
+  border-color: rgba(57, 255, 20, 0.35);
+  background: rgba(57, 255, 20, 0.06);
+}
+
+.artwork-upload-flow__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.artwork-upload-flow__preview,
+.artwork-upload-flow__panel {
+  min-width: 0;
+}
+
+.print-preview-canvas {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)),
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.06), rgba(0, 0, 0, 0.2));
+}
+
+.print-preview-canvas__artwork,
+.print-preview-canvas__placeholder {
+  position: absolute;
+  inset: 10%;
+  width: 80%;
+  height: 80%;
+}
+
+.print-preview-canvas__artwork {
+  object-fit: contain;
+}
+
+.print-preview-canvas__placeholder {
+  display: grid;
+  place-content: center;
+  gap: 0.35rem;
+  text-align: center;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.print-preview-canvas__bleed,
+.print-preview-canvas__cutline,
+.print-preview-canvas__safezone {
+  position: absolute;
+  inset: 8%;
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+.print-preview-canvas__bleed {
+  border: 1px dashed rgba(255, 0, 184, 0.55);
+}
+
+.print-preview-canvas__cutline {
+  inset: 12%;
+  border: 2px solid rgba(255, 255, 255, 0.65);
+}
+
+.print-preview-canvas__safezone {
+  inset: 18%;
+  border: 1px solid rgba(57, 255, 20, 0.65);
+}
+
+.print-preview-canvas__legend {
+  position: absolute;
+  right: 0.9rem;
+  bottom: 0.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.4rem;
+  max-width: min(100%, 22rem);
+}
+
+.print-preview-canvas__legend span {
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(10, 10, 10, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.75rem;
+}
+
+.admin-upload-note {
+  display: grid;
+  gap: 0.35rem;
+}
+
+@media (max-width: 900px) {
+  .artwork-upload-flow__grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -6,6 +6,7 @@ import { addToCart } from '../../../../lib/cart'
 import { createInitialConfig, getRequiredFieldErrors, updateConfigValue, type ConfigState } from '../../../../lib/configuratorState'
 import { getProductById, getProductsByCategory } from '../../../../lib/products'
 import type { CatalogCategoryKey } from '../../../../types/product'
+import type { ArtworkPreviewSummary } from '../../../artwork-upload'
 import { productExperienceContent } from '../data/productExperienceContent'
 
 export function useProductDetailState(category: CatalogCategoryKey) {
@@ -13,6 +14,7 @@ export function useProductDetailState(category: CatalogCategoryKey) {
   const products = useMemo(() => getProductsByCategory(category), [category])
   const [productId, setProductId] = useState(products[0]?.id ?? '')
   const [config, setConfig] = useState<ConfigState>(() => (products[0] ? createInitialConfig(products[0]) : {}))
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [message, setMessage] = useState('')
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<string, string>>>({})
 
@@ -34,6 +36,7 @@ export function useProductDetailState(category: CatalogCategoryKey) {
       if (nextProduct) {
         setProductId(value)
         setConfig(createInitialConfig(nextProduct))
+        setSelectedFile(null)
         setFieldErrors({})
         setMessage('')
       }
@@ -46,11 +49,12 @@ export function useProductDetailState(category: CatalogCategoryKey) {
   }
 
   const handleFileChange = (_key: string, file: File | null) => {
+    setSelectedFile(file)
     setConfig((current) => updateConfigValue(current, 'file', file?.name ?? ''))
     setFieldErrors((current) => ({ ...current, file: undefined }))
   }
 
-  const handlePrimaryAction = () => {
+  const handlePrimaryAction = (previewSummary?: ArtworkPreviewSummary | null) => {
     if (!selectedProduct) {
       return
     }
@@ -67,8 +71,11 @@ export function useProductDetailState(category: CatalogCategoryKey) {
       addToCart(
         createCatalogCartItem(selectedProduct, config, estimate, {
           fileName,
-          formatLabel: fileName === 'Sin archivo adjunto' ? 'PENDIENTE' : 'ARCHIVO',
+          fileType: selectedFile?.type ?? 'text/plain',
+          fileSize: selectedFile?.size ?? 0,
+          formatLabel: previewSummary?.formatLabel ?? (fileName === 'Sin archivo adjunto' ? 'PENDIENTE' : 'ARCHIVO'),
           notes: config.notes?.trim() ?? '',
+          previewSummary: previewSummary ?? undefined,
         }),
       )
       setMessage(`${selectedProduct.name} anadido al carrito.`)
@@ -82,6 +89,7 @@ export function useProductDetailState(category: CatalogCategoryKey) {
     pageConfig,
     products,
     selectedProduct,
+    selectedFile,
     config,
     estimate,
     fieldErrors,

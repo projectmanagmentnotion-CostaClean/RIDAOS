@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { addToCart } from '../../../lib/cart'
 import { BASE_PRICE_PER_METER, calculateDTFPricing, type DTFQuality, type DTFUrgency } from '../../../lib/pricing'
 import type { CartItem } from '../../../types/ecommerce'
+import type { ArtworkPreviewSummary } from '../../artwork-upload'
 
 type SimulationResult = {
   meters: number
@@ -141,7 +142,7 @@ export function useDtfConfiguratorState() {
     return Object.keys(nextErrors).length === 0
   }
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (previewSummary?: ArtworkPreviewSummary | null) => {
     if (!validate() || !selectedFile) {
       return
     }
@@ -186,6 +187,7 @@ export function useDtfConfiguratorState() {
         status: 'pending_review',
         uploadedAt: new Date().toISOString(),
         notes: notes.trim(),
+        previewSummary: previewSummary ?? undefined,
       },
     }
 

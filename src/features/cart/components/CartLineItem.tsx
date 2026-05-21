@@ -61,9 +61,19 @@ export function CartLineItem({
         </div>
         <div className="summary-row">
           <span>Revision</span>
-          <strong>Comprobacion tecnica incluida</strong>
+          <strong>{item.artwork.previewSummary ? item.artwork.previewSummary.workflowStatus : 'Comprobacion tecnica incluida'}</strong>
         </div>
       </div>
+
+      {item.artwork.previewSummary?.recommendations.length ? (
+        <div className="summary-list compact-summary">
+          <div className="summary-row">
+            <span>Guía artwork</span>
+            <strong>{item.artwork.previewSummary.estimatedPhysicalSizeLabel}</strong>
+          </div>
+          <p className="cart-notes">{item.artwork.previewSummary.recommendations[0]?.message}</p>
+        </div>
+      ) : null}
 
       {item.configuration.extras?.length ? (
         <div className="summary-list compact-summary">

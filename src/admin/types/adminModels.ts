@@ -1,5 +1,6 @@
 import type { OrderItem } from '../../types/backend'
 import type { OrderLifecycleStatus } from '../../domain/orders/order-status.types'
+import type { ArtworkPreviewSummary } from '../../features/artwork-upload'
 
 export type AdminOrderStatus =
   | 'pending_review'
@@ -210,6 +211,7 @@ export type AdminUploadRecord = {
   operator: AdminOperator
   previewable: boolean
   reviewNotes: string
+  previewSummary?: ArtworkPreviewSummary
 }
 
 export type AdminCustomerSummary = {

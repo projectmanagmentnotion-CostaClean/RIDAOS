@@ -2,6 +2,7 @@ import type { ConfigState } from '../../lib/configuratorState'
 import type { CartItem } from '../../types/ecommerce'
 import type { CatalogEntry } from '../../types/product'
 import type { CatalogPricingResult } from './catalogPricingAdapter'
+import type { ArtworkPreviewSummary } from '../../features/artwork-upload'
 
 type UploadMeta = {
   fileName?: string
@@ -9,6 +10,7 @@ type UploadMeta = {
   fileSize?: number
   formatLabel?: string
   notes?: string
+  previewSummary?: ArtworkPreviewSummary
 }
 
 function formatSummaryValue(value: string | number, suffix?: string) {
@@ -87,6 +89,7 @@ export function createCatalogCartItem(entry: CatalogEntry, config: ConfigState, 
       status: 'pending_review',
       uploadedAt: new Date().toISOString(),
       notes,
+      previewSummary: uploadMeta?.previewSummary,
     },
   }
 }

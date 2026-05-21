@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import CommercialNoticeGroup from '../components/CommercialNoticeGroup'
 import ConfiguratorSupportBlock from '../components/ConfiguratorSupportBlock'
 import ConversionTrustBlock from '../components/ConversionTrustBlock'
@@ -17,6 +17,7 @@ import { dtfPageContent } from '../content/dtfContent'
 import { faqContent } from '../content/faqContent'
 import { pricingContent } from '../content/pricingContent'
 import { useCmsPreviewDocument } from '../features/cms-preview'
+import { ArtworkUploadFlow, type ArtworkPreviewSummary, type ArtworkUploadFlowState } from '../features/artwork-upload'
 import { DtfOptionCards } from '../features/dtf/components/DtfOptionCards'
 import { DtfPresetSelector } from '../features/dtf/components/DtfPresetSelector'
 import { DtfProgressSteps } from '../features/dtf/components/DtfProgressSteps'
@@ -32,15 +33,28 @@ const formatCurrency = (value: number) =>
     currency: pricingContent.currency,
   }).format(value)
 
-const premiumDocumentFormats = ['PDF', 'AI', 'EPS', 'ZIP', 'TIFF']
-
 /**
  * Editable Zone: DTF_CONFIGURATOR
  * Content: src/content/dtfContent.ts
  * Visual component: src/pages/DTFPage.tsx
+ * Artwork system:
+ * - ARTWORK_UPLOAD_FLOW
+ * - ARTWORK_PREVIEW_CANVAS
+ * - ARTWORK_VALIDATION_RULES
+ * - ARTWORK_PRODUCT_GUIDES
+ * - ARTWORK_RECOMMENDATIONS
  */
 function DTFPage() {
   const pageRef = useRef<HTMLElement | null>(null)
+  const [artworkState, setArtworkState] = useState<{
+    metadata: ArtworkUploadFlowState['metadata']
+    summary: ArtworkPreviewSummary | null
+    confirmed: boolean
+  }>({
+    metadata: null,
+    summary: null,
+    confirmed: false,
+  })
   const previewDtfContent = useCmsPreviewDocument('src/content/dtfContent.ts', dtfPageContent)
   const {
     meters,
@@ -51,6 +65,7 @@ function DTFPage() {
     setUrgency,
     turnaroundPreference,
     setTurnaroundPreference,
+    selectedFile,
     setFile,
     notes,
     setNotes,
@@ -60,7 +75,6 @@ function DTFPage() {
     simulation,
     cartMessage,
     pricing,
-    filePreview,
     summaryItems,
     handleAddToCart,
     handleSimulateOrder,
@@ -154,19 +168,6 @@ function DTFPage() {
               urgency={urgency}
             />
 
-            <label className="field-group" htmlFor="dtf-file">
-              <span className="field-label">Archivo</span>
-              <input
-                id="dtf-file"
-                className="form-input form-input-file"
-                onChange={(event) => setFile(event.target.files?.[0] ?? null)}
-                type="file"
-              />
-              <span className="file-meta">{filePreview?.fileName ?? previewDtfContent.fieldHelp.fileNameFallback}</span>
-              <span className="file-meta">{previewDtfContent.fieldHelp.file}</span>
-              {errors.file ? <span className="field-error">{errors.file}</span> : null}
-            </label>
-
             <label className="field-group" htmlFor="dtf-notes">
               <span className="field-label">Notas</span>
               <textarea
@@ -179,14 +180,32 @@ function DTFPage() {
               <span className="file-meta">{previewDtfContent.fieldHelp.notes}</span>
             </label>
 
+            <ArtworkUploadFlow
+              acceptedFormats=".pdf,.ai,.eps,.svg,.png,.jpg,.jpeg,.tiff,.zip"
+              description="Sube el arte final, revisa guías de rollo DTF y confirma el archivo antes de añadirlo al carrito."
+              file={selectedFile}
+              onFileChange={setFile}
+              onStateChange={setArtworkState}
+              ruleKey="dtf_meter"
+              title="Artwork upload y preview DTF"
+            />
+            {errors.file ? <span className="field-error">{errors.file}</span> : null}
+
             <div className="form-actions">
-              <button className="action-button" data-cursor="sales" onClick={handleSimulateOrder} type="button">
+              <button
+                className="action-button"
+                data-cursor="sales"
+                disabled={!artworkState.confirmed}
+                onClick={handleSimulateOrder}
+                type="button"
+              >
                 {previewDtfContent.actions.prepareLabel}
               </button>
               <button
                 className="action-button action-button-muted"
                 data-cursor="sales"
-                onClick={handleAddToCart}
+                disabled={!artworkState.confirmed}
+                onClick={() => handleAddToCart(artworkState.summary)}
                 type="button"
               >
                 {previewDtfContent.actions.addToCartLabel}
@@ -225,7 +244,7 @@ function DTFPage() {
           <DtfStickySummaryCard
             base={`${formatCurrency(BASE_PRICE_PER_METER)}/metro`}
             extras={formatCurrency(pricing.extras)}
-            fileReady={Boolean(filePreview)}
+            fileReady={artworkState.confirmed}
             subtotal={formatCurrency(pricing.subtotal)}
             summaryItems={summaryItems}
             total={formatCurrency(pricing.total)}
@@ -239,53 +258,25 @@ function DTFPage() {
             data-scroll-scene="dtf-preview"
             tabIndex={0}
           >
-            <SectionHeader eyebrow="Previsualizacion del archivo" title="Lectura visual previa al pedido." />
-            {filePreview ? (
-              <div className="file-preview-stack">
-                {filePreview.canPreview && filePreview.objectUrl ? (
-                  <div className="preview-thumbnail-wrap" data-cursor="interactive">
-                    <img
-                      alt={`Vista previa de ${filePreview.fileName}`}
-                      className="preview-thumbnail"
-                      src={filePreview.objectUrl}
-                    />
-                  </div>
-                ) : (
-                  <div className="premium-file-card">
-                    <span className="premium-file-format">
-                      {premiumDocumentFormats.includes(filePreview.formatLabel)
-                        ? filePreview.formatLabel
-                        : 'ARCHIVO'}
-                    </span>
-                    <h3>{filePreview.fileName}</h3>
-                    <p>
-                      El navegador no genera miniatura directa. Aun asi, el archivo queda listo para
-                      revisarlo antes de confirmar el trabajo.
-                    </p>
-                  </div>
-                )}
-
-                <div className="summary-list">
-                  <div className="summary-row">
-                    <span>Archivo</span>
-                    <strong>{filePreview.fileName}</strong>
-                  </div>
-                  <div className="summary-row">
-                    <span>Tamano</span>
-                    <strong>{filePreview.fileSizeLabel}</strong>
-                  </div>
-                  <div className="summary-row">
-                    <span>Tipo</span>
-                    <strong>{filePreview.fileType}</strong>
-                  </div>
+            <SectionHeader eyebrow="Archivo confirmado" title="Lectura compacta del artwork listo para producción." />
+            {artworkState.summary ? (
+              <div className="summary-list">
+                <div className="summary-row">
+                  <span>Archivo</span>
+                  <strong>{artworkState.summary.fileName}</strong>
+                </div>
+                <div className="summary-row">
+                  <span>Estado</span>
+                  <strong>{artworkState.summary.workflowStatus}</strong>
+                </div>
+                <div className="summary-row">
+                  <span>Guía</span>
+                  <strong>{artworkState.summary.estimatedPhysicalSizeLabel}</strong>
                 </div>
               </div>
             ) : (
               <div className="empty-state premium-empty-state">
-                <p>
-                  Carga una pieza para activar la miniatura, validar formato y dejar el panel listo
-                  para la comprobacion tecnica.
-                </p>
+                <p>Sube y confirma el archivo para activar el resumen técnico del rollo.</p>
               </div>
             )}
           </article>
@@ -301,11 +292,11 @@ function DTFPage() {
             <div className="preflight-list">
               <div className="preflight-item">
                 <span>Formato detectado</span>
-                <strong>{filePreview ? filePreview.formatLabel : 'Pendiente'}</strong>
+                <strong>{artworkState.summary ? artworkState.summary.formatLabel : 'Pendiente'}</strong>
               </div>
               <div className="preflight-item">
                 <span>Archivo seleccionado</span>
-                <strong>{filePreview ? 'Si' : 'Pendiente'}</strong>
+                <strong>{artworkState.summary ? 'Si' : 'Pendiente'}</strong>
               </div>
               <div className="preflight-item">
                 <span>Turnaround</span>
@@ -317,7 +308,7 @@ function DTFPage() {
               </div>
               <div className="preflight-item">
                 <span>Resolucion</span>
-                <strong>Se comprueba antes de fabricar</strong>
+                <strong>{artworkState.summary?.workflowStatus === 'ready' ? 'Lista para comprobar' : 'Necesita revisión'}</strong>
               </div>
             </div>
           </article>

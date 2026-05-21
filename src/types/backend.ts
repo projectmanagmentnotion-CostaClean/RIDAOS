@@ -1,4 +1,5 @@
 import type { DTFQuality, DTFUrgency } from '../lib/pricing'
+import type { ArtworkPreviewSummary } from '../features/artwork-upload'
 
 export type OrderStatus =
   | 'pending_review'
@@ -35,6 +36,7 @@ export type ArtworkUpload = {
   status: OrderStatus
   uploadedAt: string
   notes?: string
+  previewSummary?: ArtworkPreviewSummary
 }
 
 export type OrderItem = {

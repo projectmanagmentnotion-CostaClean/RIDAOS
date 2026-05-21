@@ -635,6 +635,7 @@ export function mapOrdersToUploads(
         operator: order.operator,
         previewable: previewableTypes.includes(item.artwork.fileType),
         reviewNotes: override?.reviewNotes ?? item.artwork.notes ?? '',
+        previewSummary: item.artwork.previewSummary,
       }
     }),
   )

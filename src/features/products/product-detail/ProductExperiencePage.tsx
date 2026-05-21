@@ -1,4 +1,6 @@
-import { useMemo, useRef } from 'react'
+import { useMemo, useRef, useState } from 'react'
+import type { ArtworkPreviewSummary, ArtworkUploadFlowState } from '../../artwork-upload'
+import { resolveArtworkRuleForEntry } from '../../artwork-upload'
 import { getContinueShoppingHref, getQuoteHref, publicRoutes } from '../../../lib/navigation'
 import type { CatalogCategoryKey } from '../../../types/product'
 import { ProductExperienceLayout } from './layouts/ProductExperienceLayout'
@@ -29,6 +31,7 @@ export function ProductExperiencePage({ category }: ProductExperiencePageProps) 
   const {
     pageConfig,
     selectedProduct,
+    selectedFile,
     config,
     estimate,
     fieldErrors,
@@ -41,6 +44,15 @@ export function ProductExperiencePage({ category }: ProductExperiencePageProps) 
     handlePrimaryAction,
     isDirectFlow,
   } = useProductDetailState(category)
+  const [artworkState, setArtworkState] = useState<{
+    metadata: ArtworkUploadFlowState['metadata']
+    summary: ArtworkPreviewSummary | null
+    confirmed: boolean
+  }>({
+    metadata: null,
+    summary: null,
+    confirmed: false,
+  })
 
   useProductExperienceMotion(pageRef)
 
@@ -51,19 +63,23 @@ export function ProductExperiencePage({ category }: ProductExperiencePageProps) 
     return null
   }
 
+  const artworkRuleKey = resolveArtworkRuleForEntry(selectedProduct)
+  const artworkGateBlocked = Boolean(selectedFile) && !artworkState.confirmed
+
   return (
     <ProductExperienceLayout
       className={pageConfig.className}
       configurator={
         enabled.has('configurator') ? (
           <ProductConfiguratorSection
+            artworkRuleKey={artworkRuleKey}
             config={config}
             ctaArea={
               <>
                 <button
                   className="action-button"
-                  disabled={Boolean(isDirectFlow && !estimate?.canAddToCart)}
-                  onClick={handlePrimaryAction}
+                  disabled={Boolean(isDirectFlow && (!estimate?.canAddToCart || artworkGateBlocked))}
+                  onClick={() => handlePrimaryAction(artworkState.summary)}
                   type="button"
                 >
                   {isDirectFlow ? 'Anadir al carrito' : 'Solicitar presupuesto'}
@@ -76,7 +92,9 @@ export function ProductExperiencePage({ category }: ProductExperiencePageProps) 
             entry={selectedProduct}
             fieldErrors={fieldErrors}
             onConfigChange={handleConfigChange}
+            onArtworkStateChange={setArtworkState}
             onFileChange={handleFileChange}
+            selectedFile={selectedFile}
             supportSections={pageConfig.supportSections}
           />
         ) : null

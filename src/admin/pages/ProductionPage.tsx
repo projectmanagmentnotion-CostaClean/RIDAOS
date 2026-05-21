@@ -3,14 +3,17 @@ import AdminSection from '../components/AdminSection'
 import EmptyAdminState from '../components/EmptyAdminState'
 import OrderStatusBadge from '../components/OrderStatusBadge'
 import AdminShell from '../layouts/AdminShell'
+import { patchAdminOrderDispatch } from '../services/orderAdminService'
 import { productionStageDefinitions, shippingStatusLabels } from '../../features/operations/mock/operationsMockData'
 import ProductionStageSummary from '../../features/operations/production/ProductionStageSummary'
+import DispatchBoard from '../../features/operations/delivery/DispatchBoard'
 import SchedulingBoard from '../../features/operations/scheduling/SchedulingBoard'
 import { useOperationsCapacity } from '../../features/operations/hooks/useOperationsCapacity'
 import ProductionPipelineTimeline from '../../features/operations/timeline/ProductionPipelineTimeline'
-import { getProductionOperations } from '../../features/operations/services/operationsService'
-import type { OperationsOrderRecord } from '../../features/operations/types/operations'
+import { getOperationsDispatchBoard, getProductionOperations } from '../../features/operations/services/operationsService'
+import type { DispatchBoardColumns, OperationsOrderRecord } from '../../features/operations/types/operations'
 import { useEffect, useState } from 'react'
+import { getNextShippingStatus } from '../../features/operations/dispatch/dispatchService'
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('es-ES', {
@@ -23,21 +26,25 @@ const formatCurrency = (value: number) =>
  * - ADMIN_PRODUCTION_PIPELINE
  * - ADMIN_SCHEDULING_BOARD
  * - ADMIN_MACHINE_SLOTS
+ * - ADMIN_DELIVERY_BOARD
+ * - ADMIN_PICKUP_QUEUE
  * Content: src/features/operations/mock/operationsMockData.ts
  * Visual component: src/admin/pages/ProductionPage.tsx
  */
 function ProductionPage() {
   const [orders, setOrders] = useState<OperationsOrderRecord[]>([])
   const [stats, setStats] = useState<Awaited<ReturnType<typeof getProductionOperations>>['stats'] | null>(null)
+  const [dispatchBoard, setDispatchBoard] = useState<DispatchBoardColumns | null>(null)
   const { schedule } = useOperationsCapacity()
 
   useEffect(() => {
     let cancelled = false
 
-    void getProductionOperations().then((data) => {
+    void Promise.all([getProductionOperations(), getOperationsDispatchBoard()]).then(([data, board]) => {
       if (!cancelled) {
         setOrders(data.orders)
         setStats(data.stats)
+        setDispatchBoard(board)
       }
     })
 
@@ -125,6 +132,42 @@ function ProductionPage() {
           title="Scheduling board"
         >
           <SchedulingBoard board={schedule} />
+        </AdminSection>
+      ) : null}
+
+      {dispatchBoard ? (
+        <AdminSection
+          description="Board de packing, pickup, entrega e incidencias con acciones mock de handoff."
+          title="Dispatch board"
+        >
+          <DispatchBoard
+            board={dispatchBoard}
+            onAdvanceStatus={async (orderId) => {
+              const order = orders.find((item) => item.id === orderId)
+              if (!order) return
+              await patchAdminOrderDispatch(orderId, {
+                shippingStatus: getNextShippingStatus(order.shippingStatus),
+              })
+              const [next, nextBoard] = await Promise.all([getProductionOperations(), getOperationsDispatchBoard()])
+              setOrders(next.orders)
+              setStats(next.stats)
+              setDispatchBoard(nextBoard)
+            }}
+            onMarkPacked={async (orderId) => {
+              await patchAdminOrderDispatch(orderId, { packingStatus: 'packed', shippingStatus: 'ready_for_dispatch' })
+              const [next, nextBoard] = await Promise.all([getProductionOperations(), getOperationsDispatchBoard()])
+              setOrders(next.orders)
+              setStats(next.stats)
+              setDispatchBoard(nextBoard)
+            }}
+            onRegisterIncident={async (orderId) => {
+              await patchAdminOrderDispatch(orderId, { deliveryIncident: 'Incidencia mock pendiente de resolver con cliente.' })
+              const [next, nextBoard] = await Promise.all([getProductionOperations(), getOperationsDispatchBoard()])
+              setOrders(next.orders)
+              setStats(next.stats)
+              setDispatchBoard(nextBoard)
+            }}
+          />
         </AdminSection>
       ) : null}
     </AdminShell>

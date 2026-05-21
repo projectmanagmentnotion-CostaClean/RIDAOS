@@ -30,6 +30,9 @@ export type AdminUploadReviewStatus = 'pending' | 'approved' | 'needs_fix' | 're
 export type AdminArtworkStatus = 'missing' | 'pending_review' | 'needs_fix' | 'approved' | 'ready_for_production'
 export type AdminShippingStatus = 'not_ready' | 'label_pending' | 'ready_for_dispatch' | 'shipped' | 'delivered'
 export type AdminCommentCategory = 'internal' | 'qa' | 'production'
+export type AdminDeliveryMethod = 'pickup' | 'local_delivery' | 'courier' | 'own_route'
+export type AdminPackingStatus = 'not_packed' | 'packing' | 'packed' | 'handoff_ready'
+export type AdminDeliveryWindow = '09-13' | '13-17' | '17-20'
 export type AdminOperator = {
   id: string
   name: string
@@ -81,6 +84,14 @@ export type AdminOrder = {
   machine: AdminMachineAssignment
   scheduledDate: string
   scheduledWindow: AdminSchedulingWindow
+  deliveryMethod: AdminDeliveryMethod
+  packingStatus: AdminPackingStatus
+  carrierLabel: string
+  trackingCode: string
+  deliveryWindow: AdminDeliveryWindow
+  customerContactPreference: 'phone' | 'email' | 'whatsapp_mock'
+  deliveryIncident?: string
+  handoffTimeline: AdminTimelineItem[]
   tags: string[]
   notes: string
   uploadIds: string[]
@@ -145,6 +156,7 @@ export type AdminOrderOverride = {
   priority?: AdminOrderPriority
   paymentStatus?: AdminPaymentStatus
   productionStatus?: AdminProductionStatus
+  shippingStatus?: AdminShippingStatus
   notes?: string
   productionNotes?: string
   internalComments?: AdminComment[]
@@ -152,6 +164,14 @@ export type AdminOrderOverride = {
   machineId?: string
   scheduledDate?: string
   scheduledWindow?: AdminSchedulingWindow
+  deliveryMethod?: AdminDeliveryMethod
+  packingStatus?: AdminPackingStatus
+  carrierLabel?: string
+  trackingCode?: string
+  deliveryWindow?: AdminDeliveryWindow
+  customerContactPreference?: 'phone' | 'email' | 'whatsapp_mock'
+  deliveryIncident?: string
+  handoffTimeline?: AdminTimelineItem[]
 }
 
 export type AdminUploadOverride = {

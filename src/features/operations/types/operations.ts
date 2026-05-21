@@ -1,9 +1,12 @@
 import type {
   AdminArtworkStatus,
   AdminCommentCategory,
+  AdminDeliveryMethod,
+  AdminDeliveryWindow,
   AdminMachineAssignment,
   AdminOperator,
   AdminOrder,
+  AdminPackingStatus,
   AdminOrderPriority,
   AdminSchedulingWindow,
   AdminShippingStatus,
@@ -167,4 +170,42 @@ export type SlotRecommendation = {
   operator: AdminOperator
   conflictLevel: 'clear' | 'busy'
   note: string
+}
+
+export type DispatchBoardColumnKey = 'packing' | 'ready_for_pickup' | 'delivery_queue' | 'incidents'
+
+export type DispatchCardRecord = OperationsOrderRecord & {
+  dispatchColumn: DispatchBoardColumnKey
+}
+
+export type DispatchKpi = {
+  key: string
+  label: string
+  value: number
+  note: string
+}
+
+export type DispatchDashboardData = {
+  kpis: DispatchKpi[]
+  readyForPickup: DispatchCardRecord[]
+  packingQueue: DispatchCardRecord[]
+  todayDeliveries: DispatchCardRecord[]
+  incidents: DispatchCardRecord[]
+  handoffs: DispatchCardRecord[]
+}
+
+export type DispatchBoardColumns = Record<DispatchBoardColumnKey, DispatchCardRecord[]>
+
+export type DeliveryMessagePreview = {
+  key: 'pickup_ready' | 'shipped' | 'incident' | 'delayed' | 'delivered'
+  label: string
+  message: string
+}
+
+export type DeliveryPlanningSnapshot = {
+  method: AdminDeliveryMethod
+  packingStatus: AdminPackingStatus
+  window: AdminDeliveryWindow
+  carrierLabel: string
+  trackingCode: string
 }

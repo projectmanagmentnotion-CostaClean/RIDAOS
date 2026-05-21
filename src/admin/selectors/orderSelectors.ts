@@ -2,12 +2,15 @@ import type { Order } from '../../types/backend'
 import type {
   AdminArtworkStatus,
   AdminCustomerSummary,
+  AdminDeliveryMethod,
+  AdminDeliveryWindow,
   AdminDashboardStats,
   AdminMachineAssignment,
   AdminOrder,
   AdminOrderFilters,
   AdminOrderOverride,
   AdminOperator,
+  AdminPackingStatus,
   AdminSchedulingWindow,
   AdminShippingStatus,
   AdminTimelineItem,
@@ -66,6 +69,56 @@ function getShippingStatus(status: AdminOrder['status'], productionStatus: Admin
     return 'label_pending'
   }
   return 'not_ready'
+}
+
+function getDeliveryMethod(productType: Order['items'][number]['productType']): AdminDeliveryMethod {
+  if (productType === 'dtf' || productType === 'textile') {
+    return 'courier'
+  }
+  if (productType === 'material') {
+    return 'own_route'
+  }
+  return 'pickup'
+}
+
+function getPackingStatus(shippingStatus: AdminShippingStatus): AdminPackingStatus {
+  if (shippingStatus === 'delivered') {
+    return 'handoff_ready'
+  }
+  if (shippingStatus === 'shipped' || shippingStatus === 'ready_for_dispatch') {
+    return 'packed'
+  }
+  if (shippingStatus === 'label_pending') {
+    return 'packing'
+  }
+  return 'not_packed'
+}
+
+function getDeliveryWindow(method: AdminDeliveryMethod): AdminDeliveryWindow {
+  if (method === 'pickup') return '17-20'
+  if (method === 'own_route') return '13-17'
+  return '09-13'
+}
+
+function getCarrierLabel(method: AdminDeliveryMethod) {
+  switch (method) {
+    case 'pickup':
+      return 'Desk pickup'
+    case 'local_delivery':
+      return 'Rider local'
+    case 'own_route':
+      return 'Ruta propia'
+    case 'courier':
+    default:
+      return 'Courier mock'
+  }
+}
+
+function getTrackingCode(orderId: string, shippingStatus: AdminShippingStatus) {
+  if (shippingStatus === 'not_ready') {
+    return ''
+  }
+  return `RDS-${orderId.replace(/[^0-9]/g, '') || '0000'}`
 }
 
 function getDueDate(order: Order, priority: AdminOrder['priority']) {
@@ -169,16 +222,72 @@ function buildTimeline(order: Order, override?: AdminOrderOverride): AdminTimeli
   return timeline
 }
 
+function buildHandoffTimeline(
+  order: Order,
+  shippingStatus: AdminShippingStatus,
+  deliveryMethod: AdminDeliveryMethod,
+  override?: AdminOrderOverride,
+): AdminTimelineItem[] {
+  if (override?.handoffTimeline?.length) {
+    return override.handoffTimeline
+  }
+
+  const items: AdminTimelineItem[] = [
+    {
+      id: `${order.id}-handoff-plan`,
+      label: 'Plan de salida creado',
+      detail: `Metodo previsto: ${deliveryMethod}.`,
+      timestamp: order.createdAt,
+      tone: 'default',
+    },
+  ]
+
+  if (shippingStatus === 'ready_for_dispatch' || shippingStatus === 'shipped' || shippingStatus === 'delivered') {
+    items.push({
+      id: `${order.id}-handoff-ready`,
+      label: 'Handoff preparado',
+      detail: 'Pedido listo para pickup, rider o mensajeria.',
+      timestamp: order.createdAt,
+      tone: 'success',
+    })
+  }
+
+  if (shippingStatus === 'shipped' || shippingStatus === 'delivered') {
+    items.push({
+      id: `${order.id}-handoff-shipped`,
+      label: 'Salida confirmada',
+      detail: 'Tracking mock y ventana de entrega preparados.',
+      timestamp: order.createdAt,
+      tone: 'default',
+    })
+  }
+
+  if (shippingStatus === 'delivered') {
+    items.push({
+      id: `${order.id}-handoff-delivered`,
+      label: 'Entrega cerrada',
+      detail: 'Pedido marcado como entregado en el panel interno.',
+      timestamp: order.createdAt,
+      tone: 'success',
+    })
+  }
+
+  return items
+}
+
 export function mapOrderToAdminOrder(order: Order, override?: AdminOrderOverride): AdminOrder {
   const status = override?.status ?? order.status
   const priority = override?.priority ?? 'normal'
   const productionStatus =
     override?.productionStatus ?? (order.status === 'completed' ? 'completed' : order.status === 'ready' ? 'ready' : order.status === 'in_production' ? 'printing' : 'not_started')
   const artworkStatus = getArtworkStatus(order, status)
-  const shippingStatus = getShippingStatus(status, productionStatus)
+  const shippingStatus = override?.shippingStatus ?? getShippingStatus(status, productionStatus)
   const productType = order.items[0]?.productType ?? 'dtf'
   const scheduledWindow = getSchedulingWindow(productType, override)
   const scheduledDate = override?.scheduledDate ?? getDueDate(order, priority).slice(0, 10)
+  const deliveryMethod = override?.deliveryMethod ?? getDeliveryMethod(productType)
+  const deliveryWindow = override?.deliveryWindow ?? getDeliveryWindow(deliveryMethod)
+  const packingStatus = override?.packingStatus ?? getPackingStatus(shippingStatus)
 
   return {
     id: order.id,
@@ -203,11 +312,20 @@ export function mapOrderToAdminOrder(order: Order, override?: AdminOrderOverride
     machine: getMachine(productType, override),
     scheduledDate,
     scheduledWindow,
+    deliveryMethod,
+    packingStatus,
+    carrierLabel: override?.carrierLabel ?? getCarrierLabel(deliveryMethod),
+    trackingCode: override?.trackingCode ?? getTrackingCode(order.id, shippingStatus),
+    deliveryWindow,
+    customerContactPreference: override?.customerContactPreference ?? 'email',
+    deliveryIncident: override?.deliveryIncident,
+    handoffTimeline: buildHandoffTimeline(order, shippingStatus, deliveryMethod, override),
     tags: Array.from(
       new Set([
         ...(operationsRosterByProductType[productType]?.fallbackTags ?? [productType]),
         ...(priority === 'urgent' ? ['24h'] : []),
         ...(order.items.some((item) => item.artwork.fileType === 'application/pdf') ? ['pdf'] : []),
+        ...(deliveryMethod === 'pickup' ? ['pickup'] : []),
         ...((capacityWindows.find((window) => window.key === scheduledWindow)?.label ? [capacityWindows.find((window) => window.key === scheduledWindow)!.label.toLowerCase()] : [])),
       ]),
     ),

@@ -9,12 +9,16 @@ import AdminShell from '../layouts/AdminShell'
 import { artworkStatusLabels, productionStageDefinitions, shippingStatusLabels } from '../../features/operations/mock/operationsMockData'
 import { capacityWindows } from '../../features/operations/capacity/capacityMockData'
 import { getCapacityMeta, recommendSchedulingSlot } from '../../features/operations/capacity/capacitySelectors'
+import { deliveryMethodLabels, deliveryWindowLabels, packingStatusLabels } from '../../features/operations/dispatch/dispatchMockData'
+import { buildDeliveryMessagePreviews, getNextShippingStatus } from '../../features/operations/dispatch/dispatchService'
+import DeliveryMessagePreviewCard from '../../features/operations/delivery/DeliveryMessagePreviewCard'
 import InternalNotesComposer from '../../features/operations/notes/InternalNotesComposer'
 import ProductionPipelineTimeline from '../../features/operations/timeline/ProductionPipelineTimeline'
 import { getOperationsOrderDetail, getOperationsOrders } from '../../features/operations/services/operationsService'
 import type { OperationsFilters, OperationsOrderRecord } from '../../features/operations/types/operations'
 import {
   addAdminInternalComment,
+  patchAdminOrderDispatch,
   patchAdminOrderSchedule,
   saveAdminOrderNotes,
   saveAdminProductionNotes,
@@ -77,6 +81,8 @@ const formatCurrency = (value: number) =>
  * Editable Zones:
  * - ADMIN_ORDER_DETAIL
  * - ADMIN_INTERNAL_NOTES
+ * - ADMIN_ORDER_HANDOFF
+ * - ADMIN_DELIVERY_MESSAGES
  * Content: src/features/operations/mock/operationsMockData.ts
  * Store: src/admin/store/useAdminUiStore.ts
  * Visual component: src/admin/pages/OrderDetailPage.tsx
@@ -147,6 +153,7 @@ function OrderDetailPage() {
     () => (order ? recommendSchedulingSlot(order, allOrders.filter((item) => item.id !== order.id)) : null),
     [allOrders, order],
   )
+  const deliveryMessages = useMemo(() => (order ? buildDeliveryMessagePreviews(order) : []), [order])
 
   if (!orderId || !order) {
     return (
@@ -258,6 +265,14 @@ function OrderDetailPage() {
                   <strong>
                     {new Date(order.scheduledDate).toLocaleDateString('es-ES')} · {capacityWindows.find((item) => item.key === order.scheduledWindow)?.label ?? order.scheduledWindow}
                   </strong>
+                </div>
+                <div className="summary-row">
+                  <span>Entrega</span>
+                  <strong>{deliveryMethodLabels[order.deliveryMethod]}</strong>
+                </div>
+                <div className="summary-row">
+                  <span>Tracking</span>
+                  <strong>{order.trackingCode || 'Sin tracking mock'}</strong>
                 </div>
               </div>
             </article>
@@ -477,6 +492,149 @@ function OrderDetailPage() {
                 </div>
               ) : null}
             </article>
+          </AdminSection>
+
+          <AdminSection
+            description="Prepara embalaje, pickup, salida y handoff con persistencia local mock."
+            title="Despacho y entrega"
+          >
+            <article className="content-card admin-detail-card">
+              <div className="configurator-form">
+                <label className="field-group">
+                  <span className="field-label">Shipping status</span>
+                  <select
+                    className="form-input"
+                    onChange={async (event) => {
+                      await patchAdminOrderDispatch(order.id, { shippingStatus: event.target.value as typeof order.shippingStatus })
+                      await refreshOrder()
+                    }}
+                    value={order.shippingStatus}
+                  >
+                    {Object.entries(shippingStatusLabels).map(([value, label]) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="field-group">
+                  <span className="field-label">Metodo de entrega</span>
+                  <select
+                    className="form-input"
+                    onChange={async (event) => {
+                      await patchAdminOrderDispatch(order.id, { deliveryMethod: event.target.value as typeof order.deliveryMethod })
+                      await refreshOrder()
+                    }}
+                    value={order.deliveryMethod}
+                  >
+                    {Object.entries(deliveryMethodLabels).map(([value, label]) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="field-group">
+                  <span className="field-label">Estado de embalaje</span>
+                  <select
+                    className="form-input"
+                    onChange={async (event) => {
+                      await patchAdminOrderDispatch(order.id, { packingStatus: event.target.value as typeof order.packingStatus })
+                      await refreshOrder()
+                    }}
+                    value={order.packingStatus}
+                  >
+                    {Object.entries(packingStatusLabels).map(([value, label]) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="field-group">
+                  <span className="field-label">Ventana de entrega</span>
+                  <select
+                    className="form-input"
+                    onChange={async (event) => {
+                      await patchAdminOrderDispatch(order.id, { deliveryWindow: event.target.value as typeof order.deliveryWindow })
+                      await refreshOrder()
+                    }}
+                    value={order.deliveryWindow}
+                  >
+                    {Object.entries(deliveryWindowLabels).map(([value, label]) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="field-group">
+                  <span className="field-label">Tracking mock</span>
+                  <input
+                    className="form-input"
+                    onChange={async (event) => {
+                      await patchAdminOrderDispatch(order.id, { trackingCode: event.target.value })
+                      await refreshOrder()
+                    }}
+                    value={order.trackingCode}
+                  />
+                </label>
+                <label className="field-group">
+                  <span className="field-label">Carrier</span>
+                  <input
+                    className="form-input"
+                    onChange={async (event) => {
+                      await patchAdminOrderDispatch(order.id, { carrierLabel: event.target.value })
+                      await refreshOrder()
+                    }}
+                    value={order.carrierLabel}
+                  />
+                </label>
+              </div>
+              <div className="catalog-card-actions">
+                <button
+                  className="action-button action-button-muted"
+                  onClick={async () => {
+                    await patchAdminOrderDispatch(order.id, { packingStatus: 'packed', shippingStatus: 'ready_for_dispatch' })
+                    await refreshOrder()
+                  }}
+                  type="button"
+                >
+                  Marcar embalado
+                </button>
+                <button
+                  className="action-button"
+                  onClick={async () => {
+                    await patchAdminOrderDispatch(order.id, { shippingStatus: getNextShippingStatus(order.shippingStatus) })
+                    await refreshOrder()
+                  }}
+                  type="button"
+                >
+                  Avanzar salida
+                </button>
+                <button
+                  className="action-button action-button-muted"
+                  onClick={async () => {
+                    await patchAdminOrderDispatch(order.id, { deliveryIncident: 'Incidencia mock registrada en handoff.' })
+                    await refreshOrder()
+                  }}
+                  type="button"
+                >
+                  Registrar incidencia
+                </button>
+              </div>
+              <div className="admin-upload-note">
+                <strong>Handoff timeline</strong>
+                <TimelineBlock items={order.handoffTimeline} />
+              </div>
+            </article>
+          </AdminSection>
+
+          <AdminSection
+            description="Preview local de mensajes al cliente. No envia email ni WhatsApp reales."
+            title="Mensajes al cliente"
+          >
+            <DeliveryMessagePreviewCard items={deliveryMessages} />
           </AdminSection>
 
           <AdminSection

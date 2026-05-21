@@ -4468,6 +4468,44 @@ body.lenis {
   padding: 18px;
 }
 
+.admin-dispatch-board {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.admin-dispatch-column,
+.admin-message-preview-card,
+.admin-dispatch-card {
+  display: grid;
+  gap: 14px;
+}
+
+.admin-dispatch-column {
+  padding: 18px;
+  align-content: start;
+}
+
+.admin-dispatch-column__cards,
+.admin-message-preview-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.admin-dispatch-card {
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.admin-dispatch-card p,
+.admin-dispatch-card small,
+.admin-message-preview-card p {
+  margin: 0;
+  color: rgba(218, 214, 208, 0.74);
+}
+
 /* ================================
    Advanced Commerce Mock System
 ================================ */
@@ -5099,7 +5137,8 @@ body.lenis {
   .admin-overview-strip,
   .admin-lifecycle-spotlight,
   .admin-filter-bar,
-  .cms-zone-meta__grid {
+  .cms-zone-meta__grid,
+  .admin-dispatch-board {
     grid-template-columns: 1fr;
   }
 

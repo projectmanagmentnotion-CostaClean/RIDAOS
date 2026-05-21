@@ -1,8 +1,9 @@
 import { getAdminDashboardOverview, getAdminOrderDetail, listAdminOrders, listAdminUploads, listProductionQueue } from '../../../admin/services/orderAdminService'
-import type { OperationsDashboardData, OperationsFilters, OperationsOrderRecord, OperationsUploadRecord } from '../types/operations'
+import type { DispatchDashboardData, OperationsDashboardData, OperationsFilters, OperationsOrderRecord, OperationsUploadRecord } from '../types/operations'
 import { buildOperationsDashboard, enrichOperationsOrder, enrichOperationsUpload, filterOperationsOrders, getProductionStats } from './operationsMappers'
 import { buildCapacityBoard } from '../capacity/capacitySelectors'
 import { buildSchedulingBoard } from '../scheduling/schedulingService'
+import { buildDispatchDashboard, groupDispatchColumns } from '../dispatch/dispatchService'
 
 export async function getOperationsOrders(filters: OperationsFilters): Promise<OperationsOrderRecord[]> {
   const orders = await listAdminOrders({
@@ -51,4 +52,14 @@ export async function getOperationsCapacityBoard() {
 export async function getOperationsSchedulingBoard() {
   const orders = (await listAdminOrders()).map(enrichOperationsOrder)
   return buildSchedulingBoard(orders)
+}
+
+export async function getOperationsDispatchDashboard(): Promise<DispatchDashboardData> {
+  const orders = (await listAdminOrders()).map(enrichOperationsOrder)
+  return buildDispatchDashboard(orders)
+}
+
+export async function getOperationsDispatchBoard() {
+  const orders = (await listAdminOrders()).map(enrichOperationsOrder)
+  return groupDispatchColumns(orders)
 }

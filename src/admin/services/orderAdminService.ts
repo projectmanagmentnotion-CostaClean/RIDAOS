@@ -1,12 +1,17 @@
 import { getAdminRepository } from '../../infrastructure/repositoryFactory'
 import type {
   AdminCommentCategory,
+  AdminDeliveryMethod,
+  AdminDeliveryWindow,
   AdminOrderFilters,
   AdminSchedulingWindow,
   AdminOrderPriority,
   AdminOrderStatus,
+  AdminPackingStatus,
   AdminPaymentStatus,
   AdminProductionStatus,
+  AdminShippingStatus,
+  AdminTimelineItem,
   AdminUploadReviewStatus,
 } from '../types/adminModels'
 
@@ -65,6 +70,24 @@ export async function patchAdminOrderSchedule(
     scheduledDate?: string
     scheduledWindow?: AdminSchedulingWindow
     priority?: AdminOrderPriority
+  },
+) {
+  await wait(60)
+  return getAdminRepository().patchOrder(orderId, patch)
+}
+
+export async function patchAdminOrderDispatch(
+  orderId: string,
+  patch: {
+    shippingStatus?: AdminShippingStatus
+    deliveryMethod?: AdminDeliveryMethod
+    packingStatus?: AdminPackingStatus
+    carrierLabel?: string
+    trackingCode?: string
+    deliveryWindow?: AdminDeliveryWindow
+    customerContactPreference?: 'phone' | 'email' | 'whatsapp_mock'
+    deliveryIncident?: string
+    handoffTimeline?: AdminTimelineItem[]
   },
 ) {
   await wait(60)

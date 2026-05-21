@@ -147,6 +147,9 @@ export const mockAdminRepository: AdminRepository = {
     if (patch.productionStatus) {
       adminStore.setProductionStatus(orderId, patch.productionStatus)
     }
+    if (patch.shippingStatus) {
+      adminStore.updateOrderOverride(orderId, { shippingStatus: patch.shippingStatus })
+    }
     if (typeof patch.notes === 'string') {
       adminStore.setOrderNotes(orderId, patch.notes)
     }
@@ -157,13 +160,29 @@ export const mockAdminRepository: AdminRepository = {
       patch.operatorId ||
       patch.machineId ||
       typeof patch.scheduledDate === 'string' ||
-      patch.scheduledWindow
+      patch.scheduledWindow ||
+      patch.deliveryMethod ||
+      patch.packingStatus ||
+      typeof patch.carrierLabel === 'string' ||
+      typeof patch.trackingCode === 'string' ||
+      patch.deliveryWindow ||
+      patch.customerContactPreference ||
+      typeof patch.deliveryIncident === 'string' ||
+      patch.handoffTimeline
     ) {
       adminStore.updateOrderOverride(orderId, {
         operatorId: patch.operatorId,
         machineId: patch.machineId,
         scheduledDate: patch.scheduledDate,
         scheduledWindow: patch.scheduledWindow,
+        deliveryMethod: patch.deliveryMethod,
+        packingStatus: patch.packingStatus,
+        carrierLabel: patch.carrierLabel,
+        trackingCode: patch.trackingCode,
+        deliveryWindow: patch.deliveryWindow,
+        customerContactPreference: patch.customerContactPreference,
+        deliveryIncident: patch.deliveryIncident,
+        handoffTimeline: patch.handoffTimeline,
       })
     }
     return getOrderDetail(orderId)

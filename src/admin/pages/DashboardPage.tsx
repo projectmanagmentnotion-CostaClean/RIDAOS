@@ -6,6 +6,8 @@ import OperationsActivityFeed from '../../features/operations/dashboard/Operatio
 import OperationsKpiGrid from '../../features/operations/dashboard/OperationsKpiGrid'
 import CapacityDashboardWidgets from '../../features/operations/capacity/CapacityDashboardWidgets'
 import { useOperationsCapacity } from '../../features/operations/hooks/useOperationsCapacity'
+import DispatchDashboardWidgets from '../../features/operations/dispatch/DispatchDashboardWidgets'
+import { useOperationsDispatch } from '../../features/operations/hooks/useOperationsDispatch'
 import { useOperationsDashboard } from '../../features/operations/hooks/useOperationsDashboard'
 
 const formatCurrency = (value: number) =>
@@ -20,6 +22,7 @@ const formatCurrency = (value: number) =>
  * - ADMIN_OPERATIONS_DASHBOARD
  * - ADMIN_CAPACITY_DASHBOARD
  * - ADMIN_OPERATOR_WORKLOAD
+ * - ADMIN_DISPATCH_DASHBOARD
  * Content: src/content/adminMockContent.ts
  * Operations: src/features/operations/mock/operationsMockData.ts
  * Visual component: src/admin/pages/DashboardPage.tsx
@@ -27,6 +30,7 @@ const formatCurrency = (value: number) =>
 function DashboardPage() {
   const dashboard = useOperationsDashboard()
   const { capacity } = useOperationsCapacity()
+  const { dashboard: dispatch } = useOperationsDispatch()
 
   return (
     <AdminShell
@@ -63,6 +67,15 @@ function DashboardPage() {
           title="Capacidad y carga operativa"
         >
           <CapacityDashboardWidgets data={capacity} />
+        </AdminSection>
+      ) : null}
+
+      {dispatch ? (
+        <AdminSection
+          description="Preparacion de salida, recogidas, entregas e incidencias listas para migrar a dispatch real."
+          title="Despacho y entrega"
+        >
+          <DispatchDashboardWidgets data={dispatch} />
         </AdminSection>
       ) : null}
 

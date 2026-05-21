@@ -1,12 +1,16 @@
 import type {
   AdminCustomerSummary,
   AdminDashboardStats,
+  AdminDeliveryMethod,
+  AdminDeliveryWindow,
   AdminOrder,
   AdminOrderFilters,
   AdminOrderPriority,
   AdminOrderStatus,
+  AdminPackingStatus,
   AdminPaymentStatus,
   AdminProductionStatus,
+  AdminShippingStatus,
   AdminUploadRecord,
   AdminUploadReviewStatus,
 } from '../../admin/types/adminModels'
@@ -26,12 +30,21 @@ export type AdminOrderLifecyclePatch = {
   priority?: AdminOrderPriority
   paymentStatus?: AdminPaymentStatus
   productionStatus?: AdminProductionStatus
+  shippingStatus?: AdminShippingStatus
   notes?: string
   productionNotes?: string
   operatorId?: string
   machineId?: string
   scheduledDate?: string
   scheduledWindow?: import('../../admin/types/adminModels').AdminSchedulingWindow
+  deliveryMethod?: AdminDeliveryMethod
+  packingStatus?: AdminPackingStatus
+  carrierLabel?: string
+  trackingCode?: string
+  deliveryWindow?: AdminDeliveryWindow
+  customerContactPreference?: 'phone' | 'email' | 'whatsapp_mock'
+  deliveryIncident?: string
+  handoffTimeline?: import('../../admin/types/adminModels').AdminTimelineItem[]
 }
 export type AdminUploadReviewPatch = {
   status?: AdminUploadReviewStatus

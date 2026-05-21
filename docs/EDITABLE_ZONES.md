@@ -238,6 +238,12 @@ Ejemplos:
 - Contenido editable: `src/features/operations/capacity/capacityMockData.ts`
 - Controla: capacidad del dia, proximas entregas, alertas de sobrecarga y jobs sin asignar
 
+## ADMIN_DISPATCH_DASHBOARD
+
+- Archivo visual: `src/admin/pages/DashboardPage.tsx`
+- Contenido editable: `src/features/operations/dispatch/dispatchMockData.ts`
+- Controla: widgets de packing, handoff, entregas, recogidas e incidencias
+
 ## ADMIN_OPERATOR_WORKLOAD
 
 - Archivo visual: `src/features/operations/capacity/CapacityDashboardWidgets.tsx`
@@ -292,6 +298,18 @@ Uso:
 - Contenido editable: `src/features/operations/capacity/capacityMockData.ts`
 - Controla: maquinas, ventanas y capacidad por slot mock
 
+## ADMIN_DELIVERY_BOARD
+
+- Archivo visual: `src/admin/pages/ProductionPage.tsx`
+- Contenido editable: `src/features/operations/delivery/deliveryMockData.ts`
+- Controla: board de despacho con columnas por estado y acciones mock
+
+## ADMIN_PICKUP_QUEUE
+
+- Archivo visual: `src/features/operations/delivery/DispatchBoard.tsx`
+- Contenido editable: `src/features/operations/dispatch/dispatchMockData.ts`
+- Controla: pedidos listos para recoger y handoff local
+
 ## ADMIN_ORDER_DETAIL
 
 - Archivo visual: `src/admin/pages/OrderDetailPage.tsx`
@@ -309,6 +327,18 @@ Uso:
 - Archivo visual: `src/admin/pages/OrderDetailPage.tsx`
 - Persistencia mock: `src/admin/store/useAdminUiStore.ts`
 - Controla: notas internas, QA y produccion visibles en el flujo del pedido
+
+## ADMIN_DELIVERY_MESSAGES
+
+- Archivo visual: `src/admin/pages/OrderDetailPage.tsx`
+- Contenido editable: `src/features/operations/dispatch/dispatchMockData.ts`
+- Controla: previews de mensajes mock de pickup, envio, retraso, incidencia y entrega
+
+## ADMIN_ORDER_HANDOFF
+
+- Archivo visual: `src/admin/pages/OrderDetailPage.tsx`
+- Persistencia mock: `src/admin/store/useAdminUiStore.ts`
+- Controla: metodo de entrega, tracking, carrier, ventana y timeline de handoff
 
 ## Operations mock system
 

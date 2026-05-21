@@ -1,6 +1,9 @@
 import { getAdminRepository } from '../../infrastructure/repositoryFactory'
 import type {
+  AdminApprovalChain,
+  AdminApprovalChainKey,
   AdminApprovalState,
+  AdminAuditEntry,
   AdminCommentCategory,
   AdminDeliveryMethod,
   AdminDeliveryWindow,
@@ -116,6 +119,20 @@ export async function patchAdminOrderClientService(
     approvalTimeline?: AdminTimelineItem[]
     serviceTimeline?: AdminTimelineItem[]
     priority?: AdminOrderPriority
+  },
+) {
+  await wait(60)
+  return getAdminRepository().patchOrder(orderId, patch)
+}
+
+export async function patchAdminOrderAccountManagement(
+  orderId: string,
+  patch: {
+    ownerUserId?: string
+    serviceOwnerUserId?: string
+    requiredApprovalChainKeys?: AdminApprovalChainKey[]
+    approvalChains?: AdminApprovalChain[]
+    auditTrail?: AdminAuditEntry[]
   },
 ) {
   await wait(60)

@@ -176,7 +176,12 @@ export const mockAdminRepository: AdminRepository = {
       patch.incidentType ||
       typeof patch.serviceNotes === 'string' ||
       patch.approvalTimeline ||
-      patch.serviceTimeline
+      patch.serviceTimeline ||
+      patch.ownerUserId ||
+      patch.serviceOwnerUserId ||
+      patch.requiredApprovalChainKeys ||
+      patch.approvalChains ||
+      patch.auditTrail
     ) {
       adminStore.updateOrderOverride(orderId, {
         operatorId: patch.operatorId,
@@ -199,6 +204,11 @@ export const mockAdminRepository: AdminRepository = {
         serviceNotes: patch.serviceNotes,
         approvalTimeline: patch.approvalTimeline,
         serviceTimeline: patch.serviceTimeline,
+        ownerUserId: patch.ownerUserId,
+        serviceOwnerUserId: patch.serviceOwnerUserId,
+        requiredApprovalChainKeys: patch.requiredApprovalChainKeys,
+        approvalChains: patch.approvalChains,
+        auditTrail: patch.auditTrail,
       })
     }
     return getOrderDetail(orderId)

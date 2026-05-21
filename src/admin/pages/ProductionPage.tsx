@@ -14,6 +14,7 @@ import { getOperationsDispatchBoard, getProductionOperations } from '../../featu
 import type { DispatchBoardColumns, OperationsOrderRecord } from '../../features/operations/types/operations'
 import { useEffect, useState } from 'react'
 import { getNextShippingStatus } from '../../features/operations/dispatch/dispatchService'
+import { resolveMockUser } from '../../features/admin-accounts/services/adminAccountsService'
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('es-ES', {
@@ -109,12 +110,17 @@ function ProductionPage() {
                       <strong>{order.operator.name}</strong>
                     </div>
                     <div className="summary-row">
+                      <span>Owner</span>
+                      <strong>{resolveMockUser(order.ownerUserId)?.name ?? order.ownerUserId}</strong>
+                    </div>
+                    <div className="summary-row">
                       <span>Salida</span>
                       <strong>{shippingStatusLabels[order.shippingStatus]}</strong>
                     </div>
                   </div>
                   <ProductionPipelineTimeline order={order} stages={productionStageDefinitions} />
                   <p className="admin-inline-note">{order.productionNotes || 'Sin notas de fabricacion registradas todavia.'}</p>
+                  <p className="admin-inline-note">Approval chain: {order.requiredApprovalChainKeys.join(' · ')}</p>
                   <p>{formatCurrency(order.total)} · vence {new Date(order.dueDate).toLocaleDateString('es-ES')}</p>
                   <a className="action-button action-link-button" href={`#/admin/orders/${order.id}`}>
                     Abrir flujo

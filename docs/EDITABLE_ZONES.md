@@ -262,6 +262,41 @@ Uso:
 - `Edita HOME_HERO desde el CMS mock`
 - `Resetea PRODUCT_CONFIGURATOR a defaults`
 
+## ADMIN_ACCOUNTS
+
+- Archivo visual: `src/admin/pages/AccountsPage.tsx`
+- Contenido editable: `src/features/admin-accounts/mock/adminAccountsMockData.ts`
+- Controla: usuarios internos mock, ownership y workload resumido
+
+## ADMIN_ROLES
+
+- Archivo visual: `src/features/admin-accounts/mock/adminAccountsMockData.ts`
+- Contenido editable: `src/features/admin-accounts/mock/adminAccountsMockData.ts`
+- Controla: definiciones de rol y lectura operativa por area
+
+## ADMIN_PERMISSIONS
+
+- Archivo visual: `src/features/admin-accounts/mock/adminAccountsMockData.ts`
+- Contenido editable: `src/features/admin-accounts/mock/adminAccountsMockData.ts`
+- Controla: permisos visuales mock previos a auth y ACL reales
+
+## ADMIN_APPROVAL_CHAINS
+
+- Archivo visual: `src/features/admin-accounts/approval-chains/approvalChainService.ts`
+- Contenido editable: `src/features/admin-accounts/mock/adminAccountsMockData.ts`
+- Controla: artwork approval, urgent change request, quality hold, delivery incident y content publish mock
+
+Ejemplos:
+
+- `Edita ADMIN_APPROVAL_CHAINS`
+- `Cambia la cadena artwork_approval para que requiera production_lead antes de aprobar`
+
+## ADMIN_AUDIT_TRAIL
+
+- Archivo visual: `src/features/admin-accounts/audit/auditTrailService.ts`
+- Persistencia mock: `src/admin/store/useAdminUiStore.ts`
+- Controla: timeline administrativo de ownership, cambios de estado y acciones internas
+
 ## ADMIN_CLIENT_SERVICE
 
 - Archivo visual: `src/admin/pages/ClientServicePage.tsx`

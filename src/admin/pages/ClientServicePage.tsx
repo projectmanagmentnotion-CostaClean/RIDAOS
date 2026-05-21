@@ -12,6 +12,7 @@ import { approvalStateLabels, escalationLevelLabels, incidentTypeLabels, slaStat
 import { defaultClientServiceFilters, useOperationsClientService } from '../../features/operations/client-service/hooks/useOperationsClientService'
 import { getClientServiceTemplatePreviewData } from '../../features/operations/client-service/services/clientServiceService'
 import type { ClientServiceFilters } from '../../features/operations/client-service/types/clientService'
+import { resolveMockUser } from '../../features/admin-accounts/services/adminAccountsService'
 
 /**
  * Editable Zones:
@@ -166,6 +167,13 @@ function ClientServicePage() {
               <strong>Coordinar produccion</strong>
             </a>
           </div>
+          {messagePreviewSource ? (
+            <article className="content-card admin-quick-action">
+              <strong>Owner del caso</strong>
+              <p>{resolveMockUser(messagePreviewSource.serviceOwnerUserId)?.name ?? messagePreviewSource.serviceOwnerUserId}</p>
+              <small>{messagePreviewSource.requiredApprovalChainKeys.join(' · ')}</small>
+            </article>
+          ) : null}
         </AdminSection>
       </div>
     </AdminShell>

@@ -25,6 +25,8 @@ import { operationsRosterByProductType } from '../../features/operations/mock/op
 import { capacityMachines, capacityOperators, capacityWindows, defaultMachineByProductType } from '../../features/operations/capacity/capacityMockData'
 import { deriveEscalationLevel } from '../../features/operations/client-service/escalation/escalationRules'
 import { deriveSlaStatus } from '../../features/operations/client-service/sla/slaSelectors'
+import { buildApprovalChains } from '../../features/admin-accounts/approval-chains/approvalChainService'
+import { buildOrderAuditTrail } from '../../features/admin-accounts/audit/auditTrailService'
 
 const previewableTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml', 'image/webp']
 
@@ -136,6 +138,45 @@ function getApprovalState(status: AdminOrder['status'], productionStatus: AdminO
     return 'approved_for_production'
   }
   return 'pending_review'
+}
+
+function getDefaultOwnerUserId(productType: Order['items'][number]['productType']) {
+  if (productType === 'dtf' || productType === 'textile') {
+    return 'user-prod-sergio'
+  }
+  if (productType === 'material') {
+    return 'user-admin-marco'
+  }
+  return 'user-owner-lucia'
+}
+
+function getDefaultServiceOwnerUserId(incidentType: AdminIncidentType) {
+  if (incidentType === 'delivery_delay' || incidentType === 'damaged_delivery_mock') {
+    return 'user-dispatch-noa'
+  }
+  if (incidentType === 'artwork_invalid') {
+    return 'user-design-laura'
+  }
+  return 'user-service-ines'
+}
+
+function getRequiredApprovalChainKeys(incidentType: AdminIncidentType, approvalState: AdminApprovalState) {
+  const keys: AdminOrder['requiredApprovalChainKeys'] = ['artwork_approval']
+
+  if (incidentType === 'urgent_change_request') {
+    keys.push('urgent_change_request')
+  }
+  if (incidentType === 'production_quality_review') {
+    keys.push('production_quality_hold')
+  }
+  if (incidentType === 'delivery_delay' || incidentType === 'damaged_delivery_mock') {
+    keys.push('delivery_incident')
+  }
+  if (approvalState === 'production_locked') {
+    keys.push('content_publish_mock')
+  }
+
+  return Array.from(new Set(keys))
 }
 
 function getPackingStatus(shippingStatus: AdminShippingStatus): AdminPackingStatus {
@@ -476,8 +517,11 @@ export function mapOrderToAdminOrder(order: Order, override?: AdminOrderOverride
   const approvalState = override?.approvalState ?? getApprovalState(status, productionStatus)
   const escalationLevel =
     override?.escalationLevel ?? deriveEscalationLevel(priority, slaStatus, ticketStatus, incidentType)
+  const ownerUserId = override?.ownerUserId ?? getDefaultOwnerUserId(productType)
+  const serviceOwnerUserId = override?.serviceOwnerUserId ?? getDefaultServiceOwnerUserId(incidentType)
+  const requiredApprovalChainKeys = override?.requiredApprovalChainKeys ?? getRequiredApprovalChainKeys(incidentType, approvalState)
 
-  return {
+  const enrichedOrder = {
     id: order.id,
     customer: order.customer.name,
     email: order.customer.email,
@@ -516,6 +560,11 @@ export function mapOrderToAdminOrder(order: Order, override?: AdminOrderOverride
     serviceNotes: override?.serviceNotes ?? '',
     approvalTimeline: buildApprovalTimeline(order, approvalState, override),
     serviceTimeline: buildServiceTimeline(order, incidentType, ticketStatus, override),
+    ownerUserId,
+    serviceOwnerUserId,
+    requiredApprovalChainKeys,
+    approvalChains: [],
+    auditTrail: [],
     tags: Array.from(
       new Set([
         ...(operationsRosterByProductType[productType]?.fallbackTags ?? [productType]),
@@ -530,6 +579,14 @@ export function mapOrderToAdminOrder(order: Order, override?: AdminOrderOverride
     productionNotes: override?.productionNotes ?? '',
     internalComments: override?.internalComments ?? [],
     timeline: buildTimeline(order, override),
+  }
+
+  const auditTrail = buildOrderAuditTrail(enrichedOrder, override)
+
+  return {
+    ...enrichedOrder,
+    approvalChains: override?.approvalChains ?? buildApprovalChains(enrichedOrder),
+    auditTrail,
   }
 }
 

@@ -44,6 +44,23 @@ export type AdminIncidentType =
   | 'damaged_delivery_mock'
 export type AdminTicketStatus = 'open' | 'waiting_customer' | 'waiting_internal' | 'resolved' | 'escalated' | 'archived'
 export type AdminSlaStatus = 'on_track' | 'at_risk' | 'breached'
+export type AdminMockRole =
+  | 'owner'
+  | 'admin'
+  | 'production_lead'
+  | 'designer'
+  | 'customer_service'
+  | 'dispatch_operator'
+  | 'viewer'
+export type AdminMockPermission =
+  | 'view_orders'
+  | 'update_orders'
+  | 'approve_artwork'
+  | 'manage_schedule'
+  | 'manage_dispatch'
+  | 'resolve_tickets'
+  | 'edit_content_mock'
+  | 'export_reports_mock'
 export type AdminApprovalState =
   | 'pending_review'
   | 'approved'
@@ -53,6 +70,13 @@ export type AdminApprovalState =
   | 'approved_for_production'
   | 'production_locked'
 export type AdminEscalationLevel = 'normal' | 'priority' | 'urgent' | 'critical'
+export type AdminApprovalChainKey =
+  | 'artwork_approval'
+  | 'urgent_change_request'
+  | 'production_quality_hold'
+  | 'delivery_incident'
+  | 'refund_manual_adjustment_mock'
+  | 'content_publish_mock'
 export type AdminOperator = {
   id: string
   name: string
@@ -81,6 +105,43 @@ export type AdminTimelineItem = {
   detail: string
   timestamp: string
   tone?: 'default' | 'success' | 'warning'
+}
+
+export type AdminMockUser = {
+  id: string
+  name: string
+  email: string
+  role: AdminMockRole
+  permissions: AdminMockPermission[]
+  status: 'active' | 'offline' | 'busy'
+  workloadLabel: string
+}
+
+export type AdminApprovalChainStep = {
+  id: string
+  label: string
+  requiredRole: AdminMockRole
+  assignedUserId: string
+  status: 'pending' | 'active' | 'approved' | 'blocked'
+  notes: string
+  timestamp: string
+}
+
+export type AdminApprovalChain = {
+  key: AdminApprovalChainKey
+  label: string
+  currentStatus: 'pending' | 'active' | 'approved' | 'blocked'
+  steps: AdminApprovalChainStep[]
+}
+
+export type AdminAuditEntry = {
+  id: string
+  actorUserId: string
+  actorName: string
+  module: 'orders' | 'client_service' | 'production' | 'dispatch' | 'content_studio' | 'accounts'
+  action: string
+  detail: string
+  timestamp: string
 }
 
 export type AdminOrder = {
@@ -120,6 +181,11 @@ export type AdminOrder = {
   serviceNotes: string
   approvalTimeline: AdminTimelineItem[]
   serviceTimeline: AdminTimelineItem[]
+  ownerUserId: string
+  serviceOwnerUserId: string
+  requiredApprovalChainKeys: AdminApprovalChainKey[]
+  approvalChains: AdminApprovalChain[]
+  auditTrail: AdminAuditEntry[]
   tags: string[]
   notes: string
   uploadIds: string[]
@@ -208,6 +274,11 @@ export type AdminOrderOverride = {
   serviceNotes?: string
   approvalTimeline?: AdminTimelineItem[]
   serviceTimeline?: AdminTimelineItem[]
+  ownerUserId?: string
+  serviceOwnerUserId?: string
+  requiredApprovalChainKeys?: AdminApprovalChainKey[]
+  approvalChains?: AdminApprovalChain[]
+  auditTrail?: AdminAuditEntry[]
 }
 
 export type AdminUploadOverride = {

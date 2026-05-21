@@ -27,6 +27,7 @@ type AdminUiStore = {
   setProductionNotes: (orderId: string, productionNotes: string) => void
   setServiceNotes: (orderId: string, serviceNotes: string) => void
   addInternalComment: (orderId: string, comment: AdminComment) => void
+  setOrderOwnership: (orderId: string, ownerUserId: string, serviceOwnerUserId?: string) => void
   updateUploadOverride: (uploadId: string, patch: AdminUploadOverride) => void
   setUploadStatus: (uploadId: string, status: AdminUploadReviewStatus) => void
   setUploadReviewNotes: (uploadId: string, reviewNotes: string) => void
@@ -128,6 +129,17 @@ export const useAdminUiStore = create<AdminUiStore>()(
             [orderId]: {
               ...state.orderOverrides[orderId],
               internalComments: [...(state.orderOverrides[orderId]?.internalComments ?? []), comment],
+            },
+          },
+        })),
+      setOrderOwnership: (orderId, ownerUserId, serviceOwnerUserId) =>
+        set((state) => ({
+          orderOverrides: {
+            ...state.orderOverrides,
+            [orderId]: {
+              ...state.orderOverrides[orderId],
+              ownerUserId,
+              serviceOwnerUserId: serviceOwnerUserId ?? state.orderOverrides[orderId]?.serviceOwnerUserId ?? ownerUserId,
             },
           },
         })),

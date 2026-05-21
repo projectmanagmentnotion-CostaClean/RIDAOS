@@ -1,5 +1,8 @@
 import type {
+  AdminApprovalChain,
+  AdminApprovalChainKey,
   AdminApprovalState,
+  AdminAuditEntry,
   AdminCustomerSummary,
   AdminDashboardStats,
   AdminDeliveryMethod,
@@ -58,6 +61,11 @@ export type AdminOrderLifecyclePatch = {
   serviceNotes?: string
   approvalTimeline?: import('../../admin/types/adminModels').AdminTimelineItem[]
   serviceTimeline?: import('../../admin/types/adminModels').AdminTimelineItem[]
+  ownerUserId?: string
+  serviceOwnerUserId?: string
+  requiredApprovalChainKeys?: AdminApprovalChainKey[]
+  approvalChains?: AdminApprovalChain[]
+  auditTrail?: AdminAuditEntry[]
 }
 export type AdminUploadReviewPatch = {
   status?: AdminUploadReviewStatus

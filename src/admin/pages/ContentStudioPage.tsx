@@ -10,6 +10,8 @@ import { CmsStudioSummary } from '../../features/cms/components/CmsStudioSummary
 import { CmsZoneList } from '../../features/cms/components/CmsZoneList'
 import { useContentStudio } from '../../features/cms/hooks/useContentStudio'
 import type { CmsDocumentType } from '../../features/cms/types/cms'
+import AdminApprovalChainsPanel from '../../features/admin-accounts/components/AdminApprovalChainsPanel'
+import { approvalChainBlueprints } from '../../features/admin-accounts/mock/adminAccountsMockData'
 import { useCmsPreview } from '../../features/cms-preview'
 
 const filterOptions: Array<{ value: CmsDocumentType | 'all'; label: string }> = [
@@ -331,6 +333,28 @@ function ContentStudioPage() {
                 <li>No escribe archivos fuente ni conecta con Supabase.</li>
                 <li>No sustituye roles, auth ni storage real.</li>
               </ul>
+            </article>
+            <article className="content-card cms-status-note">
+              <p className="section-label">Content publish mock</p>
+              <p>La publicacion futura de contenido queda preparada como approval chain visual antes de conectar permisos reales.</p>
+              <AdminApprovalChainsPanel
+                chains={[
+                  {
+                    ...approvalChainBlueprints.content_publish_mock,
+                    steps: [
+                      {
+                        id: 'content-publish-admin',
+                        label: 'Validacion editorial',
+                        requiredRole: 'admin',
+                        assignedUserId: 'user-admin-marco',
+                        status: 'active',
+                        notes: 'Revisar copy, CTA y consistencia del snapshot antes de publicar.',
+                        timestamp: new Date().toISOString(),
+                      },
+                    ],
+                  },
+                ]}
+              />
             </article>
           </div>
         </AdminSection>

@@ -16,12 +16,17 @@ import ClientServiceTemplatePreviewList from '../../features/operations/client-s
 import { getNextApprovalState } from '../../features/operations/client-service/approvals/approvalFlow'
 import { approvalStateLabels, escalationLevelLabels, incidentTypeLabels, slaStatusLabels, ticketStatusLabels } from '../../features/operations/client-service/mock/clientServiceMockData'
 import { getClientServiceSummaryMeta, getClientServiceTemplatePreviewData } from '../../features/operations/client-service/services/clientServiceService'
+import AdminApprovalChainsPanel from '../../features/admin-accounts/components/AdminApprovalChainsPanel'
+import AdminAuditTrailList from '../../features/admin-accounts/components/AdminAuditTrailList'
+import { adminMockUsers } from '../../features/admin-accounts/mock/adminAccountsMockData'
+import { resolveMockUser } from '../../features/admin-accounts/services/adminAccountsService'
 import InternalNotesComposer from '../../features/operations/notes/InternalNotesComposer'
 import ProductionPipelineTimeline from '../../features/operations/timeline/ProductionPipelineTimeline'
 import { getOperationsOrderDetail, getOperationsOrders } from '../../features/operations/services/operationsService'
 import type { OperationsFilters, OperationsOrderRecord } from '../../features/operations/types/operations'
 import {
   addAdminInternalComment,
+  patchAdminOrderAccountManagement,
   patchAdminOrderClientService,
   patchAdminOrderDispatch,
   patchAdminOrderSchedule,
@@ -95,6 +100,8 @@ const formatCurrency = (value: number) =>
  * - ADMIN_INTERNAL_NOTES
  * - ADMIN_ORDER_HANDOFF
  * - ADMIN_DELIVERY_MESSAGES
+ * - ADMIN_APPROVAL_CHAINS
+ * - ADMIN_AUDIT_TRAIL
  * Content: src/features/operations/mock/operationsMockData.ts
  * Store: src/admin/store/useAdminUiStore.ts
  * Visual component: src/admin/pages/OrderDetailPage.tsx
@@ -312,6 +319,14 @@ function OrderDetailPage() {
                 <div className="summary-row">
                   <span>Operador</span>
                   <strong>{order.operator.name}</strong>
+                </div>
+                <div className="summary-row">
+                  <span>Owner interno</span>
+                  <strong>{resolveMockUser(order.ownerUserId)?.name ?? order.ownerUserId}</strong>
+                </div>
+                <div className="summary-row">
+                  <span>Owner service</span>
+                  <strong>{resolveMockUser(order.serviceOwnerUserId)?.name ?? order.serviceOwnerUserId}</strong>
                 </div>
                 <div className="summary-row">
                   <span>Maquina</span>
@@ -564,6 +579,59 @@ function OrderDetailPage() {
                   </button>
                 </div>
               ) : null}
+            </article>
+          </AdminSection>
+
+          <AdminSection
+            description="Ownership, role requerido y cadena de aprobacion mock antes de conectar permisos reales."
+            title="Ownership y approval chain"
+          >
+            <article className="content-card admin-detail-card">
+              <div className="configurator-form">
+                <label className="field-group">
+                  <span className="field-label">Owner del pedido</span>
+                  <select
+                    className="form-input"
+                    onChange={async (event) => {
+                      await patchAdminOrderAccountManagement(order.id, {
+                        ownerUserId: event.target.value,
+                      })
+                      await refreshOrder()
+                    }}
+                    value={order.ownerUserId}
+                  >
+                    {adminMockUsers.map((user) => (
+                      <option key={user.id} value={user.id}>
+                        {user.name} · {user.role}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="field-group">
+                  <span className="field-label">Owner de service</span>
+                  <select
+                    className="form-input"
+                    onChange={async (event) => {
+                      await patchAdminOrderAccountManagement(order.id, {
+                        serviceOwnerUserId: event.target.value,
+                      })
+                      await refreshOrder()
+                    }}
+                    value={order.serviceOwnerUserId}
+                  >
+                    {adminMockUsers.map((user) => (
+                      <option key={user.id} value={user.id}>
+                        {user.name} · {user.role}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+              <div className="admin-upload-note">
+                <strong>Approval required</strong>
+                <p>{order.requiredApprovalChainKeys.join(' · ')}</p>
+              </div>
+              <AdminApprovalChainsPanel chains={order.approvalChains} />
             </article>
           </AdminSection>
 
@@ -943,6 +1011,15 @@ function OrderDetailPage() {
               >
                 Guardar fabricacion
               </button>
+            </article>
+          </AdminSection>
+
+          <AdminSection
+            description="Trazabilidad administrativa mock: ownership, cambios de estado y acciones internas."
+            title="Audit trail"
+          >
+            <article className="content-card admin-detail-card">
+              <AdminAuditTrailList entries={order.auditTrail} />
             </article>
           </AdminSection>
 

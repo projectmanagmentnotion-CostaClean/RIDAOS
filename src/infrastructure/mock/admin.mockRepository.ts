@@ -121,12 +121,13 @@ export const mockAdminRepository: AdminRepository = {
       customers: customers.slice(0, 5),
     }
   },
-  async addInternalComment(orderId: string, body: string) {
+  async addInternalComment(orderId: string, body: string, category = 'internal') {
     const comment: AdminComment = {
       id: `comment-${orderId}-${Date.now()}`,
       author: 'Equipo Ridaos',
       body,
       createdAt: new Date().toISOString(),
+      category,
     }
 
     useAdminUiStore.getState().addInternalComment(orderId, comment)

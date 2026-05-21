@@ -27,12 +27,21 @@ export type AdminProductionStatus =
   | 'completed'
 
 export type AdminUploadReviewStatus = 'pending' | 'approved' | 'needs_fix' | 'reuploaded'
+export type AdminArtworkStatus = 'missing' | 'pending_review' | 'needs_fix' | 'approved' | 'ready_for_production'
+export type AdminShippingStatus = 'not_ready' | 'label_pending' | 'ready_for_dispatch' | 'shipped' | 'delivered'
+export type AdminCommentCategory = 'internal' | 'qa' | 'production'
+export type AdminOperator = {
+  id: string
+  name: string
+  role: string
+}
 
 export type AdminComment = {
   id: string
   author: string
   body: string
   createdAt: string
+  category?: AdminCommentCategory
 }
 
 export type AdminTimelineItem = {
@@ -49,13 +58,19 @@ export type AdminOrder = {
   email: string
   phone: string
   createdAt: string
+  dueDate: string
   items: OrderItem[]
+  productType: OrderItem['productType']
   total: number
   status: AdminOrderStatus
   lifecycleStatus: OrderLifecycleStatus
   priority: AdminOrderPriority
   paymentStatus: AdminPaymentStatus
   productionStatus: AdminProductionStatus
+  artworkStatus: AdminArtworkStatus
+  shippingStatus: AdminShippingStatus
+  operator: AdminOperator
+  tags: string[]
   notes: string
   uploadIds: string[]
   productionNotes: string
@@ -68,12 +83,15 @@ export type AdminUploadRecord = {
   orderId: string
   customer: string
   product: string
+  productType: OrderItem['productType']
   fileName: string
   fileType: string
   fileSize: number
   formatLabel: string
   uploadedAt: string
   status: AdminUploadReviewStatus
+  artworkStatus: AdminArtworkStatus
+  operator: AdminOperator
   previewable: boolean
   reviewNotes: string
 }
@@ -100,6 +118,10 @@ export type AdminDashboardStats = {
   latestUploads: number
   recentCustomers: number
   revenueHint: number
+  urgentOrders: number
+  artworkQueue: number
+  deliveryReady: number
+  productionToday: number
   orderCounters: Array<{
     key: string
     label: string

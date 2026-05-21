@@ -221,6 +221,17 @@ Ejemplos:
 - Contenido editable: `src/content/adminMockContent.ts`
 - Controla: acciones rapidas y textos mock del panel
 
+## ADMIN_OPERATIONS_DASHBOARD
+
+- Archivo visual: `src/admin/pages/DashboardPage.tsx`
+- Contenido editable: `src/features/operations/mock/operationsMockData.ts`
+- Controla: KPIs operativos, urgentes, artwork queue, activity feed y quick actions
+
+Ejemplos:
+
+- `Cambia las quick actions del ADMIN_OPERATIONS_DASHBOARD`
+- `Ajusta el lenguaje del activity feed operativo`
+
 ## ADMIN_CONTENT_STUDIO
 
 - Archivo visual: `src/admin/pages/ContentStudioPage.tsx`
@@ -250,6 +261,48 @@ Uso:
 - Archivo visual: `src/content/adminMockContent.ts`
 - Contenido editable: `src/content/adminMockContent.ts`
 - Controla: overrides mock de revision de archivos
+
+## ADMIN_PRODUCTION_PIPELINE
+
+- Archivo visual: `src/admin/pages/ProductionPage.tsx`
+- Contenido editable: `src/features/operations/mock/operationsMockData.ts`
+- Controla: etapas del pipeline, resumen por fase y textos del flujo productivo
+
+## ADMIN_ORDER_DETAIL
+
+- Archivo visual: `src/admin/pages/OrderDetailPage.tsx`
+- Contenido editable: `src/features/operations/mock/operationsMockData.ts`
+- Controla: metadata operativa, pipeline visual, timeline y tono del detalle interno
+
+## ADMIN_UPLOAD_REVIEW
+
+- Archivo visual: `src/admin/pages/UploadsPage.tsx`
+- Contenido editable: `src/features/operations/mock/operationsMockData.ts`
+- Controla: estados de review, labels de artwork review y lectura operativa de los archivos
+
+## ADMIN_INTERNAL_NOTES
+
+- Archivo visual: `src/admin/pages/OrderDetailPage.tsx`
+- Persistencia mock: `src/admin/store/useAdminUiStore.ts`
+- Controla: notas internas, QA y produccion visibles en el flujo del pedido
+
+## Operations mock system
+
+- Arquitectura: `src/features/operations/`
+- Dashboard: `dashboard/`
+- Pedidos: `orders/`
+- Produccion: `production/`
+- Uploads: `uploads/`
+- Notas: `notes/`
+- Timeline: `timeline/`
+- Filtros: `filters/`
+- Servicios y hooks: `services/`, `hooks/`
+
+Ejemplos:
+
+- `Edita ADMIN_PRODUCTION_PIPELINE`
+- `Cambia los operadores mock del sistema operations`
+- `Ajusta los filtros del board de pedidos`
 
 ## Precios centralizados
 

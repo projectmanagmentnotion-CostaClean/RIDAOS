@@ -1,5 +1,6 @@
 import { getAdminRepository } from '../../infrastructure/repositoryFactory'
 import type {
+  AdminCommentCategory,
   AdminOrderFilters,
   AdminOrderPriority,
   AdminOrderStatus,
@@ -50,9 +51,9 @@ export async function saveAdminProductionNotes(orderId: string, notes: string) {
   return getAdminRepository().saveProductionNotes(orderId, notes)
 }
 
-export async function addAdminInternalComment(orderId: string, body: string) {
+export async function addAdminInternalComment(orderId: string, body: string, category?: AdminCommentCategory) {
   await wait(60)
-  return getAdminRepository().addInternalComment(orderId, body)
+  return getAdminRepository().addInternalComment(orderId, body, category)
 }
 
 export async function listAdminUploads() {

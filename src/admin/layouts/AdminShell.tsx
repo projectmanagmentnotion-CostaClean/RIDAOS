@@ -8,12 +8,12 @@ type AdminShellProps = {
 }
 
 const adminNavigation = [
-  { href: '#/admin', label: 'Resumen' },
+  { href: '#/admin', label: 'Operations' },
   { href: '#/admin/content', label: 'Content Studio' },
   { href: '#/admin/orders', label: 'Pedidos' },
-  { href: '#/admin/uploads', label: 'Archivos' },
+  { href: '#/admin/uploads', label: 'Artwork review' },
   { href: '#/admin/customers', label: 'Clientes' },
-  { href: '#/admin/production', label: 'Fabricacion' },
+  { href: '#/admin/production', label: 'Produccion' },
 ]
 
 function AdminShell({ title, description, children }: AdminShellProps) {
@@ -28,7 +28,7 @@ function AdminShell({ title, description, children }: AdminShellProps) {
         <div className="admin-sidebar-head">
           <p className="section-label">RidaosPrint</p>
           <h2>Operaciones</h2>
-          <p>Panel interno preparado para flujo mock, revision, cola de fabricacion y seguimiento.</p>
+          <p>Panel operativo mock para revision de arte, produccion, notas internas y salida.</p>
         </div>
         <div className="admin-sidebar-mode">
           <span className="status-badge status-info">Modo interno preparado</span>

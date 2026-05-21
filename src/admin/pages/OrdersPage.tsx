@@ -1,14 +1,16 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import AdminFilterBar from '../components/AdminFilterBar'
 import AdminSearchInput from '../components/AdminSearchInput'
 import AdminSection from '../components/AdminSection'
 import EmptyAdminState from '../components/EmptyAdminState'
-import OrderStatusBadge from '../components/OrderStatusBadge'
 import AdminShell from '../layouts/AdminShell'
 import { orderStatusOptions } from '../config/orderStatuses'
-import { getNextAdminAction, getPublicStatusLabel } from '../selectors/orderSelectors'
-import { listAdminOrders } from '../services/orderAdminService'
-import type { AdminOrder, AdminOrderFilters, AdminOrderPriority } from '../types/adminModels'
+import OperationsOrderTable from '../../features/operations/orders/OperationsOrderTable'
+import { defaultOperationsFilters } from '../../features/operations/filters/operationsFilterOptions'
+import { useOperationsOrders } from '../../features/operations/hooks/useOperationsOrders'
+import type { OperationsFilters } from '../../features/operations/types/operations'
+import { artworkStatusLabels, shippingStatusLabels } from '../../features/operations/mock/operationsMockData'
+import type { AdminOrderPriority } from '../types/adminModels'
 
 const priorityOptions: Array<{ value: AdminOrderPriority | 'all'; label: string }> = [
   { value: 'all', label: 'Todas las prioridades' },
@@ -24,36 +26,42 @@ const formatCurrency = (value: number) =>
     currency: 'EUR',
   }).format(value)
 
+function getInitialOperationsFilters(): OperationsFilters {
+  const base = { ...defaultOperationsFilters }
+
+  if (typeof window === 'undefined') {
+    return base
+  }
+
+  const hash = window.location.hash
+  const [, queryString = ''] = hash.split('?')
+  const params = new URLSearchParams(queryString)
+  const priority = params.get('priority')
+  const status = params.get('status')
+
+  if (priority === 'urgent' || priority === 'high' || priority === 'normal' || priority === 'low') {
+    base.priority = priority
+  }
+
+  if (status) {
+    base.status = status as OperationsFilters['status']
+  }
+
+  return base
+}
+
 function OrdersPage() {
-  const [filters, setFilters] = useState<AdminOrderFilters>({
-    search: '',
-    status: 'all',
-    priority: 'all',
-  })
-  const [orders, setOrders] = useState<AdminOrder[]>([])
-
-  useEffect(() => {
-    let cancelled = false
-
-    void listAdminOrders(filters).then((data) => {
-      if (!cancelled) {
-        setOrders(data)
-      }
-    })
-
-    return () => {
-      cancelled = true
-    }
-  }, [filters])
+  const [filters, setFilters] = useState<OperationsFilters>(getInitialOperationsFilters)
+  const orders = useOperationsOrders(filters)
 
   return (
     <AdminShell
-      description="Busqueda interna preparada para priorizar pedidos por estado, urgencia, cliente y siguiente accion."
-      title="Pedidos"
+      description="Board operativo para buscar, priorizar y ordenar pedidos por arte, urgencia, categoria y salida."
+      title="Pedidos y operaciones"
     >
       <AdminSection
-        description="Acota la cola por prioridad, estado o cliente sin perder visibilidad del siguiente paso."
-        title="Filtros internos"
+        description="Cruza estado, prioridad, categoria y arte para mover la cola sin perder contexto operativo."
+        title="Filtros operativos"
       >
         <AdminFilterBar>
           <AdminSearchInput
@@ -67,7 +75,7 @@ function OrdersPage() {
               onChange={(event) =>
                 setFilters((current) => ({
                   ...current,
-                  status: event.target.value as AdminOrderFilters['status'],
+                  status: event.target.value as OperationsFilters['status'],
                 }))
               }
               value={filters.status}
@@ -87,7 +95,7 @@ function OrdersPage() {
               onChange={(event) =>
                 setFilters((current) => ({
                   ...current,
-                  priority: event.target.value as AdminOrderFilters['priority'],
+                  priority: event.target.value as OperationsFilters['priority'],
                 }))
               }
               value={filters.priority}
@@ -99,50 +107,78 @@ function OrdersPage() {
               ))}
             </select>
           </label>
+          <label className="field-group">
+            <span className="field-label">Categoria</span>
+            <select
+              className="form-input"
+              onChange={(event) => setFilters((current) => ({ ...current, category: event.target.value as OperationsFilters['category'] }))}
+              value={filters.category}
+            >
+              <option value="all">Todas las categorias</option>
+              <option value="dtf">DTF</option>
+              <option value="textile">Textil</option>
+              <option value="paper">Papel</option>
+              <option value="material">Material rigido</option>
+              <option value="accessory">Accesorio</option>
+            </select>
+          </label>
+          <label className="field-group">
+            <span className="field-label">Artwork</span>
+            <select
+              className="form-input"
+              onChange={(event) => setFilters((current) => ({ ...current, artworkStatus: event.target.value as OperationsFilters['artworkStatus'] }))}
+              value={filters.artworkStatus}
+            >
+              <option value="all">Todos los estados de arte</option>
+              {Object.entries(artworkStatusLabels).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="field-group">
+            <span className="field-label">Salida</span>
+            <select
+              className="form-input"
+              onChange={(event) => setFilters((current) => ({ ...current, shippingStatus: event.target.value as OperationsFilters['shippingStatus'] }))}
+              value={filters.shippingStatus}
+            >
+              <option value="all">Todas las salidas</option>
+              {Object.entries(shippingStatusLabels).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="field-group">
+            <span className="field-label">Ordenar por</span>
+            <select
+              className="form-input"
+              onChange={(event) => setFilters((current) => ({ ...current, sort: event.target.value as OperationsFilters['sort'] }))}
+              value={filters.sort}
+            >
+              <option value="newest">Mas recientes</option>
+              <option value="dueDate">Vencimiento</option>
+              <option value="priority">Prioridad</option>
+              <option value="customer">Cliente</option>
+            </select>
+          </label>
         </AdminFilterBar>
       </AdminSection>
 
       <AdminSection
-        description="Cada fila muestra estado interno, lectura publica y accion sugerida para el equipo."
-        title="Listado de pedidos"
+        description="Cada fila muestra flujo, arte, salida, operador y fecha objetivo del pedido."
+        title="Listado operativo"
       >
         {orders.length === 0 ? (
           <EmptyAdminState
-            description="Prueba otro estado, prioridad o termino de busqueda para recuperar la cola preparada."
+            description="Prueba otra combinacion de filtros para recuperar la cola operativa preparada."
             title="No hay pedidos para estos filtros"
           />
         ) : (
-          <div className="admin-data-table">
-            <div className="admin-data-row admin-data-row-head">
-              <span>Pedido</span>
-              <span>Cliente</span>
-              <span>Estado interno</span>
-              <span>Lectura publica</span>
-              <span>Prioridad</span>
-              <span>Total</span>
-              <span>Siguiente accion</span>
-              <span />
-            </div>
-            {orders.map((order) => (
-              <div className="admin-data-row" key={order.id}>
-                <span>{order.id}</span>
-                <span>
-                  <strong>{order.customer}</strong>
-                  <small>{order.email}</small>
-                </span>
-                <span><OrderStatusBadge status={order.status} /></span>
-                <span>{getPublicStatusLabel(order)}</span>
-                <span className={`priority-pill priority-${order.priority}`}>{order.priority}</span>
-                <span>{formatCurrency(order.total)}</span>
-                <span>{getNextAdminAction(order)}</span>
-                <span>
-                  <a className="action-button action-link-button" href={`#/admin/orders/${order.id}`}>
-                    Ver pedido
-                  </a>
-                </span>
-              </div>
-            ))}
-          </div>
+          <OperationsOrderTable formatCurrency={formatCurrency} orders={orders} />
         )}
       </AdminSection>
     </AdminShell>

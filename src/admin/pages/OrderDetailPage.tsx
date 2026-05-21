@@ -6,9 +6,13 @@ import OrderStatusBadge from '../components/OrderStatusBadge'
 import TimelineBlock from '../components/TimelineBlock'
 import { orderStatusOptions } from '../config/orderStatuses'
 import AdminShell from '../layouts/AdminShell'
+import { artworkStatusLabels, productionStageDefinitions, shippingStatusLabels } from '../../features/operations/mock/operationsMockData'
+import InternalNotesComposer from '../../features/operations/notes/InternalNotesComposer'
+import ProductionPipelineTimeline from '../../features/operations/timeline/ProductionPipelineTimeline'
+import { getOperationsOrderDetail } from '../../features/operations/services/operationsService'
+import type { OperationsOrderRecord } from '../../features/operations/types/operations'
 import {
   addAdminInternalComment,
-  getAdminOrderDetail,
   saveAdminOrderNotes,
   saveAdminProductionNotes,
   updateAdminOrderPriority,
@@ -66,6 +70,14 @@ const formatCurrency = (value: number) =>
     currency: 'EUR',
   }).format(value)
 
+/**
+ * Editable Zones:
+ * - ADMIN_ORDER_DETAIL
+ * - ADMIN_INTERNAL_NOTES
+ * Content: src/features/operations/mock/operationsMockData.ts
+ * Store: src/admin/store/useAdminUiStore.ts
+ * Visual component: src/admin/pages/OrderDetailPage.tsx
+ */
 function getOrderIdFromHash(hash: string) {
   if (hash.startsWith('#/admin/orders/')) {
     return hash.replace('#/admin/orders/', '').split('?')[0]
@@ -80,8 +92,7 @@ function getOrderIdFromHash(hash: string) {
 
 function OrderDetailPage() {
   const [orderId, setOrderId] = useState(() => getOrderIdFromHash(window.location.hash))
-  const [order, setOrder] = useState<AdminOrder | null>(null)
-  const [comment, setComment] = useState('')
+  const [order, setOrder] = useState<OperationsOrderRecord | null>(null)
   const [notesDraft, setNotesDraft] = useState('')
   const [productionNotesDraft, setProductionNotesDraft] = useState('')
 
@@ -99,7 +110,7 @@ function OrderDetailPage() {
       return
     }
 
-    void getAdminOrderDetail(orderId).then((data) => {
+    void getOperationsOrderDetail(orderId).then((data) => {
       if (!cancelled) {
         setOrder(data)
         setNotesDraft(data?.notes ?? '')
@@ -127,7 +138,7 @@ function OrderDetailPage() {
   }
 
   const refreshOrder = async () => {
-    const next = await getAdminOrderDetail(order.id)
+    const next = await getOperationsOrderDetail(order.id)
     setOrder(next)
   }
 
@@ -180,12 +191,28 @@ function OrderDetailPage() {
                   <strong>{priorityLabels[order.priority]}</strong>
                 </div>
                 <div className="summary-row">
+                  <span>Vencimiento</span>
+                  <strong>{new Date(order.dueDate).toLocaleDateString('es-ES')}</strong>
+                </div>
+                <div className="summary-row">
                   <span>Pago</span>
                   <strong>{paymentStatusLabels[order.paymentStatus]}</strong>
                 </div>
                 <div className="summary-row">
                   <span>Produccion</span>
                   <strong>{productionStatusLabels[order.productionStatus]}</strong>
+                </div>
+                <div className="summary-row">
+                  <span>Artwork</span>
+                  <strong>{artworkStatusLabels[order.artworkStatus]}</strong>
+                </div>
+                <div className="summary-row">
+                  <span>Salida</span>
+                  <strong>{shippingStatusLabels[order.shippingStatus]}</strong>
+                </div>
+                <div className="summary-row">
+                  <span>Operador</span>
+                  <strong>{order.operator.name}</strong>
                 </div>
               </div>
             </article>
@@ -218,6 +245,15 @@ function OrderDetailPage() {
           >
             <article className="content-card admin-detail-card">
               <TimelineBlock items={order.timeline} />
+            </article>
+          </AdminSection>
+
+          <AdminSection
+            description="Pipeline visual reusable para mover el pedido por arte, produccion y salida."
+            title="Pipeline de produccion"
+          >
+            <article className="content-card admin-detail-card">
+              <ProductionPipelineTimeline order={order} stages={productionStageDefinitions} />
             </article>
           </AdminSection>
         </div>
@@ -363,36 +399,18 @@ function OrderDetailPage() {
               <div className="admin-comment-list">
                 {order.internalComments.map((item) => (
                   <article className="admin-comment-item" key={item.id}>
-                    <strong>{item.author}</strong>
+                    <strong>{item.author} · {item.category ?? 'internal'}</strong>
                     <p>{item.body}</p>
                     <span>{new Date(item.createdAt).toLocaleString('es-ES')}</span>
                   </article>
                 ))}
               </div>
-              <label className="field-group">
-                <span className="field-label">Nuevo comentario interno</span>
-                <textarea
-                  className="form-input form-textarea"
-                  onChange={(event) => setComment(event.target.value)}
-                  rows={3}
-                  value={comment}
-                />
-              </label>
-              <button
-                className="action-button"
-                onClick={async () => {
-                  if (!comment.trim()) {
-                    return
-                  }
-
-                  await addAdminInternalComment(order.id, comment.trim())
-                  setComment('')
+              <InternalNotesComposer
+                onSubmit={async ({ body, category }) => {
+                  await addAdminInternalComment(order.id, body, category)
                   await refreshOrder()
                 }}
-                type="button"
-              >
-                Anadir comentario
-              </button>
+              />
             </article>
           </AdminSection>
 

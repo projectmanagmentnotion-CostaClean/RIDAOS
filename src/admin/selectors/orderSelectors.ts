@@ -1,17 +1,84 @@
 import type { Order } from '../../types/backend'
 import type {
+  AdminArtworkStatus,
   AdminCustomerSummary,
   AdminDashboardStats,
   AdminOrder,
   AdminOrderFilters,
   AdminOrderOverride,
+  AdminOperator,
+  AdminShippingStatus,
   AdminTimelineItem,
   AdminUploadOverride,
   AdminUploadRecord,
 } from '../types/adminModels'
 import { getLifecycleDescriptorFromAdminStatus, getLifecycleStatusFromAdminStatus } from '../utils/adminLifecycle'
+import { operationsRosterByProductType } from '../../features/operations/mock/operationsMockData'
 
 const previewableTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml', 'image/webp']
+
+function addBusinessDays(isoDate: string, days: number) {
+  const date = new Date(isoDate)
+  let remaining = days
+
+  while (remaining > 0) {
+    date.setDate(date.getDate() + 1)
+    const day = date.getDay()
+    if (day !== 0 && day !== 6) {
+      remaining -= 1
+    }
+  }
+
+  return date.toISOString()
+}
+
+function getArtworkStatus(order: Order, status: AdminOrder['status']): AdminArtworkStatus {
+  if (!order.items.length) {
+    return 'missing'
+  }
+
+  if (status === 'needs_changes') {
+    return 'needs_fix'
+  }
+
+  if (status === 'pending_review') {
+    return 'pending_review'
+  }
+
+  if (status === 'approved' || status === 'awaiting_payment' || status === 'paid') {
+    return 'approved'
+  }
+
+  return 'ready_for_production'
+}
+
+function getShippingStatus(status: AdminOrder['status'], productionStatus: AdminOrder['productionStatus']): AdminShippingStatus {
+  if (status === 'completed') {
+    return 'delivered'
+  }
+  if (status === 'ready') {
+    return 'ready_for_dispatch'
+  }
+  if (productionStatus === 'ready' || productionStatus === 'completed') {
+    return 'label_pending'
+  }
+  return 'not_ready'
+}
+
+function getDueDate(order: Order, priority: AdminOrder['priority']) {
+  const days = priority === 'urgent' ? 1 : priority === 'high' ? 2 : order.items[0]?.productType === 'dtf' ? 3 : 5
+  return addBusinessDays(order.createdAt, days)
+}
+
+function getOperator(productType: Order['items'][number]['productType']): AdminOperator {
+  return (
+    operationsRosterByProductType[productType]?.operator ?? {
+      id: 'operator-generic',
+      name: 'Equipo Ridaos',
+      role: 'Operacion interna',
+    }
+  )
+}
 
 function buildTimeline(order: Order, override?: AdminOrderOverride): AdminTimelineItem[] {
   const timeline: AdminTimelineItem[] = [
@@ -79,6 +146,12 @@ function buildTimeline(order: Order, override?: AdminOrderOverride): AdminTimeli
 
 export function mapOrderToAdminOrder(order: Order, override?: AdminOrderOverride): AdminOrder {
   const status = override?.status ?? order.status
+  const priority = override?.priority ?? 'normal'
+  const productionStatus =
+    override?.productionStatus ?? (order.status === 'completed' ? 'completed' : order.status === 'ready' ? 'ready' : order.status === 'in_production' ? 'printing' : 'not_started')
+  const artworkStatus = getArtworkStatus(order, status)
+  const shippingStatus = getShippingStatus(status, productionStatus)
+  const productType = order.items[0]?.productType ?? 'dtf'
 
   return {
     id: order.id,
@@ -86,13 +159,25 @@ export function mapOrderToAdminOrder(order: Order, override?: AdminOrderOverride
     email: order.customer.email,
     phone: order.customer.phone,
     createdAt: order.createdAt,
+    dueDate: getDueDate(order, priority),
     items: order.items,
+    productType,
     total: order.total,
     status,
     lifecycleStatus: getLifecycleStatusFromAdminStatus(status),
-    priority: override?.priority ?? 'normal',
+    priority,
     paymentStatus: override?.paymentStatus ?? (order.paymentStatus === 'paid' ? 'paid' : order.paymentStatus === 'disabled' ? 'not_required' : 'pending'),
-    productionStatus: override?.productionStatus ?? (order.status === 'completed' ? 'completed' : order.status === 'ready' ? 'ready' : order.status === 'in_production' ? 'printing' : 'not_started'),
+    productionStatus,
+    artworkStatus,
+    shippingStatus,
+    operator: getOperator(productType),
+    tags: Array.from(
+      new Set([
+        ...(operationsRosterByProductType[productType]?.fallbackTags ?? [productType]),
+        ...(priority === 'urgent' ? ['24h'] : []),
+        ...(order.items.some((item) => item.artwork.fileType === 'application/pdf') ? ['pdf'] : []),
+      ]),
+    ),
     notes: override?.notes ?? '',
     uploadIds: order.items.map((item) => item.artwork.id),
     productionNotes: override?.productionNotes ?? '',
@@ -135,12 +220,15 @@ export function mapOrdersToUploads(
         orderId: order.id,
         customer: order.customer,
         product: item.productName,
+        productType: order.productType,
         fileName: item.artwork.fileName,
         fileType: item.artwork.fileType,
         fileSize: item.artwork.fileSize,
         formatLabel: item.artwork.formatLabel,
         uploadedAt: item.artwork.uploadedAt,
         status: override?.status ?? 'pending',
+        artworkStatus: order.artworkStatus,
+        operator: order.operator,
         previewable: previewableTypes.includes(item.artwork.fileType),
         reviewNotes: override?.reviewNotes ?? item.artwork.notes ?? '',
       }
@@ -184,6 +272,10 @@ export function getAdminDashboardStats(orders: AdminOrder[], uploads: AdminUploa
     latestUploads: uploads.filter((upload) => upload.status === 'pending' || upload.status === 'reuploaded').length,
     recentCustomers: getAdminCustomerSummaries(orders).slice(0, 5).length,
     revenueHint: orders.reduce((sum, order) => sum + order.total, 0),
+    urgentOrders: orders.filter((order) => order.priority === 'urgent').length,
+    artworkQueue: uploads.filter((upload) => upload.artworkStatus === 'pending_review' || upload.artworkStatus === 'needs_fix').length,
+    deliveryReady: orders.filter((order) => order.shippingStatus === 'ready_for_dispatch' || order.shippingStatus === 'label_pending').length,
+    productionToday: orders.filter((order) => ['printing', 'quality_check'].includes(order.productionStatus)).length,
     orderCounters: [
       { key: 'total', label: 'Pedidos totales', value: orders.length },
       { key: 'ready', label: 'Listos', value: orders.filter((order) => order.status === 'ready').length },

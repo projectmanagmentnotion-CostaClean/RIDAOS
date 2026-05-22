@@ -162,6 +162,36 @@ Ejemplos:
 - Contenido editable: `src/features/artwork-upload/product-rules/artworkProductRules.ts`
 - Controla: mensajes inteligentes para corrección y revisión del archivo
 
+## PREPRESS_CHECKS
+
+- Archivo visual: `src/features/prepress/checks/buildPrepressChecks.ts`
+- Contenido editable: `src/features/prepress/rules/productPrepressRulesets.ts`
+- Controla: checks avanzados mock de formato, DPI, sangrado, cutline, vector, color, capas y escala
+
+## PREPRESS_SCORE
+
+- Archivo visual: `src/features/prepress/scoring/scorePrepressChecks.ts`
+- Contenido editable: `src/features/prepress/rules/productPrepressRulesets.ts`
+- Controla: score 0-100, estado general y prioridad de correccion
+
+## PREPRESS_RECOMMENDATIONS
+
+- Archivo visual: `src/features/prepress/recommendations/buildPrepressRecommendations.ts`
+- Contenido editable: `src/features/prepress/rules/productPrepressRulesets.ts`
+- Controla: recomendaciones accionables para cliente y taller
+
+## PREPRESS_ADMIN_REVIEW
+
+- Archivo visual: `src/features/prepress/components/PrepressAdminReviewPanel.tsx`
+- Contenido editable: `src/features/prepress/rules/productPrepressRulesets.ts`
+- Controla: panel tecnico para admin uploads y detalle de pedido
+
+## PREPRESS_PRODUCT_RULESETS
+
+- Archivo visual: `src/features/prepress/rules/productPrepressRulesets.ts`
+- Contenido editable: `src/features/prepress/rules/productPrepressRulesets.ts`
+- Controla: checks requeridos, checks bloqueantes, thresholds y copy amigable por producto
+
 ## PRODUCT_DETAIL
 
 - Archivo visual: `src/features/products/product-detail/ProductExperiencePage.tsx`

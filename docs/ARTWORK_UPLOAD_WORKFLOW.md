@@ -22,6 +22,7 @@ No hay storage real, Supabase, auth ni APIs externas en esta fase.
 - Reglas por producto: `src/features/artwork-upload/product-rules/artworkProductRules.ts`
 - Validaciones mock: `src/features/artwork-upload/validation/validateArtworkFile.ts`
 - Mapeo de reglas: `src/features/artwork-upload/utils/resolveArtworkRule.ts`
+- Capa prepress avanzada: `src/features/prepress/*`
 - Capa storage preparada: `src/domain/storage/*`
 - Repos mock/future storage: `src/infrastructure/storage/*`
 
@@ -63,6 +64,11 @@ No hay storage real, Supabase, auth ni APIs externas en esta fase.
 - RGB/CMYK como aviso informativo mock
 - cutline si aplica
 - separacion entre disenos en DTF
+- vector / trazados
+- transparencia
+- panelado de vinilo
+- trim de tarjetas / papeleria
+- score global de readiness
 
 Estados:
 
@@ -78,6 +84,7 @@ Estados:
 - `PRODUCT_DETAIL`
 - `CART_DRAWER`
 - `ADMIN_UPLOAD_REVIEW`
+- `ADMIN_ORDER_DETAIL`
 
 ## Como anadir un nuevo producto
 
@@ -85,6 +92,7 @@ Estados:
 2. mapear el producto en `resolveArtworkRule.ts`
 3. si el configurador usa archivo, conectar `ArtworkUploadFlow`
 4. si debe llegar al admin, dejar `previewSummary` dentro de `artwork`
+5. si necesita criterio tecnico especifico, ajustar `src/features/prepress/rules/productPrepressRulesets.ts`
 
 ## Migracion futura a storage real / Supabase
 

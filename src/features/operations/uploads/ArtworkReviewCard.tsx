@@ -1,6 +1,7 @@
 import { uploadReviewStatusConfig, uploadReviewStatusOptions } from '../../../admin/config/uploadReviewStatuses'
 import type { AdminUploadReviewStatus } from '../../../admin/types/adminModels'
 import { artworkReviewChecklist } from '../../artwork-upload'
+import { PrepressAdminReviewPanel } from '../../prepress'
 import { getArtworkStatusLabel } from '../services/operationsMappers'
 import type { OperationsUploadRecord } from '../types/operations'
 
@@ -53,21 +54,7 @@ function ArtworkReviewCard({ upload, onStatusChange, onNotesChange }: ArtworkRev
           </div>
         )}
       </div>
-      {upload.previewSummary ? (
-        <div className="admin-upload-note">
-          <strong>Preview artwork</strong>
-          <p>
-            {upload.previewSummary.workflowStatus} · {upload.previewSummary.estimatedPhysicalSizeLabel}
-          </p>
-          <ul className="hint-list">
-            {upload.previewSummary.checks.slice(0, 3).map((check) => (
-              <li key={check.id}>
-                {check.label}: {check.message}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
+      {upload.previewSummary ? <PrepressAdminReviewPanel summary={upload.previewSummary} /> : null}
       <label className="field-group">
         <span className="field-label">Estado de revision</span>
         <select
@@ -92,7 +79,7 @@ function ArtworkReviewCard({ upload, onStatusChange, onNotesChange }: ArtworkRev
         />
       </label>
       <div className="admin-upload-note">
-        <strong>Checklist de producción</strong>
+        <strong>Checklist de produccion</strong>
         <ul className="hint-list">
           {artworkReviewChecklist.map((item) => (
             <li key={item}>{item}</li>

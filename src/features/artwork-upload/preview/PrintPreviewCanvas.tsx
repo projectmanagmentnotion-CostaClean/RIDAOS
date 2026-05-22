@@ -32,9 +32,10 @@ export function PrintPreviewCanvas({ metadata, ruleKey }: PrintPreviewCanvasProp
       {rule.guide.showSafeZone ? <div className="print-preview-canvas__safezone" aria-hidden="true" /> : null}
 
       <div className="print-preview-canvas__legend" aria-hidden="true">
+        <span>Linea de corte {rule.guide.showCutline ? 'activa' : 'no requerida'}</span>
         <span>Sangrado {rule.guide.bleedMm} mm</span>
         <span>Zona segura {rule.guide.safeMarginMm} mm</span>
-        <span>Orientación {metadata?.orientation ?? rule.guide.preferredOrientation}</span>
+        <span>Orientacion {metadata?.orientation ?? rule.guide.preferredOrientation}</span>
       </div>
     </div>
   )

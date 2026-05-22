@@ -20,6 +20,7 @@ import AdminApprovalChainsPanel from '../../features/admin-accounts/components/A
 import AdminAuditTrailList from '../../features/admin-accounts/components/AdminAuditTrailList'
 import { adminMockUsers } from '../../features/admin-accounts/mock/adminAccountsMockData'
 import { resolveMockUser } from '../../features/admin-accounts/services/adminAccountsService'
+import { PrepressAdminReviewPanel } from '../../features/prepress'
 import InternalNotesComposer from '../../features/operations/notes/InternalNotesComposer'
 import ProductionPipelineTimeline from '../../features/operations/timeline/ProductionPipelineTimeline'
 import { getOperationsOrderDetail, getOperationsOrders } from '../../features/operations/services/operationsService'
@@ -380,6 +381,7 @@ function OrderDetailPage() {
                     <p className="admin-inline-note">
                       Archivo recibido para comprobacion. {item.artwork.notes || 'Pendiente de dejar comentario interno.'}
                     </p>
+                    {item.artwork.previewSummary ? <PrepressAdminReviewPanel summary={item.artwork.previewSummary} /> : null}
                   </div>
                   <strong>{formatCurrency(item.pricing.total)}</strong>
                 </article>

@@ -30,6 +30,41 @@ export type ArtworkValidationCheck = {
   message: string
 }
 
+export type PrepressCheckStatus = 'pass' | 'warning' | 'fail' | 'info'
+
+export type PrepressCheckSeverity = 'low' | 'medium' | 'high' | 'critical'
+
+export type PrepressReadinessState = 'print_ready' | 'minor_warnings' | 'needs_review' | 'blocked'
+
+export type PrepressCheckDefinition = {
+  id:
+    | 'file_format_check'
+    | 'file_size_check'
+    | 'dpi_check'
+    | 'bleed_check'
+    | 'safe_area_check'
+    | 'cutline_check'
+    | 'vector_check'
+    | 'color_mode_check'
+    | 'transparency_check'
+    | 'font_outline_check'
+    | 'layer_structure_check'
+    | 'scale_check'
+    | 'orientation_check'
+    | 'dtf_spacing_check'
+    | 'sticker_contour_check'
+    | 'card_trim_check'
+    | 'vinyl_panel_check'
+  status: PrepressCheckStatus
+  severity: PrepressCheckSeverity
+  title: string
+  description: string
+  recommendation: string
+  productApplicability: ArtworkProductRuleKey[]
+  productionImpact: string
+  blocking: boolean
+}
+
 export type ArtworkRecommendation = {
   id: string
   message: string
@@ -96,13 +131,20 @@ export type MockStorageFile = {
 export type ArtworkValidationResult = {
   ruleKey: ArtworkProductRuleKey
   workflowStatus: ArtworkValidationState
+  readinessScore: number
+  readinessState: PrepressReadinessState
   orientation: ArtworkOrientation
   fileName: string
   formatLabel: string
   fileSizeLabel: string
   estimatedPhysicalSizeLabel: string
   checks: ArtworkValidationCheck[]
+  advancedChecks: PrepressCheckDefinition[]
   recommendations: ArtworkRecommendation[]
+  customerSummary: string
+  suggestedActionLabel: string
+  templateRecommendation?: string
+  productionImpactSummary?: string
 }
 
 export type ArtworkPreview = {

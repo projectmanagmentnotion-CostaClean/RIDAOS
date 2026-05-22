@@ -168,7 +168,17 @@ export function enrichOperationsOrder(order: AdminOrder): OperationsOrderRecord 
 export function enrichOperationsUpload(upload: AdminUploadRecord, ordersById: Map<string, OperationsOrderRecord>): OperationsUploadRecord {
   const order = ordersById.get(upload.orderId)
   const validationState =
-    upload.status === 'needs_fix' ? 'blocked' : upload.status === 'pending' ? 'warning' : 'ready'
+    upload.previewSummary?.workflowStatus === 'blocked'
+      ? 'blocked'
+      : upload.previewSummary?.workflowStatus === 'ready'
+        ? 'ready'
+        : upload.previewSummary?.workflowStatus
+          ? 'warning'
+          : upload.status === 'needs_fix'
+            ? 'blocked'
+            : upload.status === 'pending'
+              ? 'warning'
+              : 'ready'
 
   return {
     ...upload,

@@ -113,6 +113,7 @@ Responsabilidades:
 2. metadata -> preview visual
 3. preview -> `PreviewAsset` derivado
 4. review/admin usan el mismo resumen serializable
+5. `features/prepress` consume el mismo contrato para score, checks avanzados y admin review
 
 ## Transicion futura a Supabase Storage
 
@@ -122,6 +123,7 @@ Paso previsto:
 2. sustituir `createLocalFileRecord` por upload real a bucket
 3. persistir `ArtworkReview` y `PreviewAsset`
 4. mantener intactas UI, hooks y componentes
+5. conectar un motor real de preflight sin cambiar el contrato `ArtworkValidationResult`
 
 ## Compatibilidad legacy
 

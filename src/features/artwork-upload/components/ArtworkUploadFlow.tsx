@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { PrepressSummaryPanel } from '../../prepress'
 import { useArtworkUploadFlow } from '../hooks/useArtworkUploadFlow'
 import { PrintPreviewCanvas } from '../preview/PrintPreviewCanvas'
 import type { ArtworkPreviewSummary, ArtworkProductRuleKey, ArtworkUploadFlowState } from '../types/artworkUpload'
@@ -23,7 +24,7 @@ function getStatusLabel(status: ArtworkPreviewSummary['workflowStatus']) {
     case 'blocked':
       return 'Bloqueado'
     case 'needs_review':
-      return 'Revisión manual'
+      return 'Revision manual'
     case 'warning':
       return 'Advertencias'
     case 'ready':
@@ -37,7 +38,7 @@ export function ArtworkUploadFlow({
   onFileChange,
   ruleKey,
   title = 'Artwork upload y preview',
-  description = 'Sube el archivo, revisa las guías y confirma la pieza antes de continuar.',
+  description = 'Sube el archivo, revisa las guias y confirma la pieza antes de continuar.',
   showUploadField = true,
   acceptedFormats,
   onStateChange,
@@ -80,7 +81,7 @@ export function ArtworkUploadFlow({
             onChange={(event) => onFileChange(event.target.files?.[0] ?? null)}
             type="file"
           />
-          <span className="file-meta">{metadata?.fileName ?? 'Todavía no has cargado un archivo.'}</span>
+          <span className="file-meta">{metadata?.fileName ?? 'Todavia no has cargado un archivo.'}</span>
           <span className="file-meta">{rule.helperCopy}</span>
         </label>
       ) : null}
@@ -92,9 +93,9 @@ export function ArtworkUploadFlow({
 
         <div className="summary-stack">
           <article className="content-card artwork-upload-flow__panel">
-            <p className="section-label">Revisión automática mock</p>
-            {isLoading ? <p>Analizando archivo local…</p> : null}
-            {!summary && !isLoading ? <p>Sube tu diseño para activar checks, guías y confirmación.</p> : null}
+            <p className="section-label">Revision automatica mock</p>
+            {isLoading ? <p>Analizando archivo local...</p> : null}
+            {!summary && !isLoading ? <p>Sube tu diseño para activar checks, guias y confirmacion.</p> : null}
             {summary ? (
               <div className="summary-list compact-summary">
                 <div className="summary-row">
@@ -106,29 +107,32 @@ export function ArtworkUploadFlow({
                   <strong>{summary.formatLabel}</strong>
                 </div>
                 <div className="summary-row">
-                  <span>Tamaño</span>
+                  <span>Tamano</span>
                   <strong>{summary.fileSizeLabel}</strong>
                 </div>
                 <div className="summary-row">
-                  <span>Guía base</span>
+                  <span>Guia base</span>
                   <strong>{summary.estimatedPhysicalSizeLabel}</strong>
                 </div>
               </div>
             ) : null}
           </article>
 
+          {summary ? <PrepressSummaryPanel summary={summary} /> : null}
+
           {summary ? (
             <article className="content-card artwork-upload-flow__panel" data-cursor="interactive">
-              <p className="section-label">ARTWORK_VALIDATION_RULES</p>
+              <p className="section-label">PREPRESS_CHECKS</p>
               <div className="admin-list-card">
-                {summary.checks.map((check) => (
+                {summary.advancedChecks.map((check) => (
                   <article className="admin-list-row admin-list-row-block" key={check.id}>
                     <div>
-                      <strong>{check.label}</strong>
-                      <p>{check.message}</p>
+                      <strong>{check.title}</strong>
+                      <p>{check.description}</p>
+                      <small>{check.productionImpact}</small>
                     </div>
-                    <span className={`status-badge status-${check.status === 'blocked' ? 'danger' : check.status === 'needs_review' ? 'warning' : check.status === 'warning' ? 'warning' : 'success'}`}>
-                      {getStatusLabel(check.status)}
+                    <span className={`status-badge status-${check.status === 'fail' ? 'danger' : check.status === 'warning' ? 'warning' : check.status === 'pass' ? 'success' : 'info'}`}>
+                      {check.status}
                     </span>
                   </article>
                 ))}
@@ -140,12 +144,13 @@ export function ArtworkUploadFlow({
 
       {summary ? (
         <article className="content-card artwork-upload-flow__panel" data-cursor="interactive">
-          <p className="section-label">ARTWORK_RECOMMENDATIONS</p>
+          <p className="section-label">PREPRESS_RECOMMENDATIONS</p>
           <ul className="hint-list">
             {summary.recommendations.map((recommendation) => (
               <li key={recommendation.id}>{recommendation.message}</li>
             ))}
           </ul>
+          {summary.templateRecommendation ? <p className="inline-notice">Plantilla recomendada: {summary.templateRecommendation}</p> : null}
           <div className="catalog-card-actions">
             <button
               className="action-button"
@@ -166,7 +171,7 @@ export function ArtworkUploadFlow({
           {confirmed ? (
             <p className="inline-notice">Archivo confirmado para seguir con el flujo mock.</p>
           ) : (
-            <p className="inline-notice">Confirma el archivo cuando hayas revisado guías, warnings y escala.</p>
+            <p className="inline-notice">{summary.suggestedActionLabel}. Revisa score, guias y correcciones antes de confirmar.</p>
           )}
         </article>
       ) : null}

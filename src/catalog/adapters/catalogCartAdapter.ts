@@ -2,7 +2,7 @@ import type { ConfigState } from '../../lib/configuratorState'
 import type { CartItem } from '../../types/ecommerce'
 import type { CatalogEntry } from '../../types/product'
 import type { CatalogPricingResult } from './catalogPricingAdapter'
-import type { ArtworkPreviewSummary } from '../../features/artwork-upload'
+import type { ArtworkPreviewSummary } from '../../domain/storage'
 
 type UploadMeta = {
   fileName?: string

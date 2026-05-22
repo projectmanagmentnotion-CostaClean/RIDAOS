@@ -1,5 +1,5 @@
 import type { DTFQuality, DTFUrgency } from '../lib/pricing'
-import type { ArtworkPreviewSummary } from '../features/artwork-upload'
+import type { ArtworkUploadRecord } from '../domain/storage'
 
 export type OrderStatus =
   | 'pending_review'
@@ -25,19 +25,7 @@ export type Customer = {
   updatedAt: string
 }
 
-export type ArtworkUpload = {
-  id: string
-  orderId?: string
-  itemId: string
-  fileName: string
-  fileType: string
-  fileSize: number
-  formatLabel: string
-  status: OrderStatus
-  uploadedAt: string
-  notes?: string
-  previewSummary?: ArtworkPreviewSummary
-}
+export type ArtworkUpload = ArtworkUploadRecord
 
 export type OrderItem = {
   id: string

@@ -11,6 +11,7 @@ import { useOperationsDispatch } from '../../features/operations/hooks/useOperat
 import { useOperationsDashboard } from '../../features/operations/hooks/useOperationsDashboard'
 import ClientServiceDashboardWidgets from '../../features/operations/client-service/components/ClientServiceDashboardWidgets'
 import { useOperationsClientService } from '../../features/operations/client-service/hooks/useOperationsClientService'
+import { ReportPreviewPanel, buildAdminKpiReport } from '../../features/reporting'
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('es-ES', {
@@ -36,6 +37,10 @@ function DashboardPage() {
   const { capacity } = useOperationsCapacity()
   const { dashboard: dispatch } = useOperationsDispatch()
   const { dashboard: clientService } = useOperationsClientService()
+  const kpiReport =
+    dashboard && capacity && dispatch && clientService
+      ? buildAdminKpiReport({ dashboard, capacity, dispatch, clientService })
+      : null
 
   return (
     <AdminShell
@@ -94,6 +99,13 @@ function DashboardPage() {
       ) : null}
 
       <div className="admin-two-column">
+        <AdminSection
+          description="Exporta un snapshot mock de KPIs, urgentes y lectura operativa del panel."
+          title="KPI report"
+        >
+          {kpiReport ? <ReportPreviewPanel report={kpiReport} title="REPORT_ADMIN_KPIS" /> : null}
+        </AdminSection>
+
         <AdminSection
           actions={
             <div className="catalog-card-actions">

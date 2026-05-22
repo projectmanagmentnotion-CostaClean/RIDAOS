@@ -12,6 +12,7 @@ const adminNavigation = [
   { href: '#/admin/content', label: 'Content Studio' },
   { href: '#/admin/service', label: 'Client service' },
   { href: '#/admin/accounts', label: 'Accounts' },
+  { href: '#/admin/reporting', label: 'Reporting' },
   { href: '#/admin/orders', label: 'Pedidos' },
   { href: '#/admin/uploads', label: 'Artwork review' },
   { href: '#/admin/customers', label: 'Clientes' },

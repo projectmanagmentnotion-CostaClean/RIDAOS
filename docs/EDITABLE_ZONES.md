@@ -216,6 +216,42 @@ Ejemplos:
 - Contenido editable: `src/infrastructure/storage/mock/mockProductTemplateRepository.ts`
 - Controla: selector de formato, formato recomendado y fallback de descarga
 
+## REPORTING_CENTER
+
+- Archivo visual: `src/admin/pages/ReportingPage.tsx`
+- Contenido editable: `src/features/reporting/mock/reportDefinitions.ts`
+- Controla: catalogo central de reportes, historial mock y preview KPI
+
+## REPORT_EXPORTS
+
+- Archivo visual: `src/features/reporting/components/ReportPreviewPanel.tsx`
+- Contenido editable: `src/features/reporting/mock/reportDefinitions.ts`
+- Controla: selector de formato, export JSON/CSV, print view mock y placeholder de PDF
+
+## REPORT_ORDER_SUMMARY
+
+- Archivo visual: `src/features/reporting/services/reportingService.ts`
+- Contenido editable: `src/features/reporting/mock/reportDefinitions.ts`
+- Controla: resumen exportable del pedido con cliente, produccion y entrega
+
+## REPORT_PRODUCTION_SHEET
+
+- Archivo visual: `src/features/reporting/services/reportingService.ts`
+- Contenido editable: `src/features/reporting/mock/reportDefinitions.ts`
+- Controla: hoja de produccion mock con cola, maquina, slot y notas
+
+## REPORT_PREPRESS_CHECKS
+
+- Archivo visual: `src/features/reporting/services/reportingService.ts`
+- Contenido editable: `src/features/reporting/mock/reportDefinitions.ts`
+- Controla: score, checks clave y recomendaciones del reporte tecnico de artwork
+
+## REPORT_ADMIN_KPIS
+
+- Archivo visual: `src/features/reporting/services/reportingService.ts`
+- Contenido editable: `src/features/reporting/mock/reportDefinitions.ts`
+- Controla: snapshot ejecutivo mock con KPIs de operaciones, service, dispatch y capacidad
+
 ## PRODUCT_DETAIL
 
 - Archivo visual: `src/features/products/product-detail/ProductExperiencePage.tsx`

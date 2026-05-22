@@ -13,6 +13,7 @@ import { defaultClientServiceFilters, useOperationsClientService } from '../../f
 import { getClientServiceTemplatePreviewData } from '../../features/operations/client-service/services/clientServiceService'
 import type { ClientServiceFilters } from '../../features/operations/client-service/types/clientService'
 import { resolveMockUser } from '../../features/admin-accounts/services/adminAccountsService'
+import { ReportPreviewPanel, buildClientServiceReport } from '../../features/reporting'
 
 /**
  * Editable Zones:
@@ -30,6 +31,7 @@ function ClientServicePage() {
   const { dashboard, tickets } = useOperationsClientService(filters)
   const messagePreviewSource = tickets[0]
   const messagePreviews = messagePreviewSource ? getClientServiceTemplatePreviewData(messagePreviewSource) : []
+  const clientServiceReport = messagePreviewSource ? buildClientServiceReport(messagePreviewSource) : null
 
   return (
     <AdminShell
@@ -147,6 +149,15 @@ function ClientServicePage() {
       </div>
 
       <div className="admin-two-column">
+        {clientServiceReport ? (
+          <AdminSection
+            description="Resumen exportable mock del ticket, SLA, approval y escalado actual."
+            title="Client service report"
+          >
+            <ReportPreviewPanel report={clientServiceReport} title="REPORT_EXPORTS" />
+          </AdminSection>
+        ) : null}
+
         <AdminSection description="Previews premium de mensajes, sin envio real." title="Response templates">
           {messagePreviews.length ? (
             <ClientServiceTemplatePreviewList items={messagePreviews} />

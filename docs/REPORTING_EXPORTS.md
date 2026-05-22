@@ -1,0 +1,71 @@
+# Reporting Exports
+
+## Objetivo
+
+Preparar una capa mock de reportes y exportaciones operativas antes de conectar almacenamiento, PDF real o integraciones externas.
+
+No hay:
+
+- Supabase real
+- auth real
+- APIs reales
+- PDF legal final
+- emails reales
+
+## Arquitectura
+
+Ruta principal: `src/features/reporting/`
+
+Capas:
+
+- `components/`
+- `hooks/`
+- `services/`
+- `mock/`
+- `types/`
+- `utils/`
+- `exporters/`
+
+## Tipos de reporte
+
+- `ORDER_SUMMARY`
+- `PRODUCTION_SHEET`
+- `ARTWORK_REVIEW_REPORT`
+- `PREPRESS_CHECK_REPORT`
+- `DISPATCH_REPORT`
+- `DELIVERY_HANDOFF_REPORT`
+- `CLIENT_SERVICE_REPORT`
+- `CAPACITY_REPORT`
+- `ADMIN_KPI_REPORT`
+
+## Formatos disponibles
+
+- `JSON`
+- `CSV`
+- `PRINT_VIEW`
+
+`PDF proximamente` queda visible en UI, pero no implementado todavia.
+
+## Integraciones actuales
+
+- `#/admin/reporting`
+- `#/admin`
+- `#/admin/orders/:id`
+- `#/admin/production`
+- `#/admin/uploads`
+- `#/admin/service`
+
+## Exportacion mock
+
+- JSON: descarga serializada del reporte
+- CSV: flatten de secciones a filas
+- PRINT_VIEW: ventana imprimible mock en navegador
+
+## Migracion futura
+
+Cuando llegue la fase real:
+
+1. mantener `ReportDocument` como shape intermedio
+2. sustituir exportadores locales por generadores PDF/asset reales
+3. conectar repositorios de reportes si hace falta persistencia
+4. mantener las mismas integraciones UI

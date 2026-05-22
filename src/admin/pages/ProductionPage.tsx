@@ -15,6 +15,7 @@ import type { DispatchBoardColumns, OperationsOrderRecord } from '../../features
 import { useEffect, useState } from 'react'
 import { getNextShippingStatus } from '../../features/operations/dispatch/dispatchService'
 import { resolveMockUser } from '../../features/admin-accounts/services/adminAccountsService'
+import { ReportPreviewPanel, buildDispatchReport, buildProductionSheetReport } from '../../features/reporting'
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('es-ES', {
@@ -37,6 +38,8 @@ function ProductionPage() {
   const [stats, setStats] = useState<Awaited<ReturnType<typeof getProductionOperations>>['stats'] | null>(null)
   const [dispatchBoard, setDispatchBoard] = useState<DispatchBoardColumns | null>(null)
   const { schedule } = useOperationsCapacity()
+  const productionReport = orders.length ? buildProductionSheetReport(orders) : null
+  const dispatchReport = dispatchBoard ? buildDispatchReport(dispatchBoard) : null
 
   useEffect(() => {
     let cancelled = false
@@ -176,6 +179,26 @@ function ProductionPage() {
           />
         </AdminSection>
       ) : null}
+
+      <div className="admin-two-column">
+        {productionReport ? (
+          <AdminSection
+            description="Hoja operativa mock de produccion para compartir internamente o imprimir."
+            title="Production sheet"
+          >
+            <ReportPreviewPanel report={productionReport} title="REPORT_PRODUCTION_SHEET" />
+          </AdminSection>
+        ) : null}
+
+        {dispatchReport ? (
+          <AdminSection
+            description="Resumen mock de packing, pickup, entregas e incidencias activas."
+            title="Dispatch report"
+          >
+            <ReportPreviewPanel report={dispatchReport} title="REPORT_EXPORTS" />
+          </AdminSection>
+        ) : null}
+      </div>
     </AdminShell>
   )
 }

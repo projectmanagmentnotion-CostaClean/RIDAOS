@@ -21,6 +21,7 @@ import AdminAuditTrailList from '../../features/admin-accounts/components/AdminA
 import { adminMockUsers } from '../../features/admin-accounts/mock/adminAccountsMockData'
 import { resolveMockUser } from '../../features/admin-accounts/services/adminAccountsService'
 import { PrepressAdminReviewPanel } from '../../features/prepress'
+import { ReportPreviewPanel, buildDeliveryHandoffReport, buildOrderSummaryReport } from '../../features/reporting'
 import InternalNotesComposer from '../../features/operations/notes/InternalNotesComposer'
 import ProductionPipelineTimeline from '../../features/operations/timeline/ProductionPipelineTimeline'
 import { getOperationsOrderDetail, getOperationsOrders } from '../../features/operations/services/operationsService'
@@ -178,6 +179,8 @@ function OrderDetailPage() {
   const deliveryMessages = useMemo(() => (order ? buildDeliveryMessagePreviews(order) : []), [order])
   const clientServiceMeta = useMemo(() => (order ? getClientServiceSummaryMeta(order) : null), [order])
   const clientServiceTemplates = useMemo(() => (order ? getClientServiceTemplatePreviewData(order) : []), [order])
+  const orderSummaryReport = useMemo(() => (order ? buildOrderSummaryReport(order) : null), [order])
+  const handoffReport = useMemo(() => (order ? buildDeliveryHandoffReport(order) : null), [order])
 
   if (!orderId || !order) {
     return (
@@ -397,6 +400,25 @@ function OrderDetailPage() {
               <TimelineBlock items={order.timeline} />
             </article>
           </AdminSection>
+
+          <div className="admin-two-column">
+            {orderSummaryReport ? (
+              <AdminSection
+                description="Resumen exportable mock del pedido con lectura operativa y comercial."
+                title="Order summary"
+              >
+                <ReportPreviewPanel report={orderSummaryReport} title="REPORT_ORDER_SUMMARY" />
+              </AdminSection>
+            ) : null}
+            {handoffReport ? (
+              <AdminSection
+                description="Documento de handoff mock para salida, tracking y entrega."
+                title="Delivery handoff"
+              >
+                <ReportPreviewPanel report={handoffReport} title="REPORT_EXPORTS" />
+              </AdminSection>
+            ) : null}
+          </div>
 
           <AdminSection
             description="Pipeline visual reusable para mover el pedido por arte, produccion y salida."

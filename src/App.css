@@ -5405,6 +5405,11 @@ body.lenis {
   height: 100%;
 }
 
+.report-preview-panel {
+  display: grid;
+  gap: 1rem;
+}
+
 @media (max-width: 900px) {
   .artwork-upload-flow__grid {
     grid-template-columns: 1fr;

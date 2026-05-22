@@ -7,6 +7,7 @@ import { listAdminUploads, updateAdminUploadNotes, updateAdminUploadStatus } fro
 import type { OperationsUploadRecord } from '../../features/operations/types/operations'
 import { useOperationsUploads } from '../../features/operations/hooks/useOperationsUploads'
 import ArtworkReviewCard from '../../features/operations/uploads/ArtworkReviewCard'
+import { ReportPreviewPanel, buildArtworkReviewReport, buildPrepressCheckReport } from '../../features/reporting'
 
 /**
  * Editable Zone: ADMIN_UPLOAD_REVIEW
@@ -20,6 +21,7 @@ import ArtworkReviewCard from '../../features/operations/uploads/ArtworkReviewCa
 function UploadsPage() {
   const { uploads, setUploads } = useOperationsUploads()
   const [search, setSearch] = useState('')
+  const firstUpload = uploads[0]
 
   const refreshUploads = async () => {
     const next = await listAdminUploads()
@@ -89,6 +91,23 @@ function UploadsPage() {
           </div>
         )}
       </AdminSection>
+
+      {firstUpload ? (
+        <div className="admin-two-column">
+          <AdminSection
+            description="Exportacion mock de la ficha de revision del primer upload activo."
+            title="Artwork review report"
+          >
+            <ReportPreviewPanel report={buildArtworkReviewReport(firstUpload)} title="REPORT_EXPORTS" />
+          </AdminSection>
+          <AdminSection
+            description="Reporte tecnico de prepress, score y checks clave del upload seleccionado."
+            title="Prepress check report"
+          >
+            <ReportPreviewPanel report={buildPrepressCheckReport(firstUpload)} title="REPORT_PREPRESS_CHECKS" />
+          </AdminSection>
+        </div>
+      ) : null}
     </AdminShell>
   )
 }

@@ -1,5 +1,6 @@
 export * from './layouts/OperationalDocumentLayout'
 export * from './mock/documentDefinitions'
+export * from './pdf'
 export * from './print/documentPrintMode'
 export * from './services/documentMapper'
 export * from './services/documentPrintService'

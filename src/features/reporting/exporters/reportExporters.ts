@@ -1,4 +1,5 @@
-import { mapReportToDocument, openDocumentPrintView } from '../../documents'
+import { createPdfEngine, mapReportToDocument, openDocumentPrintView } from '../../documents'
+import type { PdfExportResult } from '../../documents'
 import type { ReportDocument } from '../types/reporting'
 import { serializeReportToCsv } from '../utils/reportCsv'
 
@@ -28,4 +29,14 @@ export function exportReportAsCsv(report: ReportDocument) {
 
 export function openReportPrintView(report: ReportDocument) {
   openDocumentPrintView(mapReportToDocument(report))
+}
+
+export async function exportReportAsPdf(report: ReportDocument): Promise<PdfExportResult> {
+  const engine = createPdfEngine('browser_print')
+
+  return engine.export({
+    document: mapReportToDocument(report),
+    filename: `${report.id}.pdf`,
+    mode: 'browser_print',
+  })
 }

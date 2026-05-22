@@ -226,7 +226,7 @@ Ejemplos:
 
 - Archivo visual: `src/features/reporting/components/ReportPreviewPanel.tsx`
 - Contenido editable: `src/features/reporting/mock/reportDefinitions.ts`
-- Controla: selector de formato, export JSON/CSV, print view mock y placeholder de PDF
+- Controla: selector de formato, export JSON/CSV, print view mock y puente al engine PDF futuro
 
 ## REPORT_ORDER_SUMMARY
 

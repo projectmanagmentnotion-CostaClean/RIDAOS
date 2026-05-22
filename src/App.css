@@ -5410,6 +5410,17 @@ body.lenis {
   gap: 1rem;
 }
 
+.report-export-action {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.report-export-feedback {
+  margin: 0;
+  font-size: 0.82rem;
+  color: rgba(226, 232, 240, 0.72);
+}
+
 /* ================================
    Document Export System
 ================================ */

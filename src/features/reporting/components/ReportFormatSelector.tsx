@@ -10,6 +10,7 @@ const labels: Record<ReportFormat, string> = {
   json: 'JSON',
   csv: 'CSV',
   print_view: 'PRINT_VIEW',
+  pdf: 'PDF',
 }
 
 export function ReportFormatSelector({ formats, value, onChange }: ReportFormatSelectorProps) {

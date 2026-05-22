@@ -45,8 +45,9 @@ Capas:
 - `JSON`
 - `CSV`
 - `PRINT_VIEW`
+- `PDF` via engine placeholder
 
-`PDF proximamente` queda visible en UI, pero no implementado todavia.
+`PDF` ya pasa por una interfaz unica de engine, pero de momento resuelve en `browser_print` y abre la vista imprimible. No genera un PDF real todavia.
 
 ## Integraciones actuales
 
@@ -67,6 +68,7 @@ Capas:
 - `DocumentTimelineBlock`
 - `DocumentChecklistBlock`
 - `DocumentSignatureBlock`
+- `pdf/` con engine, adapters y factory
 
 El `PRINT_VIEW` ya no depende de HTML inline improvisado. Ahora usa un contrato documental mock y estilos print-safe preparados para una futura capa PDF.
 
@@ -85,3 +87,4 @@ Cuando llegue la fase real:
 3. conectar repositorios de reportes si hace falta persistencia
 4. mantener las mismas integraciones UI
 5. sustituir `future_pdf` por un renderer real sin reescribir reporting
+6. mantener `browser_print` como fallback aunque exista el motor PDF real

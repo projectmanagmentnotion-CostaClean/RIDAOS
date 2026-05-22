@@ -7,7 +7,7 @@ export const reportDefinitions: ReportDefinition[] = [
     description: 'Resumen operativo y comercial del pedido con estado, owner, arte y salida.',
     relatedEntity: 'order',
     sections: ['Cliente', 'Importes', 'Produccion', 'Entrega'],
-    availableFormats: ['json', 'csv', 'print_view'],
+    availableFormats: ['json', 'csv', 'print_view', 'pdf'],
     status: 'ready',
   },
   {
@@ -16,7 +16,7 @@ export const reportDefinitions: ReportDefinition[] = [
     description: 'Hoja de produccion mock con cola, maquina, slot y observaciones de taller.',
     relatedEntity: 'production',
     sections: ['Queue', 'Machine', 'Checklist'],
-    availableFormats: ['json', 'csv', 'print_view'],
+    availableFormats: ['json', 'csv', 'print_view', 'pdf'],
     status: 'ready',
   },
   {
@@ -25,7 +25,7 @@ export const reportDefinitions: ReportDefinition[] = [
     description: 'Ficha tecnica del archivo con estado de revision y notas operativas.',
     relatedEntity: 'upload',
     sections: ['Metadata', 'Revision', 'Checklist'],
-    availableFormats: ['json', 'csv', 'print_view'],
+    availableFormats: ['json', 'csv', 'print_view', 'pdf'],
     status: 'ready',
   },
   {
@@ -34,7 +34,7 @@ export const reportDefinitions: ReportDefinition[] = [
     description: 'Reporte tecnico con score, warnings, bloqueos e impacto de produccion.',
     relatedEntity: 'prepress',
     sections: ['Score', 'Checks', 'Recomendaciones'],
-    availableFormats: ['json', 'csv', 'print_view'],
+    availableFormats: ['json', 'csv', 'print_view', 'pdf'],
     status: 'ready',
   },
   {
@@ -43,7 +43,7 @@ export const reportDefinitions: ReportDefinition[] = [
     description: 'Vista de packing, pickup, delivery queue e incidencias de salida.',
     relatedEntity: 'dispatch',
     sections: ['Packing', 'Delivery queue', 'Incidents'],
-    availableFormats: ['json', 'csv', 'print_view'],
+    availableFormats: ['json', 'csv', 'print_view', 'pdf'],
     status: 'ready',
   },
   {
@@ -52,7 +52,7 @@ export const reportDefinitions: ReportDefinition[] = [
     description: 'Documento operativo mock para pickup, tracking y entrega.',
     relatedEntity: 'dispatch',
     sections: ['Handoff', 'Tracking', 'Ventana'],
-    availableFormats: ['json', 'csv', 'print_view'],
+    availableFormats: ['json', 'csv', 'print_view', 'pdf'],
     status: 'ready',
   },
   {
@@ -61,7 +61,7 @@ export const reportDefinitions: ReportDefinition[] = [
     description: 'Resumen de ticket, SLA, approval y escalado interno.',
     relatedEntity: 'client_service',
     sections: ['Ticket', 'SLA', 'Templates'],
-    availableFormats: ['json', 'csv', 'print_view'],
+    availableFormats: ['json', 'csv', 'print_view', 'pdf'],
     status: 'ready',
   },
   {
@@ -70,7 +70,7 @@ export const reportDefinitions: ReportDefinition[] = [
     description: 'Capacidad diaria, carga por operador, slots y entregas cercanas.',
     relatedEntity: 'capacity',
     sections: ['Capacidad', 'Workload', 'Slots'],
-    availableFormats: ['json', 'csv', 'print_view'],
+    availableFormats: ['json', 'csv', 'print_view', 'pdf'],
     status: 'ready',
   },
   {
@@ -79,7 +79,7 @@ export const reportDefinitions: ReportDefinition[] = [
     description: 'Resumen ejecutivo mock con KPIs de operaciones, service, capacity y dispatch.',
     relatedEntity: 'admin_kpi',
     sections: ['KPIs', 'Urgentes', 'Actividad'],
-    availableFormats: ['json', 'csv', 'print_view'],
+    availableFormats: ['json', 'csv', 'print_view', 'pdf'],
     status: 'ready',
   },
 ]

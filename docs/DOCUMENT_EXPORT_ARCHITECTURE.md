@@ -22,6 +22,7 @@ Ruta: `src/features/documents/`
 - `mock/`
 - `utils/`
 - `print/` reservado para la siguiente fase si hace falta separar CSS y serializers
+- `pdf/` para engine, adapters y factory del futuro PDF real
 
 ## Contratos
 
@@ -75,6 +76,7 @@ Cuando llegue la fase real, las opciones razonables son:
 Recomendacion pragmatica:
 
 1. mantener `DocumentDefinition`
-2. crear `FuturePdfDocumentRepository` o `PdfRenderService`
+2. resolver engine con `pdfEngineFactory`
 3. mapear `DocumentDefinition -> PDF engine`
-4. no tocar reporting ni los builders de reportes
+4. mantener `browser_print` como fallback activo
+5. no tocar reporting ni los builders de reportes

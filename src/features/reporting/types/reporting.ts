@@ -19,7 +19,7 @@ export type ReportEntity =
   | 'capacity'
   | 'admin_kpi'
 
-export type ReportFormat = 'json' | 'csv' | 'print_view'
+export type ReportFormat = 'json' | 'csv' | 'print_view' | 'pdf'
 
 export type ReportStatus = 'draft' | 'ready' | 'pending'
 

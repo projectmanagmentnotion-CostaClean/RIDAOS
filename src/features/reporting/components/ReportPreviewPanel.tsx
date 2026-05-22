@@ -30,9 +30,6 @@ export function ReportPreviewPanel({ report, title = 'REPORT_EXPORTS' }: ReportP
 
       <div className="catalog-card-actions">
         <ReportExportButton format={format} report={report} />
-        <button className="action-button action-button-muted" disabled type="button">
-          PDF proximamente
-        </button>
       </div>
 
       <OperationalDocumentLayout document={documentDefinition} mode="screen_preview" />

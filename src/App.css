@@ -5410,6 +5410,133 @@ body.lenis {
   gap: 1rem;
 }
 
+/* ================================
+   Document Export System
+================================ */
+
+.operational-document {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.document-header,
+.document-footer,
+.document-section-head,
+.document-metric-grid,
+.document-timeline,
+.document-checklist,
+.document-signature,
+.operational-document__body,
+.document-section,
+.document-section-body {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.document-meta {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.document-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.document-table td {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.document-table td:first-child {
+  color: rgba(255, 255, 255, 0.65);
+  width: 38%;
+}
+
+.document-metric-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.document-metric-card {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 0.8rem;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.document-metric-card strong {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 1.2rem;
+}
+
+.document-timeline-item {
+  display: grid;
+  gap: 0.15rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.document-checklist {
+  padding-left: 1.1rem;
+}
+
+.document-signature-line {
+  width: 12rem;
+  height: 1px;
+  background: currentColor;
+}
+
+@media print {
+  .site-header,
+  .site-footer,
+  .skip-link,
+  .custom-cursor,
+  .premium-cursor,
+  .cinematic-home-scroll,
+  .admin-sidebar,
+  .admin-topbar,
+  .catalog-card-actions,
+  .action-button {
+    display: none !important;
+  }
+
+  .page-shell,
+  .admin-main,
+  .admin-content,
+  .content-card,
+  .report-preview-panel {
+    background: #fff !important;
+    color: #111 !important;
+    box-shadow: none !important;
+    border: 0 !important;
+  }
+
+  .operational-document {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto;
+    padding: 12mm;
+    background: #fff;
+    color: #111;
+    break-inside: avoid;
+  }
+
+  .document-section,
+  .document-block {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .document-table td {
+    border-bottom: 1px solid #ddd;
+  }
+}
+
 @media (max-width: 900px) {
   .artwork-upload-flow__grid {
     grid-template-columns: 1fr;

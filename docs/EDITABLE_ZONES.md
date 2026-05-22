@@ -252,6 +252,42 @@ Ejemplos:
 - Contenido editable: `src/features/reporting/mock/reportDefinitions.ts`
 - Controla: snapshot ejecutivo mock con KPIs de operaciones, service, dispatch y capacidad
 
+## DOCUMENT_LAYOUTS
+
+- Archivo visual: `src/features/documents/layouts/OperationalDocumentLayout.tsx`
+- Contenido editable: `src/features/documents/mock/documentDefinitions.ts`
+- Controla: layout comun de documentos operativos para preview, print view y futuro PDF
+
+## DOCUMENT_PRINT_STYLES
+
+- Archivo visual: `src/App.css`
+- Contenido editable: `src/App.css`
+- Controla: A4, page breaks, tipografia compacta y ocultacion de chrome en impresion
+
+## DOCUMENT_ORDER_SUMMARY
+
+- Archivo visual: `src/features/documents/services/documentMapper.ts`
+- Contenido editable: `src/features/reporting/mock/reportDefinitions.ts`
+- Controla: version documental del resumen de pedido
+
+## DOCUMENT_PRODUCTION_SHEET
+
+- Archivo visual: `src/features/documents/services/documentMapper.ts`
+- Contenido editable: `src/features/reporting/mock/reportDefinitions.ts`
+- Controla: version documental de hoja de produccion
+
+## DOCUMENT_PREPRESS_REPORT
+
+- Archivo visual: `src/features/documents/services/documentMapper.ts`
+- Contenido editable: `src/features/reporting/mock/reportDefinitions.ts`
+- Controla: version documental de score, checks y recomendaciones tecnicas
+
+## DOCUMENT_DELIVERY_HANDOFF
+
+- Archivo visual: `src/features/documents/services/documentMapper.ts`
+- Contenido editable: `src/features/reporting/mock/reportDefinitions.ts`
+- Controla: version documental de handoff, tracking y firma mock
+
 ## PRODUCT_DETAIL
 
 - Archivo visual: `src/features/products/product-detail/ProductExperiencePage.tsx`

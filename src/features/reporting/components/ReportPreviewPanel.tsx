@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { OperationalDocumentLayout, mapReportToDocument } from '../../documents'
 import type { ReportDocument, ReportFormat } from '../types/reporting'
 import { ReportExportButton } from './ReportExportButton'
 import { ReportFormatSelector } from './ReportFormatSelector'
@@ -10,6 +11,7 @@ type ReportPreviewPanelProps = {
 
 export function ReportPreviewPanel({ report, title = 'REPORT_EXPORTS' }: ReportPreviewPanelProps) {
   const [format, setFormat] = useState<ReportFormat>(report.availableFormats[0] ?? 'json')
+  const documentDefinition = mapReportToDocument(report)
 
   return (
     <article className="content-card report-preview-panel" data-cursor="interactive">
@@ -33,22 +35,7 @@ export function ReportPreviewPanel({ report, title = 'REPORT_EXPORTS' }: ReportP
         </button>
       </div>
 
-      <div className="summary-stack">
-        {report.sections.map((section) => (
-          <article className="content-card" key={section.id}>
-            <p className="section-label">{section.title}</p>
-            {section.description ? <p>{section.description}</p> : null}
-            <div className="summary-list compact-summary">
-              {section.rows.map((row) => (
-                <div className="summary-row" key={`${section.id}-${row.label}`}>
-                  <span>{row.label}</span>
-                  <strong>{row.value}</strong>
-                </div>
-              ))}
-            </div>
-          </article>
-        ))}
-      </div>
+      <OperationalDocumentLayout document={documentDefinition} mode="screen_preview" />
     </article>
   )
 }

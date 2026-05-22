@@ -16,6 +16,8 @@ No hay:
 
 Ruta principal: `src/features/reporting/`
 
+Ruta documental preparada: `src/features/documents/`
+
 Capas:
 
 - `components/`
@@ -55,6 +57,19 @@ Capas:
 - `#/admin/uploads`
 - `#/admin/service`
 
+## Capa documental
+
+- `OperationalDocumentLayout`
+- `DocumentHeader`
+- `DocumentFooter`
+- `DocumentSectionBlock`
+- `DocumentMetricGrid`
+- `DocumentTimelineBlock`
+- `DocumentChecklistBlock`
+- `DocumentSignatureBlock`
+
+El `PRINT_VIEW` ya no depende de HTML inline improvisado. Ahora usa un contrato documental mock y estilos print-safe preparados para una futura capa PDF.
+
 ## Exportacion mock
 
 - JSON: descarga serializada del reporte
@@ -69,3 +84,4 @@ Cuando llegue la fase real:
 2. sustituir exportadores locales por generadores PDF/asset reales
 3. conectar repositorios de reportes si hace falta persistencia
 4. mantener las mismas integraciones UI
+5. sustituir `future_pdf` por un renderer real sin reescribir reporting

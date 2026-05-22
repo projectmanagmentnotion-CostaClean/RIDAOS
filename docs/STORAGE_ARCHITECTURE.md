@@ -114,6 +114,7 @@ Responsabilidades:
 3. preview -> `PreviewAsset` derivado
 4. review/admin usan el mismo resumen serializable
 5. `features/prepress` consume el mismo contrato para score, checks avanzados y admin review
+6. `features/print-templates` consume `ProductTemplateRepository` para renderizar catalogo, formatos y CTAs sin depender de storage real
 
 ## Transicion futura a Supabase Storage
 

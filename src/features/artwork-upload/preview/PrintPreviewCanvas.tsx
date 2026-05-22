@@ -36,6 +36,7 @@ export function PrintPreviewCanvas({ metadata, ruleKey }: PrintPreviewCanvasProp
         <span>Sangrado {rule.guide.bleedMm} mm</span>
         <span>Zona segura {rule.guide.safeMarginMm} mm</span>
         <span>Orientacion {metadata?.orientation ?? rule.guide.preferredOrientation}</span>
+        <span>Plantilla recomendada disponible en el flujo de upload.</span>
       </div>
     </div>
   )

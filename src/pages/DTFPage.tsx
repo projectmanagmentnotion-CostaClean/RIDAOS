@@ -23,6 +23,7 @@ import { DtfPresetSelector } from '../features/dtf/components/DtfPresetSelector'
 import { DtfProgressSteps } from '../features/dtf/components/DtfProgressSteps'
 import { DtfStickySummaryCard } from '../features/dtf/components/DtfStickySummaryCard'
 import { useDtfConfiguratorState } from '../features/dtf/hooks/useDtfConfiguratorState'
+import { ProductTemplateDownloads } from '../features/print-templates'
 import { initCinematicScroll, initCursorAwareReveals, initUrbanTextMotion } from '../lib/animations'
 import { publicRoutes } from '../lib/navigation'
 import { BASE_PRICE_PER_METER } from '../lib/pricing'
@@ -190,6 +191,13 @@ function DTFPage() {
               title="Artwork upload y preview DTF"
             />
             {errors.file ? <span className="field-error">{errors.file}</span> : null}
+
+            <ProductTemplateDownloads
+              compact
+              description="Base tecnica mock para preparar el metro DTF antes de exportar y subir el archivo."
+              ruleKey="dtf_meter"
+              title="Descargar plantilla DTF"
+            />
 
             <div className="form-actions">
               <button

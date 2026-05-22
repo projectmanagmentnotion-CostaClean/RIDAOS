@@ -35,6 +35,24 @@ Ejemplos:
 | `template-business-card-print-file.pdf` | plantilla descargable tarjeta | PDF | no | A4 / 300 dpi | media |
 | `template-printed-vinyl-visible-area.pdf` | plantilla descargable vinilo | PDF | no | A3 / 300 dpi | media |
 
+## Catalogo de plantillas mock
+
+Rutas esperadas en `public/assets/templates/`:
+
+- `dtf-meter/`
+- `stickers/`
+- `business-cards/`
+- `printed-vinyl/`
+- `signage/`
+- `textile/`
+- `paper/`
+
+Estado actual:
+
+- la UI ya muestra catalogo, formatos y rutas mock
+- si el archivo no existe, la experiencia debe quedar en `Plantilla pendiente`
+- no hay fetch obligatorio ni dependencia de storage real todavia
+
 ## Assets para storytelling home cinematica
 
 | Asset | Escena | Formato | Fondo | Tamano recomendado | Prioridad |

@@ -2,6 +2,7 @@ import { uploadReviewStatusConfig, uploadReviewStatusOptions } from '../../../ad
 import type { AdminUploadReviewStatus } from '../../../admin/types/adminModels'
 import { artworkReviewChecklist } from '../../artwork-upload'
 import { PrepressAdminReviewPanel } from '../../prepress'
+import { ProductTemplateDownloads } from '../../print-templates'
 import { getArtworkStatusLabel } from '../services/operationsMappers'
 import type { OperationsUploadRecord } from '../types/operations'
 
@@ -55,6 +56,14 @@ function ArtworkReviewCard({ upload, onStatusChange, onNotesChange }: ArtworkRev
         )}
       </div>
       {upload.previewSummary ? <PrepressAdminReviewPanel summary={upload.previewSummary} /> : null}
+      {upload.previewSummary ? (
+        <ProductTemplateDownloads
+          compact
+          description="Referencia tecnica mock para revisar la plantilla recomendada durante la validacion."
+          ruleKey={upload.previewSummary.ruleKey}
+          title="Plantilla tecnica"
+        />
+      ) : null}
       <label className="field-group">
         <span className="field-label">Estado de revision</span>
         <select

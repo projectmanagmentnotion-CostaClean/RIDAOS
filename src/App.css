@@ -5381,8 +5381,36 @@ body.lenis {
   gap: 0.75rem;
 }
 
+.template-downloads {
+  display: grid;
+  gap: 1rem;
+}
+
+.template-downloads-compact {
+  margin-top: 0.75rem;
+}
+
+.template-downloads__grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.template-downloads__grid-compact {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.template-download-card,
+.template-guide-panel {
+  height: 100%;
+}
+
 @media (max-width: 900px) {
   .artwork-upload-flow__grid {
     grid-template-columns: 1fr;
+  }
+
+  .template-downloads__grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

@@ -192,6 +192,30 @@ Ejemplos:
 - Contenido editable: `src/features/prepress/rules/productPrepressRulesets.ts`
 - Controla: checks requeridos, checks bloqueantes, thresholds y copy amigable por producto
 
+## PRINT_TEMPLATE_DOWNLOADS
+
+- Archivo visual: `src/features/print-templates/components/ProductTemplateDownloads.tsx`
+- Contenido editable: `src/infrastructure/storage/mock/mockProductTemplateRepository.ts`
+- Controla: CTA de descarga, estado mock de disponibilidad y bloque principal de plantillas
+
+## PRINT_TEMPLATE_GUIDES
+
+- Archivo visual: `src/features/print-templates/components/TemplateGuidePanel.tsx`
+- Contenido editable: `src/infrastructure/storage/mock/mockProductTemplateRepository.ts`
+- Controla: sangrado, corte, zona segura, orientacion y notas tecnicas por plantilla
+
+## PRINT_TEMPLATE_CATALOG
+
+- Archivo visual: `src/infrastructure/storage/mock/mockProductTemplateRepository.ts`
+- Contenido editable: `src/infrastructure/storage/mock/mockProductTemplateRepository.ts`
+- Controla: catalogo mock de plantillas, formatos, versiones y rutas esperadas
+
+## PRINT_TEMPLATE_FORMATS
+
+- Archivo visual: `src/features/print-templates/components/TemplateFormatSelector.tsx`
+- Contenido editable: `src/infrastructure/storage/mock/mockProductTemplateRepository.ts`
+- Controla: selector de formato, formato recomendado y fallback de descarga
+
 ## PRODUCT_DETAIL
 
 - Archivo visual: `src/features/products/product-detail/ProductExperiencePage.tsx`

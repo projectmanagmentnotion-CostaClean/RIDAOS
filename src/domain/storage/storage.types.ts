@@ -175,14 +175,27 @@ export type ArtworkReview = {
 export type ProductTemplateAsset = {
   id: string
   productRuleKey: ArtworkProductRuleKey
+  productTypeLabel: string
   label: string
+  description: string
   fileName: string
   kind: 'guide_overlay' | 'storytelling_asset' | 'downloadable_template'
-  recommendedFormat: 'png' | 'webp' | 'pdf' | 'svg'
+  formatsAvailable: Array<'pdf' | 'ai' | 'svg' | 'cdr' | 'png' | 'webp'>
+  recommendedFormat: 'png' | 'webp' | 'pdf' | 'svg' | 'ai' | 'cdr'
+  downloadUrls: Partial<Record<'pdf' | 'ai' | 'svg' | 'cdr' | 'png' | 'webp', string>>
+  previewImage?: string
   transparentBackground: boolean
   orientation: 'portrait' | 'landscape' | 'square'
   recommendedSize: string
+  bleedMm: number
+  safeAreaMm: number
+  cutlineRequired: boolean
+  language: 'es'
+  status: 'pending' | 'ready'
+  updatedAt: string
+  version: string
   priority: 'high' | 'medium' | 'low'
+  usageNotes?: string[]
 }
 
 export type ArtworkUploadRecord = UploadAsset & {

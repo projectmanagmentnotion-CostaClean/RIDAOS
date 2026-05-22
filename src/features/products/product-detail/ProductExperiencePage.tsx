@@ -16,6 +16,7 @@ import { ProductRecommendationsSection } from './sections/ProductRecommendations
 import { ProductSpecsSection } from './sections/ProductSpecsSection'
 import { ProductStickySummarySection } from './sections/ProductStickySummarySection'
 import { ProductStorySection } from './sections/ProductStorySection'
+import { ProductTemplateDownloads } from '../../print-templates'
 
 type ProductExperiencePageProps = {
   category: CatalogCategoryKey
@@ -154,6 +155,15 @@ export function ProductExperiencePage({ category }: ProductExperiencePageProps) 
                   ? 'Estimacion preparada'
                   : 'Precio en vivo'
             }
+          />
+        ) : null
+      }
+      templateDownloads={
+        enabled.has('configurator') ? (
+          <ProductTemplateDownloads
+            description="Plantillas mock por producto para preparar el archivo con corte, sangrado y zona segura antes del upload."
+            ruleKey={artworkRuleKey}
+            title="Descargar plantilla recomendada"
           />
         ) : null
       }

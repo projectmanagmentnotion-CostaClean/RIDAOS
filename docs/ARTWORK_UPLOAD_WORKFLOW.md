@@ -85,6 +85,8 @@ Estados:
 - `CART_DRAWER`
 - `ADMIN_UPLOAD_REVIEW`
 - `ADMIN_ORDER_DETAIL`
+- `PRINT_TEMPLATE_DOWNLOADS`
+- `PRINT_TEMPLATE_GUIDES`
 
 ## Como anadir un nuevo producto
 
@@ -93,6 +95,7 @@ Estados:
 3. si el configurador usa archivo, conectar `ArtworkUploadFlow`
 4. si debe llegar al admin, dejar `previewSummary` dentro de `artwork`
 5. si necesita criterio tecnico especifico, ajustar `src/features/prepress/rules/productPrepressRulesets.ts`
+6. si necesita plantilla descargable, anadir el asset mock en `src/infrastructure/storage/mock/mockProductTemplateRepository.ts`
 
 ## Migracion futura a storage real / Supabase
 

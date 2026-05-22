@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { PrepressSummaryPanel } from '../../prepress'
+import { ProductTemplateDownloads } from '../../print-templates'
 import { useArtworkUploadFlow } from '../hooks/useArtworkUploadFlow'
 import { PrintPreviewCanvas } from '../preview/PrintPreviewCanvas'
 import type { ArtworkPreviewSummary, ArtworkProductRuleKey, ArtworkUploadFlowState } from '../types/artworkUpload'
@@ -70,6 +71,13 @@ export function ArtworkUploadFlow({
           </li>
         ))}
       </ol>
+
+      <ProductTemplateDownloads
+        compact
+        description="Descarga una base mock con sangrado, corte y zona segura antes de exportar tu archivo final."
+        ruleKey={ruleKey}
+        title="Plantilla recomendada antes del upload"
+      />
 
       {showUploadField ? (
         <label className="field-group" htmlFor={`artwork-upload-${ruleKey}`}>

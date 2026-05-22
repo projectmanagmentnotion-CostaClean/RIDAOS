@@ -38,6 +38,7 @@ type RouteKey =
   | 'adminProduction'
   | 'presupuesto'
   | 'motionTest'
+  | 'cursorTest'
   | 'notFound'
   | 'textil'
   | 'papeleria'
@@ -89,6 +90,7 @@ const routes: Record<string, RouteKey> = {
   [getPublicCtaHref('presupuesto')]: 'presupuesto',
   '#/solicitar-presupuesto': 'presupuesto',
   '#/motion-test': 'motionTest',
+  '#/cursor-test': 'cursorTest',
 }
 
 /**
@@ -118,6 +120,7 @@ const DetallePedido = lazy(() => import('./pages/DetallePedido'))
 const HistorialArchivos = lazy(() => import('./pages/HistorialArchivos'))
 const SolicitarPresupuesto = lazy(() => import('./pages/SolicitarPresupuesto'))
 const MotionTest = lazy(() => import('./pages/MotionTest'))
+const CursorTestPage = lazy(() => import('./pages/CursorTestPage'))
 const DashboardPage = lazy(() => import('./admin/pages/DashboardPage'))
 const ContentStudioPage = lazy(() => import('./admin/pages/ContentStudioPage'))
 const ClientServicePage = lazy(() => import('./admin/pages/ClientServicePage'))
@@ -162,6 +165,7 @@ const pageComponents: Record<RouteKey, ComponentType> = {
   adminProduction: ProductionPage,
   presupuesto: SolicitarPresupuesto,
   motionTest: MotionTest,
+  cursorTest: CursorTestPage,
   notFound: NotFoundPage,
 }
 

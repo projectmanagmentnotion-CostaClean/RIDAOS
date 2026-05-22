@@ -11,23 +11,17 @@ html {
 }
 
 /* ================================
-   Premium GSAP Cursor
+   Premium Cursor System
 ================================ */
 @media (hover: hover) and (pointer: fine) {
-  html.has-premium-cursor,
-  html.has-premium-cursor body,
-  html.has-premium-cursor a,
-  html.has-premium-cursor button,
-  html.has-premium-cursor input[type="submit"],
-  html.has-premium-cursor [role="button"],
-  html.has-premium-cursor [data-cursor="interest"],
-  html.has-premium-cursor .cursor-interest,
-  html.has-premium-cursor [data-cursor],
-  html.has-premium-cursor [data-cursor-zone] {
-    cursor: none;
+  html.premium-cursor-enabled,
+  body.premium-cursor-enabled,
+  html.premium-cursor-enabled body,
+  html.premium-cursor-enabled body * {
+    cursor: none !important;
   }
 
-  .custom-cursor {
+  .premium-cursor {
     position: fixed;
     top: 0;
     left: 0;
@@ -42,23 +36,21 @@ html {
     will-change: transform, width, height, background-color, opacity;
     contain: layout style paint;
   }
+
+  .premium-cursor[hidden] {
+    display: none !important;
+  }
 }
 
 @media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
-  .custom-cursor {
+  .premium-cursor {
     display: none !important;
   }
 
-  html.has-premium-cursor,
-  html.has-premium-cursor body,
-  html.has-premium-cursor a,
-  html.has-premium-cursor button,
-  html.has-premium-cursor input[type="submit"],
-  html.has-premium-cursor [role="button"],
-  html.has-premium-cursor [data-cursor="interest"],
-  html.has-premium-cursor .cursor-interest,
-  html.has-premium-cursor [data-cursor],
-  html.has-premium-cursor [data-cursor-zone] {
-    cursor: auto;
+  html.premium-cursor-enabled,
+  body.premium-cursor-enabled,
+  html.premium-cursor-enabled body,
+  html.premium-cursor-enabled body * {
+    cursor: auto !important;
   }
 }

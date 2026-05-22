@@ -1,10 +1,14 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import gsap from 'gsap'
 
+const CURSOR_DEBUG_KEY = 'ridaosCursorDebug'
+const CURSOR_ENABLED_CLASS = 'premium-cursor-enabled'
 const INTERACTIVE_SELECTOR = [
   'a',
   'button',
-  'input[type="submit"]',
+  'input',
+  'textarea',
+  'select',
   '[role="button"]',
   '[data-cursor="interest"]',
   '.cursor-interest',
@@ -13,63 +17,129 @@ const INTERACTIVE_SELECTOR = [
   '[data-cursor-zone="conversion"]',
 ].join(', ')
 
-function canUsePremiumCursor() {
-  return (
-    typeof window !== 'undefined' &&
-    window.matchMedia('(hover: hover)').matches &&
-    window.matchMedia('(pointer: fine)').matches &&
-    !window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  )
+type CursorEnvironment = {
+  canUseCursor: boolean
+  hoverCapable: boolean
+  finePointer: boolean
+  reducedMotion: boolean
 }
 
-function isInterestTarget(target: EventTarget | null) {
+function getCursorEnvironment(): CursorEnvironment {
+  if (typeof window === 'undefined') {
+    return {
+      canUseCursor: false,
+      hoverCapable: false,
+      finePointer: false,
+      reducedMotion: false,
+    }
+  }
+
+  const hoverCapable = window.matchMedia('(hover: hover)').matches
+  const finePointer = window.matchMedia('(pointer: fine)').matches
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  return {
+    canUseCursor: hoverCapable && finePointer && !reducedMotion,
+    hoverCapable,
+    finePointer,
+    reducedMotion,
+  }
+}
+
+function resolveInterestTarget(target: EventTarget | null) {
   return target instanceof Element ? target.closest(INTERACTIVE_SELECTOR) : null
 }
 
 function PremiumCursor() {
   const cursorRef = useRef<HTMLDivElement | null>(null)
-  const [enabled, setEnabled] = useState(false)
+  const visibleRef = useRef(false)
+  const interestRef = useRef(false)
+  const debugEnabledRef = useRef(false)
+  const envRef = useRef<CursorEnvironment>(getCursorEnvironment())
+  const [environment, setEnvironment] = useState<CursorEnvironment>(() => getCursorEnvironment())
+
+  const debugLog = useMemo(
+    () => (...args: unknown[]) => {
+      if (debugEnabledRef.current) {
+        console.info('[PremiumCursor]', ...args)
+      }
+    },
+    [],
+  )
 
   useEffect(() => {
     if (typeof window === 'undefined') {
       return
     }
 
+    debugEnabledRef.current = window.localStorage.getItem(CURSOR_DEBUG_KEY) === '1'
+
     const hoverQuery = window.matchMedia('(hover: hover)')
     const pointerQuery = window.matchMedia('(pointer: fine)')
     const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
 
-    const syncEnabled = () => {
-      setEnabled(canUsePremiumCursor())
+    const syncEnvironment = () => {
+      const nextEnvironment = getCursorEnvironment()
+      envRef.current = nextEnvironment
+      setEnvironment(nextEnvironment)
+      debugEnabledRef.current = window.localStorage.getItem(CURSOR_DEBUG_KEY) === '1'
+      debugLog('environment', {
+        enabled: nextEnvironment.canUseCursor,
+        hoverCapable: nextEnvironment.hoverCapable,
+        finePointer: nextEnvironment.finePointer,
+        reducedMotion: nextEnvironment.reducedMotion,
+        route: window.location.hash || '#/',
+      })
     }
 
-    syncEnabled()
-    hoverQuery.addEventListener('change', syncEnabled)
-    pointerQuery.addEventListener('change', syncEnabled)
-    motionQuery.addEventListener('change', syncEnabled)
+    syncEnvironment()
+    hoverQuery.addEventListener('change', syncEnvironment)
+    pointerQuery.addEventListener('change', syncEnvironment)
+    motionQuery.addEventListener('change', syncEnvironment)
+    window.addEventListener('hashchange', syncEnvironment)
 
     return () => {
-      hoverQuery.removeEventListener('change', syncEnabled)
-      pointerQuery.removeEventListener('change', syncEnabled)
-      motionQuery.removeEventListener('change', syncEnabled)
+      hoverQuery.removeEventListener('change', syncEnvironment)
+      pointerQuery.removeEventListener('change', syncEnvironment)
+      motionQuery.removeEventListener('change', syncEnvironment)
+      window.removeEventListener('hashchange', syncEnvironment)
     }
-  }, [])
+  }, [debugLog])
 
   useEffect(() => {
-    if (!enabled) {
+    if (typeof window === 'undefined') {
       return
     }
 
     const cursor = cursorRef.current
+    const root = document.documentElement
+    const body = document.body
 
-    if (!cursor) {
+    if (!cursor || !body) {
       return
     }
 
-    const root = document.documentElement
-    let isInterest = false
+    const applyRootClasses = (enabled: boolean) => {
+      root.classList.toggle(CURSOR_ENABLED_CLASS, enabled)
+      body.classList.toggle(CURSOR_ENABLED_CLASS, enabled)
+    }
 
-    root.classList.add('has-premium-cursor')
+    if (!environment.canUseCursor) {
+      applyRootClasses(false)
+      visibleRef.current = false
+      interestRef.current = false
+      gsap.killTweensOf(cursor)
+      gsap.set(cursor, { autoAlpha: 0, clearProps: 'mixBlendMode' })
+      debugLog('disabled', {
+        finePointer: environment.finePointer,
+        hoverCapable: environment.hoverCapable,
+        reducedMotion: environment.reducedMotion,
+      })
+      return
+    }
+
+    applyRootClasses(true)
+    debugLog('mounted', { route: window.location.hash || '#/' })
 
     gsap.set(cursor, {
       xPercent: -50,
@@ -78,37 +148,75 @@ function PremiumCursor() {
       y: window.innerHeight * 0.5,
       width: 11,
       height: 11,
-      backgroundColor: '#ff00b8',
       borderRadius: 999,
+      backgroundColor: '#ff00b8',
       mixBlendMode: 'normal',
       autoAlpha: 0,
       scale: 1,
     })
 
     const xTo = gsap.quickTo(cursor, 'x', {
-      duration: 0.14,
+      duration: environment.reducedMotion ? 0.01 : 0.14,
       ease: 'power3.out',
     })
 
     const yTo = gsap.quickTo(cursor, 'y', {
-      duration: 0.14,
+      duration: environment.reducedMotion ? 0.01 : 0.14,
       ease: 'power3.out',
     })
 
-    const setInterestState = (nextInterest: boolean) => {
-      if (isInterest === nextInterest) {
+    const showCursor = () => {
+      if (visibleRef.current) {
         return
       }
 
-      isInterest = nextInterest
+      visibleRef.current = true
+      gsap.to(cursor, {
+        autoAlpha: 1,
+        duration: 0.16,
+        ease: 'power2.out',
+        overwrite: true,
+      })
+    }
+
+    const hideCursor = () => {
+      visibleRef.current = false
+      interestRef.current = false
+      gsap.set(cursor, {
+        width: 11,
+        height: 11,
+        backgroundColor: '#ff00b8',
+        mixBlendMode: 'normal',
+      })
+      gsap.to(cursor, {
+        autoAlpha: 0,
+        duration: 0.16,
+        ease: 'power2.out',
+        overwrite: true,
+      })
+    }
+
+    const setInterestState = (nextInterest: boolean, source?: EventTarget | null) => {
+      if (interestRef.current === nextInterest) {
+        return
+      }
+
+      interestRef.current = nextInterest
+      debugLog('hover', {
+        active: nextInterest,
+        target:
+          source instanceof Element
+            ? source.tagName.toLowerCase()
+            : null,
+      })
 
       if (nextInterest) {
-        gsap.set(cursor, { mixBlendMode: 'difference' })
         gsap.to(cursor, {
           width: 68,
           height: 68,
           backgroundColor: '#39ff14',
-          duration: 0.28,
+          mixBlendMode: 'difference',
+          duration: environment.reducedMotion ? 0.01 : 0.24,
           ease: 'power3.out',
           overwrite: true,
         })
@@ -119,44 +227,29 @@ function PremiumCursor() {
         width: 11,
         height: 11,
         backgroundColor: '#ff00b8',
-        duration: 0.22,
+        mixBlendMode: 'normal',
+        duration: environment.reducedMotion ? 0.01 : 0.2,
         ease: 'power3.out',
-        overwrite: true,
-        onComplete: () => {
-          if (!isInterest) {
-            gsap.set(cursor, { mixBlendMode: 'normal' })
-          }
-        },
-      })
-    }
-
-    const showCursor = () => {
-      gsap.to(cursor, {
-        autoAlpha: 1,
-        duration: 0.18,
-        ease: 'power2.out',
-        overwrite: true,
-      })
-    }
-
-    const hideCursor = () => {
-      setInterestState(false)
-      gsap.to(cursor, {
-        autoAlpha: 0,
-        duration: 0.18,
-        ease: 'power2.out',
         overwrite: true,
       })
     }
 
     const moveCursor = (x: number, y: number, target: EventTarget | null) => {
+      if (!visibleRef.current) {
+        debugLog('first-move', { x, y, route: window.location.hash || '#/' })
+      }
+
       showCursor()
       xTo(x)
       yTo(y)
-      setInterestState(Boolean(isInterestTarget(target)))
+      setInterestState(Boolean(resolveInterestTarget(target)), target)
     }
 
     const handlePointerMove = (event: PointerEvent) => {
+      if (event.pointerType && event.pointerType !== 'mouse') {
+        return
+      }
+
       moveCursor(event.clientX, event.clientY, event.target)
     }
 
@@ -164,64 +257,85 @@ function PremiumCursor() {
       moveCursor(event.clientX, event.clientY, event.target)
     }
 
-    const handlePointerOver = (event: Event) => {
-      setInterestState(Boolean(isInterestTarget(event.target)))
+    const handlePointerOver = (event: PointerEvent) => {
+      if (event.pointerType && event.pointerType !== 'mouse') {
+        return
+      }
+
+      setInterestState(Boolean(resolveInterestTarget(event.target)), event.target)
     }
 
-    const handlePointerOut = (event: Event) => {
-      const target = isInterestTarget(event.target)
-      const related = isInterestTarget((event as PointerEvent).relatedTarget)
+    const handlePointerOut = (event: PointerEvent) => {
+      if (event.pointerType && event.pointerType !== 'mouse') {
+        return
+      }
 
-      if (target && !related) {
-        setInterestState(false)
+      const currentTarget = resolveInterestTarget(event.target)
+      const relatedTarget = resolveInterestTarget(event.relatedTarget)
+
+      if (currentTarget && !relatedTarget) {
+        setInterestState(false, event.target)
       }
     }
 
     const handleFocusIn = (event: FocusEvent) => {
-      setInterestState(Boolean(isInterestTarget(event.target)))
+      setInterestState(Boolean(resolveInterestTarget(event.target)), event.target)
     }
 
     const handleFocusOut = (event: FocusEvent) => {
-      const related = isInterestTarget(event.relatedTarget)
-      if (!related) {
-        setInterestState(false)
+      if (!resolveInterestTarget(event.relatedTarget)) {
+        setInterestState(false, event.target)
+      }
+    }
+
+    const handleWindowMouseOut = (event: MouseEvent) => {
+      if (!event.relatedTarget) {
+        hideCursor()
+      }
+    }
+
+    const handleWindowBlur = () => {
+      hideCursor()
+    }
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        hideCursor()
       }
     }
 
     window.addEventListener('pointermove', handlePointerMove, { passive: true })
     window.addEventListener('mousemove', handleMouseMove, { passive: true })
-    window.addEventListener('pointerenter', showCursor)
-    window.addEventListener('pointerleave', hideCursor)
-    window.addEventListener('mouseenter', showCursor)
-    window.addEventListener('mouseleave', hideCursor)
     document.addEventListener('pointerover', handlePointerOver, { passive: true })
     document.addEventListener('pointerout', handlePointerOut, { passive: true })
     document.addEventListener('focusin', handleFocusIn)
     document.addEventListener('focusout', handleFocusOut)
+    window.addEventListener('mouseout', handleWindowMouseOut)
+    window.addEventListener('blur', handleWindowBlur)
+    document.addEventListener('visibilitychange', handleVisibilityChange)
 
     return () => {
       window.removeEventListener('pointermove', handlePointerMove)
       window.removeEventListener('mousemove', handleMouseMove)
-      window.removeEventListener('pointerenter', showCursor)
-      window.removeEventListener('pointerleave', hideCursor)
-      window.removeEventListener('mouseenter', showCursor)
-      window.removeEventListener('mouseleave', hideCursor)
       document.removeEventListener('pointerover', handlePointerOver)
       document.removeEventListener('pointerout', handlePointerOut)
       document.removeEventListener('focusin', handleFocusIn)
       document.removeEventListener('focusout', handleFocusOut)
+      window.removeEventListener('mouseout', handleWindowMouseOut)
+      window.removeEventListener('blur', handleWindowBlur)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
       xTo.tween?.kill()
       yTo.tween?.kill()
       gsap.killTweensOf(cursor)
-      root.classList.remove('has-premium-cursor')
+      visibleRef.current = false
+      interestRef.current = false
+      applyRootClasses(false)
+      gsap.set(cursor, { autoAlpha: 0, clearProps: 'mixBlendMode' })
+      debugLog('cleanup', { route: window.location.hash || '#/' })
     }
-  }, [enabled])
+  }, [environment, debugLog])
 
-  if (!enabled) {
-    return null
-  }
-
-  return <div aria-hidden="true" className="custom-cursor" ref={cursorRef} />
+  return <div aria-hidden="true" className="premium-cursor" hidden={!environment.canUseCursor} ref={cursorRef} />
 }
 
 export default PremiumCursor

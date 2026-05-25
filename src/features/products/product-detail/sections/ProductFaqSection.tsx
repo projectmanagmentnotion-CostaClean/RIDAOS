@@ -1,4 +1,5 @@
 import FaqBlock from '../../../../components/FaqBlock'
+import LocalCoverageBlock from '../../../../components/LocalCoverageBlock'
 import ObjectionHandlerBlock from '../../../../components/ObjectionHandlerBlock'
 import SeoContentBlock from '../../../../components/SeoContentBlock'
 import UploadGuidanceBlock from '../../../../components/UploadGuidanceBlock'
@@ -15,6 +16,9 @@ export function ProductFaqSection({ entryId, faqTitle }: ProductFaqSectionProps)
       <section className="content-section content-grid-two" data-product-reveal>
         <SeoContentBlock entryId={entryId} />
         <SeoContentBlock entryId={entryId} mode="useCases" />
+      </section>
+      <section data-product-reveal>
+        <LocalCoverageBlock entryId={entryId} />
       </section>
       <section className="content-section content-grid-two" data-product-reveal>
         <UploadGuidanceBlock entryId={entryId} />

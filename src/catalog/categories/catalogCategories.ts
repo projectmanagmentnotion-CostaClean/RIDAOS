@@ -18,6 +18,14 @@ export const catalogCategories: CatalogCategory[] = [
     navigation: { label: 'Textil', primary: true, order: 30 },
   },
   {
+    key: 'rotulacion',
+    label: 'Rotulacion',
+    description: 'Rotulacion de furgonetas, flotas comerciales, escaparates y vehiculos de empresa.',
+    route: '#/servicios/rotulacion',
+    kind: 'service',
+    navigation: { label: 'Rotulacion', primary: true, order: 25 },
+  },
+  {
     key: 'papeleria',
     label: 'Papeleria',
     description: 'Tarjetas, flyers y piezas impresas por tirada o consulta.',
@@ -51,12 +59,5 @@ export const catalogCategories: CatalogCategory[] = [
     description: 'Llaveros y pegatinas con tramos directos y acabados opcionales.',
     route: '#/producto/accesorios',
     kind: 'product',
-  },
-  {
-    key: 'rotulacion',
-    label: 'Rotulacion de furgonetas',
-    description: 'Proyectos de vehiculo con rangos orientativos y cierre por presupuesto.',
-    route: '#/servicios/rotulacion',
-    kind: 'service',
   },
 ]

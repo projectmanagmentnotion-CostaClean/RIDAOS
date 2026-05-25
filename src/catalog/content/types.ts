@@ -13,6 +13,11 @@ export type CatalogSeoCta = {
   href?: string
 }
 
+export type LocalCoverageGroup = {
+  label: string
+  items: readonly string[]
+}
+
 export type CatalogSeoContent = {
   entryId: string
   slug: string
@@ -28,4 +33,5 @@ export type CatalogSeoContent = {
   objectionHandlers: ObjectionHandler[]
   primaryCta: CatalogSeoCta
   secondaryCta: CatalogSeoCta
+  localCoverage?: LocalCoverageGroup[]
 }

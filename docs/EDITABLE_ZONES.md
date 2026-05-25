@@ -288,6 +288,42 @@ Ejemplos:
 - Contenido editable: `src/features/reporting/mock/reportDefinitions.ts`
 - Controla: version documental de handoff, tracking y firma mock
 
+## SEO_INTENT
+
+- Archivo visual: `src/features/search-intelligence/keywords/keywordGroups.ts`
+- Contenido editable: `src/features/search-intelligence/keywords/keywordGroups.ts`
+- Controla: keywords principales, variantes, intencion, prioridad y relacion con servicio o producto
+
+## SEO_CLUSTERS
+
+- Archivo visual: `src/features/search-intelligence/clusters/topicalClusters.ts`
+- Contenido editable: `src/features/search-intelligence/clusters/topicalClusters.ts`
+- Controla: hubs, supporting pages, preguntas y enlazado interno
+
+## SEO_LOCAL_QUESTIONS
+
+- Archivo visual: `src/features/search-intelligence/questions/answerStyleQuestions.ts`
+- Contenido editable: `src/features/search-intelligence/questions/answerStyleQuestions.ts`
+- Controla: preguntas tipo AnswerThePublic, FAQs locales y respuestas orientadas a IA
+
+## SEO_ENTITY_MAP
+
+- Archivo visual: `src/features/search-intelligence/entities/entityRelationshipMap.ts`
+- Contenido editable: `src/features/search-intelligence/entities/entityRelationshipMap.ts`
+- Controla: relaciones entre rotulacion, DTF, branding, papeleria, vinilo y productos relacionados
+
+## SEO_LONGTAIL
+
+- Archivo visual: `src/features/search-intelligence/local/localSearchMap.ts`
+- Contenido editable: `src/features/search-intelligence/local/localSearchMap.ts`
+- Controla: keywords locales, servicios por ciudad y oportunidades territoriales
+
+## SEO_RELATED_PRODUCTS
+
+- Archivo visual: `src/features/search-intelligence/entities/entityRelationshipMap.ts`
+- Contenido editable: `src/features/search-intelligence/entities/entityRelationshipMap.ts`
+- Controla: puentes internos entre servicios y productos para enlazado y autoridad topical
+
 ## PRODUCT_DETAIL
 
 - Archivo visual: `src/features/products/product-detail/ProductExperiencePage.tsx`

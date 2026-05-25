@@ -1,48 +1,42 @@
 import { rotulacionEntries } from '../../services/rotulacion'
+import { localSeoContent } from '../../../content/localSeoContent'
 import type { CatalogSeoContent } from '../types'
 
 function createRotulacionContent(entry: (typeof rotulacionEntries)[number]): CatalogSeoContent {
   return {
     entryId: entry.id,
     slug: entry.slug,
-    seoTitle: `${entry.name} | RidaosPrint`,
-    metaDescription: `${entry.name} con rango orientativo y paso directo a una propuesta personalizada.`,
-    h1: entry.name,
-    eyebrow: 'Rotulacion de vehiculos',
-    intro: `${entry.name} con rango comercial visible para situar cobertura, tamano y complejidad antes de pedir una propuesta.`,
+    seoTitle: 'Rotulacion de vehiculos y furgonetas en Barcelona, Blanes y Girona | RidaosPrint',
+    metaDescription:
+      'Rotulacion premium para furgonetas, flotas comerciales, escaparates y vehiculos de empresa en Barcelona, Blanes, Girona y Costa Brava.',
+    h1: 'Rotulacion premium para vehiculos y negocios.',
+    eyebrow: 'Rotulacion comercial / vehiculos / flotas',
+    intro:
+      'Convierte cada trayecto en publicidad con rotulacion para furgonetas, vehiculos de empresa, escaparates y proyectos personalizados con cobertura local.',
     benefits: [
-      'Rango orientativo para no empezar la conversacion a ciegas.',
-      'Lectura clara del nivel de cobertura del vehiculo.',
-      'Base preparada para archivo, medidas y una propuesta clara.',
+      'Rotulacion de furgonetas, vehiculos comerciales y particulares con lectura clara del alcance.',
+      'Cobertura lista para media rotulacion, integral, escaparates, señaletica y flotas.',
+      'Proceso pensado para negocios que necesitan visibilidad en calle sin depender de explicaciones largas.',
     ],
     useCases: [
-      'Furgonetas de servicio, flotas y piezas promocionales sobre vehiculo.',
-      'Proyectos donde la cobertura define el presupuesto real.',
-      'Clientes que necesitan estimacion rapida antes de visita o medicion.',
+      'Rotulacion de furgonetas en Barcelona para instaladores, retail, reparto y servicios.',
+      'Vehiculos de empresa, flotas comerciales y proyectos con imagen corporativa repetible.',
+      'Escaparates, vinilos comerciales y señaletica para negocios en Blanes, Girona y Costa Brava.',
     ],
     uploadGuidance: [
-      'El archivo es util, pero no obligatorio para la primera propuesta.',
-      'Indica el tamano del vehiculo para orientar el rango inicial.',
-      'La medicion final y la instalacion siempre se confirman antes de cerrar el proyecto.',
+      'El archivo final ayuda, pero puedes pedir propuesta aunque todavia no tengas el diseño cerrado.',
+      'Indica tipo de vehiculo, cobertura aproximada y zona de trabajo para orientar mejor la propuesta.',
+      'La medicion final, materiales y montaje se confirman antes de fabricar e instalar.',
     ],
-    faq: [
-      {
-        question: 'El rango ya cierra el proyecto',
-        answer: 'No. Sirve para orientar la conversacion; el presupuesto final se confirma con los detalles del proyecto.',
-      },
-      {
-        question: 'Incluye instalacion',
-        answer: 'La definicion final de instalacion y materiales se confirma en la propuesta.',
-      },
-    ],
+    faq: [...localSeoContent.rotulacion.faq],
     objectionHandlers: [
       {
-        title: 'No quiero pedir presupuesto sin saber el orden de magnitud',
-        response: 'Por eso la pagina muestra un rango antes de pasar a la propuesta personalizada.',
+        title: 'No quiero pedir presupuesto sin saber si encaja en mi presupuesto',
+        response: 'La pagina deja una referencia orientativa y despues ajustamos el proyecto segun cobertura, vehiculo y montaje real.',
       },
       {
-        title: 'No tengo el arte final cerrado',
-        response: 'Puedes avanzar igual y dejar la pieza preparada para recibir una propuesta.',
+        title: 'Todavia no tengo el arte final',
+        response: 'Puedes avanzar igual. Primero cerramos cobertura, objetivos y soporte, y despues revisamos el diseño final.',
       },
     ],
     primaryCta: {
@@ -50,9 +44,10 @@ function createRotulacionContent(entry: (typeof rotulacionEntries)[number]): Cat
       href: '#/presupuesto?service=rotulacion',
     },
     secondaryCta: {
-      label: 'Ir al formulario',
-      href: '#/presupuesto?service=rotulacion',
+      label: 'Ver proyectos',
+      href: '#/portafolio',
     },
+    localCoverage: [...localSeoContent.rotulacion.localCoverage],
   }
 }
 

@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin
+Disallow: /mi-cuenta
+Disallow: /checkout
+Disallow: /carrito
+
+Sitemap: https://ridaos.vercel.app/sitemap.xml

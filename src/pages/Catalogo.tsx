@@ -143,6 +143,11 @@ function Catalogo() {
             <article className="content-card category-card hover-lift" data-cursor="interactive" key={category.key} tabIndex={0}>
               <p className="section-label">{category.label}</p>
               <p>{category.description}</p>
+              {category.route ? (
+                <a className="card-link" href={category.route}>
+                  Ver categoria
+                </a>
+              ) : null}
             </article>
           ))}
         </div>

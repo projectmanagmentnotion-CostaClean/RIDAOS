@@ -21,7 +21,7 @@ function createMaterialContent(entry: (typeof materialesEntries)[number]): Catal
       'Proyectos que luego escalan a instalacion o gran formato.',
     ],
     uploadGuidance: [
-      'El archivo es opcional en la fase de estimacion base.',
+      'El archivo es opcional en la primera estimacion del proyecto.',
       'Si el soporte requiere homologacion o una comprobacion extra, se confirmara despues.',
       'Indica medidas reales y contexto de uso para evitar rehacer la propuesta.',
     ],

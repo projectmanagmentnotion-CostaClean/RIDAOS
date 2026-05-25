@@ -194,7 +194,7 @@ function DTFPage() {
 
             <ProductTemplateDownloads
               compact
-              description="Base tecnica mock para preparar el metro DTI antes de exportar y subir el archivo."
+              description="Base tecnica para preparar el metro DTI antes de exportar y subir el archivo."
               ruleKey="dtf_meter"
               title="Descargar plantilla DTI"
             />
@@ -300,11 +300,11 @@ function DTFPage() {
             <div className="preflight-list">
               <div className="preflight-item">
                 <span>Formato detectado</span>
-                <strong>{artworkState.summary ? artworkState.summary.formatLabel : 'Pendiente'}</strong>
+                <strong>{artworkState.summary ? artworkState.summary.formatLabel : 'Por confirmar'}</strong>
               </div>
               <div className="preflight-item">
                 <span>Archivo seleccionado</span>
-                <strong>{artworkState.summary ? 'Si' : 'Pendiente'}</strong>
+                <strong>{artworkState.summary ? 'Si' : 'Por confirmar'}</strong>
               </div>
               <div className="preflight-item">
                 <span>Turnaround</span>

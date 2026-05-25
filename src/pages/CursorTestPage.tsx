@@ -33,7 +33,7 @@ function CursorTestPage() {
           <div className="cms-document-form">
             <label className="cms-field">
               <span>Nombre</span>
-              <input className="form-input" placeholder="Texto de prueba" type="text" />
+              <input className="form-input" placeholder="Escribe aqui" type="text" />
             </label>
             <label className="cms-field">
               <span>Tipo</span>
@@ -44,7 +44,7 @@ function CursorTestPage() {
             </label>
             <label className="cms-field">
               <span>Notas</span>
-              <textarea className="form-input" placeholder="Textarea de prueba" rows={4} />
+              <textarea className="form-input" placeholder="Anade una nota" rows={4} />
             </label>
           </div>
         </article>

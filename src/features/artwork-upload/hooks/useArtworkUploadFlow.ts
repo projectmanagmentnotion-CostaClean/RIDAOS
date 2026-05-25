@@ -64,12 +64,12 @@ export function useArtworkUploadFlow(ruleKey: ArtworkProductRuleKey, file: File 
     [metadata],
   )
 
-  const steps = useMemo(
+const steps = useMemo(
     () => [
       'Selecciona producto o formato',
       'Sube tu archivo',
-      'Revisión automática mock',
-      'Previsualización con guías',
+      'Revisión automática',
+      'Vista previa con guías',
       'Recomendaciones',
       'Confirmar archivo',
       'Añadir al carrito',

@@ -43,7 +43,7 @@ function finalizeResult(
   breakdown: string[],
   warnings: string[],
 ) {
-  const pricingLabel = input.rangeLabel ? input.rangeLabel : input.total > 0 ? formatCatalogCurrency(input.total) : 'Pendiente'
+  const pricingLabel = input.rangeLabel ? input.rangeLabel : input.total > 0 ? formatCatalogCurrency(input.total) : 'A consultar'
 
   return toResult({
     subtotal: input.subtotal,

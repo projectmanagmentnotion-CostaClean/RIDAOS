@@ -55,11 +55,11 @@ export function TemplateDownloadCard({ template }: TemplateDownloadCardProps) {
           </a>
         ) : (
           <button className="action-button action-button-muted" disabled type="button">
-            Plantilla pendiente
+            Solicitar plantilla
           </button>
         )}
         <span className="inline-notice">
-          {selectedUrl ? `Ruta mock: ${selectedUrl}` : 'La ruta final queda preparada para future storage.'}
+          {selectedUrl ? 'Incluye corte, sangrado y zona segura para preparar el archivo con mas seguridad.' : 'Si la necesitas fuera de la web, te la preparamos a partir de esta configuracion.'}
         </span>
       </div>
     </article>

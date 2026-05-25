@@ -25,7 +25,7 @@ function createSharedBlock(
     whatsappPrompt: 'Si necesitas aclarar un caso especial, deja la referencia lista para atencion directa.',
     reviewNotice: 'Comprobamos archivo, medidas o complejidad antes de cerrar el trabajo.',
     qualityProof: 'Base premium pensada para pedidos serios, no para formularios genericos.',
-    socialProofHint: 'Espacio reservado para futuros casos reales y pruebas visuales.',
+    socialProofHint: 'Casos reales y ejemplos visuales alineados con cada servicio.',
     ...overrides,
   }
 }
@@ -39,7 +39,7 @@ export const conversionBlocks: ConversionBlock[] = [
     ],
     urgencyMessage: 'Marca urgencia solo cuando realmente necesites acelerar la entrega.',
     riskReducer: 'No avanzas a ciegas: el total y el archivo quedan visibles antes de seguir.',
-    qualityProof: 'DTF es el flujo mas desarrollado del sistema y marca el nivel de control esperado.',
+    qualityProof: 'DTI marca el nivel de control y precision esperado en toda la experiencia de compra.',
   }),
   ...textilEntries.map((entry) =>
     createSharedBlock(entry.id, {
@@ -69,7 +69,7 @@ export const conversionBlocks: ConversionBlock[] = [
     createSharedBlock(entry.id, {
       riskReducer: 'El rango visible evita pedir presupuesto sin contexto economico.',
       productionPromise: 'La rotulacion del vehiculo se confirma con cobertura, medida y propuesta cerrada.',
-      socialProofHint: 'Reservado para futuros casos de flota, wrap y rotulacion comercial.',
+      socialProofHint: 'Proyectos de flota, wrap y rotulacion comercial alineados con cada sector.',
     }),
   ),
   ...neonesEntries.map((entry) =>

@@ -61,7 +61,7 @@ export function buildPrepressChecks(payload: PrepressAnalysisPayload): PrepressC
       title: 'Resolucion aproximada',
       description:
         dpi === null
-          ? 'No podemos leer DPI exactos en este mock. Hace falta validacion tecnica.'
+          ? 'No podemos confirmar los DPI exactos desde esta vista. Recomendamos revision tecnica.'
           : `Resolucion estimada ${dpi} dpi frente a recomendacion de ${ruleset.thresholds.recommendedMinDpi} dpi.`,
       recommendation: 'Si el diseño va justo, exporta una version a mayor resolucion o pide revision manual.',
       productApplicability: [productRule.key],
@@ -125,7 +125,7 @@ export function buildPrepressChecks(payload: PrepressAnalysisPayload): PrepressC
       status: ruleset.thresholds.preferredColorMode === 'CMYK' ? 'warning' : 'info',
       severity: 'low',
       title: 'Modo de color',
-      description: `Check informativo mock. Recomendado para este producto: ${ruleset.thresholds.preferredColorMode}.`,
+      description: `Referencia orientativa. Recomendado para este producto: ${ruleset.thresholds.preferredColorMode}.`,
       recommendation: 'Si puedes, exporta una version final preparada para impresion o pide comprobacion manual.',
       productApplicability: [productRule.key],
       productionImpact: 'El modo de color puede alterar el resultado frente a pantalla.',
@@ -149,7 +149,7 @@ export function buildPrepressChecks(payload: PrepressAnalysisPayload): PrepressC
       status: isVectorLike ? 'warning' : 'info',
       severity: 'medium',
       title: 'Textos y contornos',
-      description: isVectorLike ? 'Conviene revisar que las fuentes estén trazadas.' : 'No podemos revisar el trazado de fuentes en este mock.',
+      description: isVectorLike ? 'Conviene revisar que las fuentes esten trazadas.' : 'No podemos revisar el trazado de fuentes desde esta vista previa.',
       recommendation: 'Traza tipografias antes de enviar arte final si trabajas en vector.',
       productApplicability: [productRule.key],
       productionImpact: 'Fuentes sin trazar pueden cambiar al abrir el archivo.',
@@ -160,7 +160,7 @@ export function buildPrepressChecks(payload: PrepressAnalysisPayload): PrepressC
       status: isVectorLike ? 'warning' : 'info',
       severity: 'low',
       title: 'Estructura de capas',
-      description: 'Check mock para separar arte, guias y posibles capas de corte.',
+      description: 'Conviene separar arte, guias y posibles capas de corte para agilizar preprensa.',
       recommendation: 'Mantén capas limpias y nombra los elementos técnicos si el producto lo requiere.',
       productApplicability: [productRule.key],
       productionImpact: 'Una estructura limpia acelera revisión y producción.',

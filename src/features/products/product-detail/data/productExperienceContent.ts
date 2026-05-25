@@ -40,16 +40,16 @@ export const productExperienceContent: Record<string, ProductExperienceConfig> =
         bullets: [
           'Escala por volumen sin ocultar el siguiente paso comercial.',
           'Pensada para prendas base, merchandising y activaciones.',
-          'Lista para absorber variantes y addons futuros sin rehacer la interfaz.',
+          'Preparada para crecer con variantes y acabados sin perder claridad.',
         ],
       },
     ],
     galleryFrames: [
       {
         id: 'textil-gallery-1',
-        label: 'Mock editorial',
+        label: 'Visual editorial',
         title: 'Prenda hero',
-        description: 'Placeholder para hoodie o camiseta transparente en la siguiente fase.',
+        description: 'Vista principal para sudadera o camiseta con protagonismo de marca.',
       },
       {
         id: 'textil-gallery-2',
@@ -60,13 +60,13 @@ export const productExperienceContent: Record<string, ProductExperienceConfig> =
     ],
     processSteps: [
       { id: 'brief', title: 'Seleccion', description: 'Elige base, tirada y acabado antes de pedir.' },
-      { id: 'artwork', title: 'Archivo', description: 'Adjunta o deja pendiente el arte segun el momento del proyecto.' },
+      { id: 'artwork', title: 'Archivo', description: 'Adjunta el arte final o deja una referencia para revisarlo contigo.' },
       { id: 'review', title: 'Revision', description: 'La comprobacion tecnica sigue separada del cierre de carrito.' },
     ],
     finalCta: {
       label: 'Cierre del producto',
       title: 'Listo para sumar prendas al carrito o saltar a una propuesta.',
-      description: 'El producto ya vive en una plantilla reusable para variantes futuras, addons y galerias cinematograficas.',
+      description: 'Todo queda listo para cerrar prendas, cantidades y archivo sin salir del mismo flujo.',
       primaryLabel: 'Ir al carrito',
       primaryHref: publicRoutes.carrito,
       secondaryLabel: 'Solicitar presupuesto',
@@ -86,7 +86,7 @@ export const productExperienceContent: Record<string, ProductExperienceConfig> =
         title: 'Activacion completa',
         description: 'Si el proyecto necesita mas soportes, salta a presupuesto guiado.',
         href: getQuoteHref('textil'),
-        priceLabel: 'Propuesta mock',
+        priceLabel: 'Propuesta personalizada',
         tag: 'Expansion',
       },
     ],
@@ -125,20 +125,20 @@ export const productExperienceContent: Record<string, ProductExperienceConfig> =
         id: 'paper-story-1',
         eyebrow: 'Storytelling',
         title: 'Una ficha para tiradas claras, no para esconder precios.',
-        description: 'Separa la lectura comercial del arte final y deja lista la arquitectura para papeleria premium, invitaciones o series cortas.',
+        description: 'Separa la lectura comercial del arte final y deja el pedido claro para papeleria premium, invitaciones o series cortas.',
         bullets: [
           'Tramos legibles sin tablas dispersas.',
           'Archivo opcional cuando todavia estas cerrando el diseño.',
-          'Preparada para añadir acabados editoriales en la siguiente fase.',
+          'Lista para sumar acabados editoriales sin perder lectura comercial.',
         ],
       },
     ],
     galleryFrames: [
       {
         id: 'paper-gallery-1',
-        label: 'Mock editorial',
+        label: 'Visual editorial',
         title: 'Pila de piezas',
-        description: 'Placeholder para tarjetas, flyers o papeleria desplegada.',
+        description: 'Composicion principal para tarjetas, flyers o papeleria desplegada.',
       },
       {
         id: 'paper-gallery-2',
@@ -149,7 +149,7 @@ export const productExperienceContent: Record<string, ProductExperienceConfig> =
     ],
     processSteps: [
       { id: 'quantity', title: 'Tirada', description: 'Se fija el tramo visible desde el primer paso.' },
-      { id: 'artwork', title: 'Archivo', description: 'Se adjunta o se deja pendiente para revisión interna.' },
+      { id: 'artwork', title: 'Archivo', description: 'Adjunta el archivo final o deja una referencia para revisar el acabado contigo.' },
       { id: 'output', title: 'Salida', description: 'Carrito directo si la combinación es cerrada.' },
     ],
     finalCta: {
@@ -173,9 +173,9 @@ export const productExperienceContent: Record<string, ProductExperienceConfig> =
       {
         id: 'quote-print-pack',
         title: 'Proyecto mixto',
-        description: 'Cruza papeleria con soportes a medida desde el presupuesto mock.',
+        description: 'Cruza papeleria con soportes a medida desde una propuesta comercial unificada.',
         href: getQuoteHref('papeleria'),
-        priceLabel: 'Propuesta mock',
+        priceLabel: 'Propuesta personalizada',
         tag: 'Expansion',
       },
     ],
@@ -217,17 +217,17 @@ export const productExperienceContent: Record<string, ProductExperienceConfig> =
         description: 'Esta plantilla deja sitio a comparativas, texturas y overlays para que el producto no se reduzca a un simple formulario.',
         bullets: [
           'Base reutilizable para vinilos, rigid media o materiales tecnicos.',
-          'Pensada para añadir muestras visuales y before/after sin tocar la lógica.',
-          'Compatible con pricing por m2 y variantes futuras.',
+          'Pensada para sumar muestras visuales y before/after sin perder claridad de compra.',
+          'Compatible con pricing por m2 y nuevas variantes de soporte.',
         ],
       },
     ],
     galleryFrames: [
       {
         id: 'materials-gallery-1',
-        label: 'Mock editorial',
+        label: 'Visual editorial',
         title: 'Lamina de material',
-        description: 'Placeholder para superficie, soporte o vinilo recortado.',
+        description: 'Composicion principal para superficie, soporte o vinilo recortado.',
       },
       {
         id: 'materials-gallery-2',
@@ -303,7 +303,7 @@ export const productExperienceContent: Record<string, ProductExperienceConfig> =
         id: 'accessories-story-1',
         eyebrow: 'Storytelling',
         title: 'Pequeño formato, misma exigencia premium.',
-        description: 'La capa de producto ya no trata accesorios como una excepción: puede crecer con galerías, comparativas y addons sin meter lógica en la página.',
+        description: 'La ficha trata accesorios con la misma exigencia visual que cualquier otro producto de la tienda.',
         bullets: [
           'Útil para stickers, llaveros y promo packs.',
           'Lista para bundles y sugerencias contextuales.',
@@ -314,9 +314,9 @@ export const productExperienceContent: Record<string, ProductExperienceConfig> =
     galleryFrames: [
       {
         id: 'accessories-gallery-1',
-        label: 'Mock editorial',
+        label: 'Visual editorial',
         title: 'Pack de producto',
-        description: 'Placeholder para lote de accesorios, sticker sheet o llavero.',
+        description: 'Vista principal para lote de accesorios, sticker sheet o pieza de branding.',
       },
       {
         id: 'accessories-gallery-2',
@@ -328,12 +328,12 @@ export const productExperienceContent: Record<string, ProductExperienceConfig> =
     processSteps: [
       { id: 'pick', title: 'Seleccion', description: 'Se elige el accesorio y la tirada visible.' },
       { id: 'file', title: 'Archivo', description: 'Se adjunta cuando el corte o la forma dependen del arte.' },
-      { id: 'cart', title: 'Carrito', description: 'La línea se registra lista para el checkout mock.' },
+      { id: 'cart', title: 'Carrito', description: 'La linea queda lista para pasar a checkout con el resumen completo.' },
     ],
     finalCta: {
       label: 'Cierre del producto',
       title: 'Accesorios listos para carrito o ampliación de proyecto.',
-      description: 'La arquitectura ya deja preparado el salto a storytelling visual más rico por producto.',
+      description: 'La ficha deja accesorios, cantidades y archivo listos para cerrar el pedido con rapidez.',
       primaryLabel: 'Ir al carrito',
       primaryHref: publicRoutes.carrito,
       secondaryLabel: 'Solicitar presupuesto',
@@ -351,9 +351,9 @@ export const productExperienceContent: Record<string, ProductExperienceConfig> =
       {
         id: 'contact-upgrade',
         title: 'Proyecto especial',
-        description: 'Si el accesorio se sale del tramo, deriva a propuesta mock.',
+        description: 'Si el accesorio se sale del tramo, pasamos a una propuesta personalizada.',
         href: getQuoteHref('otro'),
-        priceLabel: 'Propuesta mock',
+        priceLabel: 'Propuesta personalizada',
         tag: 'Servicio',
       },
     ],
@@ -403,9 +403,9 @@ export const productExperienceContent: Record<string, ProductExperienceConfig> =
     galleryFrames: [
       {
         id: 'signage-gallery-1',
-        label: 'Mock editorial',
+        label: 'Visual editorial',
         title: 'Lona o panel hero',
-        description: 'Placeholder para pieza gran formato en espacio real.',
+        description: 'Vista principal para pieza de gran formato en contexto real.',
       },
       {
         id: 'signage-gallery-2',
@@ -417,12 +417,12 @@ export const productExperienceContent: Record<string, ProductExperienceConfig> =
     processSteps: [
       { id: 'measure', title: 'Medidas', description: 'Se fija tamaño, uso y soporte previsto.' },
       { id: 'scope', title: 'Alcance', description: 'La propuesta toma forma según confección e instalación.' },
-      { id: 'quote', title: 'Propuesta', description: 'El cierre ocurre en el flujo comercial mock.' },
+      { id: 'quote', title: 'Propuesta', description: 'El cierre se hace con una propuesta ajustada a medidas, soporte y montaje.' },
     ],
     finalCta: {
       label: 'Cierre del producto',
       title: 'Carteleria preparada para avanzar a propuesta.',
-      description: 'La nueva arquitectura soporta escenas visuales más ricas sin sacrificar SEO ni edición por zonas.',
+      description: 'La experiencia deja lista la propuesta sin perder contexto de medidas, soporte y uso final.',
       primaryLabel: 'Solicitar presupuesto',
       primaryHref: getQuoteHref('carteleria'),
       secondaryLabel: 'Contactar',
@@ -483,10 +483,10 @@ export const productExperienceContent: Record<string, ProductExperienceConfig> =
         eyebrow: 'Storytelling',
         title: 'Rotulacion pensada para negocio, flota y visibilidad diaria.',
         description:
-          'La experiencia ya separa hero, visuales, configuracion y CTA para escalar luego con proyectos reales, comparativas de cobertura y assets de vehiculo sin rehacer la logica.',
+          'La experiencia separa visual, configuracion y propuesta para que la lectura siga siendo clara incluso en proyectos de cobertura amplia.',
         bullets: [
           'Valida para furgonetas, vehiculos de empresa, escaparates y flotas comerciales.',
-          'Lista para sumar proyectos reales y bloques visuales mas editoriales en fases futuras.',
+          'Lista para sumar proyectos reales y bloques visuales mas editoriales sin rehacer la base.',
           'Mantiene clara la diferencia entre rango orientativo, revision tecnica y propuesta final.',
         ],
       },
@@ -494,9 +494,9 @@ export const productExperienceContent: Record<string, ProductExperienceConfig> =
     galleryFrames: [
       {
         id: 'wrap-gallery-1',
-        label: 'Mock editorial',
+        label: 'Visual editorial',
         title: 'Vehiculo hero',
-        description: 'Placeholder para furgoneta o vehiculo de empresa con propuesta de cobertura visible.',
+        description: 'Vista principal para furgoneta o vehiculo de empresa con cobertura de marca visible.',
       },
       {
         id: 'wrap-gallery-2',
@@ -573,10 +573,10 @@ export const productExperienceContent: Record<string, ProductExperienceConfig> =
         id: 'neon-story-1',
         eyebrow: 'Storytelling',
         title: 'Una ficha lista para branding luminoso con más capas visuales.',
-        description: 'La experiencia ya está preparada para overlays flotantes, comparativas de luz y hero editorial sin mezclarlo con la lógica del presupuesto.',
+        description: 'La experiencia deja espacio para referencias visuales de luz y acabado sin entorpecer la lectura comercial del proyecto.',
         bullets: [
           'Base válida para neones de interior, eventos y retail.',
-          'Escalable con assets transparentes y escenas de glow controlado.',
+          'Pensada para sumar visuales luminosos y referencias de acabado con control.',
           'Mantiene el producto indexable y editable por zonas.',
         ],
       },
@@ -584,9 +584,9 @@ export const productExperienceContent: Record<string, ProductExperienceConfig> =
     galleryFrames: [
       {
         id: 'neon-gallery-1',
-        label: 'Mock editorial',
+        label: 'Visual editorial',
         title: 'Rótulo hero',
-        description: 'Placeholder para pieza luminosa en pared o escaparate.',
+        description: 'Vista principal para pieza luminosa en pared o escaparate.',
       },
       {
         id: 'neon-gallery-2',
@@ -598,12 +598,12 @@ export const productExperienceContent: Record<string, ProductExperienceConfig> =
     processSteps: [
       { id: 'concept', title: 'Concepto', description: 'Se define mensaje, escala y contexto de uso.' },
       { id: 'specs', title: 'Especificación', description: 'La propuesta recoge colores, materiales y montaje.' },
-      { id: 'proposal', title: 'Propuesta', description: 'La salida sigue en el flujo comercial mock.' },
+      { id: 'proposal', title: 'Propuesta', description: 'La salida se resuelve con una propuesta personalizada y el alcance del proyecto bien definido.' },
     ],
     finalCta: {
       label: 'Cierre del producto',
       title: 'Neones listos para una siguiente iteración visual más rica.',
-      description: 'La arquitectura permite sumar assets reales, animación y comparativas sin reescribir la ficha.',
+      description: 'La ficha deja claro el alcance del proyecto y prepara la propuesta sin ruido innecesario.',
       primaryLabel: 'Solicitar presupuesto',
       primaryHref: getQuoteHref('neones'),
       secondaryLabel: 'Contactar',

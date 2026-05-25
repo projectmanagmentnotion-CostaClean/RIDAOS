@@ -54,12 +54,12 @@ export function ArtworkUploadFlow({
     <article className="content-card artwork-upload-flow" data-cursor="interest">
       <div className="premium-panel-header">
         <div>
-          <p className="section-label">ARTWORK_UPLOAD_FLOW</p>
+          <p className="section-label">Subida de archivo</p>
           <h3>{title}</h3>
           <p>{description}</p>
         </div>
         <span className={`status-badge status-${summary?.workflowStatus === 'blocked' ? 'danger' : summary?.workflowStatus === 'needs_review' ? 'warning' : summary?.workflowStatus === 'warning' ? 'warning' : 'success'}`}>
-          {summary ? getStatusLabel(summary.workflowStatus) : 'Pendiente'}
+          {summary ? getStatusLabel(summary.workflowStatus) : 'Por revisar'}
         </span>
       </div>
 
@@ -74,7 +74,7 @@ export function ArtworkUploadFlow({
 
       <ProductTemplateDownloads
         compact
-        description="Descarga una base mock con sangrado, corte y zona segura antes de exportar tu archivo final."
+        description="Prepara tu archivo con una base clara de sangrado, corte y zona segura antes de exportarlo."
         ruleKey={ruleKey}
         title="Plantilla recomendada antes del upload"
       />
@@ -101,8 +101,8 @@ export function ArtworkUploadFlow({
 
         <div className="summary-stack">
           <article className="content-card artwork-upload-flow__panel">
-            <p className="section-label">Revision automatica mock</p>
-            {isLoading ? <p>Analizando archivo local...</p> : null}
+            <p className="section-label">Revision automatica</p>
+            {isLoading ? <p>Analizando archivo...</p> : null}
             {!summary && !isLoading ? <p>Sube tu diseño para activar checks, guias y confirmacion.</p> : null}
             {summary ? (
               <div className="summary-list compact-summary">
@@ -130,7 +130,7 @@ export function ArtworkUploadFlow({
 
           {summary ? (
             <article className="content-card artwork-upload-flow__panel" data-cursor="interactive">
-              <p className="section-label">PREPRESS_CHECKS</p>
+              <p className="section-label">Revision tecnica</p>
               <div className="admin-list-card">
                 {summary.advancedChecks.map((check) => (
                   <article className="admin-list-row admin-list-row-block" key={check.id}>
@@ -152,7 +152,7 @@ export function ArtworkUploadFlow({
 
       {summary ? (
         <article className="content-card artwork-upload-flow__panel" data-cursor="interactive">
-          <p className="section-label">PREPRESS_RECOMMENDATIONS</p>
+          <p className="section-label">Recomendaciones</p>
           <ul className="hint-list">
             {summary.recommendations.map((recommendation) => (
               <li key={recommendation.id}>{recommendation.message}</li>
@@ -177,7 +177,7 @@ export function ArtworkUploadFlow({
             </button>
           </div>
           {confirmed ? (
-            <p className="inline-notice">Archivo confirmado para seguir con el flujo mock.</p>
+            <p className="inline-notice">Archivo confirmado para seguir con tu pedido.</p>
           ) : (
             <p className="inline-notice">{summary.suggestedActionLabel}. Revisa score, guias y correcciones antes de confirmar.</p>
           )}

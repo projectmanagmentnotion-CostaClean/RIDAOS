@@ -5,7 +5,7 @@ export const dtfSeoContent: CatalogSeoContent = {
   entryId: dtfEntry.id,
   slug: dtfEntry.slug,
   seoTitle: 'DTI por metro | Archivo, revision y urgencia clara | RidaosPrint',
-  metaDescription: 'DTI por metro con precio mock por metraje, revision de archivo y urgencia clara antes del carrito. DTF como keyword secundaria.',
+  metaDescription: 'DTI por metro con precio por metraje, revision de archivo y urgencia clara antes del carrito. DTF como keyword secundaria.',
   ogImage: '/assets/seo/og-dti.jpg',
   h1: 'DTI por metro.',
   eyebrow: 'DTI por metro para produccion textil agil',

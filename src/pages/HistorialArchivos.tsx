@@ -62,7 +62,7 @@ function HistorialArchivos() {
             </div>
             <div className="file-history-grid">
               <p>Subida: {formatDate(file.uploadedAt)}</p>
-              <p>Pedido: {file.orderId || 'Pendiente'}</p>
+              <p>Pedido: {file.orderId || 'Por asignar'}</p>
               <p>Estado: {file.status}</p>
             </div>
             <a className="card-link" href={publicRoutes.detallePedido}>

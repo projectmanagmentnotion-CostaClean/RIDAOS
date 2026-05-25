@@ -158,8 +158,8 @@ function Checkout() {
                   </div>
                   <ul className="hint-list">
                     <li>Revisa ahora cantidades, urgencias y extras antes de pedir envio.</li>
-                    <li>El pedido sigue en modo local/mock y no dispara pagos reales.</li>
-                    <li>La comprobacion tecnica se mantiene como primer checkpoint operativo.</li>
+                    <li>Revisamos archivo, entrega y acabados antes de cerrar la produccion.</li>
+                    <li>La comprobacion tecnica se mantiene como primer punto de control del pedido.</li>
                   </ul>
                   <div className="form-actions">
                     <button className="action-button" disabled={!canAdvance} onClick={() => setStep('shipping')} type="button">
@@ -173,7 +173,7 @@ function Checkout() {
 
           {step === 'shipping' ? (
             <>
-              <p className="section-label">Envio mock</p>
+              <p className="section-label">Entrega</p>
               <h2>{pricingContent.checkout.shippingTitle}</h2>
               <div className="configurator-form">
                 <label className="field-group" htmlFor="checkout-name">
@@ -193,15 +193,15 @@ function Checkout() {
                 </label>
                 {errors.cart ? <p className="field-error">{errors.cart}</p> : null}
                 <ul className="hint-list">
-                  <li>Los datos solo se guardan en la simulacion local del pedido.</li>
-                  <li>El metodo de envio ya fue calculado en el carrito y se conserva aqui.</li>
+                  <li>Usamos estos datos para preparar la entrega y la confirmacion del pedido.</li>
+                  <li>El metodo de entrega elegido en el carrito se mantiene aqui para que no pierdas contexto.</li>
                 </ul>
                 <div className="form-actions">
                   <button className="action-button action-button-muted" onClick={() => setStep('review')} type="button">
                     Volver a revision
                   </button>
                   <button className="action-button" onClick={() => setStep('payment')} type="button">
-                    Continuar a pago mock
+                    Continuar a pago
                   </button>
                 </div>
               </div>
@@ -210,7 +210,7 @@ function Checkout() {
 
           {step === 'payment' ? (
             <>
-              <p className="section-label">Pago mock</p>
+              <p className="section-label">Pago</p>
               <h2>{pricingContent.checkout.paymentTitle}</h2>
               <div className="shipping-option-list payment-option-list">
                 {paymentMocks.map((payment) => (
@@ -233,7 +233,7 @@ function Checkout() {
                   Volver a envio
                 </button>
                 <button className="action-button" data-cursor="sales" disabled={loading} onClick={handleSubmit} type="button">
-                  Registrar pedido mock
+                  Registrar pedido
                 </button>
               </div>
             </>
@@ -253,7 +253,7 @@ function Checkout() {
                   <strong>{confirmation.customer.name}</strong>
                 </div>
                 <div className="summary-row">
-                  <span>Metodo de pago mock</span>
+                  <span>Metodo de pago</span>
                   <strong>{paymentMocks.find((item) => item.id === selectedPayment)?.label}</strong>
                 </div>
                 <div className="summary-row summary-row-total">
@@ -275,11 +275,11 @@ function Checkout() {
                 <strong>{formatCurrency(activeSummary.subtotal)}</strong>
               </div>
               <div className="summary-row">
-                <span>Envio mock</span>
+                <span>Entrega</span>
                 <strong>{formatCurrency(activeSummary.shipping.price)}</strong>
               </div>
               <div className="summary-row">
-                <span>Impuestos mock</span>
+                <span>Impuestos</span>
                 <strong>{formatCurrency(activeSummary.taxes)}</strong>
               </div>
               <div className="summary-row">
@@ -292,9 +292,9 @@ function Checkout() {
               </div>
             </div>
             <ul className="hint-list">
-              <li>Sin Stripe. Sin auth real. Sin datos remotos.</li>
-              <li>Shipping, taxes y payment son simulaciones locales preparadas para la capa real.</li>
-              <li>El pedido se guarda en el historial mock y alimenta el timeline operativo.</li>
+              <li>El total mantiene entrega, impuestos y descuentos visibles antes de confirmar.</li>
+              <li>La comprobacion tecnica sigue separada para proteger archivo, medidas y acabados.</li>
+              <li>Tu pedido queda registrado con el mismo resumen que has revisado durante el proceso.</li>
             </ul>
           </article>
 
@@ -302,8 +302,7 @@ function Checkout() {
             <article className="content-card success-card" data-cursor-zone="conversion">
               <p className="section-label">Siguiente lectura</p>
               <p>
-                El pedido ya puede verse desde el historial mock con el estado inicial de revision de
-                archivo y produccion preparada.
+                El pedido ya aparece en tu historial con su estado inicial de revision de archivo y preparacion.
               </p>
             </article>
           ) : null}

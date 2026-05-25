@@ -9,7 +9,7 @@ export const dtfEntry: CatalogEntry = {
   kind: 'product',
   category: 'dtf',
   name: 'DTI por metro',
-  description: 'Producto principal con configurador propio, preview tecnico y compra mock directa.',
+  description: 'Producto principal con configurador propio, revision tecnica y compra directa.',
   shortDescription: 'DTI por metro con archivo, revision y precio claro antes del carrito.',
   route: '#/producto/dtf',
   purchaseMode: 'direct',

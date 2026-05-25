@@ -12,11 +12,10 @@ export function ProductGalleryFrame({ label, title, description, assetFileName, 
     <article className="content-card product-gallery-frame" aria-hidden="true">
       <p className="section-label">{label}</p>
       <div className="product-gallery-frame__visual">
-        {assetFileName ? (
+        {assetFileName || assetPath || assetStatus ? (
           <div className="product-gallery-frame__asset">
-            <strong>{assetFileName}</strong>
-            {assetStatus ? <span>{assetStatus}</span> : null}
-            {assetPath ? <code>{assetPath}</code> : null}
+            <strong>{title}</strong>
+            <span>Visual editorial del producto</span>
           </div>
         ) : null}
       </div>

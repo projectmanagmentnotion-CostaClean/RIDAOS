@@ -5,7 +5,7 @@ export const pricingContent = {
     heroEyebrow: 'Carrito',
     heroTitle: 'Carrito premium listo para confirmar.',
     heroDescription:
-      'Revisa cantidades, urgencia, envio mock y extras antes de pasar al flujo final del pedido.',
+      'Revisa cantidades, urgencia, entrega y extras antes de confirmar tu pedido.',
     emptyState: 'El carrito esta vacio por ahora.',
     continueShoppingLabel: 'Volver al catalogo',
     clearCartLabel: 'Vaciar carrito',
@@ -14,13 +14,13 @@ export const pricingContent = {
     recommendationsTitle: 'Sigue construyendo el pedido',
   },
   checkout: {
-    heroEyebrow: 'Checkout mock',
-    heroTitle: 'Revision, envio y pago sin salir del flujo.',
+    heroEyebrow: 'Checkout',
+    heroTitle: 'Revision, entrega y pago en un solo paso.',
     heroDescription:
-      'El flujo sigue siendo local/mock, pero ya separa revision, envio, pago y confirmacion como un ecommerce real.',
+      'Confirma datos, revisa la entrega y deja el pedido listo para validacion final.',
     reviewTitle: 'Revision final antes de registrar',
-    shippingTitle: 'Entrega mock',
-    paymentTitle: 'Pago mock',
-    successTitle: 'Pedido registrado en modo preparado',
+    shippingTitle: 'Entrega',
+    paymentTitle: 'Forma de pago',
+    successTitle: 'Pedido registrado correctamente',
   },
 }

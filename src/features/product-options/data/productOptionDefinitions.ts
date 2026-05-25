@@ -29,7 +29,7 @@ export const productOptionDefinitions: ProductOptionDefinition[] = [
       eyebrow: 'Pegatinas personalizadas',
       title: 'Pegatinas que parecen parte de tu marca, no un anadido.',
       claim: 'Troquel, material y acabado claros antes de fabricar.',
-      description: 'Configura forma, material y cantidad con una lectura visual y un precio mock directo.',
+      description: 'Configura forma, material y cantidad con una lectura visual y un precio estimado claro.',
       primaryCtaLabel: 'Configurar pegatinas',
       secondaryCtaLabel: 'Descargar plantilla',
       benefitChips: ['Exterior', 'Contorno', 'Kiss cut', 'Marca'],
@@ -317,7 +317,7 @@ export const productOptionDefinitions: ProductOptionDefinition[] = [
     hero: {
       eyebrow: 'Flyers y folletos',
       title: 'Promociona con una pieza que se entrega, se mira y se recuerda.',
-      claim: 'Formato, papel y doble cara con precio mock claro.',
+      claim: 'Formato, papel y doble cara con precio estimado claro.',
       description: 'Desde acciones locales hasta material de mano para marca, feria o punto de venta.',
       primaryCtaLabel: 'Configurar flyers',
       secondaryCtaLabel: 'Descargar plantilla',
@@ -1030,8 +1030,8 @@ export const productOptionDefinitions: ProductOptionDefinition[] = [
       { key: 'notes', type: 'textarea', label: 'Notas', rows: 4 },
     ],
     assetRequirements: [
-      heroAsset('tshirt-front-transparent', 'Camiseta frontal', 'tshirt-front-transparent.webp', '/assets/previews/textile/tshirt-front-transparent-v1.webp', 'webp', 'Mockup camiseta.'),
-      heroAsset('hoodie-front-transparent', 'Sudadera frontal', 'hoodie-front-transparent.webp', '/assets/previews/textile/hoodie-front-transparent-v1.webp', 'webp', 'Mockup sudadera.', 'required'),
+      heroAsset('tshirt-front-transparent', 'Camiseta frontal', 'tshirt-front-transparent.webp', '/assets/previews/textile/tshirt-front-transparent-v1.webp', 'webp', 'Vista frontal de camiseta.'),
+      heroAsset('hoodie-front-transparent', 'Sudadera frontal', 'hoodie-front-transparent.webp', '/assets/previews/textile/hoodie-front-transparent-v1.webp', 'webp', 'Vista frontal de sudadera.', 'required'),
       heroAsset('textile-placement-guide', 'Guia de colocacion', 'textile-placement-guide.svg', '/assets/overlays/prepress/textile-placement-guide-v1.svg', 'svg', 'Overlay colocacion.'),
     ],
     recommendedTemplateLabel: 'Guia de area de estampacion textil',

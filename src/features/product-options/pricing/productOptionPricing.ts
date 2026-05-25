@@ -48,7 +48,7 @@ function calculateStickerPricing(_entry: CatalogEntry, config: ConfigState): Cat
     return createResult({
       subtotal: 0,
       total: 0,
-      pricingLabel: 'Pendiente',
+      pricingLabel: 'A consultar',
       breakdown: [],
       warnings: ['La cantidad minima visible para pegatinas es 50 uds.'],
       canAddToCart: false,
@@ -133,7 +133,7 @@ function calculateBusinessCardPricing(config: ConfigState): CatalogPricingResult
     return createResult({
       subtotal: 0,
       total: 0,
-      pricingLabel: 'Pendiente',
+      pricingLabel: 'A consultar',
       breakdown: [],
       warnings: ['La cantidad minima visible para tarjetas es 100 uds.'],
       canAddToCart: false,
@@ -200,7 +200,7 @@ function calculateFlyerPricing(entry: CatalogEntry, config: ConfigState): Catalo
     return createResult({
       subtotal: 0,
       total: 0,
-      pricingLabel: 'Pendiente',
+      pricingLabel: 'A consultar',
       breakdown: [],
       warnings: ['La cantidad minima visible para flyers es 100 uds.'],
       canAddToCart: false,
@@ -263,7 +263,7 @@ function calculateDtiPricing(config: ConfigState): CatalogPricingResult {
     return createResult({
       subtotal: 0,
       total: 0,
-      pricingLabel: 'Pendiente',
+      pricingLabel: 'A consultar',
       breakdown: [],
       warnings: ['Introduce el metraje real del pedido.'],
       canAddToCart: false,
@@ -364,7 +364,7 @@ function calculateTextilePricing(entry: CatalogEntry, config: ConfigState): Cata
     return createResult({
       subtotal: 0,
       total: 0,
-      pricingLabel: 'Pendiente',
+      pricingLabel: 'A consultar',
       breakdown: [],
       warnings: ['Indica la cantidad de prendas.'],
       canAddToCart: false,
@@ -413,7 +413,7 @@ function calculatePrintedVinylPricing(entry: CatalogEntry, config: ConfigState):
     return createResult({
       subtotal: 0,
       total: 0,
-      pricingLabel: 'Pendiente',
+      pricingLabel: 'A consultar',
       breakdown: [],
       warnings: ['Introduce la superficie aproximada en m2.'],
       canAddToCart: false,

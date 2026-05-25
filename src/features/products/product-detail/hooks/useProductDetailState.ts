@@ -117,7 +117,7 @@ export function useProductDetailState(category: CatalogCategoryKey) {
           fileName,
           fileType: selectedFile?.type ?? 'text/plain',
           fileSize: selectedFile?.size ?? 0,
-          formatLabel: previewSummary?.formatLabel ?? (fileName === 'Sin archivo adjunto' ? 'PENDIENTE' : 'ARCHIVO'),
+          formatLabel: previewSummary?.formatLabel ?? (fileName === 'Sin archivo adjunto' ? 'POR CONFIRMAR' : 'ARCHIVO'),
           notes: config.notes?.trim() ?? '',
           previewSummary: previewSummary ?? undefined,
         }),
@@ -126,7 +126,7 @@ export function useProductDetailState(category: CatalogCategoryKey) {
       return
     }
 
-    setMessage('Configuracion lista para abrir la propuesta mock.')
+    setMessage('Configuracion lista para solicitar una propuesta personalizada.')
   }
 
   return {

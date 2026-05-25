@@ -234,12 +234,12 @@ function SolicitarPresupuesto() {
             <div className="summary-list">
               <div className="summary-row">
                 <span>Servicio</span>
-                <strong>{selectedService?.label ?? 'Pendiente'}</strong>
+                <strong>{selectedService?.label ?? 'Por definir'}</strong>
               </div>
               <div className="summary-row">
                 <span>Medidas</span>
                 <strong>
-                  {form.width || form.height ? `${form.width || '-'} x ${form.height || '-'}` : 'Pendientes'}
+                  {form.width || form.height ? `${form.width || '-'} x ${form.height || '-'}` : 'Por definir'}
                 </strong>
               </div>
               <div className="summary-row">
@@ -248,7 +248,7 @@ function SolicitarPresupuesto() {
               </div>
               <div className="summary-row">
                 <span>Contacto</span>
-                <strong>{form.nombre || 'Pendiente'}</strong>
+                <strong>{form.nombre || 'Por definir'}</strong>
               </div>
               <div className="summary-row summary-row-total">
                 <span>Estado</span>

@@ -23,16 +23,16 @@ export function ProductTemplateDownloads({
     <section className={`template-downloads${compact ? ' template-downloads-compact' : ''}`} data-cursor="interest">
       <div className="premium-panel-header">
         <div>
-          <p className="section-label">PRINT_TEMPLATE_DOWNLOADS</p>
+          <p className="section-label">Plantillas</p>
           <h3>{title}</h3>
           <p>{description}</p>
         </div>
       </div>
 
-      {isLoading ? <p className="file-meta">Cargando catalogo mock de plantillas...</p> : null}
+      {isLoading ? <p className="file-meta">Cargando plantillas recomendadas...</p> : null}
       {!isLoading && templates.length === 0 ? (
         <article className="content-card">
-          <p className="inline-notice">Plantilla pendiente para este producto.</p>
+          <p className="inline-notice">Te guiamos desde el configurador con corte, sangrado y zona segura.</p>
         </article>
       ) : null}
 

@@ -1,4 +1,4 @@
 export const templateStatusCopy = {
-  pending: 'Plantilla pendiente',
+  pending: 'Bajo solicitud',
   ready: 'Disponible',
 } as const

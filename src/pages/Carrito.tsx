@@ -45,7 +45,7 @@ function Carrito() {
               <h2>Lineas preparadas para produccion.</h2>
             </div>
             <span className="premium-caption">
-              Persistencia local activa · {summary.lineCount} unidades en cesta
+              {summary.lineCount} unidades en cesta
             </span>
           </div>
 
@@ -85,7 +85,7 @@ function Carrito() {
             <p className="section-label">Siguiente paso</p>
             <h3>Cierra el flujo sin perder contexto.</h3>
             <ul className="hint-list">
-              <li>El checkout mock conserva envio, cupon y lectura del pedido.</li>
+              <li>El checkout mantiene entrega, cupon y lectura del pedido sin rehacer tu configuracion.</li>
               <li>La comprobacion tecnica sigue siendo el paso previo a cualquier produccion real.</li>
               <li>{footerContent.description}</li>
             </ul>

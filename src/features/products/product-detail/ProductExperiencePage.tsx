@@ -204,7 +204,7 @@ export function ProductExperiencePage({ category }: ProductExperiencePageProps) 
       templateDownloads={
         enabled.has('configurator') ? (
           <ProductTemplateDownloads
-            description="Plantillas mock por producto para preparar el archivo con corte, sangrado y zona segura antes del upload."
+            description="Plantillas recomendadas por producto para preparar el archivo con corte, sangrado y zona segura antes del upload."
             ruleKey={optionDefinition?.templateRuleKey ?? artworkRuleKey}
             title="Descargar plantilla recomendada"
           />

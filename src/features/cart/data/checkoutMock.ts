@@ -1,7 +1,7 @@
 export const checkoutSteps = [
   { id: 'review', label: 'Revision' },
-  { id: 'shipping', label: 'Envio mock' },
-  { id: 'payment', label: 'Pago mock' },
+  { id: 'shipping', label: 'Entrega' },
+  { id: 'payment', label: 'Pago' },
   { id: 'success', label: 'Confirmacion' },
 ] as const
 

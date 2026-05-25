@@ -20,6 +20,7 @@ import AdminApprovalChainsPanel from '../../features/admin-accounts/components/A
 import AdminAuditTrailList from '../../features/admin-accounts/components/AdminAuditTrailList'
 import { adminMockUsers } from '../../features/admin-accounts/mock/adminAccountsMockData'
 import { resolveMockUser } from '../../features/admin-accounts/services/adminAccountsService'
+import { useLiveToast } from '../../features/live-feedback'
 import { PrepressAdminReviewPanel } from '../../features/prepress'
 import { ReportPreviewPanel, buildDeliveryHandoffReport, buildOrderSummaryReport } from '../../features/reporting'
 import InternalNotesComposer from '../../features/operations/notes/InternalNotesComposer'
@@ -121,6 +122,7 @@ function getOrderIdFromHash(hash: string) {
 }
 
 function OrderDetailPage() {
+  const { info, success, warning } = useLiveToast()
   const [orderId, setOrderId] = useState(() => getOrderIdFromHash(window.location.hash))
   const [order, setOrder] = useState<OperationsOrderRecord | null>(null)
   const [allOrders, setAllOrders] = useState<OperationsOrderRecord[]>([])
@@ -766,6 +768,7 @@ function OrderDetailPage() {
                   onClick={async () => {
                     await saveAdminServiceNotes(order.id, serviceNotesDraft)
                     await refreshOrder()
+                    success('Seguimiento guardado', 'La nota de atencion al cliente ya queda registrada.')
                   }}
                   type="button"
                 >
@@ -777,6 +780,7 @@ function OrderDetailPage() {
                     const nextApproval = getNextApprovalState(order.approvalState)
                     await patchAdminOrderClientService(order.id, { approvalState: nextApproval })
                     await appendApprovalTimelineEntry('Approval actualizada', `El artwork pasa a ${approvalStateLabels[nextApproval]}.`, 'success')
+                    success('Approval actualizada', `El artwork avanza a ${approvalStateLabels[nextApproval]}.`)
                   }}
                   type="button"
                 >
@@ -790,6 +794,7 @@ function OrderDetailPage() {
                       ticketStatus: 'waiting_customer',
                     })
                     await appendApprovalTimelineEntry('Cambios solicitados', 'Se ha pedido una nueva version del archivo al cliente.', 'warning')
+                    warning('Cambios solicitados', 'El cliente ya queda pendiente de una nueva version del archivo.')
                   }}
                   type="button"
                 >
@@ -803,6 +808,7 @@ function OrderDetailPage() {
                       escalationLevel: 'urgent',
                     })
                     await appendServiceTimelineEntry('Caso escalado', 'Se ha marcado el pedido como escalado para revision prioritaria.', 'warning')
+                    warning('Caso escalado', 'La incidencia pasa a seguimiento prioritario.')
                   }}
                   type="button"
                 >
@@ -944,6 +950,7 @@ function OrderDetailPage() {
                   onClick={async () => {
                     await patchAdminOrderDispatch(order.id, { packingStatus: 'packed', shippingStatus: 'ready_for_dispatch' })
                     await refreshOrder()
+                    success('Pedido embalado', 'El handoff ya queda listo para coordinar la salida.')
                   }}
                   type="button"
                 >
@@ -954,6 +961,7 @@ function OrderDetailPage() {
                   onClick={async () => {
                     await patchAdminOrderDispatch(order.id, { shippingStatus: getNextShippingStatus(order.shippingStatus) })
                     await refreshOrder()
+                    info('Salida actualizada', 'El pedido ha avanzado al siguiente estado de entrega.')
                   }}
                   type="button"
                 >
@@ -964,6 +972,7 @@ function OrderDetailPage() {
                   onClick={async () => {
                     await patchAdminOrderDispatch(order.id, { deliveryIncident: 'Incidencia mock registrada en handoff.' })
                     await refreshOrder()
+                    warning('Incidencia registrada', 'El pedido queda marcado para seguimiento de entrega.')
                   }}
                   type="button"
                 >
@@ -1003,6 +1012,7 @@ function OrderDetailPage() {
                 onClick={async () => {
                   await saveAdminOrderNotes(order.id, notesDraft)
                   await refreshOrder()
+                  success('Seguimiento guardado', 'Las notas internas ya se han actualizado.')
                 }}
                 type="button"
               >
@@ -1030,6 +1040,7 @@ function OrderDetailPage() {
                 onClick={async () => {
                   await saveAdminProductionNotes(order.id, productionNotesDraft)
                   await refreshOrder()
+                  success('Fabricacion actualizada', 'Las instrucciones de taller ya quedan guardadas.')
                 }}
                 type="button"
               >
@@ -1065,6 +1076,7 @@ function OrderDetailPage() {
                 onSubmit={async ({ body, category }) => {
                   await addAdminInternalComment(order.id, body, category)
                   await refreshOrder()
+                  success('Comentario interno guardado', 'La trazabilidad del pedido ya refleja tu nota.')
                 }}
               />
             </article>

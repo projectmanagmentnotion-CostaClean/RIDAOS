@@ -1,12 +1,14 @@
+import type { ReactNode } from 'react'
 import ConfiguratorFieldRenderer from '../../../../components/ConfiguratorFieldRenderer'
 import ConfiguratorSupportBlock from '../../../../components/ConfiguratorSupportBlock'
 import SectionHeader from '../../../../components/SectionHeader'
-import { ArtworkUploadFlow } from '../../../artwork-upload'
 import type { ConfigState } from '../../../../lib/configuratorState'
 import type { CatalogEntry, ConfiguratorField } from '../../../../types/product'
+import { ArtworkUploadFlow } from '../../../artwork-upload'
 import type { ArtworkPreviewSummary, ArtworkProductRuleKey, ArtworkUploadFlowState } from '../../../artwork-upload'
+import { useLiveToast } from '../../../live-feedback'
+import { getConfigFeedbackLabel } from '../../../live-feedback/utils/feedbackCopy'
 import type { ProductSupportSection } from '../types/productExperience.types'
-import type { ReactNode } from 'react'
 
 type ProductConfiguratorSectionProps = {
   entry: CatalogEntry
@@ -40,6 +42,17 @@ export function ProductConfiguratorSection({
   onArtworkStateChange,
 }: ProductConfiguratorSectionProps) {
   const artworkField = fields.find((field) => field.type === 'file')
+  const { info, success } = useLiveToast()
+
+  const handleFieldChange = (key: string, value: string) => {
+    onConfigChange(key, value)
+
+    if (!value || key === 'notes') {
+      return
+    }
+
+    info(getConfigFeedbackLabel(key), 'Tu resumen y el precio estimado se han actualizado.', 1800)
+  }
 
   return (
     <article
@@ -55,7 +68,7 @@ export function ProductConfiguratorSection({
             error={fieldErrors[field.key]}
             field={field}
             key={`${entry.id}-${field.key}`}
-            onChange={onConfigChange}
+            onChange={handleFieldChange}
             onFileChange={onFileChange}
             value={config[field.key] ?? ''}
           />
@@ -64,10 +77,16 @@ export function ProductConfiguratorSection({
         {artworkField ? (
           <ArtworkUploadFlow
             acceptedFormats={artworkField.accept}
-            description="Sube el archivo, revisa guías de imprenta y confirma la pieza antes de seguir."
+            description="Sube el archivo, revisa guias de imprenta y confirma la pieza antes de seguir."
             file={selectedFile}
             onFileChange={(file) => onFileChange?.(artworkField.key, file)}
-            onStateChange={onArtworkStateChange}
+            onStateChange={(state) => {
+              onArtworkStateChange?.(state)
+
+              if (state.confirmed) {
+                success('Archivo confirmado', 'La pieza queda lista para continuar con tu pedido.', 2200)
+              }
+            }}
             ruleKey={artworkRuleKey}
             title="Artwork upload y print preview"
           />

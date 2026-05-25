@@ -7,6 +7,7 @@ import { createInitialConfig, getRequiredFieldErrors, updateConfigValue, type Co
 import { getProductById, getProductsByCategory } from '../../../../lib/products'
 import type { CatalogCategoryKey } from '../../../../types/product'
 import type { ArtworkPreviewSummary } from '../../../artwork-upload'
+import { useLiveToast } from '../../../live-feedback'
 import { getProductOptionDefinition } from '../../../product-options'
 import { productExperienceContent } from '../data/productExperienceContent'
 
@@ -49,6 +50,7 @@ function buildDisplayEntry(productId: string) {
 }
 
 export function useProductDetailState(category: CatalogCategoryKey) {
+  const { info, success } = useLiveToast()
   const pageConfig = productExperienceContent[category]
   const products = useMemo(() => getProductsByCategory(category), [category])
   const [productId, setProductId] = useState(products[0]?.id ?? '')
@@ -123,10 +125,12 @@ export function useProductDetailState(category: CatalogCategoryKey) {
         }),
       )
       setMessage(`${selectedProduct.name} anadido al carrito.`)
+      success('Añadido al carrito', `${selectedProduct.name} ya aparece en tu resumen de compra.`)
       return
     }
 
     setMessage('Configuracion lista para solicitar una propuesta personalizada.')
+    info('Configuracion preparada', 'Ya puedes pedir una propuesta con las opciones que acabas de elegir.')
   }
 
   return {

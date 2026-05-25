@@ -15,6 +15,7 @@ import type { DispatchBoardColumns, OperationsOrderRecord } from '../../features
 import { useEffect, useState } from 'react'
 import { getNextShippingStatus } from '../../features/operations/dispatch/dispatchService'
 import { resolveMockUser } from '../../features/admin-accounts/services/adminAccountsService'
+import { useLiveToast } from '../../features/live-feedback'
 import { ReportPreviewPanel, buildDispatchReport, buildProductionSheetReport } from '../../features/reporting'
 
 const formatCurrency = (value: number) =>
@@ -34,6 +35,7 @@ const formatCurrency = (value: number) =>
  * Visual component: src/admin/pages/ProductionPage.tsx
  */
 function ProductionPage() {
+  const { success, warning } = useLiveToast()
   const [orders, setOrders] = useState<OperationsOrderRecord[]>([])
   const [stats, setStats] = useState<Awaited<ReturnType<typeof getProductionOperations>>['stats'] | null>(null)
   const [dispatchBoard, setDispatchBoard] = useState<DispatchBoardColumns | null>(null)
@@ -161,6 +163,7 @@ function ProductionPage() {
               setOrders(next.orders)
               setStats(next.stats)
               setDispatchBoard(nextBoard)
+              success('Salida actualizada', `El pedido ${orderId} ha avanzado al siguiente paso.`)
             }}
             onMarkPacked={async (orderId) => {
               await patchAdminOrderDispatch(orderId, { packingStatus: 'packed', shippingStatus: 'ready_for_dispatch' })
@@ -168,6 +171,7 @@ function ProductionPage() {
               setOrders(next.orders)
               setStats(next.stats)
               setDispatchBoard(nextBoard)
+              success('Pedido embalado', `El pedido ${orderId} ya queda listo para coordinar la salida.`)
             }}
             onRegisterIncident={async (orderId) => {
               await patchAdminOrderDispatch(orderId, { deliveryIncident: 'Incidencia mock pendiente de resolver con cliente.' })
@@ -175,6 +179,7 @@ function ProductionPage() {
               setOrders(next.orders)
               setStats(next.stats)
               setDispatchBoard(nextBoard)
+              warning('Incidencia registrada', `El pedido ${orderId} queda marcado para seguimiento.`)
             }}
           />
         </AdminSection>

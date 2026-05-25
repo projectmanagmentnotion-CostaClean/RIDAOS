@@ -4,6 +4,7 @@ import { CartLineItem } from '../features/cart/components/CartLineItem'
 import { CartRecommendations } from '../features/cart/components/CartRecommendations'
 import { CartSummaryPanel } from '../features/cart/components/CartSummaryPanel'
 import { useCartSummary } from '../features/cart/hooks/useCartSummary'
+import { useLiveToast } from '../features/live-feedback'
 import { getContinueShoppingHref, publicRoutes } from '../lib/navigation'
 import { useCartStore } from '../store/useCartStore'
 
@@ -28,6 +29,57 @@ function Carrito() {
   const setShippingMethod = useCartStore((state) => state.setShippingMethod)
   const summary = useCartSummary()
   const [couponDraft, setCouponDraft] = useState(couponCode)
+  const { confirm, info, success, toast, warning } = useLiveToast()
+
+  const handleRemoveItem = (itemId: string) => {
+    const removedItem = items.find((item) => item.id === itemId)
+
+    if (!removedItem) {
+      return
+    }
+
+    removeItem(itemId)
+    toast({
+      tone: 'info',
+      title: 'Producto retirado',
+      description: `${removedItem.productName} ha salido del carrito.`,
+      durationMs: 4200,
+      action: {
+        label: 'Deshacer',
+        onAction: () => useCartStore.getState().addItem(removedItem),
+      },
+    })
+  }
+
+  const handleClearCart = () => {
+    if (items.length === 0) {
+      return
+    }
+
+    confirm({
+      title: 'Vaciar carrito',
+      description: 'Eliminaremos las lineas actuales y su configuracion asociada.',
+      cancelLabel: 'Mantener carrito',
+      confirm: { label: 'Vaciar carrito', intent: 'danger' },
+      intent: 'danger',
+      onConfirm: () => {
+        clearCart()
+        warning('Carrito vaciado', 'Puedes volver a empezar o recuperar productos desde el catalogo.', 3000)
+      },
+    })
+  }
+
+  const handleApplyCoupon = () => {
+    const normalizedCoupon = couponDraft.trim().toUpperCase()
+    setCouponCode(normalizedCoupon)
+
+    if (!normalizedCoupon) {
+      info('Cupon eliminado', 'El resumen vuelve a mostrarse sin descuentos manuales.', 2200)
+      return
+    }
+
+    success('Codigo aplicado', `Hemos guardado ${normalizedCoupon} en tu resumen actual.`, 2200)
+  }
 
   return (
     <section className="page">
@@ -63,8 +115,11 @@ function Carrito() {
                   formatCurrency={formatCurrency}
                   item={item}
                   key={item.id}
-                  onQuantityChange={(quantity) => updateItemQuantity(item.id, quantity)}
-                  onRemove={() => removeItem(item.id)}
+                  onQuantityChange={(quantity) => {
+                    updateItemQuantity(item.id, quantity)
+                    info('Cantidad actualizada', 'El total de la linea se ha recalculado.', 1500)
+                  }}
+                  onRemove={() => handleRemoveItem(item.id)}
                 />
               ))}
             </div>
@@ -75,7 +130,7 @@ function Carrito() {
           <CartSummaryPanel
             couponDraft={couponDraft}
             formatCurrency={formatCurrency}
-            onCouponApply={() => setCouponCode(couponDraft.trim().toUpperCase())}
+            onCouponApply={handleApplyCoupon}
             onCouponDraftChange={setCouponDraft}
             onShippingChange={setShippingMethod}
             summary={summary}
@@ -94,7 +149,7 @@ function Carrito() {
               <button
                 className="action-button action-button-muted"
                 disabled={items.length === 0}
-                onClick={clearCart}
+                onClick={handleClearCart}
                 type="button"
               >
                 {pricingContent.cart.clearCartLabel}
@@ -109,6 +164,11 @@ function Carrito() {
               <a
                 className={`action-button action-link-button${items.length === 0 ? ' is-disabled' : ''}`}
                 data-cursor="sales"
+                onClick={() => {
+                  if (items.length > 0) {
+                    success('Resumen preparado', 'Pasas al checkout con tu configuracion y entrega activas.', 1800)
+                  }
+                }}
                 href={items.length === 0 ? publicRoutes.carrito : publicRoutes.checkout}
               >
                 {pricingContent.cart.checkoutLabel}

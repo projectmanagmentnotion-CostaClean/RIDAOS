@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useLiveToast } from '../../live-feedback'
 import { PrepressSummaryPanel } from '../../prepress'
 import { ProductTemplateDownloads } from '../../print-templates'
 import { useArtworkUploadFlow } from '../hooks/useArtworkUploadFlow'
@@ -45,10 +46,34 @@ export function ArtworkUploadFlow({
   onStateChange,
 }: ArtworkUploadFlowProps) {
   const { rule, metadata, summary, confirmed, setConfirmed, isLoading, steps } = useArtworkUploadFlow(ruleKey, file)
+  const { info, success, warning } = useLiveToast()
 
   useEffect(() => {
     onStateChange?.({ metadata, summary, confirmed })
   }, [confirmed, metadata, onStateChange, summary])
+
+  useEffect(() => {
+    if (!metadata?.fileName) {
+      return
+    }
+
+    info('Archivo recibido', `${metadata.fileName} ya esta listo para revisar.`, 2000)
+  }, [info, metadata?.fileName])
+
+  useEffect(() => {
+    if (!summary) {
+      return
+    }
+
+    if (summary.workflowStatus === 'warning' || summary.workflowStatus === 'needs_review') {
+      warning('Revision recomendada', 'Hemos detectado puntos a revisar antes de producir.', 2600)
+      return
+    }
+
+    if (summary.workflowStatus === 'ready') {
+      success('Vista previa lista', 'La pieza ya se puede validar con sus guias de impresion.', 2200)
+    }
+  }, [success, summary, warning])
 
   return (
     <article className="content-card artwork-upload-flow" data-cursor="interest">

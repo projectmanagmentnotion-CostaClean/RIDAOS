@@ -13,6 +13,7 @@ import type { CmsDocumentType } from '../../features/cms/types/cms'
 import AdminApprovalChainsPanel from '../../features/admin-accounts/components/AdminApprovalChainsPanel'
 import { approvalChainBlueprints } from '../../features/admin-accounts/mock/adminAccountsMockData'
 import { useCmsPreview } from '../../features/cms-preview'
+import { useLiveToast } from '../../features/live-feedback'
 
 const filterOptions: Array<{ value: CmsDocumentType | 'all'; label: string }> = [
   { value: 'all', label: 'Todo' },
@@ -32,6 +33,7 @@ const filterOptions: Array<{ value: CmsDocumentType | 'all'; label: string }> = 
  */
 function ContentStudioPage() {
   const { enabled: previewEnabled, setEnabled: setPreviewEnabled } = useCmsPreview()
+  const { confirm, error: toastError, success } = useLiveToast()
   const {
     allZones,
     zones,
@@ -68,33 +70,56 @@ function ContentStudioPage() {
     setLocalError('')
     try {
       await saveDocument()
+      success('Cambios guardados', 'El snapshot local ya refleja la ultima version del contenido.')
     } catch (error) {
       setLocalError(error instanceof Error ? error.message : 'No se pudo guardar el documento mock.')
+      toastError('No se pudo guardar', 'Revisa el contenido antes de intentarlo otra vez.')
     }
   }
 
   const handleReset = async () => {
     setLocalError('')
-    try {
-      await resetDocument()
-    } catch (error) {
-      setLocalError(error instanceof Error ? error.message : 'No se pudo resetear el documento.')
-    }
+    confirm({
+      title: 'Restablecer documento',
+      description: 'Volveras a la version base de esta zona editable.',
+      cancelLabel: 'Seguir editando',
+      confirm: { label: 'Restablecer', intent: 'danger' },
+      intent: 'danger',
+      onConfirm: async () => {
+        try {
+          await resetDocument()
+          success('Documento restablecido', 'La zona vuelve a su version base local.')
+        } catch (error) {
+          setLocalError(error instanceof Error ? error.message : 'No se pudo resetear el documento.')
+        }
+      },
+    })
   }
 
   const handleResetAll = async () => {
     setLocalError('')
-    try {
-      await resetAll()
-    } catch (error) {
-      setLocalError(error instanceof Error ? error.message : 'No se pudo resetear el snapshot mock.')
-    }
+    confirm({
+      title: 'Reset total del studio',
+      description: 'Se eliminaran todos los overrides guardados en este entorno local.',
+      cancelLabel: 'Cancelar',
+      confirm: { label: 'Reset total', intent: 'danger' },
+      intent: 'danger',
+      onConfirm: async () => {
+        try {
+          await resetAll()
+          success('Studio reiniciado', 'Los overrides locales se han limpiado.')
+        } catch (error) {
+          setLocalError(error instanceof Error ? error.message : 'No se pudo resetear el snapshot mock.')
+        }
+      },
+    })
   }
 
   const handleExport = async () => {
     setLocalError('')
     try {
       await exportSnapshot()
+      success('Snapshot exportado', 'Ya tienes una copia local del estado del studio.')
     } catch (error) {
       setLocalError(error instanceof Error ? error.message : 'No se pudo exportar el snapshot mock.')
     }
@@ -104,6 +129,7 @@ function ContentStudioPage() {
     setLocalError('')
     try {
       applyRawJson()
+      success('JSON aplicado', 'El documento ya refleja la nueva estructura cargada.')
     } catch (error) {
       setLocalError(error instanceof Error ? error.message : 'El JSON no es valido.')
     }
@@ -120,6 +146,7 @@ function ContentStudioPage() {
 
     try {
       await importSnapshot(file)
+      success('Snapshot importado', 'El studio ya refleja el contenido del archivo cargado.')
     } catch (error) {
       setLocalError(error instanceof Error ? error.message : 'No se pudo importar el snapshot.')
     } finally {
@@ -145,14 +172,20 @@ function ContentStudioPage() {
             </span>
             <button
               className="action-button action-button-muted"
-              onClick={() => setPreviewEnabled(true)}
+              onClick={() => {
+                setPreviewEnabled(true)
+                success('Preview activado', 'La navegacion publica ya puede leer overrides locales.', 2200)
+              }}
               type="button"
             >
               Activar preview
             </button>
             <button
               className="action-button action-button-muted"
-              onClick={() => setPreviewEnabled(false)}
+              onClick={() => {
+                setPreviewEnabled(false)
+                success('Preview desactivado', 'La web vuelve a la version base visible.', 2200)
+              }}
               type="button"
             >
               Desactivar preview

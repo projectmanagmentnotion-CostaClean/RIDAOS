@@ -288,6 +288,48 @@ Ejemplos:
 - Contenido editable: `src/features/reporting/mock/reportDefinitions.ts`
 - Controla: version documental de handoff, tracking y firma mock
 
+## LIVE_FEEDBACK_SYSTEM
+
+- Archivo visual: `src/features/live-feedback/components/LiveToastProvider.tsx`
+- Contenido editable: `src/features/live-feedback/store/useLiveFeedbackStore.ts`
+- Controla: provider global, viewport de toasts, dialogos y modales de confirmacion
+
+## LIVE_TOASTS
+
+- Archivo visual: `src/features/live-feedback/components/LiveToastViewport.tsx`
+- Contenido editable: `src/features/live-feedback/store/useLiveFeedbackStore.ts`
+- Controla: toasts de exito, informacion, warning, error y progreso
+
+## CONFIRMATION_DIALOGS
+
+- Archivo visual: `src/features/live-feedback/components/ConfirmationDialog.tsx`
+- Contenido editable: `src/features/live-feedback/store/useLiveFeedbackStore.ts`
+- Controla: confirmaciones de acciones sensibles como reset, vaciar carrito o cambios internos
+
+## CART_FEEDBACK
+
+- Archivo visual: `src/pages/Carrito.tsx`
+- Contenido editable: `src/content/pricingContent.ts`
+- Controla: undo al eliminar lineas, confirmacion al vaciar carrito y feedback del cupon
+
+## UPLOAD_FEEDBACK
+
+- Archivo visual: `src/features/artwork-upload/components/ArtworkUploadFlow.tsx`
+- Contenido editable: `src/features/artwork-upload/product-rules/artworkProductRules.ts`
+- Controla: archivo recibido, analisis, vista previa lista, confirmacion y revision recomendada
+
+## CHECKOUT_FEEDBACK
+
+- Archivo visual: `src/pages/Checkout.tsx`
+- Contenido editable: `src/content/pricingContent.ts`
+- Controla: pasos completados, pedido en preparacion y confirmacion final del checkout
+
+## ADMIN_FEEDBACK
+
+- Archivo visual: `src/admin/pages/OrderDetailPage.tsx`
+- Contenido editable: `src/content/adminMockContent.ts`
+- Controla: feedback operativo para approvals, despacho, notas, reporting y CMS interno
+
 ## SEO_INTENT
 
 - Archivo visual: `src/features/search-intelligence/keywords/keywordGroups.ts`

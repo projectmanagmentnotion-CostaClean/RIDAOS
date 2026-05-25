@@ -5,6 +5,7 @@ import { checkoutSteps, paymentMocks } from '../features/cart/data/checkoutMock'
 import { CheckoutStepRail } from '../features/cart/components/CheckoutStepRail'
 import { useCartSummary } from '../features/cart/hooks/useCartSummary'
 import type { CartSummary } from '../features/cart/types/cart.types'
+import { useLiveToast } from '../features/live-feedback'
 import { multiplyOrderItemPricing } from '../features/cart/utils/cartPricing'
 import { OrderLifecycleTimeline } from '../features/orders/components/OrderLifecycleTimeline'
 import { getContinueShoppingHref } from '../lib/navigation'
@@ -48,6 +49,7 @@ function Checkout() {
   const setLoading = useUIStore((state) => state.setLoading)
   const setError = useUIStore((state) => state.setError)
   const clearError = useUIStore((state) => state.clearError)
+  const { dismiss, error, info, progress, showSuccessModal, success } = useLiveToast()
 
   const canAdvance = useMemo(() => cartItems.length > 0, [cartItems.length])
 
@@ -85,11 +87,13 @@ function Checkout() {
   const handleSubmit = async () => {
     if (!validateCustomer()) {
       setConfirmation(null)
+      error('Revisa tus datos', 'Necesitamos un nombre, email, telefono y al menos un producto en el pedido.')
       return
     }
 
     setLoading('checkout', true)
     clearError('checkout')
+    const progressToastId = progress('Pedido en preparacion', 'Estamos registrando tu resumen y los datos de entrega.')
 
     try {
       const savedCustomer = await upsertCustomerProfile(customer)
@@ -110,10 +114,18 @@ function Checkout() {
         phone: '',
       })
       setStep('success')
+      showSuccessModal({
+        title: 'Pedido preparado',
+        description: `El pedido ${order.id} ya queda listo para seguimiento y comprobacion de archivo.`,
+        ctaLabel: 'Seguir revisando',
+      })
+      success('Pedido registrado', 'Tu resumen ya pasa al seguimiento interno.', 2600)
     } catch {
       setError('checkout', 'No se pudo registrar el pedido en este momento. Intentalo de nuevo.')
       setConfirmation(null)
+      error('No se pudo registrar el pedido', 'Intentalo otra vez desde este mismo paso.')
     } finally {
+      dismiss(progressToastId)
       setLoading('checkout', false)
     }
   }
@@ -162,7 +174,15 @@ function Checkout() {
                     <li>La comprobacion tecnica se mantiene como primer punto de control del pedido.</li>
                   </ul>
                   <div className="form-actions">
-                    <button className="action-button" disabled={!canAdvance} onClick={() => setStep('shipping')} type="button">
+                    <button
+                      className="action-button"
+                      disabled={!canAdvance}
+                      onClick={() => {
+                        setStep('shipping')
+                        info('Revision completada', 'Ahora solo falta confirmar tus datos de entrega.', 1800)
+                      }}
+                      type="button"
+                    >
                       Continuar a envio
                     </button>
                   </div>
@@ -200,7 +220,14 @@ function Checkout() {
                   <button className="action-button action-button-muted" onClick={() => setStep('review')} type="button">
                     Volver a revision
                   </button>
-                  <button className="action-button" onClick={() => setStep('payment')} type="button">
+                  <button
+                    className="action-button"
+                    onClick={() => {
+                      setStep('payment')
+                      info('Datos revisados', 'El pedido ya puede pasar al paso de confirmacion.', 1800)
+                    }}
+                    type="button"
+                  >
                     Continuar a pago
                   </button>
                 </div>

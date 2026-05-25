@@ -3,6 +3,7 @@ import { addToCart } from '../../../lib/cart'
 import { BASE_PRICE_PER_METER, calculateDTFPricing, type DTFQuality, type DTFUrgency } from '../../../lib/pricing'
 import type { CartItem } from '../../../types/ecommerce'
 import type { ArtworkPreviewSummary } from '../../artwork-upload'
+import { useLiveToast } from '../../live-feedback'
 
 type SimulationResult = {
   meters: number
@@ -48,6 +49,7 @@ const detectFormatLabel = (file: File) => {
 }
 
 export function useDtfConfiguratorState() {
+  const { error, info, success } = useLiveToast()
   const [meters, setMeters] = useState('1')
   const [quality, setQuality] = useState<DTFQuality>('standard')
   const [urgency, setUrgency] = useState<DTFUrgency>('normal')
@@ -144,6 +146,7 @@ export function useDtfConfiguratorState() {
 
   const handleAddToCart = (previewSummary?: ArtworkPreviewSummary | null) => {
     if (!validate() || !selectedFile) {
+      error('Faltan datos por revisar', 'Completa el metraje y confirma un archivo antes de continuar.')
       return
     }
 
@@ -196,11 +199,13 @@ export function useDtfConfiguratorState() {
     setCartMessage(
       'Pedido preparado en tu carrito. La simulacion mantiene urgencia, turnaround y extras en local hasta pasar al checkout mock.',
     )
+    success('Añadido al carrito', 'Tu pedido DTI ya aparece en el resumen de compra.')
   }
 
   const handleSimulateOrder = () => {
     if (!validate() || !selectedFile) {
       setSimulation(null)
+      error('No se puede preparar el pedido', 'Necesitas un metraje valido y un archivo confirmado.')
       return
     }
 
@@ -214,6 +219,7 @@ export function useDtfConfiguratorState() {
       notes: notes.trim(),
     })
     setCartMessage('')
+    info('Pedido preparado', 'Ya puedes revisar el resumen antes de pasar al carrito.')
   }
 
   return {

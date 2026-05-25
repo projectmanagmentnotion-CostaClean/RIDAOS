@@ -7,6 +7,7 @@ import { listAdminUploads, updateAdminUploadNotes, updateAdminUploadStatus } fro
 import type { OperationsUploadRecord } from '../../features/operations/types/operations'
 import { useOperationsUploads } from '../../features/operations/hooks/useOperationsUploads'
 import ArtworkReviewCard from '../../features/operations/uploads/ArtworkReviewCard'
+import { useLiveToast } from '../../features/live-feedback'
 import { ReportPreviewPanel, buildArtworkReviewReport, buildPrepressCheckReport } from '../../features/reporting'
 
 /**
@@ -21,6 +22,7 @@ import { ReportPreviewPanel, buildArtworkReviewReport, buildPrepressCheckReport 
 function UploadsPage() {
   const { uploads, setUploads } = useOperationsUploads()
   const [search, setSearch] = useState('')
+  const { success, warning } = useLiveToast()
   const firstUpload = uploads[0]
 
   const refreshUploads = async () => {
@@ -80,10 +82,22 @@ function UploadsPage() {
                 onNotesChange={async (reviewNotes) => {
                   await updateAdminUploadNotes(upload.id, reviewNotes)
                   await refreshUploads()
+                  success('Notas guardadas', 'La revision del archivo ya refleja tu comentario.')
                 }}
                 onStatusChange={async (status) => {
                   await updateAdminUploadStatus(upload.id, status)
                   await refreshUploads()
+                  if (status === 'approved') {
+                    success('Archivo aprobado', 'El pedido ya puede seguir hacia produccion.')
+                    return
+                  }
+
+                  if (status === 'needs_fix') {
+                    warning('Correccion solicitada', 'El cliente ya queda pendiente de una nueva version del archivo.')
+                    return
+                  }
+
+                  success('Estado actualizado', 'La cola de revision ya refleja el nuevo estado.')
                 }}
                 upload={upload}
               />

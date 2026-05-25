@@ -13,6 +13,7 @@ type ProductExperienceLayoutProps = {
   story?: ReactNode
   process?: ReactNode
   recommendations?: ReactNode
+  discoverability?: ReactNode
   faq?: ReactNode
   finalCta?: ReactNode
 }
@@ -29,6 +30,7 @@ export function ProductExperienceLayout({
   story,
   process,
   recommendations,
+  discoverability,
   faq,
   finalCta,
 }: ProductExperienceLayoutProps) {
@@ -45,6 +47,7 @@ export function ProductExperienceLayout({
       {story}
       {process}
       {recommendations}
+      {discoverability}
       {faq}
       {finalCta}
     </PageShell>

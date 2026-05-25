@@ -4682,6 +4682,32 @@ body.lenis {
   gap: 16px;
 }
 
+/* ================================
+   Discoverability Engine
+================================ */
+
+.discoverability-section {
+  gap: 18px;
+}
+
+.discoverability-card,
+.discoverability-bundle-card {
+  display: grid;
+  gap: 12px;
+}
+
+.discoverability-card .card-link,
+.discoverability-bundle-card .card-link {
+  margin-top: auto;
+}
+
+.discoverability-bundle-grid,
+.discoverability-local-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
 .recommendation-card__footer {
   margin-top: auto;
 }
@@ -5120,6 +5146,8 @@ body.lenis {
   }
 
   .commerce-recommendations__grid,
+  .discoverability-bundle-grid,
+  .discoverability-local-grid,
   .dtf-option-grid,
   .checkout-step-rail {
     grid-template-columns: 1fr;

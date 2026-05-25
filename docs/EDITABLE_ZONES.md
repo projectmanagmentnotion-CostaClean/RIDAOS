@@ -324,6 +324,54 @@ Ejemplos:
 - Contenido editable: `src/features/search-intelligence/entities/entityRelationshipMap.ts`
 - Controla: puentes internos entre servicios y productos para enlazado y autoridad topical
 
+## DISCOVERABILITY_HUBS
+
+- Archivo visual: `src/features/discoverability/hubs/discoverabilityHubs.ts`
+- Contenido editable: `src/features/discoverability/hubs/discoverabilityHubs.ts`
+- Controla: hubs principales, variantes locales, servicios relacionados, guias y enlaces internos
+
+## RELATED_SERVICES
+
+- Archivo visual: `src/features/discoverability/related/relatedServices.ts`
+- Contenido editable: `src/features/discoverability/related/relatedServices.ts`
+- Controla: motor de servicios relacionados por necesidad principal
+
+## RELATED_PRODUCTS
+
+- Archivo visual: `src/features/discoverability/hubs/discoverabilityHubs.ts`
+- Contenido editable: `src/features/discoverability/hubs/discoverabilityHubs.ts`
+- Controla: cruces entre hubs y productos complementarios
+
+## RELATED_GUIDES
+
+- Archivo visual: `src/features/discoverability/articles/relatedGuides.ts`
+- Contenido editable: `src/features/discoverability/articles/relatedGuides.ts`
+- Controla: guias mock y articulos relacionados para enlazado semantico
+
+## UPSELLING_RULES
+
+- Archivo visual: `src/features/discoverability/recommendations/upsellRules.ts`
+- Contenido editable: `src/features/discoverability/recommendations/upsellRules.ts`
+- Controla: sugerencias de upsell segun producto o servicio principal
+
+## INTERNAL_LINK_GRAPH
+
+- Archivo visual: `src/features/discoverability/internal-links/internalLinkGraph.ts`
+- Contenido editable: `src/features/discoverability/internal-links/internalLinkGraph.ts`
+- Controla: entradas internas entre hubs, guias, conversion y catalogo
+
+## LOCAL_SERVICE_HUBS
+
+- Archivo visual: `src/features/discoverability/local/localServiceHubs.ts`
+- Contenido editable: `src/features/discoverability/local/localServiceHubs.ts`
+- Controla: lectura por ciudad de servicios populares y rutas recomendadas
+
+## FREQUENTLY_COMBINED
+
+- Archivo visual: `src/features/discoverability/recommendations/upsellRules.ts`
+- Contenido editable: `src/features/discoverability/recommendations/upsellRules.ts`
+- Controla: bundles y combinaciones frecuentes
+
 ## PRODUCT_DETAIL
 
 - Archivo visual: `src/features/products/product-detail/ProductExperiencePage.tsx`

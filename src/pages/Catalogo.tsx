@@ -9,6 +9,15 @@ import SectionHeader from '../components/SectionHeader'
 import StatusBadge from '../components/StatusBadge'
 import { catalogContent } from '../content/catalogContent'
 import { useCmsPreviewDocument } from '../features/cms-preview'
+import {
+  ExploreMoreSection,
+  InternalLinkGrid,
+  PopularLocalServicesSection,
+  RelatedGuidesSection,
+  discoverabilityHubs,
+  localServiceHubs,
+  relatedGuides,
+} from '../features/discoverability'
 import { getContentByEntryId } from '../catalog/content/contentSelectors'
 import {
   getCatalogSections,
@@ -152,6 +161,25 @@ function Catalogo() {
           ))}
         </div>
       </section>
+
+      <ExploreMoreSection hubs={discoverabilityHubs.filter((hub) => ['rotulacion', 'dti', 'pegatinas', 'empresas'].includes(hub.id))} />
+
+      <PopularLocalServicesSection hubs={localServiceHubs} />
+
+      <RelatedGuidesSection
+        items={relatedGuides.filter((guide) =>
+          ['guide-dti-vs-dtf', 'guide-wrap-price', 'guide-window-vinyl', 'guide-bleed-cutline'].includes(guide.id),
+        )}
+      />
+
+      <InternalLinkGrid
+        items={[
+          { id: 'cat-link-rot', title: 'Rotulacion comercial', description: 'Vehiculos, escaparates y flotas comerciales.', href: '#/servicios/rotulacion', tag: 'Hub' },
+          { id: 'cat-link-dtf', title: 'DTF por metro', description: 'Produccion textil y demanda DTI resuelta con flujo claro.', href: '#/producto/dtf', tag: 'Hub' },
+          { id: 'cat-link-guide', title: 'Guia de archivos', description: 'Prepara el archivo antes de configurar o pedir.', href: '#/guia', tag: 'Guide' },
+        ]}
+        title="Entradas principales para navegar mejor"
+      />
 
       <section className="catalog-section">
         <SectionHeader eyebrow={previewCatalogContent.productsSection.eyebrow} title={previewCatalogContent.productsSection.title} />

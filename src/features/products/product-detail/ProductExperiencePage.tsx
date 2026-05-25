@@ -17,6 +17,15 @@ import { ProductSpecsSection } from './sections/ProductSpecsSection'
 import { ProductStickySummarySection } from './sections/ProductStickySummarySection'
 import { ProductStorySection } from './sections/ProductStorySection'
 import { ProductTemplateDownloads } from '../../print-templates'
+import {
+  FrequentlyCombinedSection,
+  InternalLinkGrid,
+  PopularLocalServicesSection,
+  RelatedGuidesSection,
+  RelatedProductsSection,
+  RelatedServicesSection,
+  useDiscoverability,
+} from '../../discoverability'
 
 type ProductExperiencePageProps = {
   category: CatalogCategoryKey
@@ -59,6 +68,7 @@ export function ProductExperiencePage({ category }: ProductExperiencePageProps) 
 
   const primaryHref = useMemo(() => getQuoteHref(category === 'accesorios' ? 'otro' : category), [category])
   const enabled = new Set(pageConfig.sections)
+  const discoverability = useDiscoverability({ category, entry: selectedProduct })
 
   if (!selectedProduct) {
     return null
@@ -119,6 +129,16 @@ export function ProductExperiencePage({ category }: ProductExperiencePageProps) 
         enabled.has('recommendations') ? (
           <ProductRecommendationsSection items={pageConfig.recommendations} />
         ) : null
+      }
+      discoverability={
+        <>
+          <RelatedServicesSection items={discoverability.upsell?.suggestions ?? discoverability.hub.relatedServices} />
+          <RelatedProductsSection items={discoverability.hub.relatedProducts} />
+          <FrequentlyCombinedSection bundles={discoverability.frequentlyCombined} />
+          <RelatedGuidesSection items={discoverability.hub.relatedGuides} />
+          <PopularLocalServicesSection hubs={discoverability.local} />
+          <InternalLinkGrid items={discoverability.internalLinks} title="Siguiente lectura por intencion" />
+        </>
       }
       specs={enabled.has('specs') ? <ProductSpecsSection entry={selectedProduct} /> : null}
       stickySummary={

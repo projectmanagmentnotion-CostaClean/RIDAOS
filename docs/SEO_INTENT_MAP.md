@@ -105,3 +105,20 @@ Esta capa organiza la demanda real por intencion, entidad, localizacion y oportu
   - uso comercial
 - Conectar preprensa y plantillas con busquedas informacionales de alta confianza.
 - Abrir puentes internos entre rotulacion, escaparates, senaletica, pegatinas y branding.
+
+## Capa de discoverability
+
+Archivos preparados:
+
+- `src/features/discoverability/hubs/discoverabilityHubs.ts`
+- `src/features/discoverability/related/relatedServices.ts`
+- `src/features/discoverability/recommendations/upsellRules.ts`
+- `src/features/discoverability/internal-links/internalLinkGraph.ts`
+- `src/features/discoverability/local/localServiceHubs.ts`
+- `src/features/discoverability/articles/relatedGuides.ts`
+
+Objetivo:
+
+- convertir keywords e intenciones en navegacion util
+- unir hubs con related services, related products y guias
+- crear upselling contextual sin meter copy artificial

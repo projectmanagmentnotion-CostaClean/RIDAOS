@@ -91,6 +91,22 @@ Enlaces internos sugeridos:
   - una guia de archivo o plantilla
 - No usar enlaces internos genericos sin contexto. El anchor debe reflejar la intencion.
 
+## Discoverability engine
+
+La capa operativa para aplicar este mapa vive en:
+
+- `src/features/discoverability/hubs/discoverabilityHubs.ts`
+- `src/features/discoverability/related/relatedServices.ts`
+- `src/features/discoverability/recommendations/upsellRules.ts`
+- `src/features/discoverability/internal-links/internalLinkGraph.ts`
+- `src/features/discoverability/local/localServiceHubs.ts`
+- `src/features/discoverability/articles/relatedGuides.ts`
+
+Integraciones actuales:
+
+- `src/pages/Catalogo.tsx`
+- `src/features/products/product-detail/ProductExperiencePage.tsx`
+
 ## Prioridad editorial
 
 1. Rotulacion comercial local

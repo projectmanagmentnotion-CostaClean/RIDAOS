@@ -5,7 +5,7 @@ export const localSeoContent = {
     name: 'RidaosPrint',
     legalName: 'RidaosPrint',
     description:
-      'Impresion personalizada, DTF por metro y rotulacion premium para negocios, vehiculos y proyectos comerciales.',
+      'Impresion personalizada, DTI por metro y rotulacion premium para negocios, vehiculos y proyectos comerciales.',
     email: 'hola@ridaosprint.com',
     telephone: '+34 600 000 000',
     areaServed: ['Barcelona', 'Blanes', 'Girona', 'Costa Brava', 'Espana'],
@@ -13,7 +13,7 @@ export const localSeoContent = {
   localBusiness: {
     name: 'RidaosPrint',
     description:
-      'Taller orientado a impresion personalizada, DTF y rotulacion comercial con cobertura local en Barcelona, Blanes y Girona.',
+      'Taller orientado a impresion personalizada, DTI y rotulacion comercial con cobertura local en Barcelona, Blanes y Girona.',
     priceRange: '$$',
     address: {
       addressCountry: 'ES',

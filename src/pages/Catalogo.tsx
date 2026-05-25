@@ -175,7 +175,7 @@ function Catalogo() {
       <InternalLinkGrid
         items={[
           { id: 'cat-link-rot', title: 'Rotulacion comercial', description: 'Vehiculos, escaparates y flotas comerciales.', href: '#/servicios/rotulacion', tag: 'Hub' },
-          { id: 'cat-link-dtf', title: 'DTF por metro', description: 'Produccion textil y demanda DTI resuelta con flujo claro.', href: '#/producto/dtf', tag: 'Hub' },
+          { id: 'cat-link-dtf', title: 'DTI por metro', description: 'Produccion textil y demanda DTI resuelta con flujo claro.', href: '#/producto/dtf', tag: 'Hub' },
           { id: 'cat-link-guide', title: 'Guia de archivos', description: 'Prepara el archivo antes de configurar o pedir.', href: '#/guia', tag: 'Guide' },
         ]}
         title="Entradas principales para navegar mejor"

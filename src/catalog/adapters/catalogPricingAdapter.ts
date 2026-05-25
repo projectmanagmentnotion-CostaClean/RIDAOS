@@ -2,6 +2,7 @@ import { calculateAccessoryPrice, calculateMaterialM2Price, calculatePaperPrice,
 import type { ConfigState } from '../../lib/configuratorState'
 import type { CatalogEntry } from '../../types/product'
 import { formatCatalogCurrency, formatRangeLabel } from '../pricing/formatters'
+import { getEnhancedProductPricing } from '../../features/product-options'
 
 export type CatalogPricingResult = {
   subtotal: number
@@ -60,6 +61,11 @@ function finalizeResult(
 }
 
 export function getCatalogPricingResult(entry: CatalogEntry, config: ConfigState): CatalogPricingResult {
+  const enhancedPricing = getEnhancedProductPricing(entry, config)
+  if (enhancedPricing) {
+    return enhancedPricing
+  }
+
   switch (entry.category) {
     case 'textil': {
       const quantity = Number(config.quantity ?? '0')

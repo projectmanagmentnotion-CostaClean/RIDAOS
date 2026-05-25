@@ -536,3 +536,58 @@ Estado final esperado del proyecto cuando el inventario se complete:
 - prepress visual coherente con reglas y score
 - SEO social y local listo para indexacion y comparticion
 - admin/reporting con branding documental consistente
+
+## Addendum — Product options, pricing y heroes visuales
+
+Assets nuevos que pasan a prioridad inmediata en producto:
+
+### Pegatinas
+
+- `sticker-square-preview.webp`
+- `sticker-circle-preview.webp`
+- `sticker-custom-shape-preview.webp`
+- `sticker-sheet-preview.webp`
+- `sticker-cutline-overlay.svg`
+- `sticker-kisscut-overlay.svg`
+
+### Tarjetas de visita
+
+- `business-card-standard-preview.webp`
+- `business-card-square-preview.webp`
+- `business-card-rounded-preview.webp`
+- `business-card-gold-foil-preview.webp`
+- `business-card-silver-foil-preview.webp`
+- `business-card-3d-varnish-preview.webp`
+- `business-card-soft-touch-preview.webp`
+- `business-card-stack-premium.webp`
+
+### Flyers y folletos
+
+- `flyer-a6-preview.webp`
+- `flyer-a5-preview.webp`
+- `flyer-a4-preview.webp`
+- `flyer-stack-preview.webp`
+- `flyer-double-sided-preview.webp`
+- `flyer-soft-touch-preview.webp`
+
+### DTI por metro
+
+- `dti-roll-transparent.webp`
+- `dti-meter-preview.webp`
+- `dti-spacing-guide.svg`
+- `dti-transfer-texture.webp`
+
+### Rotulacion de vehiculos
+
+- `wrap-van-side-transparent.webp`
+- `wrap-van-front-transparent.webp`
+- `wrap-car-side-transparent.webp`
+- `wrap-before-after-preview.webp`
+- `vinyl-installation-detail.webp`
+
+### Criterios de salida
+
+- heroes visuales: `WebP`, fondo limpio, lectura editorial y peso contenido
+- overlays tecnicos: `SVG`, no imprimibles, colores de guia normalizados
+- previews premium: fotografia o mockup realista, no render generico
+- naming visible: `DTI` en producto, `DTF` solo como soporte SEO secundario

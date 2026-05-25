@@ -1,6 +1,8 @@
 import type { CatalogCategoryKey, CatalogEntry, PurchaseMode, PricingMode } from '../../../../types/product'
 import type { ConfigState } from '../../../../lib/configuratorState'
 import type { CatalogPricingResult } from '../../../../catalog/adapters/catalogPricingAdapter'
+import type { ProductHeroVisual, ProductOptionDefinition } from '../../../product-options'
+import type { ArtworkPreviewSummary } from '../../../artwork-upload'
 
 export type ProductExperienceSectionId =
   | 'hero'
@@ -27,6 +29,9 @@ export type ProductGalleryFrameContent = {
   label: string
   title: string
   description: string
+  assetFileName?: string
+  assetPath?: string
+  assetStatus?: 'required' | 'mock' | 'pending'
 }
 
 export type ProductProcessStep = {
@@ -75,11 +80,14 @@ export type ProductExperienceConfig = {
   processSteps: ProductProcessStep[]
   finalCta: ProductFinalCtaContent
   recommendations: ProductRecommendationContent[]
+  heroVisual?: ProductHeroVisual
 }
 
 export type ProductExperienceState = {
   products: CatalogEntry[]
   selectedProduct: CatalogEntry | null
+  displayEntry: CatalogEntry | null
+  optionDefinition: ProductOptionDefinition | null
   config: ConfigState
   estimate: CatalogPricingResult | null
   fieldErrors: Partial<Record<string, string>>
@@ -89,7 +97,7 @@ export type ProductExperienceState = {
   contentDescription: string
   handleConfigChange: (key: string, value: string) => void
   handleFileChange: (key: string, file: File | null) => void
-  handlePrimaryAction: () => void
+  handlePrimaryAction: (previewSummary?: ArtworkPreviewSummary | null) => void
   isDirectFlow: boolean
   purchaseMode: PurchaseMode
   pricingMode: PricingMode

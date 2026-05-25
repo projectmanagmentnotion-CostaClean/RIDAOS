@@ -9,6 +9,7 @@ function createRotulacionContent(entry: (typeof rotulacionEntries)[number]): Cat
     seoTitle: 'Rotulacion de vehiculos y furgonetas en Barcelona, Blanes y Girona | RidaosPrint',
     metaDescription:
       'Rotulacion premium para furgonetas, flotas comerciales, escaparates y vehiculos de empresa en Barcelona, Blanes, Girona y Costa Brava.',
+    ogImage: '/assets/seo/og-rotulacion-furgonetas-barcelona.jpg',
     h1: 'Rotulacion premium para vehiculos y negocios.',
     eyebrow: 'Rotulacion comercial / vehiculos / flotas',
     intro:

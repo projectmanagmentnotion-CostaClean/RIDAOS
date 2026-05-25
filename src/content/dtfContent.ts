@@ -4,15 +4,15 @@ export const dtfPageContent = {
     fallbackEyebrow: 'Producto principal',
     fallbackDescription:
       'Configura tu pedido por metraje, revisa la pieza antes de enviar y deja el trabajo listo para una comprobacion clara.',
-    fallbackTitle: 'DTF por metro.',
-    titleLines: ['DTF', 'POR METRO'],
+    fallbackTitle: 'DTI por metro.',
+    titleLines: ['DTI', 'POR METRO'],
   },
   fieldHelp: {
     meters:
       'Introduce el metraje total. Puedes usar decimales para tiradas cortas.',
     quality:
-      'Premium aplica un ajuste del 15% sobre el precio base por metro.',
-    urgency: 'Express suma 8 EUR y mantiene la comprobacion tecnica previa.',
+      'Premium aplica un ajuste sobre el precio base por metro.',
+    urgency: '24 h y 48 h suman suplemento y mantienen la comprobacion tecnica previa.',
     fileNameFallback: 'Ningun archivo seleccionado',
     file:
       'Sube el arte final o una version lista para revisar antes de fabricar.',
@@ -71,7 +71,7 @@ export const dtfPageContent = {
   },
   preparationPanel: {
     eyebrow: 'Preparacion',
-    title: 'Archivo, metros y comprobacion en el mismo flujo.',
+      title: 'Archivo, metros y comprobacion en el mismo flujo.',
     bullets: [
       'Define el metraje antes de avanzar.',
       'Adjunta el arte final cuando este listo.',
@@ -83,7 +83,7 @@ export const dtfPageContent = {
     title: 'Del archivo al pedido en cinco pasos.',
   },
   seoTitles: {
-    why: 'Por que este flujo convierte mejor.',
+    why: 'Por que este flujo vende mejor.',
     useCases: 'Cuando usarlo.',
     trust: 'Confianza para cerrar el pedido.',
     objections: 'Objeciones antes de enviar archivo.',

@@ -3,13 +3,14 @@ import ConfiguratorSupportBlock from '../../../../components/ConfiguratorSupport
 import SectionHeader from '../../../../components/SectionHeader'
 import { ArtworkUploadFlow } from '../../../artwork-upload'
 import type { ConfigState } from '../../../../lib/configuratorState'
-import type { CatalogEntry } from '../../../../types/product'
+import type { CatalogEntry, ConfiguratorField } from '../../../../types/product'
 import type { ArtworkPreviewSummary, ArtworkProductRuleKey, ArtworkUploadFlowState } from '../../../artwork-upload'
 import type { ProductSupportSection } from '../types/productExperience.types'
 import type { ReactNode } from 'react'
 
 type ProductConfiguratorSectionProps = {
   entry: CatalogEntry
+  fields: ConfiguratorField[]
   config: ConfigState
   fieldErrors: Partial<Record<string, string>>
   supportSections: ProductSupportSection[]
@@ -27,6 +28,7 @@ type ProductConfiguratorSectionProps = {
 
 export function ProductConfiguratorSection({
   entry,
+  fields,
   config,
   fieldErrors,
   supportSections,
@@ -37,13 +39,18 @@ export function ProductConfiguratorSection({
   onFileChange,
   onArtworkStateChange,
 }: ProductConfiguratorSectionProps) {
-  const artworkField = entry.configuratorFields.find((field) => field.type === 'file')
+  const artworkField = fields.find((field) => field.type === 'file')
 
   return (
-    <article className="content-card product-config-card product-experience-config" data-cursor-zone="conversion" data-product-reveal>
+    <article
+      className="content-card product-config-card product-experience-config"
+      data-cursor-zone="conversion"
+      data-product-reveal
+      id="product-configurator"
+    >
       <SectionHeader eyebrow="Configurador" title={`Configura ${entry.name.toLowerCase()}.`} />
       <div className="configurator-form">
-        {entry.configuratorFields.filter((field) => field.type !== 'file').map((field) => (
+        {fields.filter((field) => field.type !== 'file').map((field) => (
           <ConfiguratorFieldRenderer
             error={fieldErrors[field.key]}
             field={field}

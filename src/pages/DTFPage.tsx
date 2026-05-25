@@ -108,7 +108,7 @@ function DTFPage() {
           description={previewDtfContent.hero.fallbackDescription}
           eyebrow={previewDtfContent.hero.fallbackEyebrow}
           hero
-          stickerWords={['DTF', 'archivo']}
+          stickerWords={['DTI', 'archivo']}
           title={previewDtfContent.hero.fallbackTitle}
           titleLines={previewDtfContent.hero.titleLines}
         />
@@ -135,7 +135,7 @@ function DTFPage() {
           data-scroll-scene="dtf-form"
           tabIndex={0}
         >
-          <SectionHeader eyebrow="Configurador" title="Configura un pedido DTF con lectura de taller." />
+          <SectionHeader eyebrow="Configurador" title="Configura un pedido DTI con lectura de taller." />
 
           <div className="configurator-form">
             <label className="field-group" htmlFor="dtf-meters">
@@ -183,20 +183,20 @@ function DTFPage() {
 
             <ArtworkUploadFlow
               acceptedFormats=".pdf,.ai,.eps,.svg,.png,.jpg,.jpeg,.tiff,.zip"
-              description="Sube el arte final, revisa guías de rollo DTF y confirma el archivo antes de añadirlo al carrito."
+              description="Sube el arte final, revisa guías de rollo DTI y confirma el archivo antes de añadirlo al carrito."
               file={selectedFile}
               onFileChange={setFile}
               onStateChange={setArtworkState}
               ruleKey="dtf_meter"
-              title="Artwork upload y preview DTF"
+              title="Artwork upload y preview DTI"
             />
             {errors.file ? <span className="field-error">{errors.file}</span> : null}
 
             <ProductTemplateDownloads
               compact
-              description="Base tecnica mock para preparar el metro DTF antes de exportar y subir el archivo."
+              description="Base tecnica mock para preparar el metro DTI antes de exportar y subir el archivo."
               ruleKey="dtf_meter"
-              title="Descargar plantilla DTF"
+              title="Descargar plantilla DTI"
             />
 
             <div className="form-actions">

@@ -5,19 +5,40 @@ function createPapeleriaContent(entry: (typeof papeleriaEntries)[number]): Catal
   return {
     entryId: entry.id,
     slug: entry.slug,
-    seoTitle: `${entry.name} | RidaosPrint`,
-    metaDescription: `${entry.name} con lectura por tirada, condiciones comerciales claras y opcion de archivo de referencia.`,
+    seoTitle:
+      entry.id === 'tarjetas-estandar'
+        ? 'Tarjetas de visita premium | Soft touch, barniz 3D y foil | RidaosPrint'
+        : 'Flyers y folletos personalizados | Formato, papel y doble cara | RidaosPrint',
+    metaDescription:
+      entry.id === 'tarjetas-estandar'
+        ? 'Tarjetas de visita con papel, gramaje y acabados premium para una primera impresion mas fuerte.'
+        : 'Flyers y folletos personalizados con formato, papel y doble cara claros antes de pedir.',
+    ogImage:
+      entry.id === 'tarjetas-estandar'
+        ? '/assets/seo/og-tarjetas.jpg'
+        : '/assets/seo/og-flyers.jpg',
     h1: entry.name,
-    eyebrow: 'Papeleria comercial',
-    intro: `${entry.name} con tiradas del catalogo 2026 y un flujo pensado para confirmar archivo, cantidad y condiciones antes de cerrar.`,
+    eyebrow: entry.id === 'tarjetas-estandar' ? 'Tarjetas premium' : 'Flyers y folletos',
+    intro:
+      entry.id === 'tarjetas-estandar'
+        ? 'Tarjetas con una lectura directa de formato, papel y acabado para comprar mejor y discutir menos.'
+        : 'Flyers y folletos con formato, orientacion y papel claros para decidir rapido sin perder el tono premium.',
     benefits: [
-      'Tiradas directas donde el catalogo ya define precio.',
-      'Archivo opcional para acelerar la preparacion de la propuesta.',
+      entry.id === 'tarjetas-estandar'
+        ? 'Formatos y acabados premium visibles desde el primer paso.'
+        : 'Formatos de reparto y promocion listos para configurar.',
+      entry.id === 'tarjetas-estandar'
+        ? 'Archivo opcional si aun estas cerrando el diseno.'
+        : 'Doble cara, papel y gramaje sin esconder la configuracion.',
       'Via de presupuesto disponible para variantes fuera de tramo.',
     ],
     useCases: [
-      'Tarjetas de presentacion y material de punto de venta.',
-      'Flyers para campanas locales y aperturas.',
+      entry.id === 'tarjetas-estandar'
+        ? 'Tarjetas de visita para empresa, retail y equipos comerciales.'
+        : 'Flyers para campanas locales, aperturas y reparto comercial.',
+      entry.id === 'tarjetas-estandar'
+        ? 'Piezas con tacto, gramaje y detalle de marca.'
+        : 'Folletos cortos para promociones, eventos y mostrador.',
       'Pedidos con necesidad de diseno o adaptacion adicional.',
     ],
     uploadGuidance: [

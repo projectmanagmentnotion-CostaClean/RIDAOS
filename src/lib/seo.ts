@@ -7,6 +7,7 @@ type StaticSeoEntry = {
   title: string
   description: string
   ogType: 'website'
+  ogImage?: string
   allowIndex?: boolean
   breadcrumb?: Array<{ name: string; path: string }>
 }
@@ -16,6 +17,7 @@ type OpenGraphData = {
   description: string
   type: 'website'
   url: string
+  image: string
 }
 
 type JsonLdRecord = Record<string, unknown>
@@ -30,18 +32,20 @@ for (const entry of catalogEntries) {
 
 const staticRouteSEO: Record<string, StaticSeoEntry> = {
   '#/': {
-    title: 'RidaosPrint | DTF, rotulacion e impresion personalizada',
+    title: 'RidaosPrint | DTI, rotulacion e impresion personalizada',
     description:
-      'DTF por metro, rotulacion de vehiculos, vinilos, escaparates e impresion personalizada con enfoque comercial y cobertura local.',
+      'DTI por metro, rotulacion de vehiculos, vinilos, escaparates e impresion personalizada con enfoque comercial y cobertura local.',
     ogType: 'website',
+    ogImage: '/assets/seo/og-home.jpg',
     allowIndex: true,
     breadcrumb: [{ name: 'Home', path: '/' }],
   },
   '#/catalogo': {
     title: 'Catalogo | RidaosPrint',
     description:
-      'Catalogo modular con DTF, rotulacion, materiales, textil, papeleria y servicios preparados para compra o propuesta personalizada.',
+      'Catalogo modular con DTI, rotulacion, materiales, textil, papeleria y servicios preparados para compra o propuesta personalizada.',
     ogType: 'website',
+    ogImage: '/assets/seo/og-home.jpg',
     allowIndex: true,
     breadcrumb: [
       { name: 'Home', path: '/' },
@@ -52,6 +56,7 @@ const staticRouteSEO: Record<string, StaticSeoEntry> = {
     title: 'Guia de archivos | RidaosPrint',
     description: 'Formatos, comprobaciones y checklist practico para preparar archivos antes de fabricar.',
     ogType: 'website',
+    ogImage: '/assets/seo/og-dti.jpg',
     allowIndex: true,
     breadcrumb: [
       { name: 'Home', path: '/' },
@@ -62,6 +67,7 @@ const staticRouteSEO: Record<string, StaticSeoEntry> = {
     title: 'Proyectos y portafolio | RidaosPrint',
     description: 'Casos de DTF, rotulacion, vinilo, stickers y gran formato con lectura clara de servicio y resultado.',
     ogType: 'website',
+    ogImage: '/assets/seo/og-home.jpg',
     allowIndex: true,
     breadcrumb: [
       { name: 'Home', path: '/' },
@@ -71,8 +77,9 @@ const staticRouteSEO: Record<string, StaticSeoEntry> = {
   '#/contacto': {
     title: 'Contacto | RidaosPrint',
     description:
-      'Contacto directo para DTF, rotulacion de furgonetas, vinilos comerciales, impresion personalizada y proyectos a medida.',
+      'Contacto directo para DTI, rotulacion de furgonetas, vinilos comerciales, impresion personalizada y proyectos a medida.',
     ogType: 'website',
+    ogImage: '/assets/seo/og-home.jpg',
     allowIndex: true,
     breadcrumb: [
       { name: 'Home', path: '/' },
@@ -83,6 +90,7 @@ const staticRouteSEO: Record<string, StaticSeoEntry> = {
     title: 'Legal y condiciones comerciales | RidaosPrint',
     description: 'Condiciones comerciales, comprobacion tecnica y base legal visible para compra o propuesta.',
     ogType: 'website',
+    ogImage: '/assets/seo/og-home.jpg',
     allowIndex: true,
     breadcrumb: [
       { name: 'Home', path: '/' },
@@ -94,6 +102,7 @@ const staticRouteSEO: Record<string, StaticSeoEntry> = {
     description:
       'Rotulacion premium para furgonetas, vehiculos de empresa, flotas comerciales, escaparates y señaletica en Barcelona, Blanes, Girona y Costa Brava.',
     ogType: 'website',
+    ogImage: '/assets/seo/og-rotulacion-furgonetas-barcelona.jpg',
     allowIndex: true,
     breadcrumb: [...localSeoContent.rotulacion.breadcrumbs],
   },
@@ -103,6 +112,7 @@ const defaultSEO: StaticSeoEntry = {
   title: 'RidaosPrint',
   description: 'Impresion profesional con catalogo modular, configuracion y flujos preparados para crecer.',
   ogType: 'website',
+  ogImage: '/assets/seo/og-home.jpg',
   allowIndex: true,
   breadcrumb: [{ name: 'Home', path: '/' }],
 }
@@ -159,12 +169,14 @@ export function buildOpenGraphData(data: {
   title?: string
   description?: string
   url: string
+  image?: string
 }): OpenGraphData {
   return {
     title: buildPageTitle(data.title),
     description: buildMetaDescription(data.description),
     type: 'website',
     url: data.url,
+    image: `${siteUrl}${data.image ?? '/assets/seo/og-home.jpg'}`,
   }
 }
 
@@ -248,6 +260,7 @@ export function buildJsonLdProductStub(entryId: string): JsonLdRecord | null {
     category: entry.category,
     sku: entry.id,
     url: buildAbsoluteUrl(entry.route),
+    image: content?.ogImage ? `${siteUrl}${content.ogImage}` : undefined,
     offers: {
       '@type': 'Offer',
       priceCurrency: 'EUR',
@@ -277,6 +290,7 @@ export function buildJsonLdServiceStub(entryId: string): JsonLdRecord | null {
         ? localSeoContent.organization.areaServed
         : ['Espana'],
     url: buildAbsoluteUrl(entry.route),
+    image: content?.ogImage ? `${siteUrl}${content.ogImage}` : undefined,
     offers: {
       '@type': 'Offer',
       priceCurrency: 'EUR',
@@ -310,6 +324,7 @@ export function applySEO(routeHash: string) {
     title,
     description,
     url: canonicalUrl,
+    image: contentSeo?.ogImage ?? staticSeo.ogImage,
   })
 
   document.title = title
@@ -356,6 +371,13 @@ export function applySEO(routeHash: string) {
   })
   ogUrl.setAttribute('content', ogData.url)
 
+  const ogImage = ensureElement('meta[property="og:image"]', () => {
+    const meta = document.createElement('meta')
+    meta.setAttribute('property', 'og:image')
+    return meta
+  })
+  ogImage.setAttribute('content', ogData.image)
+
   const twitterCard = ensureElement('meta[name="twitter:card"]', () => {
     const meta = document.createElement('meta')
     meta.setAttribute('name', 'twitter:card')
@@ -376,6 +398,13 @@ export function applySEO(routeHash: string) {
     return meta
   })
   twitterDescription.setAttribute('content', ogData.description)
+
+  const twitterImage = ensureElement('meta[name="twitter:image"]', () => {
+    const meta = document.createElement('meta')
+    meta.setAttribute('name', 'twitter:image')
+    return meta
+  })
+  twitterImage.setAttribute('content', ogData.image)
 
   const canonical = ensureElement('link[rel="canonical"]', () => {
     const link = document.createElement('link')

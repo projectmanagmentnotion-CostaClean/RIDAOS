@@ -5,18 +5,28 @@ function createAccesorioContent(entry: (typeof accesoriosEntries)[number]): Cata
   return {
     entryId: entry.id,
     slug: entry.slug,
-    seoTitle: `${entry.name} | RidaosPrint`,
-    metaDescription: `${entry.name} con tirada definida, lectura practica de precio y soporte para archivo cuando aplique.`,
+    seoTitle:
+      entry.id.startsWith('pegatina')
+        ? 'Pegatinas personalizadas | Troquel, material y acabado | RidaosPrint'
+        : `${entry.name} | RidaosPrint`,
+    metaDescription:
+      entry.id.startsWith('pegatina')
+        ? 'Pegatinas personalizadas con material, troquel y acabado claros para marca, packaging y exterior.'
+        : `${entry.name} con tirada definida, lectura practica de precio y soporte para archivo cuando aplique.`,
+    ogImage: entry.id.startsWith('pegatina') ? '/assets/seo/og-pegatinas.jpg' : undefined,
     h1: entry.name,
-    eyebrow: 'Accesorios y pegatinas',
-    intro: `${entry.name} dentro de una linea directa para series cortas, promociones o piezas de apoyo de marca.`,
+    eyebrow: entry.id.startsWith('pegatina') ? 'Pegatinas personalizadas' : 'Accesorios y pegatinas',
+    intro:
+      entry.id.startsWith('pegatina')
+        ? 'Pegatinas que parecen parte de tu marca, no un anadido, con material y corte visibles antes de pedir.'
+        : `${entry.name} dentro de una linea directa para series cortas, promociones o piezas de apoyo de marca.`,
     benefits: [
-      'Tiradas claras para piezas promocionales.',
-      'Compatibilidad con archivo cuando la pieza lo necesita.',
+      entry.id.startsWith('pegatina') ? 'Troquel, material y acabado claros.' : 'Tiradas claras para piezas promocionales.',
+      entry.id.startsWith('pegatina') ? 'Compatibilidad con exterior, transparente o kiss cut.' : 'Compatibilidad con archivo cuando la pieza lo necesita.',
       'Transicion simple entre compra directa y comprobacion tecnica.',
     ],
     useCases: [
-      'Stickers, llaveros y piezas de apoyo para marca urbana.',
+      entry.id.startsWith('pegatina') ? 'Pegatinas para branding, packaging y exterior.' : 'Stickers, llaveros y piezas de apoyo para marca urbana.',
       'Lotes de merchandising para acciones locales.',
       'Accesorios que necesitan confirmacion antes de fabricar a volumen.',
     ],

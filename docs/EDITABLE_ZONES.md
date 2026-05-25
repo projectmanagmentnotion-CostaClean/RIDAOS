@@ -378,6 +378,66 @@ Ejemplos:
 - Contenido editable: `src/features/products/product-detail/data/productExperienceContent.ts`
 - Controla: composición premium del detalle configurable, storytelling, recomendaciones y CTA final
 
+## PRODUCT_OPTIONS_ENGINE
+
+- Archivo visual: `src/features/product-options/data/productOptionDefinitions.ts`
+- Contenido editable: `src/features/product-options/data/productOptionDefinitions.ts`
+- Controla: opciones configurables, heroes visuales, assets requeridos y plantilla recomendada por producto
+
+## STICKER_OPTIONS
+
+- Archivo visual: `src/features/product-options/data/productOptionDefinitions.ts`
+- Contenido editable: `src/features/product-options/data/productOptionDefinitions.ts`
+- Controla: troquel, material, acabado, tamano y pricing base de pegatinas
+
+## BUSINESS_CARD_OPTIONS
+
+- Archivo visual: `src/features/product-options/data/productOptionDefinitions.ts`
+- Contenido editable: `src/features/product-options/data/productOptionDefinitions.ts`
+- Controla: formato, gramaje, papel, impresion y acabados premium de tarjetas
+
+## FLYER_OPTIONS
+
+- Archivo visual: `src/features/product-options/data/productOptionDefinitions.ts`
+- Contenido editable: `src/features/product-options/data/productOptionDefinitions.ts`
+- Controla: formatos, orientacion, gramajes, papeles y acabados de flyers
+
+## DTI_OPTIONS
+
+- Archivo visual: `src/features/product-options/data/productOptionDefinitions.ts`
+- Contenido editable: `src/features/product-options/data/productOptionDefinitions.ts`
+- Controla: metraje, calidad, urgencia, revision y plantilla recomendada de DTI por metro
+
+## VEHICLE_WRAP_OPTIONS
+
+- Archivo visual: `src/features/product-options/data/productOptionDefinitions.ts`
+- Contenido editable: `src/features/product-options/data/productOptionDefinitions.ts`
+- Controla: tipo de vehiculo, cobertura, diseno, instalacion y vinilo para rotulacion
+
+## PRODUCT_VISUAL_HERO
+
+- Archivo visual: `src/features/product-options/components/ProductVisualHero.tsx`
+- Contenido editable: `src/features/product-options/data/productOptionDefinitions.ts`
+- Controla: claim corto, CTA, chips de beneficios y asset principal de cada hero visual
+
+## PRODUCT_PRICING_LOGIC
+
+- Archivo visual: `src/features/product-options/pricing/productOptionPricing.ts`
+- Contenido editable: `src/features/product-options/pricing/productOptionPricing.ts`
+- Controla: precio base, suplementos, descuento por volumen y rangos mock por producto
+
+## PRODUCT_ASSET_REQUIREMENTS
+
+- Archivo visual: `src/features/product-options/components/ProductOptionAssetPanel.tsx`
+- Contenido editable: `src/features/product-options/data/productOptionDefinitions.ts`
+- Controla: listado de assets requeridos por variante y estado de produccion
+
+## FINAL_SEO_COPY
+
+- Archivo visual: `src/catalog/content`
+- Contenido editable: `src/catalog/content`
+- Controla: titles, metadescriptions, OG y copy comercial corto de fichas y categorias
+
 ## PRODUCT_HERO
 
 - Archivo visual: `src/features/products/product-detail/sections/ProductHeroSection.tsx`

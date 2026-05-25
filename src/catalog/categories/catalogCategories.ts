@@ -3,11 +3,11 @@ import type { CatalogCategory } from '../../types/product'
 export const catalogCategories: CatalogCategory[] = [
   {
     key: 'dtf',
-    label: 'DTF por metro',
-    description: 'Producto flagship con configuracion, archivo, preview y carrito.',
+    label: 'DTI por metro',
+    description: 'Producto principal con configuracion visual, archivo, preview y carrito.',
     route: '#/producto/dtf',
     kind: 'product',
-    navigation: { label: 'DTF por metro', primary: true, order: 20 },
+    navigation: { label: 'DTI por metro', primary: true, order: 20 },
   },
   {
     key: 'textil',
@@ -28,7 +28,7 @@ export const catalogCategories: CatalogCategory[] = [
   {
     key: 'papeleria',
     label: 'Papeleria',
-    description: 'Tarjetas, flyers y piezas impresas por tirada o consulta.',
+    description: 'Tarjetas, flyers y piezas impresas con opciones visuales y acabados claros.',
     route: '#/producto/papeleria',
     kind: 'product',
   },
@@ -56,7 +56,7 @@ export const catalogCategories: CatalogCategory[] = [
   {
     key: 'accesorios',
     label: 'Accesorios',
-    description: 'Llaveros y pegatinas con tramos directos y acabados opcionales.',
+    description: 'Pegatinas y accesorios con material, troquel y acabado visibles desde el inicio.',
     route: '#/producto/accesorios',
     kind: 'product',
   },

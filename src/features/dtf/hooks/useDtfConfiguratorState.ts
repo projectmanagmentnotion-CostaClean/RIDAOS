@@ -152,7 +152,7 @@ export function useDtfConfiguratorState() {
       id: itemId,
       lineQuantity: 1,
       productType: 'dtf',
-      productName: 'DTF por metro',
+      productName: 'DTI por metro',
       configuration: {
         meters: metersValue,
         quality,
@@ -160,7 +160,7 @@ export function useDtfConfiguratorState() {
         turnaroundPreference,
         extras: selectedExtras,
         summary: [
-          'Producto: DTF por metro',
+          'Producto: DTI por metro',
           `Metraje: ${metersValue} m`,
           `Calidad: ${quality === 'premium' ? 'Premium' : 'Standard'}`,
           `Urgencia: ${urgency === 'express' ? 'Express' : 'Normal'}`,

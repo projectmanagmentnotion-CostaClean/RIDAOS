@@ -17,6 +17,7 @@ import { ProductSpecsSection } from './sections/ProductSpecsSection'
 import { ProductStickySummarySection } from './sections/ProductStickySummarySection'
 import { ProductStorySection } from './sections/ProductStorySection'
 import { ProductTemplateDownloads } from '../../print-templates'
+import { ProductOptionAssetPanel } from '../../product-options'
 import {
   FrequentlyCombinedSection,
   InternalLinkGrid,
@@ -41,6 +42,8 @@ export function ProductExperiencePage({ category }: ProductExperiencePageProps) 
   const {
     pageConfig,
     selectedProduct,
+    displayEntry,
+    optionDefinition,
     selectedFile,
     config,
     estimate,
@@ -68,14 +71,29 @@ export function ProductExperiencePage({ category }: ProductExperiencePageProps) 
 
   const primaryHref = useMemo(() => getQuoteHref(category === 'accesorios' ? 'otro' : category), [category])
   const enabled = new Set(pageConfig.sections)
-  const discoverability = useDiscoverability({ category, entry: selectedProduct })
+  const discoverability = useDiscoverability({ category, entry: displayEntry ?? selectedProduct })
 
-  if (!selectedProduct) {
+  if (!selectedProduct || !displayEntry) {
     return null
   }
 
-  const artworkRuleKey = resolveArtworkRuleForEntry(selectedProduct)
+  const artworkRuleKey = optionDefinition?.prepressRuleKey ?? resolveArtworkRuleForEntry(displayEntry)
   const artworkGateBlocked = Boolean(selectedFile) && !artworkState.confirmed
+  const galleryFrames = optionDefinition
+    ? pageConfig.galleryFrames.map((frame, index) => {
+        const asset = optionDefinition.assetRequirements[index]
+        if (!asset) {
+          return frame
+        }
+
+        return {
+          ...frame,
+          assetFileName: asset.fileName,
+          assetPath: asset.expectedPath,
+          assetStatus: asset.status,
+        }
+      })
+    : pageConfig.galleryFrames
 
   return (
     <ProductExperienceLayout
@@ -100,8 +118,9 @@ export function ProductExperiencePage({ category }: ProductExperiencePageProps) 
                 </a>
               </>
             }
-            entry={selectedProduct}
+            entry={displayEntry}
             fieldErrors={fieldErrors}
+            fields={displayEntry.configuratorFields}
             onConfigChange={handleConfigChange}
             onArtworkStateChange={setArtworkState}
             onFileChange={handleFileChange}
@@ -112,12 +131,15 @@ export function ProductExperiencePage({ category }: ProductExperiencePageProps) 
       }
       faq={enabled.has('faq') ? <ProductFaqSection entryId={selectedProduct.id} faqTitle={pageConfig.faqTitle} /> : null}
       finalCta={enabled.has('final-cta') ? <ProductFinalCtaSection content={pageConfig.finalCta} /> : null}
-      gallery={enabled.has('gallery') ? <ProductGallerySection frames={pageConfig.galleryFrames} /> : null}
+      gallery={enabled.has('gallery') ? <ProductGallerySection frames={galleryFrames} /> : null}
       hero={
         enabled.has('hero') ? (
           <ProductHeroSection
             description={contentDescription}
             eyebrow={contentEyebrow}
+            heroVisual={optionDefinition?.hero ?? pageConfig.heroVisual ?? null}
+            primaryHref={selectedProduct.route}
+            secondaryHref={publicRoutes.guia}
             stickerWords={pageConfig.heroStickerWords}
             title={contentTitle}
           />
@@ -140,11 +162,12 @@ export function ProductExperiencePage({ category }: ProductExperiencePageProps) 
           <InternalLinkGrid items={discoverability.internalLinks} title="Siguiente lectura por intencion" />
         </>
       }
-      specs={enabled.has('specs') ? <ProductSpecsSection entry={selectedProduct} /> : null}
+      optionAssets={optionDefinition ? <ProductOptionAssetPanel definition={optionDefinition} /> : null}
+      specs={enabled.has('specs') ? <ProductSpecsSection entry={displayEntry} /> : null}
       stickySummary={
         enabled.has('sticky-summary') ? (
           <ProductStickySummarySection
-            entry={selectedProduct}
+            entry={displayEntry}
             estimate={estimate}
             message={message}
             successLinks={
@@ -169,9 +192,9 @@ export function ProductExperiencePage({ category }: ProductExperiencePageProps) 
               )
             }
             summaryTitle={
-              selectedProduct.purchaseMode === 'quote'
+              displayEntry.purchaseMode === 'quote'
                 ? 'Referencia comercial'
-                : selectedProduct.purchaseMode === 'hybrid'
+                : displayEntry.purchaseMode === 'hybrid'
                   ? 'Estimacion preparada'
                   : 'Precio en vivo'
             }
@@ -182,7 +205,7 @@ export function ProductExperiencePage({ category }: ProductExperiencePageProps) 
         enabled.has('configurator') ? (
           <ProductTemplateDownloads
             description="Plantillas mock por producto para preparar el archivo con corte, sangrado y zona segura antes del upload."
-            ruleKey={artworkRuleKey}
+            ruleKey={optionDefinition?.templateRuleKey ?? artworkRuleKey}
             title="Descargar plantilla recomendada"
           />
         ) : null

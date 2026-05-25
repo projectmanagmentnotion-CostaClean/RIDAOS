@@ -23,6 +23,7 @@ export type CatalogSeoContent = {
   slug: string
   seoTitle: string
   metaDescription: string
+  ogImage?: string
   h1: string
   eyebrow: string
   intro: string

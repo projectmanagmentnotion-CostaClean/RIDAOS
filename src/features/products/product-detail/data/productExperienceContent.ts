@@ -75,7 +75,7 @@ export const productExperienceContent: Record<string, ProductExperienceConfig> =
     recommendations: [
       {
         id: 'dtf-upgrade',
-        title: 'Combinar con DTF por metro',
+        title: 'Combinar con DTI por metro',
         description: 'Prepara transferencias y prendas desde el mismo flujo comercial.',
         href: publicRoutes.dtf,
         priceLabel: 'Configurable',
@@ -98,7 +98,7 @@ export const productExperienceContent: Record<string, ProductExperienceConfig> =
     faqTitle: 'FAQ papeleria',
     fallbackEyebrow: 'Papeleria',
     fallbackTitle: 'Papeleria de tirada corta y media.',
-    fallbackDescription: 'Tarjetas y flyers con tiradas concretas del PDF 2026 y aviso de diseno por separado.',
+    fallbackDescription: 'Tarjetas y flyers con opciones claras de formato, papel y acabado antes de pedir.',
     heroStickerWords: ['print', 'run'],
     supportSections: [
       {

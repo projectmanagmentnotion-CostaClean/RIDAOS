@@ -1,13 +1,13 @@
 export const homeHeroContent = {
-  fallbackEyebrow: 'DTF por metro para pedidos agiles',
+  fallbackEyebrow: 'DTI por metro para pedidos agiles',
   fallbackDescription:
-    'Compra DTF por metro lineal con una base clara para pedidos agiles: configura tu tirada, sube tus disenos y avanza con una experiencia directa y profesional.',
+    'Compra DTI por metro lineal con una base clara para pedidos agiles: configura tu tirada, sube tus disenos y avanza con una experiencia directa y profesional.',
   orbitLines: [
     'Configuracion por metro lineal',
     'Archivo y precio visibles antes de avanzar',
     'Comprobacion tecnica antes de fabricar',
   ],
-  primaryCtaLabel: 'Configurar DTF',
+  primaryCtaLabel: 'Configurar DTI',
   secondaryCtaLabel: 'Ver catalogo',
 }
 
@@ -31,7 +31,7 @@ export const homeMetricsContent = [
 
 export const homeFoundationContent = {
   panelLabel: 'Pedido claro',
-  panelTitle: 'Un frente claro para ventas DTF por metro.',
+  panelTitle: 'Un frente claro para ventas DTI por metro.',
   panelDescription:
     'Pasa del catalogo al pedido con una lectura clara de archivo, precio y siguiente paso.',
   panelPrimaryCtaLabel: 'Ver catalogo',
@@ -39,7 +39,7 @@ export const homeFoundationContent = {
   quickPanelTitle: 'Accesos rapidos',
   quickLinks: [
     { label: 'Ver catalogo', routeKey: 'catalogo' as const },
-    { label: 'Abrir pagina DTF por metro', routeKey: 'dtf' as const },
+    { label: 'Abrir pagina DTI por metro', routeKey: 'dtf' as const },
     { label: 'Revisar guia de archivos', routeKey: 'guia' as const },
   ],
 }

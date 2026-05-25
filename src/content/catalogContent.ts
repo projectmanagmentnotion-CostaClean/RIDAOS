@@ -2,9 +2,9 @@ export const catalogContent = {
   hero: {
     fallbackEyebrow: 'Catalogo RidaosPrint',
     fallbackDescription:
-      'Compra directa para DTF y productos cerrados. Propuesta personalizada para rotulacion, gran formato y proyectos que necesitan cobertura, materiales o instalacion.',
-    title: 'Compra directa donde conviene. Rotulacion visible donde de verdad importa.',
-    titleLines: ['COMPRA DIRECTA', 'DONDE CONVIENE', 'ROTULACION', 'DONDE IMPORTA'],
+      'Compra directa para DTI y productos cerrados. Propuesta personalizada para rotulacion, gran formato y proyectos que necesitan cobertura, materiales o instalacion.',
+    title: 'DTI para comprar rapido. Rotulacion para hacerse ver de verdad.',
+    titleLines: ['DTI', 'PARA COMPRAR RAPIDO', 'ROTULACION', 'PARA HACERSE VER'],
     stickerWords: ['directa', 'rotulacion'],
   },
   featured: {
@@ -22,7 +22,7 @@ export const catalogContent = {
     label: 'Como comprar',
     title: 'Empieza por el flujo que mejor encaje.',
     bullets: [
-      'DTF por metro para configurar archivo, metraje y urgencia en un solo paso.',
+      'DTI por metro para configurar archivo, metraje y urgencia en un solo paso.',
       'Rotulacion como categoria principal para furgonetas, flotas, escaparates y vehiculos de empresa.',
       'Productos con tramos claros para preparar el carrito sin perder tiempo.',
       'Servicios a medida con referencia inicial antes de pedir una propuesta comercial seria.',

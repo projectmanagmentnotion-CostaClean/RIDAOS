@@ -12,6 +12,9 @@ export function ProductGallerySection({ frames }: ProductGallerySectionProps) {
         {frames.map((frame, index) => (
           <div data-product-depth={index === 0 ? '0.03' : '0.06'} key={frame.id}>
             <ProductGalleryFrame
+              assetFileName={frame.assetFileName}
+              assetPath={frame.assetPath}
+              assetStatus={frame.assetStatus}
               description={frame.description}
               label={frame.label}
               title={frame.title}

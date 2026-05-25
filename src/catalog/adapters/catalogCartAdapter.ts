@@ -1,6 +1,6 @@
 import type { ConfigState } from '../../lib/configuratorState'
 import type { CartItem } from '../../types/ecommerce'
-import type { CatalogEntry } from '../../types/product'
+import type { CatalogEntry, ConfiguratorField } from '../../types/product'
 import type { CatalogPricingResult } from './catalogPricingAdapter'
 import type { ArtworkPreviewSummary } from '../../domain/storage'
 
@@ -11,14 +11,6 @@ type UploadMeta = {
   formatLabel?: string
   notes?: string
   previewSummary?: ArtworkPreviewSummary
-}
-
-function formatSummaryValue(value: string | number, suffix?: string) {
-  if (value === '' || value === 0) {
-    return null
-  }
-
-  return suffix ? `${value} ${suffix}` : String(value)
 }
 
 function mapProductType(entry: CatalogEntry): CartItem['productType'] {
@@ -38,17 +30,42 @@ function mapProductType(entry: CatalogEntry): CartItem['productType'] {
   }
 }
 
+function resolveFieldDisplayValue(field: ConfiguratorField, value: string) {
+  if (field.type === 'select' || field.type === 'variant' || field.type === 'size') {
+    return field.options.find((option) => option.value === value)?.label ?? value
+  }
+
+  if (field.type === 'quantity') {
+    return `${value} uds`
+  }
+
+  if (field.type === 'meters') {
+    return `${value} m`
+  }
+
+  if (field.type === 'area') {
+    return `${value} m2`
+  }
+
+  return value
+}
+
 function buildSummary(entry: CatalogEntry, config: ConfigState) {
   const summary: string[] = [`Producto: ${entry.name}`]
-  const quantity = formatSummaryValue(config.quantity, 'uds')
-  const area = formatSummaryValue(config.area, 'm2')
-  const meters = formatSummaryValue(config.meters, 'm')
 
-  if (quantity) summary.push(`Cantidad: ${quantity}`)
-  if (area) summary.push(`Superficie: ${area}`)
-  if (meters) summary.push(`Metraje: ${meters}`)
-  if (config.size) summary.push(`Tamano: ${config.size}`)
-  if (config.file) summary.push(`Archivo: ${config.file}`)
+  for (const field of entry.configuratorFields) {
+    const value = config[field.key]?.trim()
+    if (!value || field.key === 'product' || field.key === 'variant' || field.key === 'notes') {
+      continue
+    }
+
+    if (field.type === 'file') {
+      summary.push(`Archivo: ${value}`)
+      continue
+    }
+
+    summary.push(`${field.label}: ${resolveFieldDisplayValue(field, value)}`)
+  }
 
   return summary
 }

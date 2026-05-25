@@ -9,6 +9,7 @@ type ProductExperienceLayoutProps = {
   configurator: ReactNode
   stickySummary: ReactNode
   templateDownloads?: ReactNode
+  optionAssets?: ReactNode
   specs?: ReactNode
   story?: ReactNode
   process?: ReactNode
@@ -26,6 +27,7 @@ export function ProductExperienceLayout({
   configurator,
   stickySummary,
   templateDownloads,
+  optionAssets,
   specs,
   story,
   process,
@@ -43,6 +45,7 @@ export function ProductExperienceLayout({
         {stickySummary}
       </div>
       {templateDownloads}
+      {optionAssets}
       {specs}
       {story}
       {process}

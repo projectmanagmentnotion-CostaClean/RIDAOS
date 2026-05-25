@@ -77,3 +77,57 @@ Estado actual:
 2. plantillas descargables principales
 3. assets cinematicos de home
 4. variantes secundarias por orientacion o reverso
+
+## Addendum — Product options premium
+
+Nuevos assets priorizados por esta fase:
+
+### Pegatinas
+
+- `sticker-square-preview.webp`
+- `sticker-circle-preview.webp`
+- `sticker-custom-shape-preview.webp`
+- `sticker-sheet-preview.webp`
+- `sticker-cutline-overlay.svg`
+- `sticker-kisscut-overlay.svg`
+
+### Tarjetas
+
+- `business-card-standard-preview.webp`
+- `business-card-square-preview.webp`
+- `business-card-rounded-preview.webp`
+- `business-card-gold-foil-preview.webp`
+- `business-card-silver-foil-preview.webp`
+- `business-card-3d-varnish-preview.webp`
+- `business-card-soft-touch-preview.webp`
+- `business-card-stack-premium.webp`
+
+### Flyers
+
+- `flyer-a6-preview.webp`
+- `flyer-a5-preview.webp`
+- `flyer-a4-preview.webp`
+- `flyer-stack-preview.webp`
+- `flyer-double-sided-preview.webp`
+- `flyer-soft-touch-preview.webp`
+
+### DTI
+
+- `dti-roll-transparent.webp`
+- `dti-meter-preview.webp`
+- `dti-spacing-guide.svg`
+- `dti-transfer-texture.webp`
+
+### Rotulacion de vehiculos
+
+- `wrap-van-side-transparent.webp`
+- `wrap-van-front-transparent.webp`
+- `wrap-car-side-transparent.webp`
+- `wrap-before-after-preview.webp`
+- `vinyl-installation-detail.webp`
+
+Notas:
+
+- `DTI` debe ser el naming visible de plantillas y previews.
+- `DTF` se conserva solo como apoyo SEO o referencia tecnica secundaria.
+- Los heroes visuales deben resolverse como `WebP` ligeros y las guias tecnicas como `SVG`.

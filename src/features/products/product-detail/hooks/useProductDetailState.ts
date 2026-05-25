@@ -7,31 +7,75 @@ import { createInitialConfig, getRequiredFieldErrors, updateConfigValue, type Co
 import { getProductById, getProductsByCategory } from '../../../../lib/products'
 import type { CatalogCategoryKey } from '../../../../types/product'
 import type { ArtworkPreviewSummary } from '../../../artwork-upload'
+import { getProductOptionDefinition } from '../../../product-options'
 import { productExperienceContent } from '../data/productExperienceContent'
+
+function buildDisplayEntry(productId: string) {
+  const entry = getProductById(productId)
+
+  if (!entry) {
+    return null
+  }
+
+  const optionDefinition = getProductOptionDefinition(entry.id)
+
+  if (!optionDefinition) {
+    return entry
+  }
+
+  const configuratorFields = optionDefinition.fields.map((field) => {
+    if (field.type !== 'variant') {
+      return field
+    }
+
+    const sourceField = entry.configuratorFields.find(
+      (candidate) => candidate.key === field.key && candidate.type === 'variant',
+    )
+
+    if (sourceField && sourceField.type === 'variant' && sourceField.options.length > 0) {
+      return { ...field, options: sourceField.options }
+    }
+
+    return field
+  })
+
+  return {
+    ...entry,
+    configuratorFields,
+    name: optionDefinition.displayName,
+    shortDescription: optionDefinition.hero.description,
+    description: optionDefinition.seoDescription,
+  }
+}
 
 export function useProductDetailState(category: CatalogCategoryKey) {
   const pageConfig = productExperienceContent[category]
   const products = useMemo(() => getProductsByCategory(category), [category])
   const [productId, setProductId] = useState(products[0]?.id ?? '')
-  const [config, setConfig] = useState<ConfigState>(() => (products[0] ? createInitialConfig(products[0]) : {}))
+  const [config, setConfig] = useState<ConfigState>(() => {
+    const firstEntry = products[0] ? buildDisplayEntry(products[0].id) : null
+    return firstEntry ? createInitialConfig(firstEntry) : {}
+  })
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [message, setMessage] = useState('')
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<string, string>>>({})
 
   const selectedProduct = useMemo(() => getProductById(productId), [productId])
+  const displayEntry = useMemo(() => buildDisplayEntry(productId), [productId])
+  const optionDefinition = useMemo(() => (selectedProduct ? getProductOptionDefinition(selectedProduct.id) : null), [selectedProduct])
   const content = useMemo(
     () => (selectedProduct ? getContentByEntryId(selectedProduct.id) : null),
     [selectedProduct],
   )
 
   const estimate = useMemo(
-    () => (selectedProduct ? getCatalogPricingResult(selectedProduct, config) : null),
-    [config, selectedProduct],
+    () => (displayEntry ? getCatalogPricingResult(displayEntry, config) : null),
+    [config, displayEntry],
   )
 
   const handleConfigChange = (key: string, value: string) => {
     if ((key === 'product' || key === 'variant') && getProductById(value)) {
-      const nextProduct = getProductById(value)
+      const nextProduct = buildDisplayEntry(value)
 
       if (nextProduct) {
         setProductId(value)
@@ -55,11 +99,11 @@ export function useProductDetailState(category: CatalogCategoryKey) {
   }
 
   const handlePrimaryAction = (previewSummary?: ArtworkPreviewSummary | null) => {
-    if (!selectedProduct) {
+    if (!selectedProduct || !displayEntry) {
       return
     }
 
-    const nextErrors = getRequiredFieldErrors(selectedProduct, config)
+    const nextErrors = getRequiredFieldErrors(displayEntry, config)
     setFieldErrors(nextErrors)
 
     if (selectedProduct.purchaseMode === 'direct' || selectedProduct.purchaseMode === 'hybrid') {
@@ -69,7 +113,7 @@ export function useProductDetailState(category: CatalogCategoryKey) {
 
       const fileName = config.file || 'Sin archivo adjunto'
       addToCart(
-        createCatalogCartItem(selectedProduct, config, estimate, {
+        createCatalogCartItem(displayEntry, config, estimate, {
           fileName,
           fileType: selectedFile?.type ?? 'text/plain',
           fileSize: selectedFile?.size ?? 0,
@@ -89,15 +133,17 @@ export function useProductDetailState(category: CatalogCategoryKey) {
     pageConfig,
     products,
     selectedProduct,
+    displayEntry,
+    optionDefinition,
     selectedFile,
     config,
     estimate,
     fieldErrors,
     message,
     content,
-    contentTitle: content?.h1 ?? pageConfig.fallbackTitle,
-    contentEyebrow: content?.eyebrow ?? pageConfig.fallbackEyebrow,
-    contentDescription: content?.intro ?? pageConfig.fallbackDescription,
+    contentTitle: optionDefinition?.hero.title ?? content?.h1 ?? pageConfig.fallbackTitle,
+    contentEyebrow: optionDefinition?.hero.eyebrow ?? content?.eyebrow ?? pageConfig.fallbackEyebrow,
+    contentDescription: optionDefinition?.hero.description ?? content?.intro ?? pageConfig.fallbackDescription,
     handleConfigChange,
     handleFileChange,
     handlePrimaryAction,

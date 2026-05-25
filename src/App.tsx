@@ -311,59 +311,61 @@ function App() {
   )
 
   return (
-    <div className="app-shell">
+    <>
       <PremiumCursor />
-      <a className="skip-link" href="#main-content">
-        Saltar al contenido
-      </a>
-      <div className="app-grid" aria-hidden="true" />
-      {/* Editable Zone: NAV_MAIN | Content: src/content/navigationContent.ts */}
-      <header
-        className={`site-header${route === 'home' ? ' site-header--overlay' : ''}${
-          isHeaderHidden ? ' site-header--hidden' : ''
-        }${isHeaderSolid ? ' site-header--solid' : ''}`}
-      >
-        <nav className="site-nav" aria-label="Principal">
-          <a aria-label="Ir a la pagina de inicio" className="brand" data-cursor="interactive" href={getPublicHref('home')}>
-            {previewNavigation.brandLabel}
-          </a>
-          <div className="nav-links">
-            {previewNavigation.mainLinks.map((item) => (
-              <a
-                aria-current={isNavigationActive(route, item.route) ? 'page' : undefined}
-                className={isNavigationActive(route, item.route) ? 'is-active' : undefined}
-                data-cursor="interactive"
-                href={item.href}
-                key={item.href}
-              >
-                {item.label}
+      <div className="app-shell">
+        <a className="skip-link" href="#main-content">
+          Saltar al contenido
+        </a>
+        <div className="app-grid" aria-hidden="true" />
+        {/* Editable Zone: NAV_MAIN | Content: src/content/navigationContent.ts */}
+        <header
+          className={`site-header${route === 'home' ? ' site-header--overlay' : ''}${
+            isHeaderHidden ? ' site-header--hidden' : ''
+          }${isHeaderSolid ? ' site-header--solid' : ''}`}
+        >
+          <nav className="site-nav" aria-label="Principal">
+            <a aria-label="Ir a la pagina de inicio" className="brand" data-cursor="interactive" href={getPublicHref('home')}>
+              {previewNavigation.brandLabel}
+            </a>
+            <div className="nav-links">
+              {previewNavigation.mainLinks.map((item) => (
+                <a
+                  aria-current={isNavigationActive(route, item.route) ? 'page' : undefined}
+                  className={isNavigationActive(route, item.route) ? 'is-active' : undefined}
+                  data-cursor="interactive"
+                  href={item.href}
+                  key={item.href}
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          </nav>
+        </header>
+
+        <main className={`page-shell${route === 'home' ? ' page-shell--home' : ''}`} id="main-content" tabIndex={-1}>
+          <RouteErrorBoundary fallback={<NotFoundPage />}>
+            <Suspense fallback={<PageLoadingFallback />}>
+              <ActivePage />
+            </Suspense>
+          </RouteErrorBoundary>
+        </main>
+
+        {/* Editable Zone: FOOTER_MAIN | Content: src/content/footerContent.ts */}
+        <footer className="site-footer">
+          <p>{previewFooter.description}</p>
+          <div className="footer-links">
+            {previewFooter.links.map((link) => (
+              <a data-cursor="interactive" href={link.href} key={link.href}>
+                {link.label}
               </a>
             ))}
           </div>
-        </nav>
-      </header>
-
-      <main className={`page-shell${route === 'home' ? ' page-shell--home' : ''}`} id="main-content" tabIndex={-1}>
-        <RouteErrorBoundary fallback={<NotFoundPage />}>
-          <Suspense fallback={<PageLoadingFallback />}>
-            <ActivePage />
-          </Suspense>
-        </RouteErrorBoundary>
-      </main>
-
-      {/* Editable Zone: FOOTER_MAIN | Content: src/content/footerContent.ts */}
-      <footer className="site-footer">
-        <p>{previewFooter.description}</p>
-        <div className="footer-links">
-          {previewFooter.links.map((link) => (
-            <a data-cursor="interactive" href={link.href} key={link.href}>
-              {link.label}
-            </a>
-          ))}
-        </div>
-        <p className="build-marker">{buildMarker}</p>
-      </footer>
-    </div>
+          <p className="build-marker">{buildMarker}</p>
+        </footer>
+      </div>
+    </>
   )
 }
 

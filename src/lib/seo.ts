@@ -283,6 +283,8 @@ function buildOrganizationSchema(): JsonLdRecord {
     name: localSeoContent.organization.name,
     legalName: localSeoContent.organization.legalName,
     url: siteUrl,
+    logo: `${siteUrl}/assets/brand/ridaos-mark-square-512.png`,
+    image: `${siteUrl}/assets/brand/ridaos-mark-square-512.png`,
     description: localSeoContent.organization.description,
     email: localSeoContent.organization.email,
     telephone: localSeoContent.organization.telephone,
@@ -296,6 +298,8 @@ function buildLocalBusinessSchema(): JsonLdRecord {
     '@type': 'LocalBusiness',
     name: localSeoContent.localBusiness.name,
     url: siteUrl,
+    logo: `${siteUrl}/assets/brand/ridaos-mark-square-512.png`,
+    image: `${siteUrl}/assets/brand/ridaos-mark-square-512.png`,
     description: localSeoContent.localBusiness.description,
     priceRange: localSeoContent.localBusiness.priceRange,
     address: {

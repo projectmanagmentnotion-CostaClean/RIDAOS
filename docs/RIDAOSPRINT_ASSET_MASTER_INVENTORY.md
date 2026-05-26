@@ -116,19 +116,55 @@ public/assets/
 
 ## 4. Assets globales de marca
 
+Estado actual implementado en storefront:
+
+- cabecera real: `/public/assets/brand/ridaos-logo-main.png`
+- favicon runtime: `/public/favicon-32.png` y `/public/favicon-48.png`
+- icono iOS: `/public/apple-touch-icon.png`
+- marca cuadrada para schema y accesos: `/public/assets/brand/ridaos-mark-square-512.png`
+
+Assets maestros y derivados recomendados:
+
 | Asset ID | Archivo sugerido | Ruta | Uso | Formato principal | Alternativo | Tamano recomendado | Prioridad |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `brand-logo-main` | `ridaos-logo-main.svg` | `/public/assets/brand/ridaos-logo-main.svg` | logo principal storefront | SVG | PNG | vector | alta |
-| `brand-logo-horizontal` | `ridaos-logo-horizontal.svg` | `/public/assets/brand/ridaos-logo-horizontal.svg` | header, footer, documentos | SVG | PNG | vector | alta |
-| `brand-logo-white` | `ridaos-logo-white.svg` | `/public/assets/brand/ridaos-logo-white.svg` | fondos oscuros | SVG | PNG | vector | alta |
-| `brand-logo-dark` | `ridaos-logo-dark.svg` | `/public/assets/brand/ridaos-logo-dark.svg` | fondos claros o impresos | SVG | PNG | vector | media |
-| `brand-mark` | `ridaos-mark.svg` | `/public/assets/brand/ridaos-mark.svg` | favicon expandido, sello corto | SVG | PNG | vector | media |
-| `brand-favicon-svg` | `favicon.svg` | `/public/assets/brand/favicon.svg` | favicon moderno | SVG | PNG | 32x32 base | media |
-| `brand-favicon-png` | `favicon-32.png` | `/public/assets/brand/favicon-32.png` | fallback browser | PNG | ICO | 32x32 | media |
-| `brand-apple-touch` | `apple-touch-icon-180.png` | `/public/assets/brand/apple-touch-icon-180.png` | iOS shortcut | PNG | JPG | 180x180 | media |
-| `brand-schema-logo` | `schema-logo-512.png` | `/public/assets/brand/schema-logo-512.png` | Organization / LocalBusiness schema | PNG | SVG | 512x512 | alta |
+| `brand-logo-main-runtime` | `ridaos-logo-main.png` | `/public/assets/brand/ridaos-logo-main.png` | logo real de cabecera y fallback visual principal | PNG | WebP | 2048 px lado largo aprox. | alta |
+| `brand-logo-main-master` | `ridaos-logo-main.svg` | `/public/assets/brand/ridaos-logo-main.svg` | master vector futuro para storefront y documentos | SVG | PDF | vector | alta |
+| `brand-logo-horizontal` | `ridaos-logo-horizontal.svg` | `/public/assets/brand/ridaos-logo-horizontal.svg` | versiones limpias para documentos o layouts horizontales | SVG | PNG | vector | media |
+| `brand-logo-white` | `ridaos-logo-white.svg` | `/public/assets/brand/ridaos-logo-white.svg` | fondos oscuros con bajo contraste de imagen | SVG | PNG | vector | media |
+| `brand-logo-dark` | `ridaos-logo-dark.svg` | `/public/assets/brand/ridaos-logo-dark.svg` | documentos o fondos claros | SVG | PNG | vector | media |
+| `brand-mark-square` | `ridaos-mark-square-512.png` | `/public/assets/brand/ridaos-mark-square-512.png` | schema logo, atajo cuadrado, thumbnail corporativo | PNG | SVG | 512x512 | alta |
+| `brand-favicon-32` | `favicon-32.png` | `/public/favicon-32.png` | favicon principal runtime | PNG | ICO | 32x32 | alta |
+| `brand-favicon-48` | `favicon-48.png` | `/public/favicon-48.png` | favicon ampliado y fallback browser | PNG | ICO | 48x48 | media |
+| `brand-apple-touch` | `apple-touch-icon.png` | `/public/apple-touch-icon.png` | iOS shortcut y bookmark icon | PNG | JPG | 180x180 | media |
+| `brand-schema-logo` | `schema-logo-512.png` | `/public/assets/brand/schema-logo-512.png` | alternativa limpia para `Organization` / `LocalBusiness` | PNG | SVG | 512x512 | media |
 | `brand-document-watermark` | `document-watermark-v1.png` | `/public/assets/documents/document-watermark-v1.png` | marcas de agua en PDF | PNG | SVG | 1200x1200 | media |
-| `brand-print-safe` | `print-safe-logo-v1.svg` | `/public/assets/documents/print-safe-logo-v1.svg` | reportes tecnicos, plantillas | SVG | PNG | vector | media |
+| `brand-print-safe` | `print-safe-logo-v1.svg` | `/public/assets/documents/print-safe-logo-v1.svg` | reportes tecnicos, plantillas y documentos | SVG | PNG | vector | media |
+
+## 4.1. Color y direccion visual para assets
+
+Todos los assets nuevos del storefront deben respetar esta direccion:
+
+- fondo base: negro profundo, charcoal, grafito o ladrillo oscuro
+- luz/acento: verde fluor de marca, fucsia y cyan solo como apoyo controlado
+- contraste: producto o mensaje siempre por encima del efecto atmosferico
+- look general: garage urbano exclusivo, no gaming, no SaaS neutro
+
+Reglas visuales para diseno:
+
+- no usar fondos blancos en home, catalogo, categorias ni PDPs
+- no rellenar el asset con neones; los acentos deben ocupar una parte pequena de la composicion
+- el verde es el acento principal de accion y presencia
+- el fucsia se reserva a detalles premium, energia editorial o piezas especiales
+- el cyan apoya informacion tecnica, materiales, prepress y contraste frio
+- las texturas deben ser sutiles: asfalto, metal, ladrillo oscuro, reflejo de vinilo, luz de taller
+- los heroes deben conservar lectura clara para overlay de copy
+- los fallbacks deben parecer composiciones intencionales, nunca “imagen faltante”
+
+Reglas para print-safe y documentos:
+
+- documentos, reportes y plantillas no deben heredar fondos oscuros del storefront
+- prioridad absoluta a legibilidad, blanco de papel y contrastes limpios
+- si se usa color de marca en documento, que sea muy contenido y nunca dominante
 
 ## 5. Assets de Home
 

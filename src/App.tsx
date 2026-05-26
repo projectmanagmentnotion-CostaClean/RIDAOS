@@ -400,7 +400,13 @@ function App() {
           >
             <nav className="site-nav" aria-label="Principal">
               <a aria-label="Ir a la pagina de inicio" className="brand" data-cursor="interactive" href={getPublicHref('home')}>
-                {previewNavigation.brandLabel}
+                <img
+                  alt={previewNavigation.brandLabel}
+                  className="brand__logo"
+                  loading="eager"
+                  src="/assets/brand/ridaos-logo-main.png"
+                />
+                <span className="sr-only">{previewNavigation.brandLabel}</span>
               </a>
               <div className="nav-links">
                 {previewNavigation.mainLinks.map((item) => (

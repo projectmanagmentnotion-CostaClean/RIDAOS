@@ -8,7 +8,7 @@ export const cinematicScenes: CinematicSceneDefinition[] = [
     triggerZoneId: 'HOME_HERO',
     assetKey: 'dtfRollTransparent',
     className: 'scene-hero-cinematic',
-    accent: 'rgba(255, 0, 184, 0.24)',
+    accent: 'rgba(240, 20, 216, 0.22)',
     depth: 0.12,
   },
   {
@@ -18,7 +18,7 @@ export const cinematicScenes: CinematicSceneDefinition[] = [
     triggerZoneId: 'HOME_FOUNDATION',
     assetKey: 'textileHoodieTransparent',
     className: 'scene-textile-dtf',
-    accent: 'rgba(255, 184, 0, 0.22)',
+    accent: 'rgba(217, 255, 0, 0.18)',
     depth: 0.16,
   },
   {
@@ -28,7 +28,7 @@ export const cinematicScenes: CinematicSceneDefinition[] = [
     triggerZoneId: 'HOME_PROCESS',
     assetKey: 'vehicleWrapCarTransparent',
     className: 'scene-vehicle-wrap',
-    accent: 'rgba(57, 255, 20, 0.18)',
+    accent: 'rgba(217, 255, 0, 0.18)',
     depth: 0.18,
   },
   {
@@ -38,7 +38,7 @@ export const cinematicScenes: CinematicSceneDefinition[] = [
     triggerZoneId: 'HOME_EDITORIAL',
     assetKey: 'printMachineDetail',
     className: 'scene-production-detail',
-    accent: 'rgba(255, 255, 255, 0.16)',
+    accent: 'rgba(26, 217, 226, 0.16)',
     depth: 0.14,
   },
   {
@@ -48,7 +48,7 @@ export const cinematicScenes: CinematicSceneDefinition[] = [
     triggerZoneId: 'HOME_FINAL_CTA',
     assetKey: 'finalBrandObject',
     className: 'scene-final-brand',
-    accent: 'rgba(255, 191, 102, 0.2)',
+    accent: 'rgba(240, 20, 216, 0.18)',
     depth: 0.1,
   },
 ]

@@ -33,7 +33,7 @@ export const productOptionDefinitions: ProductOptionDefinition[] = [
       primaryCtaLabel: 'Configurar pegatinas',
       secondaryCtaLabel: 'Descargar plantilla',
       benefitChips: ['Exterior', 'Contorno', 'Kiss cut', 'Marca'],
-      accent: 'rgba(255, 184, 0, 0.24)',
+      accent: 'rgba(240, 20, 216, 0.22)',
       asset: heroAsset(
         'sticker-hero-square',
         'Preview pegatina cuadrada',
@@ -131,7 +131,7 @@ export const productOptionDefinitions: ProductOptionDefinition[] = [
       primaryCtaLabel: 'Configurar pegatinas premium',
       secondaryCtaLabel: 'Ver guia de corte',
       benefitChips: ['Laminado', 'Exterior', 'Premium', 'Troquel'],
-      accent: 'rgba(255, 191, 102, 0.24)',
+      accent: 'rgba(26, 217, 226, 0.2)',
       asset: heroAsset(
         'sticker-hero-custom',
         'Preview forma personalizada',
@@ -218,7 +218,7 @@ export const productOptionDefinitions: ProductOptionDefinition[] = [
       primaryCtaLabel: 'Configurar tarjetas',
       secondaryCtaLabel: 'Descargar plantilla',
       benefitChips: ['Soft touch', '3D', 'Oro', 'Doble cara'],
-      accent: 'rgba(255, 255, 255, 0.18)',
+      accent: 'rgba(26, 217, 226, 0.16)',
       asset: heroAsset(
         'business-card-stack-premium',
         'Pila premium de tarjetas',
@@ -322,7 +322,7 @@ export const productOptionDefinitions: ProductOptionDefinition[] = [
       primaryCtaLabel: 'Configurar flyers',
       secondaryCtaLabel: 'Descargar plantilla',
       benefitChips: ['A6 a A3', 'Doble cara', 'Mate o brillo', 'Soft touch'],
-      accent: 'rgba(255, 191, 102, 0.18)',
+      accent: 'rgba(217, 255, 0, 0.16)',
       asset: heroAsset(
         'flyer-stack-preview',
         'Stack de flyers',
@@ -436,7 +436,7 @@ export const productOptionDefinitions: ProductOptionDefinition[] = [
       primaryCtaLabel: 'Solicitar propuesta',
       secondaryCtaLabel: 'Ver formatos',
       benefitChips: ['A5 a A3', 'Premium', 'Local', 'Evento'],
-      accent: 'rgba(255, 184, 0, 0.22)',
+      accent: 'rgba(240, 20, 216, 0.18)',
       asset: heroAsset(
         'flyer-a5-preview',
         'Flyer premium',
@@ -542,7 +542,7 @@ export const productOptionDefinitions: ProductOptionDefinition[] = [
       primaryCtaLabel: 'Configurar DTI',
       secondaryCtaLabel: 'Descargar plantilla',
       benefitChips: ['24/48/72h', 'Revision', 'Rollo', 'Textil'],
-      accent: 'rgba(255, 0, 184, 0.18)',
+      accent: 'rgba(217, 255, 0, 0.18)',
       asset: heroAsset(
         'dti-roll-transparent',
         'Rollo DTI transparente',
@@ -642,7 +642,7 @@ export const productOptionDefinitions: ProductOptionDefinition[] = [
       primaryCtaLabel: 'Configurar cobertura',
       secondaryCtaLabel: 'Ver proyectos',
       benefitChips: ['Barcelona', 'Blanes', 'Girona', 'Instalacion'],
-      accent: 'rgba(57, 255, 20, 0.16)',
+      accent: 'rgba(217, 255, 0, 0.16)',
       asset: heroAsset(
         'wrap-van-side-transparent',
         'Furgoneta lateral',
@@ -750,7 +750,7 @@ export const productOptionDefinitions: ProductOptionDefinition[] = [
       primaryCtaLabel: 'Configurar media rotulacion',
       secondaryCtaLabel: 'Ver ejemplos',
       benefitChips: ['Parcial', 'Empresa', 'Escaparate', 'Local'],
-      accent: 'rgba(57, 255, 20, 0.14)',
+      accent: 'rgba(26, 217, 226, 0.16)',
       asset: heroAsset(
         'wrap-car-side-transparent',
         'Vehiculo parcial',
@@ -827,7 +827,7 @@ export const productOptionDefinitions: ProductOptionDefinition[] = [
       primaryCtaLabel: 'Configurar cobertura amplia',
       secondaryCtaLabel: 'Solicitar propuesta',
       benefitChips: ['Lateral', 'Trasera', 'Marca', 'Instalacion'],
-      accent: 'rgba(57, 255, 20, 0.16)',
+      accent: 'rgba(217, 255, 0, 0.16)',
       asset: heroAsset(
         'wrap-van-side-transparent',
         'Furgoneta lateral amplia',
@@ -904,7 +904,7 @@ export const productOptionDefinitions: ProductOptionDefinition[] = [
       primaryCtaLabel: 'Solicitar propuesta integral',
       secondaryCtaLabel: 'Ver proyectos',
       benefitChips: ['Integral', 'Flotas', 'Premium', 'Instalacion'],
-      accent: 'rgba(57, 255, 20, 0.18)',
+      accent: 'rgba(217, 255, 0, 0.18)',
       asset: heroAsset(
         'wrap-van-front-transparent',
         'Furgoneta integral',
@@ -982,7 +982,7 @@ export const productOptionDefinitions: ProductOptionDefinition[] = [
       primaryCtaLabel: 'Configurar textil',
       secondaryCtaLabel: 'Ver soportes',
       benefitChips: ['Camisetas', 'Sudaderas', 'Uniformes', 'Drops'],
-      accent: 'rgba(255, 191, 102, 0.18)',
+      accent: 'rgba(240, 20, 216, 0.16)',
       asset: heroAsset(
         'hoodie-front-transparent',
         'Prenda textil hero',
@@ -1052,7 +1052,7 @@ export const productOptionDefinitions: ProductOptionDefinition[] = [
       primaryCtaLabel: 'Configurar vinilo',
       secondaryCtaLabel: 'Descargar plantilla',
       benefitChips: ['Escaparates', 'Paneles', 'Pared', 'Montaje'],
-      accent: 'rgba(255, 255, 255, 0.16)',
+      accent: 'rgba(26, 217, 226, 0.16)',
       asset: heroAsset(
         'vinyl-panel-preview',
         'Panel de vinilo',

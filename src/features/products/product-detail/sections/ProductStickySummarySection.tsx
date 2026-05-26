@@ -31,7 +31,7 @@ export function ProductStickySummarySection({
       <div
         className="sticky-summary-panel sticky-summary-panel--product"
         data-product-reveal
-        style={{ '--product-summary-accent': summaryAccent ?? 'rgba(57, 255, 20, 0.16)' } as CSSProperties}
+        style={{ '--product-summary-accent': summaryAccent ?? 'rgba(217, 255, 0, 0.16)' } as CSSProperties}
       >
         <article className="content-card product-summary-card">
           <p className="section-label">Resumen del producto</p>

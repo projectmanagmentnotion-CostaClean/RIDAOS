@@ -128,7 +128,6 @@ const routes: Record<string, RouteKey> = {
  * Content: src/content/navigationContent.ts
  * Visual component: src/App.tsx
  */
-const buildMarker = `Ridaos build: ${__RIDAOS_BUILD_HASH__}`
 const Catalogo = lazy(() => import('./pages/Catalogo'))
 const DtiCategoryPage = lazy(() => import('./pages/DtiCategoryPage'))
 const DTFPage = lazy(() => import('./pages/DTFPage'))
@@ -288,7 +287,7 @@ function PageLoadingFallback() {
   return (
     <section className="page-loading-shell" aria-live="polite">
       <div className="page-loading-mark" />
-      <p>Cargando seccion…</p>
+      <p>Cargando seccion...</p>
     </section>
   )
 }
@@ -437,7 +436,6 @@ function App() {
                 </a>
               ))}
             </div>
-            <p className="build-marker">{buildMarker}</p>
           </footer>
         </div>
       </LiveToastProvider>

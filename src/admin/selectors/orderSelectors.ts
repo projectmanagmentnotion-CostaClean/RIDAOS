@@ -208,7 +208,7 @@ function getCarrierLabel(method: AdminDeliveryMethod) {
       return 'Ruta propia'
     case 'courier':
     default:
-      return 'Courier mock'
+      return 'Mensajeria'
   }
 }
 
@@ -354,7 +354,7 @@ function buildHandoffTimeline(
     items.push({
       id: `${order.id}-handoff-shipped`,
       label: 'Salida confirmada',
-      detail: 'Tracking mock y ventana de entrega preparados.',
+      detail: 'Tracking y ventana de entrega preparados.',
       timestamp: order.createdAt,
       tone: 'default',
     })
@@ -386,7 +386,7 @@ function buildApprovalTimeline(
     {
       id: `${order.id}-approval-intake`,
       label: 'Artwork recibido',
-      detail: 'El pedido entra en la cola de approval mock.',
+      detail: 'El pedido entra en la cola de aprobacion interna.',
       timestamp: order.createdAt,
       tone: 'default',
     },
@@ -489,7 +489,7 @@ function buildServiceTimeline(
     items.push({
       id: `${order.id}-service-resolved`,
       label: 'Caso resuelto',
-      detail: 'El flujo de atencion queda cerrado a nivel mock.',
+      detail: 'El flujo de atencion queda cerrado a nivel operativo.',
       timestamp: order.createdAt,
       tone: 'success',
     })

@@ -9,7 +9,7 @@ export function CmsJsonEditor({ value, onChange, onApply }: CmsJsonEditorProps) 
     <article className="content-card cms-json-editor">
       <div className="cms-json-editor__head">
         <div>
-          <p className="section-label">JSON mock</p>
+          <p className="section-label">JSON local</p>
           <h3>Edicion avanzada segura</h3>
           <p>Aplica el JSON solo cuando quieras sustituir el draft del panel visual.</p>
         </div>

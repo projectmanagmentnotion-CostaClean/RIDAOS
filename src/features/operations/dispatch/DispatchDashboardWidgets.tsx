@@ -13,7 +13,7 @@ export default function DispatchDashboardWidgets({ data }: DispatchDashboardWidg
         <div className="admin-capacity-list">
           {data.readyForPickup.map((order) => (
             <div className="summary-row" key={order.id}>
-              <span>{order.id} · {order.customer}</span>
+              <span>{order.id} | {order.customer}</span>
               <strong>{deliveryMethodLabels[order.deliveryMethod]}</strong>
             </div>
           ))}
@@ -45,7 +45,7 @@ export default function DispatchDashboardWidgets({ data }: DispatchDashboardWidg
         <p className="section-label">Incidencias de entrega</p>
         <div className="admin-capacity-list">
           {data.incidents.length === 0 ? (
-            <p className="admin-inline-note">Sin incidencias activas en la cola mock.</p>
+            <p className="admin-inline-note">Sin incidencias activas en la cola de salida.</p>
           ) : (
             data.incidents.map((order) => (
               <div className="summary-row" key={order.id}>

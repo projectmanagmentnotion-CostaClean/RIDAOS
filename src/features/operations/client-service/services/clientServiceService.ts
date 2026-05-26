@@ -73,7 +73,7 @@ export async function getClientServiceDashboard(): Promise<ClientServiceDashboar
     kpis: [
       {
         key: 'open-tickets',
-        label: 'Open tickets',
+        label: 'Tickets abiertos',
         value: tickets.filter((ticket) => ticket.ticketStatus === 'open').length,
         note: 'Pedidos con seguimiento activo del cliente.',
       },
@@ -85,13 +85,13 @@ export async function getClientServiceDashboard(): Promise<ClientServiceDashboar
       },
       {
         key: 'sla-breached',
-        label: 'SLA breached',
+        label: 'SLA vencido',
         value: tickets.filter((ticket) => ticket.slaStatus === 'breached').length,
-        note: 'Casos fuera de ventana operativa mock.',
+        note: 'Casos fuera de ventana operativa.',
       },
       {
         key: 'pending-approvals',
-        label: 'Approvals pendientes',
+        label: 'Aprobaciones pendientes',
         value: tickets.filter((ticket) => ticket.approvalState === 'pending_review' || ticket.approvalState === 'customer_updated_artwork').length,
         note: 'Artes listas para revision y decision.',
       },

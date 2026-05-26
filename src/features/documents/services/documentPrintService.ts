@@ -123,7 +123,7 @@ export function renderDocumentHtml(documentDefinition: DocumentDefinition) {
           <footer class="document-footer">
             <span>${documentDefinition.metadata.id}</span>
             <span>${documentDefinition.metadata.reportType}</span>
-            <span>Mock/local only</span>
+            <span>Vista local</span>
           </footer>
         </article>
       </body>

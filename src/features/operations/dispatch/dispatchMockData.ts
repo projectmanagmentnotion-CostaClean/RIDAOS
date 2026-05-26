@@ -23,13 +23,13 @@ export const deliveryWindowLabels: Record<AdminDeliveryWindow, string> = {
 export const carrierCatalog = [
   { id: 'pickup-desk', label: 'Desk pickup', method: 'pickup' as const },
   { id: 'local-rider', label: 'Rider local', method: 'local_delivery' as const },
-  { id: 'courier-mock', label: 'Courier mock', method: 'courier' as const },
+  { id: 'courier-mock', label: 'Mensajeria', method: 'courier' as const },
   { id: 'own-route-van', label: 'Ruta propia', method: 'own_route' as const },
 ]
 
 export const deliveryMessageTemplates = {
   pickup_ready: 'Tu pedido {orderId} esta listo para recoger hoy en taller. Contacto: {contact}.',
-  shipped: 'Tu pedido {orderId} ha salido. Tracking mock: {tracking}. Ventana: {window}.',
+  shipped: 'Tu pedido {orderId} ha salido. Tracking: {tracking}. Ventana: {window}.',
   incident: 'Tu pedido {orderId} tiene una incidencia operativa. El equipo revisa el siguiente paso.',
   delayed: 'Tu pedido {orderId} necesita una replanificacion de entrega. Nueva ventana propuesta: {window}.',
   delivered: 'Tu pedido {orderId} figura como entregado. Gracias por confiar en RidaosPrint.',

@@ -13,7 +13,7 @@ export function CmsStudioSummary({ totalZones, modifiedZones, totalDocuments }: 
         <p>IDs disponibles en el mapa maestro.</p>
       </article>
       <article className="content-card admin-stat-card">
-        <span className="section-label">Mock editado</span>
+        <span className="section-label">Editado local</span>
         <strong>{modifiedZones}</strong>
         <p>Zonas ligadas a documentos con override en localStorage.</p>
       </article>

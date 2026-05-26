@@ -49,7 +49,7 @@ export function LiveToast({ toast, onDismiss }: LiveToastProps) {
             onClick={() => onDismiss(toast.id)}
             type="button"
           >
-            ×
+            x
           </button>
         ) : null}
       </div>

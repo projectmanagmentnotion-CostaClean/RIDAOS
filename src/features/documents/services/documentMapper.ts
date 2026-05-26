@@ -64,7 +64,7 @@ export function mapReportToDocument(report: ReportDocument): DocumentDefinition 
       generatedAt: report.generatedAt,
       reportType: report.type,
       exportTarget: mapTarget(report.relatedEntity),
-      versionLabel: 'mock-v1',
+      versionLabel: 'local-v1',
     },
     sections: [
       ...report.sections.map((section, index) => mapSection(section, index)),
@@ -75,9 +75,9 @@ export function mapReportToDocument(report: ReportDocument): DocumentDefinition 
           {
             id: 'signature-block',
             type: 'signature',
-            title: 'Firma operativa mock',
+            title: 'Firma operativa',
             signerLabel: 'Equipo interno RidaosPrint',
-            note: 'Documento local preparado para futura generacion PDF.',
+            note: 'Documento local preparado para exportacion documental.',
           },
         ],
       },

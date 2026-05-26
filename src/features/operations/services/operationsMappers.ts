@@ -282,7 +282,7 @@ export function buildOperationsDashboard(
             {
               id: 'ops-seed',
               title: 'Sistema operativo listo',
-              detail: 'No hay incidencias nuevas. La capa mock sigue preparada para datos reales.',
+              detail: 'No hay incidencias nuevas. El flujo operativo queda listo para seguimiento real.',
               timestamp: nowIso,
               tone: 'default',
             },

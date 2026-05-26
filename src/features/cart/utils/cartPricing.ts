@@ -12,7 +12,7 @@ export const SHIPPING_METHODS: ShippingMethod[] = [
   {
     id: 'standard',
     label: 'Envio peninsula',
-    description: 'Expedicion mock para pedidos listos y validados.',
+    description: 'Expedicion preparada para pedidos listos y validados.',
     price: 6.9,
     eta: '48-72h despues de producir',
   },

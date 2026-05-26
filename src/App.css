@@ -553,13 +553,6 @@ select {
   min-width: 0;
 }
 
-.build-marker {
-  margin: 0;
-  color: rgba(246, 239, 231, 0.58);
-  font-size: 0.78rem;
-  letter-spacing: 0.04em;
-}
-
 .nav-links {
   justify-content: flex-end;
   color: rgba(246, 239, 231, 0.78);
@@ -5846,7 +5839,7 @@ body.lenis {
 .live-toast-viewport {
   position: fixed;
   right: clamp(16px, 3vw, 28px);
-  bottom: clamp(16px, 3vw, 28px);
+  bottom: max(16px, calc(env(safe-area-inset-bottom, 0px) + 16px));
   z-index: 2147483000;
   display: grid;
   gap: 12px;
@@ -5941,6 +5934,7 @@ body.lenis {
   display: grid;
   place-items: center;
   padding: 20px;
+  overflow-y: auto;
   background: rgba(4, 4, 4, 0.56);
   backdrop-filter: blur(10px);
 }
@@ -6123,6 +6117,17 @@ body.lenis {
     left: 12px;
     right: 12px;
     width: auto;
+  }
+
+  .live-dialog-backdrop {
+    place-items: end center;
+    padding: 12px;
+  }
+
+  .live-dialog {
+    width: 100%;
+    padding: 20px;
+    border-radius: 22px;
   }
 }
 

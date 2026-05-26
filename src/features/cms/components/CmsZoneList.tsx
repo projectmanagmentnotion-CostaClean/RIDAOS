@@ -9,19 +9,19 @@ type CmsZoneListProps = {
 function getZoneTypeLabel(type: CmsDocumentType) {
   switch (type) {
     case 'section':
-      return 'Section'
+      return 'Seccion'
     case 'data':
-      return 'Data'
+      return 'Datos'
     case 'config':
-      return 'Config'
+      return 'Configuracion'
     case 'page':
-      return 'Page'
+      return 'Pagina'
     case 'admin':
-      return 'Admin'
+      return 'Administracion'
     case 'commerce':
-      return 'Commerce'
+      return 'Comercio'
     case 'motion':
-      return 'Motion'
+      return 'Movimiento'
     default:
       return type
   }
@@ -45,7 +45,7 @@ export function CmsZoneList({ zones, selectedZoneId, onSelect }: CmsZoneListProp
           <div className="admin-list-row-meta cms-zone-list__meta">
             <span className="status-badge status-muted">{getZoneTypeLabel(zone.type)}</span>
             <span className={`status-badge ${zone.status === 'modified' ? 'status-info' : 'status-muted'}`}>
-              {zone.status === 'modified' ? 'Mock editado' : 'Default'}
+              {zone.status === 'modified' ? 'Editado local' : 'Base'}
             </span>
           </div>
         </button>

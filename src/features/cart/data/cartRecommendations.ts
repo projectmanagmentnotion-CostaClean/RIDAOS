@@ -22,7 +22,7 @@ export const cartRecommendations: CartRecommendation[] = [
     title: 'Proyecto a medida',
     description: 'Rotulacion, montaje o piezas especiales con propuesta comercial guiada.',
     href: '#/solicitar-presupuesto',
-    priceLabel: 'Mock proposal',
+    priceLabel: 'Propuesta guiada',
     tag: 'Servicio',
   },
 ]

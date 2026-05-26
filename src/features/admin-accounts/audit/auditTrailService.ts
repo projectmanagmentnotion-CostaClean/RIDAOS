@@ -19,7 +19,7 @@ export function buildOrderAuditTrail(order: AdminOrder, override?: AdminOrderOve
       actorName: actor.name,
       module: 'orders',
       action: 'Pedido ingresado',
-      detail: 'El pedido entra en el sistema mock con trazabilidad operativa.',
+      detail: 'El pedido entra en el sistema interno con trazabilidad operativa.',
       timestamp: order.createdAt,
     },
     {
@@ -27,8 +27,8 @@ export function buildOrderAuditTrail(order: AdminOrder, override?: AdminOrderOve
       actorUserId: pickActor(override?.serviceOwnerUserId).id,
       actorName: pickActor(override?.serviceOwnerUserId).name,
       module: 'client_service',
-      action: 'Approval evaluada',
-      detail: `Estado actual del artwork: ${order.approvalState}.`,
+      action: 'Aprobacion revisada',
+      detail: `Estado actual del archivo: ${order.approvalState}.`,
       timestamp: order.createdAt,
     },
     {
@@ -37,7 +37,7 @@ export function buildOrderAuditTrail(order: AdminOrder, override?: AdminOrderOve
       actorName: actor.name,
       module: 'production',
       action: 'Planificacion operativa',
-      detail: `Slot ${order.scheduledDate} · ${order.scheduledWindow}.`,
+      detail: `Slot ${order.scheduledDate} | ${order.scheduledWindow}.`,
       timestamp: order.createdAt,
     },
     {
@@ -46,7 +46,7 @@ export function buildOrderAuditTrail(order: AdminOrder, override?: AdminOrderOve
       actorName: actor.name,
       module: 'dispatch',
       action: 'Estado de salida',
-      detail: `Shipping status mock: ${order.shippingStatus}.`,
+      detail: `Estado de salida: ${order.shippingStatus}.`,
       timestamp: order.createdAt,
     },
   ]

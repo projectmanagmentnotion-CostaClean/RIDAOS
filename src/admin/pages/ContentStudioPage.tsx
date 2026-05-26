@@ -17,13 +17,13 @@ import { useLiveToast } from '../../features/live-feedback'
 
 const filterOptions: Array<{ value: CmsDocumentType | 'all'; label: string }> = [
   { value: 'all', label: 'Todo' },
-  { value: 'section', label: 'Section' },
-  { value: 'data', label: 'Data' },
-  { value: 'config', label: 'Config' },
-  { value: 'page', label: 'Page' },
-  { value: 'admin', label: 'Admin' },
-  { value: 'commerce', label: 'Commerce' },
-  { value: 'motion', label: 'Motion' },
+  { value: 'section', label: 'Seccion' },
+  { value: 'data', label: 'Datos' },
+  { value: 'config', label: 'Configuracion' },
+  { value: 'page', label: 'Pagina' },
+  { value: 'admin', label: 'Administracion' },
+  { value: 'commerce', label: 'Comercio' },
+  { value: 'motion', label: 'Movimiento' },
 ]
 
 /**
@@ -157,7 +157,7 @@ function ContentStudioPage() {
   return (
     <AdminShell
       description="Editor interno de contenido para revisar zonas, pricing, catalogo, motion y contenido desde una copia local."
-      title="Content Studio"
+      title="Estudio de contenido"
     >
       <CmsStudioSummary modifiedZones={modifiedZones} totalDocuments={documents.length} totalZones={allZones.length} />
 

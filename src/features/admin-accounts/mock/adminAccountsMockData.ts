@@ -20,43 +20,43 @@ export const adminMockPermissions: AdminMockPermission[] = [
 export const adminMockRoles: AdminRoleDefinition[] = [
   {
     key: 'owner',
-    label: 'Owner',
+    label: 'Direccion',
     description: 'Vision completa del sistema y aprobacion final de workflows criticos.',
     permissions: [...adminMockPermissions],
   },
   {
     key: 'admin',
-    label: 'Admin',
-    description: 'Gestion operativa transversal del mock system.',
+    label: 'Administracion',
+    description: 'Gestion operativa transversal del sistema.',
     permissions: ['view_orders', 'update_orders', 'approve_artwork', 'manage_schedule', 'manage_dispatch', 'resolve_tickets', 'edit_content_mock'],
   },
   {
     key: 'production_lead',
-    label: 'Production lead',
+    label: 'Responsable de produccion',
     description: 'Coordina planning, QC y bloqueos de produccion.',
     permissions: ['view_orders', 'update_orders', 'approve_artwork', 'manage_schedule', 'manage_dispatch'],
   },
   {
     key: 'designer',
-    label: 'Designer',
+    label: 'Diseno',
     description: 'Revision de artes, cambios y aprobacion tecnica.',
     permissions: ['view_orders', 'approve_artwork'],
   },
   {
     key: 'customer_service',
-    label: 'Customer service',
-    description: 'Gestion de tickets, SLA y comunicaciones mock.',
+    label: 'Atencion al cliente',
+    description: 'Gestion de tickets, SLA y comunicaciones operativas.',
     permissions: ['view_orders', 'resolve_tickets'],
   },
   {
     key: 'dispatch_operator',
-    label: 'Dispatch operator',
+    label: 'Despacho',
     description: 'Packing, handoff y trazabilidad de salida.',
     permissions: ['view_orders', 'manage_dispatch'],
   },
   {
     key: 'viewer',
-    label: 'Viewer',
+    label: 'Consulta',
     description: 'Lectura interna sin capacidad de cambio.',
     permissions: ['view_orders'],
   },
@@ -66,7 +66,7 @@ export const adminMockUsers: AdminMockUser[] = [
   {
     id: 'user-owner-lucia',
     name: 'Lucia Costa',
-    email: 'lucia@ridaosprint.mock',
+    email: 'lucia@ridaosprint.local',
     role: 'owner',
     permissions: adminMockRoles.find((role) => role.key === 'owner')!.permissions,
     status: 'active',
@@ -75,7 +75,7 @@ export const adminMockUsers: AdminMockUser[] = [
   {
     id: 'user-admin-marco',
     name: 'Marco Ridaos',
-    email: 'marco@ridaosprint.mock',
+    email: 'marco@ridaosprint.local',
     role: 'admin',
     permissions: adminMockRoles.find((role) => role.key === 'admin')!.permissions,
     status: 'active',
@@ -84,16 +84,16 @@ export const adminMockUsers: AdminMockUser[] = [
   {
     id: 'user-prod-sergio',
     name: 'Sergio Ruiz',
-    email: 'sergio@ridaosprint.mock',
+    email: 'sergio@ridaosprint.local',
     role: 'production_lead',
     permissions: adminMockRoles.find((role) => role.key === 'production_lead')!.permissions,
     status: 'busy',
-    workloadLabel: 'Cola DTF y QC',
+    workloadLabel: 'Cola DTI y QC',
   },
   {
     id: 'user-design-laura',
     name: 'Laura Vidal',
-    email: 'laura@ridaosprint.mock',
+    email: 'laura@ridaosprint.local',
     role: 'designer',
     permissions: adminMockRoles.find((role) => role.key === 'designer')!.permissions,
     status: 'active',
@@ -102,7 +102,7 @@ export const adminMockUsers: AdminMockUser[] = [
   {
     id: 'user-service-ines',
     name: 'Ines Mora',
-    email: 'ines@ridaosprint.mock',
+    email: 'ines@ridaosprint.local',
     role: 'customer_service',
     permissions: adminMockRoles.find((role) => role.key === 'customer_service')!.permissions,
     status: 'active',
@@ -111,7 +111,7 @@ export const adminMockUsers: AdminMockUser[] = [
   {
     id: 'user-dispatch-noa',
     name: 'Noa Sanz',
-    email: 'noa@ridaosprint.mock',
+    email: 'noa@ridaosprint.local',
     role: 'dispatch_operator',
     permissions: adminMockRoles.find((role) => role.key === 'dispatch_operator')!.permissions,
     status: 'offline',
@@ -122,32 +122,32 @@ export const adminMockUsers: AdminMockUser[] = [
 export const approvalChainBlueprints: Record<AdminApprovalChainKey, Omit<AdminApprovalChain, 'steps'>> = {
   artwork_approval: {
     key: 'artwork_approval',
-    label: 'Artwork approval',
+    label: 'Aprobacion de archivo',
     currentStatus: 'active',
   },
   urgent_change_request: {
     key: 'urgent_change_request',
-    label: 'Urgent change request',
+    label: 'Cambio urgente',
     currentStatus: 'pending',
   },
   production_quality_hold: {
     key: 'production_quality_hold',
-    label: 'Production quality hold',
+    label: 'Bloqueo de calidad',
     currentStatus: 'pending',
   },
   delivery_incident: {
     key: 'delivery_incident',
-    label: 'Delivery incident',
+    label: 'Incidencia de entrega',
     currentStatus: 'pending',
   },
   refund_manual_adjustment_mock: {
     key: 'refund_manual_adjustment_mock',
-    label: 'Refund / manual adjustment mock',
+    label: 'Ajuste manual',
     currentStatus: 'pending',
   },
   content_publish_mock: {
     key: 'content_publish_mock',
-    label: 'Content publish mock',
+    label: 'Publicacion de contenido',
     currentStatus: 'pending',
   },
 }

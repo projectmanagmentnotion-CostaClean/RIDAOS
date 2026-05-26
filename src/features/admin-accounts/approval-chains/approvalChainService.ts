@@ -43,7 +43,7 @@ function buildSteps(
         requiredRole: 'dispatch_operator',
         assignedUserId: userForRole('dispatch_operator').id,
         status: order.deliveryIncident ? 'active' : 'pending',
-        notes: 'Comprobar handoff y estado del carrier mock.',
+        notes: 'Comprobar handoff y estado de la mensajeria.',
         timestamp: now,
       },
       {
@@ -74,7 +74,7 @@ function buildSteps(
       requiredRole: role,
       assignedUserId: userForRole(role).id,
       status: 'pending',
-      notes: 'Cadena mock pendiente de validacion.',
+      notes: 'Cadena pendiente de validacion.',
       timestamp: now,
     },
   ]

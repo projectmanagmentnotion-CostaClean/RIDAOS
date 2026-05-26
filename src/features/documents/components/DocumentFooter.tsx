@@ -9,7 +9,7 @@ export function DocumentFooter({ metadata }: DocumentFooterProps) {
     <footer className="document-footer">
       <span>{metadata.id}</span>
       <span>{metadata.reportType}</span>
-      <span>Mock/local only</span>
+      <span>Vista local</span>
     </footer>
   )
 }

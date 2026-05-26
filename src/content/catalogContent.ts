@@ -2,38 +2,38 @@ export const catalogContent = {
   hero: {
     fallbackEyebrow: 'Catalogo RidaosPrint',
     fallbackDescription:
-      'Compra directa para DTI y productos cerrados. Propuesta personalizada para rotulacion, gran formato y proyectos que necesitan cobertura, materiales o instalacion.',
-    title: 'DTI para comprar rapido. Rotulacion para hacerse ver de verdad.',
-    titleLines: ['DTI', 'PARA COMPRAR RAPIDO', 'ROTULACION', 'PARA HACERSE VER'],
+      'Produccion visual para marcas que necesitan comprar rapido, rotular con presencia y resolver impresion con criterio tecnico desde el primer paso.',
+    title: 'DTI para producir. Rotulacion para hacerse ver.',
+    titleLines: ['DTI', 'PARA PRODUCIR', 'ROTULACION', 'PARA HACERSE VER'],
     stickerWords: ['directa', 'rotulacion'],
   },
   featured: {
-    label: 'Producto destacado',
-    titleSuffix: 'listo para configurar y comprar.',
-    secondaryCtaLabel: 'Ver guia de archivos',
+    label: 'Entrada principal',
+    titleSuffix: 'con configuracion directa y revision tecnica antes de producir.',
+    secondaryCtaLabel: 'Preparar archivo',
   },
   visualPanel: {
-    eyebrow: 'Catalogo visual',
-    title: 'Una oferta clara antes de entrar en detalle.',
+    eyebrow: 'Escaparate visual',
+    title: 'Explora por familia y entra al producto correcto sin rodeos.',
     description:
-      'Compra directa donde el precio ya esta definido y propuesta personalizada cuando medidas, acabados o instalacion cambian el proyecto.',
+      'DTI, rotulacion, textil, pegatinas, tarjetas, flyers y vinilo impreso ordenados para decidir rapido y comprar con una lectura clara.',
   },
   flowPanel: {
-    label: 'Como comprar',
-    title: 'Empieza por el flujo que mejor encaje.',
+    label: 'Como trabajamos',
+    title: 'Un flujo pensado para decidir, revisar y producir con calma.',
     bullets: [
-      'DTI por metro para configurar archivo, metraje y urgencia en un solo paso.',
-      'Rotulacion como categoria principal para furgonetas, flotas, escaparates y vehiculos de empresa.',
-      'Productos con tramos claros para preparar el carrito sin perder tiempo.',
-      'Servicios a medida con referencia inicial antes de pedir una propuesta comercial seria.',
+      'Empieza por la familia que mejor encaje con tu proyecto y entra despues al producto principal.',
+      'Configura materiales, acabados y cantidad solo dentro de la pagina especifica del producto.',
+      'Sube tu archivo cuando lo tengas listo o pide ayuda antes de cerrar la solicitud.',
+      'Revisamos lo importante antes de producir para que el resultado llegue limpio a taller o instalacion.',
     ],
   },
   categorySection: {
-    eyebrow: 'Categorias',
-    title: 'Lectura rapida de la oferta, con rotulacion en primera linea.',
+    eyebrow: 'Familias principales',
+    title: 'Una lectura visual de la oferta, con DTI y rotulacion en primera linea.',
   },
   productsSection: {
     eyebrow: 'Servicios y productos',
-    title: 'Compra, configura o solicita una propuesta.',
+    title: 'Compra directa cuando todo esta claro. Propuesta guiada cuando el proyecto pide mas.',
   },
 }

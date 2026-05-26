@@ -45,8 +45,8 @@ export function ProductVisualHero({ hero, primaryHref, secondaryHref }: ProductV
         <div className="product-visual-hero__orb" aria-hidden="true" />
         <div className="product-visual-hero__asset-card">
           <p className="section-label">{hero.asset.label}</p>
-          <strong>Visual principal del producto</strong>
-          <span>{hero.asset.status === 'required' ? 'Listo para produccion' : hero.asset.status === 'mock' ? 'Visual en uso' : 'Visual recomendado'}</span>
+          <strong>Referencia visual del producto</strong>
+          <span>{hero.asset.status === 'required' ? 'Acabado principal' : hero.asset.status === 'mock' ? 'Visual de referencia' : 'Inspiracion recomendada'}</span>
           <p>{hero.asset.purpose}</p>
         </div>
       </div>

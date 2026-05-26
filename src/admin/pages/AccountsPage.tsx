@@ -22,11 +22,11 @@ function AccountsPage() {
 
   return (
     <AdminShell
-      description="Usuarios internos mock, roles, permisos visuales, ownership y trazabilidad administrativa preparada para auth real futura."
+      description="Usuarios internos, roles, permisos visuales, ownership y trazabilidad administrativa en una sola vista."
       title="Accounts, roles y approvals"
     >
       {!dashboard ? (
-        <EmptyAdminState title="Cargando cuentas mock" description="Preparando usuarios, roles y approval chains." />
+        <EmptyAdminState title="Cargando cuentas" description="Preparando usuarios, roles y cadenas de aprobacion." />
       ) : (
         <>
           <AdminSection
@@ -38,7 +38,7 @@ function AccountsPage() {
 
           <div className="admin-two-column">
             <AdminSection
-              description="Permisos visuales mock antes de conectar auth y ACL reales."
+              description="Permisos visibles y roles operativos para organizar accesos y responsabilidades."
               title="Roles y permisos"
             >
               <AdminRolesMatrix roles={dashboard.roles} />
@@ -53,7 +53,7 @@ function AccountsPage() {
           </div>
 
           <AdminSection
-            description="Timeline de auditoria mock sobre cambios internos, ownership y acciones operativas."
+            description="Timeline de auditoria sobre cambios internos, ownership y acciones operativas."
             title="Audit trail"
           >
             <AdminAuditTrailList entries={dashboard.recentAudit} />

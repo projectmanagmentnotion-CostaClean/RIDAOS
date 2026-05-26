@@ -13,7 +13,7 @@ export const reportDefinitions: ReportDefinition[] = [
   {
     id: 'PRODUCTION_SHEET',
     label: 'Production sheet',
-    description: 'Hoja de produccion mock con cola, maquina, slot y observaciones de taller.',
+    description: 'Hoja de produccion con cola, maquina, slot y observaciones de taller.',
     relatedEntity: 'production',
     sections: ['Queue', 'Machine', 'Checklist'],
     availableFormats: ['json', 'csv', 'print_view', 'pdf'],
@@ -49,7 +49,7 @@ export const reportDefinitions: ReportDefinition[] = [
   {
     id: 'DELIVERY_HANDOFF_REPORT',
     label: 'Delivery handoff report',
-    description: 'Documento operativo mock para pickup, tracking y entrega.',
+    description: 'Documento operativo para pickup, tracking y entrega.',
     relatedEntity: 'dispatch',
     sections: ['Handoff', 'Tracking', 'Ventana'],
     availableFormats: ['json', 'csv', 'print_view', 'pdf'],
@@ -76,7 +76,7 @@ export const reportDefinitions: ReportDefinition[] = [
   {
     id: 'ADMIN_KPI_REPORT',
     label: 'Admin KPI report',
-    description: 'Resumen ejecutivo mock con KPIs de operaciones, service, capacity y dispatch.',
+    description: 'Resumen ejecutivo con KPIs de operaciones, service, capacity y dispatch.',
     relatedEntity: 'admin_kpi',
     sections: ['KPIs', 'Urgentes', 'Actividad'],
     availableFormats: ['json', 'csv', 'print_view', 'pdf'],

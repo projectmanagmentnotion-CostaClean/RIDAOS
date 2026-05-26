@@ -26,7 +26,7 @@ export default function DispatchBoard({ board, onAdvanceStatus, onMarkPacked, on
                 <strong>{order.id} · {order.customer}</strong>
                 <p>{deliveryMethodLabels[order.deliveryMethod]} · {order.carrierLabel}</p>
                 <small>{order.deliveryWindow} · {packingStatusLabels[order.packingStatus]}</small>
-                <small>{order.trackingCode || 'Sin tracking mock'}</small>
+                <small>{order.trackingCode || 'Tracking pendiente'}</small>
                 <div className="catalog-card-actions">
                   <button className="action-button action-button-muted" onClick={() => void onMarkPacked(order.id)} type="button">
                     Marcar embalado

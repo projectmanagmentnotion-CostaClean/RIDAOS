@@ -15,12 +15,12 @@ export const pricingContent = {
   },
   checkout: {
     heroEyebrow: 'Checkout',
-    heroTitle: 'Revision, entrega y pago en un solo paso.',
+    heroTitle: 'Revision final del pedido en un solo paso.',
     heroDescription:
-      'Confirma datos, revisa la entrega y deja el pedido listo para validacion final.',
-    reviewTitle: 'Revision final antes de registrar',
+      'Confirma datos, revisa la entrega y deja la solicitud lista para validacion comercial y tecnica.',
+    reviewTitle: 'Revision final antes de enviar',
     shippingTitle: 'Entrega',
-    paymentTitle: 'Forma de pago',
-    successTitle: 'Pedido registrado correctamente',
+    paymentTitle: 'Cierre del pedido',
+    successTitle: 'Solicitud recibida correctamente',
   },
 }

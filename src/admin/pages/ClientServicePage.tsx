@@ -35,7 +35,7 @@ function ClientServicePage() {
 
   return (
     <AdminShell
-      description="Mesa interna de atencion al cliente, approvals, SLA y escalado mock preparada para migrar a real data."
+      description="Mesa interna de atencion al cliente, approvals, SLA y escalado con lectura operativa unificada."
       title="Client service y approvals"
     >
       {dashboard ? (
@@ -137,7 +137,7 @@ function ClientServicePage() {
       <div className="admin-two-column">
         <AdminSection description="Tickets con approval, SLA y recommendation de respuesta." title="Tickets y approvals">
           {tickets.length === 0 ? (
-            <EmptyAdminState title="Sin tickets para estos filtros" description="Prueba otra combinacion para recuperar la cola de service mock." />
+            <EmptyAdminState title="Sin tickets para estos filtros" description="Prueba otra combinacion para recuperar la cola de trabajo." />
           ) : (
             <ClientServiceTicketList tickets={tickets} />
           )}
@@ -151,14 +151,14 @@ function ClientServicePage() {
       <div className="admin-two-column">
         {clientServiceReport ? (
           <AdminSection
-            description="Resumen exportable mock del ticket, SLA, approval y escalado actual."
+            description="Resumen exportable del ticket, SLA, approval y escalado actual."
             title="Client service report"
           >
             <ReportPreviewPanel report={clientServiceReport} title="REPORT_EXPORTS" />
           </AdminSection>
         ) : null}
 
-        <AdminSection description="Previews premium de mensajes, sin envio real." title="Response templates">
+        <AdminSection description="Previews premium de mensajes listos para adaptar y enviar desde operativa." title="Response templates">
           {messagePreviews.length ? (
             <ClientServiceTemplatePreviewList items={messagePreviews} />
           ) : (

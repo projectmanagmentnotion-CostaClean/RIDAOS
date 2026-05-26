@@ -10,7 +10,7 @@ export function PrepressAdminReviewPanel({ summary }: PrepressAdminReviewPanelPr
     <div className="admin-upload-note prepress-admin-panel">
       <div className="order-card-head">
         <div>
-          <strong>PREPRESS_ADMIN_REVIEW</strong>
+          <strong>Revision de preprensa</strong>
           <p>{summary.productionImpactSummary}</p>
         </div>
         <PrepressScoreBadge summary={summary} />
@@ -21,8 +21,8 @@ export function PrepressAdminReviewPanel({ summary }: PrepressAdminReviewPanelPr
           <strong>{summary.suggestedActionLabel}</strong>
         </div>
         <div className="summary-row">
-          <span>Template</span>
-          <strong>{summary.templateRecommendation ?? 'Sin plantilla específica'}</strong>
+          <span>Plantilla</span>
+          <strong>{summary.templateRecommendation ?? 'Sin plantilla especifica'}</strong>
         </div>
       </div>
       <div className="admin-list-card">
@@ -42,3 +42,4 @@ export function PrepressAdminReviewPanel({ summary }: PrepressAdminReviewPanelPr
     </div>
   )
 }
+

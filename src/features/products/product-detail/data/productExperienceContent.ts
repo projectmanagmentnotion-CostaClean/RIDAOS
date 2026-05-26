@@ -40,7 +40,7 @@ export const productExperienceContent: Record<string, ProductExperienceConfig> =
         bullets: [
           'Escala por volumen sin ocultar el siguiente paso comercial.',
           'Pensada para prendas base, merchandising y activaciones.',
-          'Preparada para crecer con variantes y acabados sin perder claridad.',
+          'Mantiene la claridad incluso cuando cambian prendas, variantes y acabados.',
         ],
       },
     ],
@@ -129,7 +129,7 @@ export const productExperienceContent: Record<string, ProductExperienceConfig> =
         bullets: [
           'Tramos legibles sin tablas dispersas.',
           'Archivo opcional cuando todavia estas cerrando el diseño.',
-          'Lista para sumar acabados editoriales sin perder lectura comercial.',
+          'Pensada para sumar acabados editoriales sin perder lectura comercial.',
         ],
       },
     ],
@@ -218,7 +218,7 @@ export const productExperienceContent: Record<string, ProductExperienceConfig> =
         bullets: [
           'Base reutilizable para vinilos, rigid media o materiales tecnicos.',
           'Pensada para sumar muestras visuales y before/after sin perder claridad de compra.',
-          'Compatible con pricing por m2 y nuevas variantes de soporte.',
+          'Permite comparar soportes y acabados con una lectura directa del precio estimado.',
         ],
       },
     ],
@@ -391,8 +391,8 @@ export const productExperienceContent: Record<string, ProductExperienceConfig> =
       {
         id: 'signage-story-1',
         eyebrow: 'Storytelling',
-        title: 'Una base escalable para gran formato, no solo un formulario de presupuesto.',
-        description: 'Esta capa permite combinar referencias visuales, proceso y comparativas sin rehacer cada servicio a mano.',
+        title: 'Una presentacion clara para gran formato y proyectos a medida.',
+        description: 'La experiencia combina referencias visuales, proceso y comparativas para presentar el servicio con mas claridad.',
         bullets: [
           'Pensada para lonas, paneles y proyectos de instalación.',
           'Preparada para antes/después y overlays de medidas.',
@@ -486,7 +486,7 @@ export const productExperienceContent: Record<string, ProductExperienceConfig> =
           'La experiencia separa visual, configuracion y propuesta para que la lectura siga siendo clara incluso en proyectos de cobertura amplia.',
         bullets: [
           'Valida para furgonetas, vehiculos de empresa, escaparates y flotas comerciales.',
-          'Lista para sumar proyectos reales y bloques visuales mas editoriales sin rehacer la base.',
+          'Pensada para mostrar proyectos reales y una lectura visual mas editorial.',
           'Mantiene clara la diferencia entre rango orientativo, revision tecnica y propuesta final.',
         ],
       },
@@ -577,7 +577,7 @@ export const productExperienceContent: Record<string, ProductExperienceConfig> =
         bullets: [
           'Base válida para neones de interior, eventos y retail.',
           'Pensada para sumar visuales luminosos y referencias de acabado con control.',
-          'Mantiene el producto indexable y editable por zonas.',
+          'Mantiene una lectura clara del proyecto incluso cuando cambia el alcance.',
         ],
       },
     ],
@@ -629,3 +629,4 @@ export const productExperienceContent: Record<string, ProductExperienceConfig> =
     ],
   },
 }
+

@@ -12,7 +12,7 @@ function ClientServiceTemplatePreviewList({ items }: ClientServiceTemplatePrevie
           <div className="admin-message-preview-head">
             <strong>{item.label}</strong>
             <span className={`status-badge status-${item.tone === 'warning' ? 'warning' : item.tone === 'success' ? 'success' : 'info'}`}>
-              Mock
+              Listo
             </span>
           </div>
           <p className="admin-inline-note">{item.subject}</p>

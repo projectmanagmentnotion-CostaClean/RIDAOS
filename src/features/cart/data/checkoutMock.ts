@@ -1,7 +1,7 @@
 export const checkoutSteps = [
   { id: 'review', label: 'Revision' },
   { id: 'shipping', label: 'Entrega' },
-  { id: 'payment', label: 'Pago' },
+  { id: 'payment', label: 'Confirmacion' },
   { id: 'success', label: 'Confirmacion' },
 ] as const
 
@@ -22,3 +22,4 @@ export const paymentMocks = [
     description: 'Pensado para clientes recurrentes o pedidos con doble aprobacion.',
   },
 ] as const
+

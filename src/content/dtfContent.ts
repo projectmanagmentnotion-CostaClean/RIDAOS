@@ -55,7 +55,7 @@ export const dtfPageContent = {
     },
     {
       label: 'Despues del carrito',
-      title: 'El checkout registra la solicitud, no la fabricacion automatica.',
+      title: 'La solicitud queda lista para revision antes de producir.',
       items: [
         'Revisamos archivo, metraje y observaciones antes de confirmar el pedido.',
         'La produccion y el pago se confirman despues de la comprobacion tecnica.',
@@ -65,9 +65,9 @@ export const dtfPageContent = {
   ],
   motionPanel: {
     eyebrow: 'Vista del pedido',
-    title: 'Movimiento visual al servicio del configurador.',
+    title: 'Una lectura visual que acompana cada decision.',
     description:
-      'La capa visual acompana el recorrido sin interferir con campos, enlaces ni botones del configurador.',
+      'La pieza visual acompana el recorrido sin distraer del metraje, el archivo ni la configuracion final.',
   },
   preparationPanel: {
     eyebrow: 'Preparacion',
@@ -83,10 +83,10 @@ export const dtfPageContent = {
     title: 'Del archivo al pedido en cinco pasos.',
   },
   seoTitles: {
-    why: 'Por que este flujo vende mejor.',
+    why: 'Por que elegir DTI por metro.',
     useCases: 'Cuando usarlo.',
     trust: 'Confianza para cerrar el pedido.',
-    objections: 'Objeciones antes de enviar archivo.',
+    objections: 'Dudas antes de enviar el archivo.',
     faq: 'Dudas frecuentes del configurador.',
   },
   trust: {

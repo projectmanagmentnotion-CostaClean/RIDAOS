@@ -350,7 +350,7 @@ function OrderDetailPage() {
                 </div>
                 <div className="summary-row">
                   <span>Tracking</span>
-                  <strong>{order.trackingCode || 'Sin tracking mock'}</strong>
+                  <strong>{order.trackingCode || 'Tracking pendiente'}</strong>
                 </div>
                 <div className="summary-row">
                   <span>Ticket</span>
@@ -384,7 +384,7 @@ function OrderDetailPage() {
                     <p>{getOrderItemSummary(item).join(' · ')}</p>
                     <small>{item.artwork.fileName}</small>
                     <p className="admin-inline-note">
-                      Archivo recibido para comprobacion. {item.artwork.notes || 'Pendiente de dejar comentario interno.'}
+                      Archivo recibido para comprobacion. {item.artwork.notes || 'Pendiente de comentario interno.'}
                     </p>
                     {item.artwork.previewSummary ? <PrepressAdminReviewPanel summary={item.artwork.previewSummary} /> : null}
                   </div>
@@ -406,7 +406,7 @@ function OrderDetailPage() {
           <div className="admin-two-column">
             {orderSummaryReport ? (
               <AdminSection
-                description="Resumen exportable mock del pedido con lectura operativa y comercial."
+                description="Resumen exportable del pedido con lectura operativa y comercial."
                 title="Order summary"
               >
                 <ReportPreviewPanel report={orderSummaryReport} title="REPORT_ORDER_SUMMARY" />
@@ -414,7 +414,7 @@ function OrderDetailPage() {
             ) : null}
             {handoffReport ? (
               <AdminSection
-                description="Documento de handoff mock para salida, tracking y entrega."
+                description="Documento de handoff para salida, tracking y entrega."
                 title="Delivery handoff"
               >
                 <ReportPreviewPanel report={handoffReport} title="REPORT_EXPORTS" />
@@ -423,7 +423,7 @@ function OrderDetailPage() {
           </div>
 
           <AdminSection
-            description="Pipeline visual reusable para mover el pedido por arte, produccion y salida."
+            description="Pipeline visual para mover el pedido por arte, produccion y salida."
             title="Pipeline de produccion"
           >
             <article className="content-card admin-detail-card">
@@ -512,7 +512,7 @@ function OrderDetailPage() {
           </AdminSection>
 
           <AdminSection
-            description="Asigna operador, maquina y ventana mock con persistencia local para preparar el salto a scheduling real."
+            description="Asigna operador, maquina y ventana para coordinar la preparacion del pedido."
             title="Asignacion operativa"
           >
             <article className="content-card admin-detail-card">
@@ -609,7 +609,7 @@ function OrderDetailPage() {
           </AdminSection>
 
           <AdminSection
-            description="Ownership, role requerido y cadena de aprobacion mock antes de conectar permisos reales."
+            description="Ownership, rol requerido y cadena de aprobacion en una sola vista operativa."
             title="Ownership y approval chain"
           >
             <article className="content-card admin-detail-card">
@@ -654,7 +654,7 @@ function OrderDetailPage() {
                 </label>
               </div>
               <div className="admin-upload-note">
-                <strong>Approval required</strong>
+                <strong>Aprobaciones requeridas</strong>
                 <p>{order.requiredApprovalChainKeys.join(' · ')}</p>
               </div>
               <AdminApprovalChainsPanel chains={order.approvalChains} />
@@ -662,7 +662,7 @@ function OrderDetailPage() {
           </AdminSection>
 
           <AdminSection
-            description="Panel premium de atencion al cliente, approvals, SLA e incidencias listo para migrar a datos reales."
+            description="Panel premium de atencion al cliente, approvals, SLA e incidencias con lectura operativa completa."
             title="Client service panel"
           >
             <article className="content-card admin-detail-card">
@@ -816,24 +816,24 @@ function OrderDetailPage() {
                 </button>
               </div>
               <div className="admin-upload-note">
-                <strong>Recommendation</strong>
+                <strong>Recomendacion</strong>
                 <p>{clientServiceMeta?.escalationRecommendation}</p>
               </div>
             </article>
           </AdminSection>
 
           <AdminSection
-            description="Historial mock de approval e incidencia para mantener trazabilidad operativa."
+            description="Historial de approvals e incidencias para mantener trazabilidad operativa."
             title="Approvals e incident timeline"
           >
             <article className="content-card admin-detail-card">
               <div className="summary-stack">
                 <div className="admin-upload-note">
-                  <strong>Approval history</strong>
+                  <strong>Historial de aprobaciones</strong>
                   <TimelineBlock items={order.approvalTimeline} />
                 </div>
                 <div className="admin-upload-note">
-                  <strong>Incident timeline</strong>
+                  <strong>Historial de incidencias</strong>
                   <TimelineBlock items={order.serviceTimeline} />
                 </div>
               </div>
@@ -841,20 +841,20 @@ function OrderDetailPage() {
           </AdminSection>
 
           <AdminSection
-            description="Templates premium de respuesta al cliente. Solo preview local, sin envios reales."
+            description="Templates premium de respuesta al cliente para revisar y adaptar antes del envio."
             title="Response templates"
           >
             <ClientServiceTemplatePreviewList items={clientServiceTemplates} />
           </AdminSection>
 
           <AdminSection
-            description="Prepara embalaje, pickup, salida y handoff con persistencia local mock."
+            description="Prepara embalaje, pickup, salida y handoff con lectura operativa continua."
             title="Despacho y entrega"
           >
             <article className="content-card admin-detail-card">
               <div className="configurator-form">
                 <label className="field-group">
-                  <span className="field-label">Shipping status</span>
+                  <span className="field-label">Estado de salida</span>
                   <select
                     className="form-input"
                     onChange={async (event) => {
@@ -922,7 +922,7 @@ function OrderDetailPage() {
                   </select>
                 </label>
                 <label className="field-group">
-                  <span className="field-label">Tracking mock</span>
+                  <span className="field-label">Tracking</span>
                   <input
                     className="form-input"
                     onChange={async (event) => {
@@ -933,7 +933,7 @@ function OrderDetailPage() {
                   />
                 </label>
                 <label className="field-group">
-                  <span className="field-label">Carrier</span>
+                  <span className="field-label">Transportista</span>
                   <input
                     className="form-input"
                     onChange={async (event) => {
@@ -970,7 +970,7 @@ function OrderDetailPage() {
                 <button
                   className="action-button action-button-muted"
                   onClick={async () => {
-                    await patchAdminOrderDispatch(order.id, { deliveryIncident: 'Incidencia mock registrada en handoff.' })
+                    await patchAdminOrderDispatch(order.id, { deliveryIncident: 'Incidencia registrada en handoff.' })
                     await refreshOrder()
                     warning('Incidencia registrada', 'El pedido queda marcado para seguimiento de entrega.')
                   }}
@@ -987,7 +987,7 @@ function OrderDetailPage() {
           </AdminSection>
 
           <AdminSection
-            description="Preview local de mensajes al cliente. No envia email ni WhatsApp reales."
+            description="Vista previa de mensajes al cliente para validar tono y contenido."
             title="Mensajes al cliente"
           >
             <DeliveryMessagePreviewCard items={deliveryMessages} />
@@ -1050,7 +1050,7 @@ function OrderDetailPage() {
           </AdminSection>
 
           <AdminSection
-            description="Trazabilidad administrativa mock: ownership, cambios de estado y acciones internas."
+            description="Trazabilidad administrativa: ownership, cambios de estado y acciones internas."
             title="Audit trail"
           >
             <article className="content-card admin-detail-card">
@@ -1105,3 +1105,4 @@ function OrderDetailPage() {
 }
 
 export default OrderDetailPage
+

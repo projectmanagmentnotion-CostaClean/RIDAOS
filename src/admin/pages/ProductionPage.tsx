@@ -61,13 +61,13 @@ function ProductionPage() {
 
   return (
     <AdminShell
-      description="Pipeline operativo mock desde triage, impresion y control de calidad hasta salida."
+      description="Pipeline operativo desde triage, impresion y control de calidad hasta salida."
       title="Produccion y pipeline"
     >
       <div className="admin-stat-grid">
         <AdminStatCard label="Revision arte" note="Pedidos bloqueados por archivo o aprobacion." value={stats?.artworkPending ?? '...'} />
         <AdminStatCard label="Label pendiente" note="Pedidos listos sin expedicion cerrada." value={stats?.labelPending ?? '...'} />
-        <AdminStatCard label="Vencidos" note="Pedidos que ya superan la fecha objetivo mock." value={stats?.overdue ?? '...'} />
+        <AdminStatCard label="Vencidos" note="Pedidos que ya superan la fecha objetivo prevista." value={stats?.overdue ?? '...'} />
         <AdminStatCard label="En impresion" note="Trabajos activos en cola productiva." value={stats?.byStage.printing ?? '...'} />
       </div>
 
@@ -139,7 +139,7 @@ function ProductionPage() {
 
       {schedule ? (
         <AdminSection
-          description="Board semanal mock con slots por maquina, entregas previstas y conflictos de capacidad."
+          description="Board semanal con slots por maquina, entregas previstas y conflictos de capacidad."
           title="Scheduling board"
         >
           <SchedulingBoard board={schedule} />
@@ -148,7 +148,7 @@ function ProductionPage() {
 
       {dispatchBoard ? (
         <AdminSection
-          description="Board de packing, pickup, entrega e incidencias con acciones mock de handoff."
+          description="Board de packing, pickup, entrega e incidencias con acciones de handoff."
           title="Dispatch board"
         >
           <DispatchBoard
@@ -174,7 +174,7 @@ function ProductionPage() {
               success('Pedido embalado', `El pedido ${orderId} ya queda listo para coordinar la salida.`)
             }}
             onRegisterIncident={async (orderId) => {
-              await patchAdminOrderDispatch(orderId, { deliveryIncident: 'Incidencia mock pendiente de resolver con cliente.' })
+              await patchAdminOrderDispatch(orderId, { deliveryIncident: 'Incidencia pendiente de resolver con el cliente.' })
               const [next, nextBoard] = await Promise.all([getProductionOperations(), getOperationsDispatchBoard()])
               setOrders(next.orders)
               setStats(next.stats)
@@ -188,7 +188,7 @@ function ProductionPage() {
       <div className="admin-two-column">
         {productionReport ? (
           <AdminSection
-            description="Hoja operativa mock de produccion para compartir internamente o imprimir."
+            description="Hoja operativa de produccion para compartir internamente o imprimir."
             title="Production sheet"
           >
             <ReportPreviewPanel report={productionReport} title="REPORT_PRODUCTION_SHEET" />
@@ -197,7 +197,7 @@ function ProductionPage() {
 
         {dispatchReport ? (
           <AdminSection
-            description="Resumen mock de packing, pickup, entregas e incidencias activas."
+            description="Resumen de packing, pickup, entregas e incidencias activas."
             title="Dispatch report"
           >
             <ReportPreviewPanel report={dispatchReport} title="REPORT_EXPORTS" />

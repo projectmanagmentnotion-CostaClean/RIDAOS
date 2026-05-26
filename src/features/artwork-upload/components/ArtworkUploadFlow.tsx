@@ -39,7 +39,7 @@ export function ArtworkUploadFlow({
   file,
   onFileChange,
   ruleKey,
-  title = 'Artwork upload y preview',
+  title = 'Sube tu archivo',
   description = 'Sube el archivo, revisa las guias y confirma la pieza antes de continuar.',
   showUploadField = true,
   acceptedFormats,
@@ -101,7 +101,7 @@ export function ArtworkUploadFlow({
         compact
         description="Prepara tu archivo con una base clara de sangrado, corte y zona segura antes de exportarlo."
         ruleKey={ruleKey}
-        title="Plantilla recomendada antes del upload"
+        title="Plantilla recomendada antes de subir el archivo"
       />
 
       {showUploadField ? (

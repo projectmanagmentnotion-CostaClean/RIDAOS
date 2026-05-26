@@ -93,7 +93,7 @@ function Checkout() {
 
     setLoading('checkout', true)
     clearError('checkout')
-    const progressToastId = progress('Pedido en preparacion', 'Estamos registrando tu resumen y los datos de entrega.')
+    const progressToastId = progress('Pedido en preparacion', 'Estamos registrando tu solicitud y los datos de entrega.')
 
     try {
       const savedCustomer = await upsertCustomerProfile(customer)
@@ -119,11 +119,11 @@ function Checkout() {
         description: `El pedido ${order.id} ya queda listo para seguimiento y comprobacion de archivo.`,
         ctaLabel: 'Seguir revisando',
       })
-      success('Pedido registrado', 'Tu resumen ya pasa al seguimiento interno.', 2600)
+      success('Solicitud registrada', 'Tu resumen ya pasa a revision interna.', 2600)
     } catch {
-      setError('checkout', 'No se pudo registrar el pedido en este momento. Intentalo de nuevo.')
+      setError('checkout', 'No se pudo registrar la solicitud en este momento. Intentalo de nuevo.')
       setConfirmation(null)
-      error('No se pudo registrar el pedido', 'Intentalo otra vez desde este mismo paso.')
+      error('No se pudo registrar la solicitud', 'Intentalo otra vez desde este mismo paso.')
     } finally {
       dismiss(progressToastId)
       setLoading('checkout', false)
@@ -169,7 +169,7 @@ function Checkout() {
                     ))}
                   </div>
                   <ul className="hint-list">
-                    <li>Revisa ahora cantidades, urgencias y extras antes de pedir envio.</li>
+                    <li>Revisa ahora cantidades, urgencias y extras antes de enviar la solicitud.</li>
                     <li>Revisamos archivo, entrega y acabados antes de cerrar la produccion.</li>
                     <li>La comprobacion tecnica se mantiene como primer punto de control del pedido.</li>
                   </ul>
@@ -183,7 +183,7 @@ function Checkout() {
                       }}
                       type="button"
                     >
-                      Continuar a envio
+                      Continuar a entrega
                     </button>
                   </div>
                 </>
@@ -224,11 +224,11 @@ function Checkout() {
                     className="action-button"
                     onClick={() => {
                       setStep('payment')
-                      info('Datos revisados', 'El pedido ya puede pasar al paso de confirmacion.', 1800)
+                      info('Datos revisados', 'La solicitud ya puede pasar al paso de confirmacion.', 1800)
                     }}
                     type="button"
                   >
-                    Continuar a pago
+                    Continuar a confirmacion
                   </button>
                 </div>
               </div>
@@ -237,7 +237,7 @@ function Checkout() {
 
           {step === 'payment' ? (
             <>
-              <p className="section-label">Pago</p>
+              <p className="section-label">Confirmacion</p>
               <h2>{pricingContent.checkout.paymentTitle}</h2>
               <div className="shipping-option-list payment-option-list">
                 {paymentMocks.map((payment) => (
@@ -247,8 +247,8 @@ function Checkout() {
                     onClick={() => setSelectedPayment(payment.id)}
                     type="button"
                   >
-                    <strong>{payment.label}</strong>
-                    <span>{payment.description}</span>
+                  <strong>{payment.label}</strong>
+                  <span>{payment.description}</span>
                   </button>
                 ))}
               </div>
@@ -257,10 +257,10 @@ function Checkout() {
               <CommercialNotice className="checkout-notice" title="Condiciones del pedido" />
               <div className="form-actions">
                 <button className="action-button action-button-muted" onClick={() => setStep('shipping')} type="button">
-                  Volver a envio
+                  Volver a entrega
                 </button>
                 <button className="action-button" data-cursor="sales" disabled={loading} onClick={handleSubmit} type="button">
-                  Registrar pedido
+                  Enviar solicitud
                 </button>
               </div>
             </>
@@ -280,11 +280,11 @@ function Checkout() {
                   <strong>{confirmation.customer.name}</strong>
                 </div>
                 <div className="summary-row">
-                  <span>Metodo de pago</span>
+                  <span>Modalidad de cierre</span>
                   <strong>{paymentMocks.find((item) => item.id === selectedPayment)?.label}</strong>
                 </div>
                 <div className="summary-row summary-row-total">
-                  <span>Total registrado</span>
+                  <span>Total estimado</span>
                   <strong>{formatCurrency(confirmation.total)}</strong>
                 </div>
               </div>
@@ -314,14 +314,14 @@ function Checkout() {
                 <strong>{activeSummary.coupon ? activeSummary.coupon.code : 'Sin cupon'}</strong>
               </div>
               <div className="summary-row summary-row-total">
-                <span>Total checkout</span>
+                <span>Total estimado</span>
                 <strong>{formatCurrency(activeSummary.total)}</strong>
               </div>
             </div>
             <ul className="hint-list">
               <li>El total mantiene entrega, impuestos y descuentos visibles antes de confirmar.</li>
               <li>La comprobacion tecnica sigue separada para proteger archivo, medidas y acabados.</li>
-              <li>Tu pedido queda registrado con el mismo resumen que has revisado durante el proceso.</li>
+              <li>Tu solicitud queda registrada con el mismo resumen que has revisado durante el proceso.</li>
             </ul>
           </article>
 

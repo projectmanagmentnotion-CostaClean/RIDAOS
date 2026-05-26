@@ -45,13 +45,13 @@ function ArtworkReviewCard({ upload, onStatusChange, onNotesChange }: ArtworkRev
       <div className="admin-upload-preview">
         {upload.previewable ? (
           <div className="image-hint image-hint-dtf-sheet">
-            <span className="image-hint-label">Preview mock listo para futura conexion de storage</span>
+            <span className="image-hint-label">Vista previa lista para validacion tecnica</span>
           </div>
         ) : (
           <div className="premium-file-card">
             <span className="premium-file-format">{upload.formatLabel}</span>
             <h3>{upload.fileName}</h3>
-            <p>La tarjeta prepara metadata, validacion y comentario sin subir el archivo real.</p>
+            <p>La tarjeta deja lista la metadata, la validacion y el comentario operativo del archivo.</p>
           </div>
         )}
       </div>
@@ -59,7 +59,7 @@ function ArtworkReviewCard({ upload, onStatusChange, onNotesChange }: ArtworkRev
       {upload.previewSummary ? (
         <ProductTemplateDownloads
           compact
-          description="Referencia tecnica mock para revisar la plantilla recomendada durante la validacion."
+          description="Referencia tecnica para revisar la plantilla recomendada durante la validacion."
           ruleKey={upload.previewSummary.ruleKey}
           title="Plantilla tecnica"
         />

@@ -9,27 +9,27 @@ export type MockLifecycleStep = {
 export const mockOrderLifecycleSteps: MockLifecycleStep[] = [
   {
     id: 'pending',
-    label: 'Pending',
+    label: 'Recibido',
     description: 'Solicitud recibida y lista para lectura interna.',
   },
   {
     id: 'reviewing-artwork',
-    label: 'Reviewing artwork',
+    label: 'Revision de archivo',
     description: 'Archivo y configuracion en comprobacion tecnica.',
   },
   {
     id: 'production',
-    label: 'Production',
+    label: 'Produccion',
     description: 'Produccion o acabados en curso.',
   },
   {
     id: 'shipped',
-    label: 'Shipped',
-    description: 'Pedido listo o en salida mock.',
+    label: 'En salida',
+    description: 'Pedido listo o en proceso de entrega.',
   },
   {
     id: 'delivered',
-    label: 'Delivered',
+    label: 'Entregado',
     description: 'Pedido cerrado para cliente.',
   },
 ]
@@ -45,5 +45,5 @@ export function getMockLifecycleIndex(status: OrderStatus) {
 
 export function getMockLifecycleLabel(status: OrderStatus) {
   const index = Math.max(0, getMockLifecycleIndex(status) - 1)
-  return mockOrderLifecycleSteps[index]?.label ?? 'Pending'
+  return mockOrderLifecycleSteps[index]?.label ?? 'Recibido'
 }

@@ -44,7 +44,7 @@ function DashboardPage() {
 
   return (
     <AdminShell
-      description="Centro operativo mock para pedidos activos, revision de arte, cola de produccion y salida."
+      description="Centro operativo para pedidos activos, revision de arte, cola de produccion y salida."
       title="Operations dashboard"
     >
       <OperationsKpiGrid
@@ -62,18 +62,18 @@ function DashboardPage() {
         <article className="content-card admin-overview-card">
           <p className="section-label">Estado operativo</p>
           <h3>Revision, produccion y salida ya viven como workflows separados.</h3>
-          <p>La cola mock deja claro que bloquea arte, que esta en maquina y que esta listo para expedir.</p>
+          <p>La cola deja claro que bloquea arte, que esta en maquina y que esta listo para expedir.</p>
         </article>
         <article className="content-card admin-overview-card">
           <p className="section-label">Escalado futuro</p>
           <h3>Operadores, notas y pipeline quedan listos para persistencia real.</h3>
-          <p>La lectura del panel ya es operativa sin conectar Supabase, sockets ni storage externo.</p>
+          <p>La lectura del panel ya ordena produccion, revision y salida con una sola vista.</p>
         </article>
       </div>
 
       {capacity ? (
         <AdminSection
-          description="Capacidad diaria mock, carga por operador, cola por maquina y entregas cercanas preparadas para scheduling real."
+          description="Capacidad diaria, carga por operador, cola por maquina y entregas cercanas en una sola lectura."
           title="Capacidad y carga operativa"
         >
           <CapacityDashboardWidgets data={capacity} />
@@ -82,7 +82,7 @@ function DashboardPage() {
 
       {dispatch ? (
         <AdminSection
-          description="Preparacion de salida, recogidas, entregas e incidencias listas para migrar a dispatch real."
+          description="Preparacion de salida, recogidas, entregas e incidencias con lectura operativa unificada."
           title="Despacho y entrega"
         >
           <DispatchDashboardWidgets data={dispatch} />
@@ -100,7 +100,7 @@ function DashboardPage() {
 
       <div className="admin-two-column">
         <AdminSection
-          description="Exporta un snapshot mock de KPIs, urgentes y lectura operativa del panel."
+          description="Exporta un resumen de KPIs, urgentes y lectura operativa del panel."
           title="KPI report"
         >
           {kpiReport ? <ReportPreviewPanel report={kpiReport} title="REPORT_ADMIN_KPIS" /> : null}
@@ -174,7 +174,7 @@ function DashboardPage() {
           </div>
         </AdminSection>
 
-        <AdminSection description="Actividad operativa reciente: QA, produccion e incidencias registradas en local." title="Activity feed">
+        <AdminSection description="Actividad operativa reciente: QA, produccion e incidencias registradas en el panel." title="Activity feed">
           <OperationsActivityFeed items={dashboard?.activityFeed ?? []} />
         </AdminSection>
       </div>

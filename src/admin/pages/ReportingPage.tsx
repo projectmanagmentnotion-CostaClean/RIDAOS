@@ -31,7 +31,7 @@ function ReportingPage() {
 
   return (
     <AdminShell
-      description="Centro mock de reportes, exportacion y documentos operativos preparado para JSON, CSV y print view."
+      description="Centro de reportes, exportacion y documentos operativos preparado para JSON, CSV y vista imprimible."
       title="Reporting y exports"
     >
       <AdminSection
@@ -47,21 +47,21 @@ function ReportingPage() {
 
       <div className="admin-two-column">
         <AdminSection
-          description="Vista de referencia para exportacion ejecutiva desde el dashboard mock."
+          description="Vista de referencia para exportacion ejecutiva desde el dashboard operativo."
           title="Admin KPI report"
         >
           {kpiReport ? (
             <ReportPreviewPanel report={kpiReport} title="REPORT_ADMIN_KPIS" />
           ) : (
             <EmptyAdminState
-              title="Esperando datos mock"
+              title="Esperando datos"
               description="Cuando el dashboard operativo termine de cargar, se activara el preview del reporte."
             />
           )}
         </AdminSection>
 
         <AdminSection
-          description="Historial local de exportaciones y vistas imprimibles generadas en esta fase mock."
+          description="Historial local de exportaciones y vistas imprimibles generadas recientemente."
           title="Historial de reportes"
         >
           <ReportHistoryMock items={history} />

@@ -70,9 +70,9 @@ function ContentStudioPage() {
     setLocalError('')
     try {
       await saveDocument()
-      success('Cambios guardados', 'El snapshot local ya refleja la ultima version del contenido.')
+      success('Cambios guardados', 'La copia local ya refleja la ultima version del contenido.')
     } catch (error) {
-      setLocalError(error instanceof Error ? error.message : 'No se pudo guardar el documento mock.')
+      setLocalError(error instanceof Error ? error.message : 'No se pudo guardar el documento.')
       toastError('No se pudo guardar', 'Revisa el contenido antes de intentarlo otra vez.')
     }
   }
@@ -99,17 +99,17 @@ function ContentStudioPage() {
   const handleResetAll = async () => {
     setLocalError('')
     confirm({
-      title: 'Reset total del studio',
+      title: 'Reiniciar el estudio',
       description: 'Se eliminaran todos los overrides guardados en este entorno local.',
       cancelLabel: 'Cancelar',
-      confirm: { label: 'Reset total', intent: 'danger' },
+      confirm: { label: 'Reiniciar todo', intent: 'danger' },
       intent: 'danger',
       onConfirm: async () => {
         try {
           await resetAll()
-          success('Studio reiniciado', 'Los overrides locales se han limpiado.')
+          success('Estudio reiniciado', 'Los cambios locales se han limpiado.')
         } catch (error) {
-          setLocalError(error instanceof Error ? error.message : 'No se pudo resetear el snapshot mock.')
+          setLocalError(error instanceof Error ? error.message : 'No se pudo reiniciar la copia local.')
         }
       },
     })
@@ -119,9 +119,9 @@ function ContentStudioPage() {
     setLocalError('')
     try {
       await exportSnapshot()
-      success('Snapshot exportado', 'Ya tienes una copia local del estado del studio.')
+      success('Respaldo exportado', 'Ya tienes una copia local del estado actual del estudio.')
     } catch (error) {
-      setLocalError(error instanceof Error ? error.message : 'No se pudo exportar el snapshot mock.')
+      setLocalError(error instanceof Error ? error.message : 'No se pudo exportar el respaldo.')
     }
   }
 
@@ -146,9 +146,9 @@ function ContentStudioPage() {
 
     try {
       await importSnapshot(file)
-      success('Snapshot importado', 'El studio ya refleja el contenido del archivo cargado.')
+      success('Respaldo importado', 'El estudio ya refleja el contenido del archivo cargado.')
     } catch (error) {
-      setLocalError(error instanceof Error ? error.message : 'No se pudo importar el snapshot.')
+      setLocalError(error instanceof Error ? error.message : 'No se pudo importar el respaldo.')
     } finally {
       event.target.value = ''
     }
@@ -156,48 +156,48 @@ function ContentStudioPage() {
 
   return (
     <AdminShell
-      description="CMS interno mock/localStorage para simular edicion de zonas, pricing, catalogo, motion y contenido antes de conectar datos reales."
+      description="Editor interno de contenido para revisar zonas, pricing, catalogo, motion y contenido desde una copia local."
       title="Content Studio"
     >
       <CmsStudioSummary modifiedZones={modifiedZones} totalDocuments={documents.length} totalZones={allZones.length} />
 
       <div className="admin-overview-strip cms-studio-strip">
         <article className="content-card admin-overview-card cms-studio-banner">
-          <p className="section-label">Mock / local only</p>
+          <p className="section-label">Edicion local</p>
           <h3>Este panel no escribe en disco ni toca el storefront en vivo.</h3>
-          <p>Guarda snapshots mock en localStorage y prepara la futura capa de repositorio real sin activar Supabase.</p>
+          <p>Guarda respaldos locales y mantiene el contenido de trabajo separado del storefront publicado.</p>
           <div className="catalog-card-actions cms-preview-actions">
             <span className={`status-badge ${previewEnabled ? 'status-info' : 'status-muted'}`}>
-              Preview {previewEnabled ? 'activo' : 'inactivo'}
+              Vista previa {previewEnabled ? 'activo' : 'inactivo'}
             </span>
             <button
               className="action-button action-button-muted"
               onClick={() => {
                 setPreviewEnabled(true)
-                success('Preview activado', 'La navegacion publica ya puede leer overrides locales.', 2200)
+                success('Vista previa activada', 'La navegacion publica ya puede leer los cambios guardados localmente.', 2200)
               }}
               type="button"
             >
-              Activar preview
+              Activar vista previa
             </button>
             <button
               className="action-button action-button-muted"
               onClick={() => {
                 setPreviewEnabled(false)
-                success('Preview desactivado', 'La web vuelve a la version base visible.', 2200)
+                success('Vista previa desactivada', 'La web vuelve a la version base visible.', 2200)
               }}
               type="button"
             >
-              Desactivar preview
+              Desactivar vista previa
             </button>
             <a className="action-button action-link-button" href="?cmsPreview=1#/">
-              Abrir home en preview
+              Abrir home en vista previa
             </a>
           </div>
         </article>
         <article className="content-card admin-overview-card cms-studio-banner">
-          <p className="section-label">Seam futuro</p>
-          <h3>Contrato listo para migrar a repositorio real.</h3>
+          <p className="section-label">Siguiente capa</p>
+          <h3>Contrato listo para una capa de contenido conectada.</h3>
           <p>La UI trabaja contra un repositorio desacoplado, no contra componentes ni archivos fuente.</p>
         </article>
       </div>
@@ -206,18 +206,18 @@ function ContentStudioPage() {
         actions={
           <div className="catalog-card-actions cms-studio-actions">
             <button className="action-button action-button-muted" onClick={handleExport} type="button">
-              Exportar snapshot
+              Exportar respaldo
             </button>
             <button className="action-button action-button-muted" onClick={() => importRef.current?.click()} type="button">
-              Importar snapshot
+              Importar respaldo
             </button>
             <button className="action-button action-button-muted" onClick={handleResetAll} type="button">
-              Reset total
+              Reiniciar todo
             </button>
             <input accept="application/json" className="sr-only" onChange={handleImportChange} ref={importRef} type="file" />
           </div>
         }
-        description="Filtra por tipo de zona, busca por ID y abre el documento mock asociado."
+        description="Filtra por tipo de zona, busca por ID y abre el documento asociado."
         title="Zonas editables"
       >
         <AdminFilterBar>
@@ -237,7 +237,7 @@ function ContentStudioPage() {
         </AdminFilterBar>
 
         {isLoading ? (
-          <EmptyAdminState description="Cargando documentos y zonas del CMS mock." title="Preparando studio" />
+          <EmptyAdminState description="Cargando documentos y zonas de contenido." title="Preparando estudio" />
         ) : zones.length === 0 ? (
           <EmptyAdminState description="No hay zonas que coincidan con el filtro actual." title="Sin resultados" />
         ) : (
@@ -251,15 +251,15 @@ function ContentStudioPage() {
             selectedDocument ? (
               <div className="catalog-card-actions">
                 <button className="action-button" disabled={!hasUnsavedChanges} onClick={handleSave} type="button">
-                  Guardar mock
+                  Guardar cambios
                 </button>
                 <button className="action-button action-button-muted" onClick={handleReset} type="button">
-                  Reset documento
+                  Restablecer documento
                 </button>
               </div>
             ) : null
           }
-          description="Editor visual del documento mock asociado a la zona seleccionada."
+          description="Editor visual del documento asociado a la zona seleccionada."
           title={selectedZone ? selectedZone.label : 'Documento'}
         >
           {!selectedZone || !selectedDocument ? (
@@ -281,11 +281,11 @@ function ContentStudioPage() {
                   </div>
                   <div>
                     <p className="section-label">Estado</p>
-                    <strong>{selectedZone.status === 'modified' ? 'Mock editado' : 'Default local'}</strong>
+                    <strong>{selectedZone.status === 'modified' ? 'Editado localmente' : 'Version base'}</strong>
                   </div>
                   <div>
-                    <p className="section-label">Updated</p>
-                    <strong>{selectedDocument.updatedAt ? new Date(selectedDocument.updatedAt).toLocaleString('es-ES') : 'Sin override'}</strong>
+                    <p className="section-label">Actualizado</p>
+                    <strong>{selectedDocument.updatedAt ? new Date(selectedDocument.updatedAt).toLocaleString('es-ES') : 'Sin cambios guardados'}</strong>
                   </div>
                 </div>
                 <ul className="hint-list">
@@ -315,31 +315,31 @@ function ContentStudioPage() {
         </AdminSection>
 
         <AdminSection
-          description="Estado del studio, resumen del repositorio mock y ayudas para el siguiente paso."
+          description="Estado del estudio, resumen del repositorio activo y ayudas para el siguiente paso."
           title="Estado y contrato"
         >
           <div className="admin-list-card cms-status-stack">
             <article className="admin-list-row">
               <div>
                 <strong>Repositorio activo</strong>
-                <p>MockContentRepository</p>
+                <p>Repositorio local de contenido</p>
               </div>
               <div className="admin-list-row-meta">
-                <span className="status-badge status-info">localStorage</span>
+                <span className="status-badge status-info">Local</span>
               </div>
             </article>
             <article className="admin-list-row">
               <div>
                 <strong>Contrato futuro</strong>
-                <p>FutureSupabaseContentRepository</p>
+                <p>Repositorio conectado futuro</p>
               </div>
               <div className="admin-list-row-meta">
-                <span className="status-badge status-muted">placeholder</span>
+                <span className="status-badge status-muted">Reservado</span>
               </div>
             </article>
             <article className="admin-list-row">
               <div>
-                <strong>Mensaje del studio</strong>
+                <strong>Mensaje del estudio</strong>
                 <p>{statusMessage}</p>
               </div>
             </article>
@@ -355,21 +355,21 @@ function ContentStudioPage() {
               <p className="section-label">Que edita</p>
               <ul className="hint-list">
                 <li>Contenido de home, nav, footer, banners y FAQ.</li>
-                <li>Pricing mock, catalogo editable y experiencia de producto.</li>
-                <li>Escenas cinematicas y contenido admin mock.</li>
+                <li>Pricing, catalogo editable y experiencia de producto.</li>
+                <li>Escenas cinematicas y contenido interno.</li>
               </ul>
             </article>
             <article className="content-card cms-status-note">
-              <p className="section-label">Que no hace aun</p>
+              <p className="section-label">Limites actuales</p>
               <ul className="hint-list">
                 <li>No aplica cambios al storefront en vivo.</li>
-                <li>No escribe archivos fuente ni conecta con Supabase.</li>
-                <li>No sustituye roles, auth ni storage real.</li>
+                <li>No escribe archivos fuente ni publica cambios automaticamente.</li>
+                <li>No sustituye permisos, revisiones ni repositorios conectados.</li>
               </ul>
             </article>
             <article className="content-card cms-status-note">
-              <p className="section-label">Content publish mock</p>
-              <p>La publicacion futura de contenido queda preparada como approval chain visual antes de conectar permisos reales.</p>
+              <p className="section-label">Publicacion de contenido</p>
+              <p>La publicacion de contenido sigue un flujo de aprobacion visual antes de consolidar cambios.</p>
               <AdminApprovalChainsPanel
                 chains={[
                   {
@@ -381,7 +381,7 @@ function ContentStudioPage() {
                         requiredRole: 'admin',
                         assignedUserId: 'user-admin-marco',
                         status: 'active',
-                        notes: 'Revisar copy, CTA y consistencia del snapshot antes de publicar.',
+                        notes: 'Revisar copy, CTA y consistencia del respaldo antes de publicar.',
                         timestamp: new Date().toISOString(),
                       },
                     ],
@@ -397,3 +397,4 @@ function ContentStudioPage() {
 }
 
 export default ContentStudioPage
+

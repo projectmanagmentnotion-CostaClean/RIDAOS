@@ -113,7 +113,7 @@ export function useDtfConfiguratorState() {
       { label: 'Calidad', value: quality === 'premium' ? 'Premium' : 'Standard' },
       { label: 'Urgencia', value: urgency === 'express' ? 'Express' : 'Normal' },
       { label: 'Turnaround', value: turnaroundPreference },
-      { label: 'Archivo', value: selectedFile ? selectedFile.name : 'Pendiente de carga' },
+      { label: 'Archivo', value: selectedFile ? selectedFile.name : 'Por subir' },
     ],
     [metersValue, quality, selectedFile, turnaroundPreference, urgency],
   )
@@ -197,7 +197,7 @@ export function useDtfConfiguratorState() {
     addToCart(cartItem)
     setErrors({})
     setCartMessage(
-      'Pedido preparado en tu carrito. La simulacion mantiene urgencia, turnaround y extras en local hasta pasar al checkout mock.',
+      'Pedido preparado en tu carrito. Mantiene urgencia, turnaround y extras listos para pasar a confirmacion.',
     )
     success('Añadido al carrito', 'Tu pedido DTI ya aparece en el resumen de compra.')
   }

@@ -10,7 +10,7 @@ export function ProductOptionAssetPanel({ definition }: ProductOptionAssetPanelP
       <div className="commerce-recommendations__header">
         <div>
           <p className="section-label">Guia visual y tecnica</p>
-          <h2>Referencias utiles para preparar bien el producto.</h2>
+          <h2>Referencias utiles para preparar el producto con seguridad.</h2>
         </div>
       </div>
       <div className="product-option-assets__grid">
@@ -33,7 +33,7 @@ export function ProductOptionAssetPanel({ definition }: ProductOptionAssetPanelP
         ))}
       </div>
       {definition.recommendedTemplateLabel ? (
-        <p className="catalog-result-caption">Plantilla recomendada: {definition.recommendedTemplateLabel}.</p>
+        <p className="catalog-result-caption">Plantilla disponible: {definition.recommendedTemplateLabel}.</p>
       ) : null}
     </section>
   )

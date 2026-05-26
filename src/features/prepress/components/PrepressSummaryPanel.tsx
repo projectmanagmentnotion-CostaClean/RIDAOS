@@ -10,7 +10,7 @@ export function PrepressSummaryPanel({ summary }: PrepressSummaryPanelProps) {
 
   return (
     <article className="content-card artwork-upload-flow__panel" data-cursor="interactive">
-      <p className="section-label">PREPRESS_SCORE</p>
+      <p className="section-label">Revision tecnica</p>
       <PrepressScoreBadge summary={summary} />
       <p>{summary.customerSummary}</p>
       <p className="inline-notice">{summary.productionImpactSummary}</p>
@@ -47,3 +47,4 @@ export function PrepressSummaryPanel({ summary }: PrepressSummaryPanelProps) {
     </article>
   )
 }
+

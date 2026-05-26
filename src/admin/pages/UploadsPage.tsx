@@ -61,11 +61,11 @@ function UploadsPage() {
 
   return (
     <AdminShell
-      description="Mesa de artwork mock con metadata, estados de validacion y acceso rapido al pedido."
+      description="Mesa de artwork con metadata, estados de validacion y acceso rapido al pedido."
       title="Artwork review"
     >
       <AdminSection
-        description="Cada tarjeta resume metadata, operador, preview mock y estado de validacion."
+        description="Cada tarjeta resume metadata, operador, vista previa y estado de validacion."
         title="Archivos recibidos"
         actions={<AdminSearchInput onChange={setSearch} value={search} />}
       >
@@ -109,7 +109,7 @@ function UploadsPage() {
       {firstUpload ? (
         <div className="admin-two-column">
           <AdminSection
-            description="Exportacion mock de la ficha de revision del primer upload activo."
+            description="Exportacion de la ficha de revision del primer archivo activo."
             title="Artwork review report"
           >
             <ReportPreviewPanel report={buildArtworkReviewReport(firstUpload)} title="REPORT_EXPORTS" />

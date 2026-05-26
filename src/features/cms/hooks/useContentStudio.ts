@@ -71,7 +71,7 @@ export function useContentStudio(): UseContentStudioState {
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<CmsDocumentType | 'all'>('all')
   const [selectedZoneId, setSelectedZoneId] = useState<string | null>(initialStudioState.zones[0]?.id ?? null)
-  const [statusMessage, setStatusMessage] = useState('Modo mock/local only.')
+  const [statusMessage, setStatusMessage] = useState('Edicion local activa.')
   const [draftState, setDraftState] = useState<DraftState>(() => {
     const firstDocument = initialStudioState.documents.find((document) =>
       document.zoneIds.includes(initialStudioState.zones[0]?.id ?? ''),
@@ -198,7 +198,7 @@ export function useContentStudio(): UseContentStudioState {
     const nextZones = await mockContentRepository.getZones()
     setAllZones(nextZones)
     setDraftState(buildDraftFromDocument(saved))
-    setStatusMessage(`Guardado mock en localStorage para ${saved.label}.`)
+    setStatusMessage(`Cambios guardados localmente para ${saved.label}.`)
   }, [effectiveDraft.payload, selectedDocument])
 
   const resetDocument = useCallback(async () => {
@@ -223,7 +223,7 @@ export function useContentStudio(): UseContentStudioState {
       : null
     setSelectedZoneId(firstZone?.id ?? null)
     setDraftState(buildDraftFromDocument(firstDocument))
-    setStatusMessage('Snapshot mock eliminado. Todo vuelve a defaults locales.')
+    setStatusMessage('Respaldo eliminado. Todo vuelve a la version base local.')
   }, [refresh])
 
   const exportSnapshot = useCallback(async () => {
@@ -235,7 +235,7 @@ export function useContentStudio(): UseContentStudioState {
     link.download = `ridaosprint-mock-cms-${new Date().toISOString().slice(0, 10)}.json`
     link.click()
     URL.revokeObjectURL(url)
-    setStatusMessage('Snapshot exportado en JSON desde localStorage.')
+    setStatusMessage('Respaldo exportado en JSON desde la copia local.')
   }, [])
 
   const importSnapshot = useCallback(
@@ -253,7 +253,7 @@ export function useContentStudio(): UseContentStudioState {
         : null
       setSelectedZoneId(currentZone?.id ?? null)
       setDraftState(buildDraftFromDocument(currentDocument))
-      setStatusMessage(`Snapshot mock importado desde ${file.name}.`)
+      setStatusMessage(`Respaldo importado desde ${file.name}.`)
     },
     [activeZoneId, refresh],
   )

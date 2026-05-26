@@ -135,7 +135,7 @@ function DTFPage() {
           data-scroll-scene="dtf-form"
           tabIndex={0}
         >
-          <SectionHeader eyebrow="Configurador" title="Configura un pedido DTI con lectura de taller." />
+          <SectionHeader eyebrow="Configurador" title="Configura tu pedido DTI con una lectura clara y profesional." />
 
           <div className="configurator-form">
             <label className="field-group" htmlFor="dtf-meters">
@@ -188,13 +188,13 @@ function DTFPage() {
               onFileChange={setFile}
               onStateChange={setArtworkState}
               ruleKey="dtf_meter"
-              title="Artwork upload y preview DTI"
+              title="Sube tu archivo DTI"
             />
             {errors.file ? <span className="field-error">{errors.file}</span> : null}
 
             <ProductTemplateDownloads
               compact
-              description="Base tecnica para preparar el metro DTI antes de exportar y subir el archivo."
+              description="Guia recomendada para preparar el metro DTI antes de exportar y subir el archivo."
               ruleKey="dtf_meter"
               title="Descargar plantilla DTI"
             />
@@ -266,7 +266,7 @@ function DTFPage() {
             data-scroll-scene="dtf-preview"
             tabIndex={0}
           >
-            <SectionHeader eyebrow="Archivo confirmado" title="Lectura compacta del artwork listo para producción." />
+            <SectionHeader eyebrow="Archivo confirmado" title="Resumen del archivo listo para revisar." />
             {artworkState.summary ? (
               <div className="summary-list">
                 <div className="summary-row">
@@ -284,7 +284,7 @@ function DTFPage() {
               </div>
             ) : (
               <div className="empty-state premium-empty-state">
-                <p>Sube y confirma el archivo para activar el resumen técnico del rollo.</p>
+                <p>Sube y confirma el archivo para activar el resumen del rollo.</p>
               </div>
             )}
           </article>
@@ -296,7 +296,7 @@ function DTFPage() {
             data-scroll-scene="dtf-preflight"
             tabIndex={0}
           >
-            <SectionHeader eyebrow="Comprobacion previa" title="Resumen claro antes de confirmar el pedido." />
+            <SectionHeader eyebrow="Comprobacion previa" title="Resumen claro antes de confirmar la solicitud." />
             <div className="preflight-list">
               <div className="preflight-item">
                 <span>Formato detectado</span>
@@ -316,7 +316,7 @@ function DTFPage() {
               </div>
               <div className="preflight-item">
                 <span>Resolucion</span>
-                <strong>{artworkState.summary?.workflowStatus === 'ready' ? 'Lista para comprobar' : 'Necesita revisión'}</strong>
+                <strong>{artworkState.summary?.workflowStatus === 'ready' ? 'Lista para revisar' : 'Requiere comprobacion'}</strong>
               </div>
             </div>
           </article>
@@ -393,3 +393,4 @@ function DTFPage() {
 }
 
 export default DTFPage
+

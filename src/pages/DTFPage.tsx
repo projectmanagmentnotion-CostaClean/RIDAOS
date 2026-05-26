@@ -112,6 +112,19 @@ function DTFPage() {
           title={previewDtfContent.hero.fallbackTitle}
           titleLines={previewDtfContent.hero.titleLines}
         />
+        <div className="storefront-catalog-hero__chips">
+          <span>Produccion por metro</span>
+          <span>Revision tecnica</span>
+          <span>Listo para marcas y talleres</span>
+        </div>
+        <div className="catalog-cta-row">
+          <a className="action-button action-link-button" href="#dtf-configurator">
+            Configurar DTI
+          </a>
+          <a className="action-button action-button-muted action-link-button" href={publicRoutes.guia}>
+            Preparar archivo
+          </a>
+        </div>
       </section>
 
       <section className="content-section premium-progress-section">
@@ -133,9 +146,10 @@ function DTFPage() {
           data-animate="panel"
           data-cursor-zone="conversion"
           data-scroll-scene="dtf-form"
+          id="dtf-configurator"
           tabIndex={0}
         >
-          <SectionHeader eyebrow="Configurador" title="Configura tu pedido DTI con una lectura clara y profesional." />
+          <SectionHeader eyebrow="Configurador" title="Configura tu pedido DTI con una lectura clara, rapida y profesional." />
 
           <div className="configurator-form">
             <label className="field-group" htmlFor="dtf-meters">

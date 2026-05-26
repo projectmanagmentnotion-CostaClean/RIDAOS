@@ -9,8 +9,8 @@ export function ProductOptionAssetPanel({ definition }: ProductOptionAssetPanelP
     <section className="content-section product-option-assets" data-product-reveal>
       <div className="commerce-recommendations__header">
         <div>
-          <p className="section-label">Guia visual y tecnica</p>
-          <h2>Referencias utiles para preparar el producto con seguridad.</h2>
+          <p className="section-label">Preparacion visual</p>
+          <h2>Referencias utiles para revisar acabados, corte y presentacion antes de producir.</h2>
         </div>
       </div>
       <div className="product-option-assets__grid">
@@ -19,21 +19,21 @@ export function ProductOptionAssetPanel({ definition }: ProductOptionAssetPanelP
             <p className="section-label">{asset.label}</p>
             <h3>
               {asset.format === 'svg'
-                ? 'Guia de corte y sangrado'
+                ? 'Guia de corte y preparacion'
                 : asset.fileName.includes('template')
-                  ? 'Plantilla de preparacion'
-                  : 'Visual de referencia'}
+                  ? 'Plantilla de trabajo'
+                  : 'Referencia visual'}
             </h3>
             <p>{asset.purpose}</p>
             <div className="product-option-asset-card__meta">
               <span>{asset.format.toUpperCase()}</span>
-              <span>{asset.format === 'svg' ? 'Vectorial' : 'Bitmap'}</span>
+              <span>{asset.format === 'svg' ? 'Linea tecnica' : 'Vista editorial'}</span>
             </div>
           </article>
         ))}
       </div>
       {definition.recommendedTemplateLabel ? (
-        <p className="catalog-result-caption">Plantilla disponible: {definition.recommendedTemplateLabel}.</p>
+        <p className="catalog-result-caption">Plantilla recomendada: {definition.recommendedTemplateLabel}.</p>
       ) : null}
     </section>
   )

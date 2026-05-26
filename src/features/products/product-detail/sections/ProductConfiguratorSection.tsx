@@ -61,7 +61,16 @@ export function ProductConfiguratorSection({
       data-product-reveal
       id="product-configurator"
     >
-      <SectionHeader eyebrow="Configurador" title={`Configura ${entry.name.toLowerCase()} de forma clara y rapida.`} />
+      <SectionHeader eyebrow="Configurador" title={`Configura ${entry.name.toLowerCase()} con una lectura clara y directa.`} />
+      <p className="product-config-card__intro">
+        Elige lo importante, revisa el precio estimado y sube tu archivo cuando la pieza ya este lista para pasar a
+        revision.
+      </p>
+      <div className="storefront-inline-tags product-config-card__tags">
+        <span>Precio estimado en vivo</span>
+        <span>Revision tecnica</span>
+        <span>Produccion profesional</span>
+      </div>
       <div className="configurator-form">
         {fields.filter((field) => field.type !== 'file').map((field) => (
           <ConfiguratorFieldRenderer

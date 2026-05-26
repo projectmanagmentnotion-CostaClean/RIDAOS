@@ -2,7 +2,7 @@ import { useMemo, useRef, useState } from 'react'
 import type { ArtworkPreviewSummary, ArtworkUploadFlowState } from '../../artwork-upload'
 import { resolveArtworkRuleForEntry } from '../../artwork-upload'
 import { getContinueShoppingHref, getQuoteHref, publicRoutes } from '../../../lib/navigation'
-import type { CatalogCategoryKey } from '../../../types/product'
+import type { CatalogCategoryKey, ConfiguratorField } from '../../../types/product'
 import { ProductExperienceLayout } from './layouts/ProductExperienceLayout'
 import { useProductDetailState } from './hooks/useProductDetailState'
 import { useProductExperienceMotion } from './motion/useProductExperienceMotion'
@@ -32,6 +32,30 @@ type ProductExperiencePageProps = {
   category: CatalogCategoryKey
   initialProductId?: string
   allowedProductIds?: string[]
+}
+
+function getFieldDisplayValue(field: ConfiguratorField, value: string) {
+  if (!value) {
+    return null
+  }
+
+  if (field.type === 'select' || field.type === 'variant' || field.type === 'size') {
+    return field.options.find((option) => option.value === value)?.label ?? value
+  }
+
+  if (field.type === 'quantity') {
+    return `${value} uds`
+  }
+
+  if (field.type === 'meters') {
+    return `${value} m`
+  }
+
+  if (field.type === 'area') {
+    return `${value} m2`
+  }
+
+  return value
 }
 
 /**
@@ -78,6 +102,28 @@ export function ProductExperiencePage({
   const primaryHref = useMemo(() => getQuoteHref(category === 'accesorios' ? 'otro' : category), [category])
   const enabled = new Set(pageConfig.sections)
   const discoverability = useDiscoverability({ category, entry: displayEntry ?? selectedProduct })
+  const summaryItems = useMemo(() => {
+    if (!optionDefinition) {
+      return []
+    }
+
+    return optionDefinition.fields
+      .filter((field) => !['file', 'notes'].includes(field.type) && field.key !== 'product')
+      .map((field) => {
+        const displayValue = getFieldDisplayValue(field, config[field.key] ?? '')
+
+        if (!displayValue) {
+          return null
+        }
+
+        return {
+          label: field.label,
+          value: displayValue,
+        }
+      })
+      .filter(Boolean)
+      .slice(0, 5) as Array<{ label: string; value: string }>
+  }, [config, optionDefinition])
 
   if (!selectedProduct || !displayEntry) {
     return null
@@ -100,6 +146,30 @@ export function ProductExperiencePage({
         }
       })
     : pageConfig.galleryFrames
+  const secondaryHeroHref =
+    category === 'rotulacion'
+      ? publicRoutes.portafolio
+      : optionDefinition?.templateRuleKey
+        ? publicRoutes.guia
+        : publicRoutes.upload
+  const primaryActionLabel = isDirectFlow ? 'Anadir al carrito' : 'Solicitar presupuesto'
+  const secondaryActionLabel = isDirectFlow ? 'Solicitar presupuesto' : 'Abrir formulario'
+  const primaryActionDisabled = Boolean(isDirectFlow && (!estimate?.canAddToCart || artworkGateBlocked))
+  const renderPrimaryActionButtons = () => (
+    <>
+      <button
+        className="action-button"
+        disabled={primaryActionDisabled}
+        onClick={() => handlePrimaryAction(artworkState.summary)}
+        type="button"
+      >
+        {primaryActionLabel}
+      </button>
+      <a className="action-button action-button-muted action-link-button" href={primaryHref}>
+        {secondaryActionLabel}
+      </a>
+    </>
+  )
 
   return (
     <ProductExperienceLayout
@@ -109,21 +179,7 @@ export function ProductExperiencePage({
           <ProductConfiguratorSection
             artworkRuleKey={artworkRuleKey}
             config={config}
-            ctaArea={
-              <>
-                <button
-                  className="action-button"
-                  disabled={Boolean(isDirectFlow && (!estimate?.canAddToCart || artworkGateBlocked))}
-                  onClick={() => handlePrimaryAction(artworkState.summary)}
-                  type="button"
-                >
-                  {isDirectFlow ? 'Anadir al carrito' : 'Solicitar presupuesto'}
-                </button>
-                <a className="action-button action-button-muted action-link-button" href={primaryHref}>
-                  {isDirectFlow ? 'Solicitar presupuesto' : 'Abrir formulario'}
-                </a>
-              </>
-            }
+            ctaArea={renderPrimaryActionButtons()}
             entry={displayEntry}
             fieldErrors={fieldErrors}
             fields={displayEntry.configuratorFields}
@@ -144,8 +200,8 @@ export function ProductExperiencePage({
             description={contentDescription}
             eyebrow={contentEyebrow}
             heroVisual={optionDefinition?.hero ?? pageConfig.heroVisual ?? null}
-            primaryHref={selectedProduct.route}
-            secondaryHref={publicRoutes.guia}
+            primaryHref="#product-configurator"
+            secondaryHref={secondaryHeroHref}
             stickerWords={pageConfig.heroStickerWords}
             title={contentTitle}
           />
@@ -176,6 +232,8 @@ export function ProductExperiencePage({
             entry={displayEntry}
             estimate={estimate}
             message={message}
+            summaryAction={renderPrimaryActionButtons()}
+            summaryItems={summaryItems}
             successLinks={
               isDirectFlow ? (
                 <>
@@ -197,6 +255,7 @@ export function ProductExperiencePage({
                 </>
               )
             }
+            summaryAccent={optionDefinition?.hero.accent}
             summaryTitle={
               displayEntry.purchaseMode === 'quote'
                 ? 'Referencia comercial'

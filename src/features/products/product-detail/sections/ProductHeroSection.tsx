@@ -35,6 +35,18 @@ export function ProductHeroSection({
         stickerWords={stickerWords}
         title={title}
       />
+      <div className="catalog-cta-row">
+        {primaryHref ? (
+          <a className="action-button action-link-button" href={primaryHref}>
+            Ir al configurador
+          </a>
+        ) : null}
+        {secondaryHref ? (
+          <a className="action-button action-button-muted action-link-button" href={secondaryHref}>
+            Preparar archivo
+          </a>
+        ) : null}
+      </div>
     </section>
   )
 }

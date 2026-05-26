@@ -52,6 +52,91 @@ const staticRouteSEO: Record<string, StaticSeoEntry> = {
       { name: 'Catalogo', path: '/catalogo' },
     ],
   },
+  '#/catalogo/dti': {
+    title: 'Categoria DTI por metro | RidaosPrint',
+    description: 'Categoria DTI con beneficios, usos y acceso directo al configurador de DTI por metro.',
+    ogType: 'website',
+    ogImage: '/assets/seo/og-dti.jpg',
+    allowIndex: true,
+    breadcrumb: [
+      { name: 'Home', path: '/' },
+      { name: 'Catalogo', path: '/catalogo' },
+      { name: 'DTI', path: '/catalogo/dti' },
+    ],
+  },
+  '#/catalogo/rotulacion': {
+    title: 'Rotulacion de furgonetas y vehiculos | RidaosPrint',
+    description:
+      'Rotulacion comercial para furgonetas, flotas y vehiculos de empresa en Barcelona, Blanes, Girona y Costa Brava.',
+    ogType: 'website',
+    ogImage: '/assets/seo/og-rotulacion-furgonetas-barcelona.jpg',
+    allowIndex: true,
+    breadcrumb: [
+      { name: 'Home', path: '/' },
+      { name: 'Catalogo', path: '/catalogo' },
+      { name: 'Rotulacion', path: '/catalogo/rotulacion' },
+    ],
+  },
+  '#/catalogo/textil': {
+    title: 'Textil personalizado | RidaosPrint',
+    description: 'Categoria textil para camisetas, sudaderas, uniformes y prendas de marca.',
+    ogType: 'website',
+    ogImage: '/assets/seo/og-dti.jpg',
+    allowIndex: true,
+    breadcrumb: [
+      { name: 'Home', path: '/' },
+      { name: 'Catalogo', path: '/catalogo' },
+      { name: 'Textil', path: '/catalogo/textil' },
+    ],
+  },
+  '#/catalogo/pegatinas': {
+    title: 'Pegatinas personalizadas | RidaosPrint',
+    description: 'Categoria de pegatinas personalizadas para branding, packaging y exterior.',
+    ogType: 'website',
+    ogImage: '/assets/seo/og-pegatinas.jpg',
+    allowIndex: true,
+    breadcrumb: [
+      { name: 'Home', path: '/' },
+      { name: 'Catalogo', path: '/catalogo' },
+      { name: 'Pegatinas', path: '/catalogo/pegatinas' },
+    ],
+  },
+  '#/catalogo/tarjetas': {
+    title: 'Tarjetas de visita premium | RidaosPrint',
+    description: 'Categoria de tarjetas de visita con papel, gramaje y acabados premium.',
+    ogType: 'website',
+    ogImage: '/assets/seo/og-tarjetas.jpg',
+    allowIndex: true,
+    breadcrumb: [
+      { name: 'Home', path: '/' },
+      { name: 'Catalogo', path: '/catalogo' },
+      { name: 'Tarjetas', path: '/catalogo/tarjetas' },
+    ],
+  },
+  '#/catalogo/flyers': {
+    title: 'Flyers personalizados | RidaosPrint',
+    description: 'Categoria de flyers y folletos con formatos y papeles listos para configurar.',
+    ogType: 'website',
+    ogImage: '/assets/seo/og-flyers.jpg',
+    allowIndex: true,
+    breadcrumb: [
+      { name: 'Home', path: '/' },
+      { name: 'Catalogo', path: '/catalogo' },
+      { name: 'Flyers', path: '/catalogo/flyers' },
+    ],
+  },
+  '#/catalogo/vinilo-impreso': {
+    title: 'Vinilo impreso | RidaosPrint',
+    description: 'Categoria de vinilo impreso para retail, escaparate, pared y branding fisico.',
+    ogType: 'website',
+    ogImage: '/assets/seo/og-home.jpg',
+    allowIndex: true,
+    breadcrumb: [
+      { name: 'Home', path: '/' },
+      { name: 'Catalogo', path: '/catalogo' },
+      { name: 'Vinilo impreso', path: '/catalogo/vinilo-impreso' },
+    ],
+  },
   '#/guia': {
     title: 'Guia de archivos | RidaosPrint',
     description: 'Formatos, comprobaciones y checklist practico para preparar archivos antes de fabricar.',
@@ -105,6 +190,17 @@ const staticRouteSEO: Record<string, StaticSeoEntry> = {
     ogImage: '/assets/seo/og-rotulacion-furgonetas-barcelona.jpg',
     allowIndex: true,
     breadcrumb: [...localSeoContent.rotulacion.breadcrumbs],
+  },
+  '#/upload': {
+    title: 'Subida y guia de archivos | RidaosPrint',
+    description: 'Prepara el archivo, revisa formatos aceptados y sube el arte con una guia clara antes de fabricar.',
+    ogType: 'website',
+    ogImage: '/assets/seo/og-dti.jpg',
+    allowIndex: true,
+    breadcrumb: [
+      { name: 'Home', path: '/' },
+      { name: 'Subida de archivos', path: '/upload' },
+    ],
   },
 }
 

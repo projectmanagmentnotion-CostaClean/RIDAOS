@@ -1,7 +1,7 @@
-import ProductExperiencePage from '../features/products/product-detail/ProductExperiencePage'
+import CategoryLandingPage from '../features/catalog/CategoryLandingPage'
 
 function RotulacionPage() {
-  return <ProductExperiencePage category="rotulacion" />
+  return <CategoryLandingPage familyId="rotulacion" />
 }
 
 export default RotulacionPage

@@ -1,7 +1,7 @@
-import ProductExperiencePage from '../features/products/product-detail/ProductExperiencePage'
+import CategoryLandingPage from '../features/catalog/CategoryLandingPage'
 
 function AccesoriosPage() {
-  return <ProductExperiencePage category="accesorios" />
+  return <CategoryLandingPage familyId="pegatinas" />
 }
 
 export default AccesoriosPage

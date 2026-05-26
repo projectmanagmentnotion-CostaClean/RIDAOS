@@ -1,7 +1,7 @@
-import ProductExperiencePage from '../features/products/product-detail/ProductExperiencePage'
+import CategoryLandingPage from '../features/catalog/CategoryLandingPage'
 
 function MaterialesPage() {
-  return <ProductExperiencePage category="materiales" />
+  return <CategoryLandingPage familyId="vinilo-impreso" />
 }
 
 export default MaterialesPage

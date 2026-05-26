@@ -1,7 +1,7 @@
-import ProductExperiencePage from '../features/products/product-detail/ProductExperiencePage'
+import CategoryLandingPage from '../features/catalog/CategoryLandingPage'
 
 function PapeleriaPage() {
-  return <ProductExperiencePage category="papeleria" />
+  return <CategoryLandingPage familyId="tarjetas" />
 }
 
 export default PapeleriaPage

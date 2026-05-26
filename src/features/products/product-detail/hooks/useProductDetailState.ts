@@ -49,13 +49,32 @@ function buildDisplayEntry(productId: string) {
   }
 }
 
-export function useProductDetailState(category: CatalogCategoryKey) {
+export function useProductDetailState(
+  category: CatalogCategoryKey,
+  initialProductId?: string,
+  allowedProductIds?: string[],
+) {
   const { info, success } = useLiveToast()
   const pageConfig = productExperienceContent[category]
-  const products = useMemo(() => getProductsByCategory(category), [category])
-  const [productId, setProductId] = useState(products[0]?.id ?? '')
+  const products = useMemo(() => {
+    const categoryProducts = getProductsByCategory(category)
+
+    if (!allowedProductIds?.length) {
+      return categoryProducts
+    }
+
+    return categoryProducts.filter((product) => allowedProductIds.includes(product.id))
+  }, [allowedProductIds, category])
+  const resolvedInitialProductId = useMemo(() => {
+    if (initialProductId && products.some((product) => product.id === initialProductId)) {
+      return initialProductId
+    }
+
+    return products[0]?.id ?? ''
+  }, [initialProductId, products])
+  const [productId, setProductId] = useState(resolvedInitialProductId)
   const [config, setConfig] = useState<ConfigState>(() => {
-    const firstEntry = products[0] ? buildDisplayEntry(products[0].id) : null
+    const firstEntry = resolvedInitialProductId ? buildDisplayEntry(resolvedInitialProductId) : null
     return firstEntry ? createInitialConfig(firstEntry) : {}
   })
   const [selectedFile, setSelectedFile] = useState<File | null>(null)

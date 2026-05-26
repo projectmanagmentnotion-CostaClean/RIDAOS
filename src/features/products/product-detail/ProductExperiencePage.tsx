@@ -30,6 +30,8 @@ import {
 
 type ProductExperiencePageProps = {
   category: CatalogCategoryKey
+  initialProductId?: string
+  allowedProductIds?: string[]
 }
 
 /**
@@ -37,7 +39,11 @@ type ProductExperiencePageProps = {
  * Content: src/features/products/product-detail/data/productExperienceContent.ts
  * Visual component: src/features/products/product-detail/ProductExperiencePage.tsx
  */
-export function ProductExperiencePage({ category }: ProductExperiencePageProps) {
+export function ProductExperiencePage({
+  category,
+  initialProductId,
+  allowedProductIds,
+}: ProductExperiencePageProps) {
   const pageRef = useRef<HTMLElement | null>(null)
   const {
     pageConfig,
@@ -56,7 +62,7 @@ export function ProductExperiencePage({ category }: ProductExperiencePageProps) 
     handleFileChange,
     handlePrimaryAction,
     isDirectFlow,
-  } = useProductDetailState(category)
+  } = useProductDetailState(category, initialProductId, allowedProductIds)
   const [artworkState, setArtworkState] = useState<{
     metadata: ArtworkUploadFlowState['metadata']
     summary: ArtworkPreviewSummary | null

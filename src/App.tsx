@@ -8,7 +8,7 @@ import Home from './pages/Home'
 import { applySEO } from './lib/seo'
 import { initSmoothScroll } from './lib/smoothScroll'
 import { refreshScrollNarrative, syncScrollTriggerWithLenis } from './lib/animations'
-import { getPublicCtaHref, getPublicHref } from './lib/navigation'
+import { getCatalogFamilyHref, getProductPageHref, getPublicCtaHref, getPublicHref } from './lib/navigation'
 import { getCurrentHashRoute, navigateToHashRoute, normalizeHashRoute } from './lib/hashRouting'
 import { footerContent, navigationContent } from './content'
 import { useCmsPreviewDocument } from './features/cms-preview'
@@ -19,6 +19,7 @@ type RouteKey =
   | 'dtf'
   | 'carrito'
   | 'checkout'
+  | 'upload'
   | 'guia'
   | 'portafolio'
   | 'contacto'
@@ -41,6 +42,16 @@ type RouteKey =
   | 'motionTest'
   | 'cursorTest'
   | 'notFound'
+  | 'catalogoDti'
+  | 'catalogoFlyers'
+  | 'productTextil'
+  | 'productPegatinas'
+  | 'productTarjetas'
+  | 'productFlyers'
+  | 'productVinilo'
+  | 'productRotulacion'
+  | 'productPapeleriaLegacy'
+  | 'productAccesoriosLegacy'
   | 'textil'
   | 'papeleria'
   | 'carteleria'
@@ -54,8 +65,13 @@ const routes: Record<string, RouteKey> = {
   [getPublicCtaHref('catalogo')]: 'catalogo',
   [getPublicCtaHref('dtf')]: 'dtf',
   '#/dtf': 'dtf',
+  [getCatalogFamilyHref('catalogoDti')]: 'catalogoDti',
   [getPublicHref('textil')]: 'textil',
   '#/textil': 'textil',
+  [getCatalogFamilyHref('catalogoPegatinas')]: 'accesorios',
+  [getCatalogFamilyHref('catalogoTarjetas')]: 'papeleria',
+  [getCatalogFamilyHref('catalogoFlyers')]: 'catalogoFlyers',
+  [getCatalogFamilyHref('catalogoVinilo')]: 'materiales',
   [getPublicHref('papeleria')]: 'papeleria',
   '#/papeleria': 'papeleria',
   [getPublicHref('carteleria')]: 'carteleria',
@@ -65,9 +81,22 @@ const routes: Record<string, RouteKey> = {
   [getPublicHref('accesorios')]: 'accesorios',
   '#/accesorios': 'accesorios',
   [getPublicHref('rotulacion')]: 'rotulacion',
+  '#/servicios/rotulacion': 'rotulacion',
   [getPublicHref('neones')]: 'neones',
+  [getProductPageHref('productoTextil')]: 'productTextil',
+  [getProductPageHref('productoPegatinas')]: 'productPegatinas',
+  [getProductPageHref('productoTarjetas')]: 'productTarjetas',
+  [getProductPageHref('productoFlyers')]: 'productFlyers',
+  [getProductPageHref('productoVinilo')]: 'productVinilo',
+  [getProductPageHref('productoRotulacion')]: 'productRotulacion',
+  '#/producto/textil': 'productTextil',
+  '#/producto/papeleria': 'productPapeleriaLegacy',
+  '#/producto/materiales': 'productVinilo',
+  '#/producto/accesorios': 'productAccesoriosLegacy',
+  '#/producto/dtf': 'dtf',
   [getPublicCtaHref('carrito')]: 'carrito',
   '#/checkout': 'checkout',
+  [getPublicCtaHref('upload')]: 'upload',
   [getPublicCtaHref('guia')]: 'guia',
   '#/guia-archivos': 'guia',
   '#/portafolio': 'portafolio',
@@ -101,14 +130,24 @@ const routes: Record<string, RouteKey> = {
  */
 const buildMarker = `Ridaos build: ${__RIDAOS_BUILD_HASH__}`
 const Catalogo = lazy(() => import('./pages/Catalogo'))
+const DtiCategoryPage = lazy(() => import('./pages/DtiCategoryPage'))
 const DTFPage = lazy(() => import('./pages/DTFPage'))
 const TextilPage = lazy(() => import('./pages/TextilPage'))
 const PapeleriaPage = lazy(() => import('./pages/PapeleriaPage'))
+const FlyersPage = lazy(() => import('./pages/FlyersPage'))
 const CarteleriaPage = lazy(() => import('./pages/CarteleriaPage'))
 const MaterialesPage = lazy(() => import('./pages/MaterialesPage'))
 const AccesoriosPage = lazy(() => import('./pages/AccesoriosPage'))
 const RotulacionPage = lazy(() => import('./pages/RotulacionPage'))
 const NeonesPage = lazy(() => import('./pages/NeonesPage'))
+const ProductoTextilPage = lazy(() => import('./pages/ProductoTextilPage'))
+const ProductoPegatinasPage = lazy(() => import('./pages/ProductoPegatinasPage'))
+const ProductoTarjetasPage = lazy(() => import('./pages/ProductoTarjetasPage'))
+const ProductoFlyersPage = lazy(() => import('./pages/ProductoFlyersPage'))
+const ProductoViniloPage = lazy(() => import('./pages/ProductoViniloPage'))
+const ProductoRotulacionPage = lazy(() => import('./pages/ProductoRotulacionPage'))
+const ProductoPapeleriaPage = lazy(() => import('./pages/ProductoPapeleriaPage'))
+const ProductoAccesoriosPage = lazy(() => import('./pages/ProductoAccesoriosPage'))
 const Carrito = lazy(() => import('./pages/Carrito'))
 const Checkout = lazy(() => import('./pages/Checkout'))
 const GuiaArchivos = lazy(() => import('./pages/GuiaArchivos'))
@@ -136,16 +175,27 @@ const ProductionPage = lazy(() => import('./admin/pages/ProductionPage'))
 const pageComponents: Record<RouteKey, ComponentType> = {
   home: Home,
   catalogo: Catalogo,
+  catalogoDti: DtiCategoryPage,
   dtf: DTFPage,
   textil: TextilPage,
   papeleria: PapeleriaPage,
+  catalogoFlyers: FlyersPage,
   carteleria: CarteleriaPage,
   materiales: MaterialesPage,
   accesorios: AccesoriosPage,
   rotulacion: RotulacionPage,
   neones: NeonesPage,
+  productTextil: ProductoTextilPage,
+  productPegatinas: ProductoPegatinasPage,
+  productTarjetas: ProductoTarjetasPage,
+  productFlyers: ProductoFlyersPage,
+  productVinilo: ProductoViniloPage,
+  productRotulacion: ProductoRotulacionPage,
+  productPapeleriaLegacy: ProductoPapeleriaPage,
+  productAccesoriosLegacy: ProductoAccesoriosPage,
   carrito: Carrito,
   checkout: Checkout,
+  upload: GuiaArchivos,
   guia: GuiaArchivos,
   portafolio: Portafolio,
   contacto: Contacto,
@@ -189,6 +239,29 @@ function getRouteFromHash(hash: string): RouteKey {
 }
 
 function isNavigationActive(route: RouteKey, itemRoute: RouteKey) {
+  if (itemRoute === 'catalogo') {
+    return (
+      route === 'catalogo' ||
+      route === 'catalogoDti' ||
+      route === 'papeleria' ||
+      route === 'catalogoFlyers' ||
+      route === 'materiales' ||
+      route === 'accesorios'
+    )
+  }
+
+  if (itemRoute === 'dtf') {
+    return route === 'dtf' || route === 'catalogoDti'
+  }
+
+  if (itemRoute === 'textil') {
+    return route === 'textil' || route === 'productTextil'
+  }
+
+  if (itemRoute === 'rotulacion') {
+    return route === 'rotulacion' || route === 'productRotulacion'
+  }
+
   if (itemRoute === 'miCuenta') {
     return route === 'miCuenta' || route === 'misPedidos' || route === 'detallePedido' || route === 'historialArchivos'
   }

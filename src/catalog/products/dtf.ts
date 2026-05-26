@@ -11,7 +11,7 @@ export const dtfEntry: CatalogEntry = {
   name: 'DTI por metro',
   description: 'Producto principal con configurador propio, revision tecnica y compra directa.',
   shortDescription: 'DTI por metro con archivo, revision y precio claro antes del carrito.',
-  route: '#/producto/dtf',
+  route: '#/producto/dti-por-metro',
   purchaseMode: 'direct',
   pricingMode: 'unit',
   upload: {
@@ -47,7 +47,7 @@ export const dtfEntry: CatalogEntry = {
     { key: 'notes', type: 'textarea', label: 'Notas', rows: 5, hint: 'Usa este campo para color, prioridad o referencias de montaje.' },
   ],
   legalNotes: defaultCommercialNoticeKeys,
-  cta: { type: 'open_product', href: '#/producto/dtf', label: 'Configurar DTI' },
+  cta: { type: 'open_product', href: '#/producto/dti-por-metro', label: 'Configurar DTI' },
   manualReviewRequired: true,
   featured: true,
   badge: 'Compra directa',

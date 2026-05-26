@@ -1,7 +1,7 @@
-import ProductExperiencePage from '../features/products/product-detail/ProductExperiencePage'
+import CategoryLandingPage from '../features/catalog/CategoryLandingPage'
 
 function TextilPage() {
-  return <ProductExperiencePage category="textil" />
+  return <CategoryLandingPage familyId="textil" />
 }
 
 export default TextilPage

@@ -18,14 +18,14 @@ import {
   localServiceHubs,
   relatedGuides,
 } from '../features/discoverability'
+import { catalogFamilies } from '../features/catalog/catalogFamilies'
 import { getContentByEntryId } from '../catalog/content/contentSelectors'
 import {
   getCatalogSections,
   getFeaturedProducts,
   resolveCtaForEntry,
 } from '../lib/catalogSelectors'
-import { getPublicCtaHref } from '../lib/navigation'
-import { catalogCategories } from '../lib/products'
+import { getCatalogFamilyHref, getProductPageHref, getPublicCtaHref } from '../lib/navigation'
 import type { CatalogEntry } from '../types/product'
 
 function getStatusCopy(entry: CatalogEntry) {
@@ -148,17 +148,51 @@ function Catalogo() {
       <section className="catalog-section">
         <SectionHeader eyebrow={previewCatalogContent.categorySection.eyebrow} title={previewCatalogContent.categorySection.title} />
         <div className="category-grid">
-          {catalogCategories.map((category) => (
-            <article className="content-card category-card hover-lift" data-cursor="interactive" key={category.key} tabIndex={0}>
-              <p className="section-label">{category.label}</p>
-              <p>{category.description}</p>
-              {category.route ? (
-                <a className="card-link" href={category.route}>
-                  Ver categoria
-                </a>
-              ) : null}
+          {catalogFamilies.map((family) => (
+            <article className="content-card category-card hover-lift" data-cursor="interactive" key={family.id} tabIndex={0}>
+              <p className="section-label">{family.title}</p>
+              <p>{family.shortDescription}</p>
+              <div className="catalog-card-meta">
+                <span>{family.productsCount}</span>
+                <span>{family.tags.slice(0, 2).join(' · ')}</span>
+              </div>
+              <a className="card-link" href={family.href}>
+                Ver categoria
+              </a>
+              <a className="card-link" href={family.primaryProductHref}>
+                Ir al producto principal
+              </a>
             </article>
           ))}
+        </div>
+      </section>
+
+      <section className="catalog-section">
+        <SectionHeader eyebrow="Familias principales" title="Elige primero la familia. Configura despues el producto." />
+        <div className="catalog-product-grid">
+          {catalogFamilies
+            .filter((family) => family.featured)
+            .map((family) => (
+              <article className="product-card catalog-product-card hover-lift" data-cursor="interactive" key={family.id} tabIndex={0}>
+                <div>
+                  <StatusBadge status="quote">familia destacada</StatusBadge>
+                  <h2>{family.title}</h2>
+                </div>
+                <p>{family.shortDescription}</p>
+                <div className="catalog-card-meta">
+                  <span>{family.productsCount}</span>
+                  <span>{family.tags.join(' · ')}</span>
+                </div>
+                <div className="catalog-card-actions">
+                  <a className="action-button action-link-button" href={family.href}>
+                    Ver familia
+                  </a>
+                  <a className="card-link" href={family.primaryProductHref}>
+                    Configurar producto
+                  </a>
+                </div>
+              </article>
+            ))}
         </div>
       </section>
 
@@ -174,8 +208,8 @@ function Catalogo() {
 
       <InternalLinkGrid
         items={[
-          { id: 'cat-link-rot', title: 'Rotulacion comercial', description: 'Vehiculos, escaparates y flotas comerciales.', href: '#/servicios/rotulacion', tag: 'Hub' },
-          { id: 'cat-link-dtf', title: 'DTI por metro', description: 'Produccion textil y demanda DTI resuelta con flujo claro.', href: '#/producto/dtf', tag: 'Hub' },
+          { id: 'cat-link-rot', title: 'Rotulacion comercial', description: 'Vehiculos, escaparates y flotas comerciales.', href: getCatalogFamilyHref('rotulacion'), tag: 'Hub' },
+          { id: 'cat-link-dtf', title: 'DTI por metro', description: 'Produccion textil y demanda DTI resuelta con flujo claro.', href: getProductPageHref('dtf'), tag: 'Hub' },
           { id: 'cat-link-guide', title: 'Guia de archivos', description: 'Prepara el archivo antes de configurar o pedir.', href: '#/guia', tag: 'Guide' },
         ]}
         title="Entradas principales para navegar mejor"
@@ -190,6 +224,10 @@ function Catalogo() {
               {section.entries.map((entry) => {
                 const statusCopy = getStatusCopy(entry)
                 const cta = resolveCtaForEntry(entry)
+                const primaryAction =
+                  entry.purchaseMode === 'quote'
+                    ? { href: entry.route, label: 'Ver servicio' }
+                    : cta
 
                 return (
                   <article
@@ -217,10 +255,10 @@ function Catalogo() {
                       <span>{entry.productionTime ?? 'Plazo segun comprobacion y carga de trabajo'}</span>
                     </div>
                     <div className="catalog-card-actions">
-                      <a className="action-button action-link-button" data-cursor="sales" href={cta.href}>
-                        {cta.label}
+                      <a className="action-button action-link-button" data-cursor="sales" href={primaryAction.href}>
+                        {primaryAction.label}
                       </a>
-                      {entry.route !== cta.href ? (
+                      {entry.route !== primaryAction.href ? (
                         <a className="card-link" href={entry.route}>
                           Ver detalles
                         </a>

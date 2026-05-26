@@ -2,132 +2,164 @@
 
 ## Objetivo
 
-Inventario base para preparar previews profesionales, overlays de guias y assets cinematicos sin conectar storage real todavia.
+Referencia rapida para plantillas descargables, overlays tecnicos y previews funcionales de producto dentro de la arquitectura storefront actual.
+
+Este documento complementa:
+
+- `docs/RIDAOSPRINT_ASSET_MASTER_INVENTORY.md`
+- `docs/ARTWORK_UPLOAD_WORKFLOW.md`
+- `docs/STORAGE_ARCHITECTURE.md`
+
+## Estructura recomendada
+
+```text
+public/assets/templates/
+  dti-meter/
+  stickers/
+  business-cards/
+  flyers/
+  printed-vinyl/
+  signage/
+  textile/
+  vehicle-wrap/
+
+public/assets/overlays/prepress/
+```
 
 ## Naming convention
 
-- prefijo por dominio: `print-`, `guide-`, `cinematic-`, `template-`
+- lowercase
 - kebab-case
-- sufijos utiles:
-  - `-overlay`
-  - `-preview`
-  - `-transparent`
-  - `-template`
-  - `-safe-zone`
+- sin espacios
+- sin acentos
+- sufijo `-v1`
 
 Ejemplos:
 
-- `guide-business-card-front-overlay.webp`
-- `print-dtf-roll-preview-overlay.webp`
-- `cinematic-wrap-car-transparent.webp`
-- `template-printed-vinyl-visible-area.pdf`
+- `dti-meter-template-master-v1.pdf`
+- `stickers-template-master-v1.ai`
+- `business-card-template-master-v1.svg`
+- `vehicle-safe-area-overlay-v1.svg`
 
-## Assets para previews de impresion
+## Plantillas maestras por familia
 
-| Asset | Uso | Formato | Fondo | Tamano recomendado | Prioridad |
-| --- | --- | --- | --- | --- | --- |
-| `guide-business-card-front-overlay.webp` | sangrado + corte tarjeta | WebP | transparente | 2400x1400 | alta |
-| `guide-business-card-back-overlay.webp` | reverso tarjeta | WebP | transparente | 2400x1400 | media |
-| `guide-stickers-cutline-overlay.webp` | pegatinas con linea de corte | WebP | transparente | 2200x2200 | alta |
-| `print-dtf-roll-preview-overlay.webp` | preview de rollo DTF | WebP | transparente | 2600x1600 | alta |
-| `guide-printed-vinyl-visible-area-overlay.webp` | area visible vinilo impreso | WebP | transparente | 2600x1600 | alta |
-| `guide-signage-safe-zone-overlay.webp` | seguridad carteleria | WebP | transparente | 2600x1800 | media |
-| `template-business-card-print-file.pdf` | plantilla descargable tarjeta | PDF | no | A4 / 300 dpi | media |
-| `template-printed-vinyl-visible-area.pdf` | plantilla descargable vinilo | PDF | no | A3 / 300 dpi | media |
+| Familia | Ruta | Archivo maestro | Formatos esperados | Prioridad |
+| --- | --- | --- | --- | --- |
+| DTI por metro | `/public/assets/templates/dti-meter/` | `dti-meter-template-master-v1.pdf` | PDF, AI, SVG | alta |
+| Pegatinas | `/public/assets/templates/stickers/` | `stickers-template-master-v1.pdf` | PDF, AI, SVG | alta |
+| Tarjetas | `/public/assets/templates/business-cards/` | `business-card-template-master-v1.pdf` | PDF, AI, SVG | alta |
+| Flyers | `/public/assets/templates/flyers/` | `flyer-template-master-v1.pdf` | PDF, AI, SVG | media |
+| Vinilo impreso | `/public/assets/templates/printed-vinyl/` | `printed-vinyl-template-master-v1.pdf` | PDF, AI, SVG | media |
+| Carteleria | `/public/assets/templates/signage/` | `signage-template-master-v1.pdf` | PDF, AI, SVG | media |
+| Textil | `/public/assets/templates/textile/` | `textile-print-area-template-master-v1.pdf` | PDF, AI, SVG | media |
+| Rotulacion vehiculos | `/public/assets/templates/vehicle-wrap/` | `vehicle-wrap-template-master-v1.pdf` | PDF, AI, SVG | media |
 
-## Catalogo de plantillas mock
+## Capas obligatorias
 
-Rutas esperadas en `public/assets/templates/`:
+Todas las plantillas maestras deben incluir:
 
-- `dtf-meter/`
-- `stickers/`
-- `business-cards/`
-- `printed-vinyl/`
-- `signage/`
-- `textile/`
-- `paper/`
+- `01_ARTWORK_AQUI`
+- `02_ZONA_SEGURA`
+- `03_LINEA_CORTE`
+- `04_SANGRADO`
+- `05_NOTAS_NO_IMPRIMIR`
 
-Estado actual:
+## Colores recomendados
 
-- la UI ya muestra catalogo, formatos y rutas mock
-- si el archivo no existe, la experiencia debe quedar en `Plantilla pendiente`
-- no hay fetch obligatorio ni dependencia de storage real todavia
+- sangrado: verde
+- corte: magenta
+- zona segura: azul
+- notas: gris
 
-## Assets para storytelling home cinematica
+## Overlays tecnicos asociados
 
-| Asset | Escena | Formato | Fondo | Tamano recomendado | Prioridad |
-| --- | --- | --- | --- | --- | --- |
-| `cinematic-textile-hoodie-transparent.webp` | `TEXTILE_DTF_TRANSITION` | WebP | transparente | 2400x3000 | alta |
-| `cinematic-dtf-roll-transparent.webp` | `HERO_CINEMATIC` | WebP | transparente | 2600x1600 | media |
-| `cinematic-wrap-car-transparent.webp` | `VEHICLE_WRAP_TRANSITION` | WebP | transparente | 3200x1800 | alta |
-| `cinematic-print-detail-transparent.webp` | `PRODUCTION_DETAIL_TRANSITION` | WebP | transparente | 2600x1600 | media |
-| `cinematic-final-brand-object.webp` | `FINAL_BRAND_REVEAL` | WebP | transparente | 2200x2200 | alta |
+| Archivo | Ruta | Uso | Formato |
+| --- | --- | --- | --- |
+| `safe-area-overlay-v1.svg` | `/public/assets/overlays/prepress/` | zona segura general | SVG |
+| `bleed-overlay-v1.svg` | `/public/assets/overlays/prepress/` | sangrado general | SVG |
+| `cutline-overlay-v1.svg` | `/public/assets/overlays/prepress/` | linea de corte | SVG |
+| `measurement-grid-v1.svg` | `/public/assets/overlays/prepress/` | medicion general | SVG |
+| `dti-spacing-guide-v1.svg` | `/public/assets/overlays/prepress/` | separacion entre artes DTI | SVG |
+| `dti-width-measure-overlay-v1.svg` | `/public/assets/overlays/prepress/` | ancho util DTI | SVG |
+| `sticker-cutline-overlay-v1.svg` | `/public/assets/overlays/prepress/` | corte pegatina | SVG |
+| `sticker-kisscut-overlay-v1.svg` | `/public/assets/overlays/prepress/` | kiss cut | SVG |
+| `sticker-contour-guide-v1.svg` | `/public/assets/overlays/prepress/` | contorno pegatina | SVG |
+| `card-trim-guide-v1.svg` | `/public/assets/overlays/prepress/` | corte tarjeta | SVG |
+| `vinyl-panel-guide-v1.svg` | `/public/assets/overlays/prepress/` | panel vinilo | SVG |
+| `vehicle-safe-area-overlay-v1.svg` | `/public/assets/overlays/prepress/` | zonas conflictivas vehiculo | SVG |
+| `textile-placement-guide-v1.svg` | `/public/assets/overlays/prepress/` | area textil | SVG |
 
-## Overlays y requerimientos visuales
+## Previews funcionales por familia
 
-- guias de corte: transparent PNG o WebP sin fondo
-- safe zones: color unico semitransparente, no raster borroso
-- bleed overlays: trazos limpios, no sombra
-- assets cinematicos: preferir WebP con transparencia real
-- overlays descargables: PDF para plantillas y SVG solo si la geometria lo exige
+Estos previews no sustituyen al hero visual. Sirven para cards de descarga, configuradores y guias.
+
+| Familia | Preview principal | Ruta sugerida |
+| --- | --- | --- |
+| DTI | `dti-template-preview-v1.webp` | `/public/assets/products/dti/` |
+| Pegatinas | `stickers-template-preview-v1.webp` | `/public/assets/products/stickers/` |
+| Tarjetas | `business-card-template-preview-v1.webp` | `/public/assets/products/cards/` |
+| Flyers | `flyer-template-preview-v1.webp` | `/public/assets/products/flyers/` |
+| Vinilo | `printed-vinyl-template-preview-v1.webp` | `/public/assets/products/vinyl/` |
+| Textil | `textile-template-preview-v1.webp` | `/public/assets/products/textile/` |
+| Rotulacion | `vehicle-wrap-template-preview-v1.webp` | `/public/assets/products/wrap/` |
+
+## Relacion con el storefront actual
+
+- DTI principal: `#/producto/dti-por-metro`
+- Pegatinas: `#/producto/pegatinas-personalizadas`
+- Tarjetas: `#/producto/tarjetas-visita`
+- Flyers: `#/producto/flyers-personalizados`
+- Vinilo impreso: `#/producto/vinilo-impreso`
+- Rotulacion: `#/producto/rotulacion-furgonetas`
+- Textil: `#/producto/textil-personalizado`
+
+## Integracion en codigo
+
+| Superficie | Archivo |
+| --- | --- |
+| tarjetas de descarga | `src/features/print-templates/components/*` |
+| upload guidance | `src/features/artwork-upload/components/ArtworkUploadFlow.tsx` |
+| PDP hero y galerias | `src/features/products/product-detail/data/productExperienceContent.ts` |
+| option assets | `src/features/product-options/data/productOptionDefinitions.ts` |
 
 ## Prioridad de produccion
 
-1. overlays de preview por producto
-2. plantillas descargables principales
-3. assets cinematicos de home
-4. variantes secundarias por orientacion o reverso
+### Alta
 
-## Addendum — Product options premium
+- `dti-meter-template-master-v1.pdf`
+- `stickers-template-master-v1.pdf`
+- `business-card-template-master-v1.pdf`
+- `safe-area-overlay-v1.svg`
+- `bleed-overlay-v1.svg`
+- `cutline-overlay-v1.svg`
+- `dti-spacing-guide-v1.svg`
+- `vehicle-safe-area-overlay-v1.svg`
 
-Nuevos assets priorizados por esta fase:
+### Media
 
-### Pegatinas
+- `flyer-template-master-v1.pdf`
+- `printed-vinyl-template-master-v1.pdf`
+- `textile-print-area-template-master-v1.pdf`
+- `vehicle-wrap-template-master-v1.pdf`
+- previews de plantilla por familia
 
-- `sticker-square-preview.webp`
-- `sticker-circle-preview.webp`
-- `sticker-custom-shape-preview.webp`
-- `sticker-sheet-preview.webp`
-- `sticker-cutline-overlay.svg`
-- `sticker-kisscut-overlay.svg`
+### Baja
 
-### Tarjetas
+- variantes secundarias
+- previews atmosfericos
+- extras de carteleria avanzada
 
-- `business-card-standard-preview.webp`
-- `business-card-square-preview.webp`
-- `business-card-rounded-preview.webp`
-- `business-card-gold-foil-preview.webp`
-- `business-card-silver-foil-preview.webp`
-- `business-card-3d-varnish-preview.webp`
-- `business-card-soft-touch-preview.webp`
-- `business-card-stack-premium.webp`
+## Notas de transicion
 
-### Flyers
+Naming y estructura antiguos que ya no deben tomarse como base principal:
 
-- `flyer-a6-preview.webp`
-- `flyer-a5-preview.webp`
-- `flyer-a4-preview.webp`
-- `flyer-stack-preview.webp`
-- `flyer-double-sided-preview.webp`
-- `flyer-soft-touch-preview.webp`
+- `dtf-meter/` como carpeta visible de plantilla
+- prefijos `cinematic-` para plantillas tecnicas
+- nomenclatura con `mock` en archivos visibles
 
-### DTI
+La referencia principal del proyecto ya es la separacion:
 
-- `dti-roll-transparent.webp`
-- `dti-meter-preview.webp`
-- `dti-spacing-guide.svg`
-- `dti-transfer-texture.webp`
-
-### Rotulacion de vehiculos
-
-- `wrap-van-side-transparent.webp`
-- `wrap-van-front-transparent.webp`
-- `wrap-car-side-transparent.webp`
-- `wrap-before-after-preview.webp`
-- `vinyl-installation-detail.webp`
-
-Notas:
-
-- `DTI` debe ser el naming visible de plantillas y previews.
-- `DTF` se conserva solo como apoyo SEO o referencia tecnica secundaria.
-- Los heroes visuales deben resolverse como `WebP` ligeros y las guias tecnicas como `SVG`.
+- `storefront`
+- `products`
+- `templates`
+- `overlays/prepress`

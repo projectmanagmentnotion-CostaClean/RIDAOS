@@ -14,7 +14,7 @@ export const catalogContent = {
   },
   visualPanel: {
     eyebrow: 'Catalogo visual',
-    title: 'Oferta clara antes de entrar en detalle.',
+    title: 'Una oferta clara antes de entrar en detalle.',
     description:
       'Compra directa donde el precio ya esta definido y propuesta personalizada cuando medidas, acabados o instalacion cambian el proyecto.',
   },
@@ -34,6 +34,6 @@ export const catalogContent = {
   },
   productsSection: {
     eyebrow: 'Servicios y productos',
-    title: 'Configura, prepara o solicita propuesta.',
+    title: 'Compra, configura o solicita una propuesta.',
   },
 }

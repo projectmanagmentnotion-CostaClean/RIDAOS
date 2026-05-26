@@ -62,7 +62,7 @@ function UploadsPage() {
   return (
     <AdminShell
       description="Mesa de artwork con metadata, estados de validacion y acceso rapido al pedido."
-      title="Artwork review"
+      title="Revision de archivos"
     >
       <AdminSection
         description="Cada tarjeta resume metadata, operador, vista previa y estado de validacion."

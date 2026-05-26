@@ -407,7 +407,7 @@ function OrderDetailPage() {
             {orderSummaryReport ? (
               <AdminSection
                 description="Resumen exportable del pedido con lectura operativa y comercial."
-                title="Order summary"
+                title="Resumen del pedido"
               >
                 <ReportPreviewPanel report={orderSummaryReport} title="REPORT_ORDER_SUMMARY" />
               </AdminSection>
@@ -415,7 +415,7 @@ function OrderDetailPage() {
             {handoffReport ? (
               <AdminSection
                 description="Documento de handoff para salida, tracking y entrega."
-                title="Delivery handoff"
+                title="Handoff de entrega"
               >
                 <ReportPreviewPanel report={handoffReport} title="REPORT_EXPORTS" />
               </AdminSection>
@@ -610,7 +610,7 @@ function OrderDetailPage() {
 
           <AdminSection
             description="Ownership, rol requerido y cadena de aprobacion en una sola vista operativa."
-            title="Ownership y approval chain"
+            title="Responsables y cadena de aprobacion"
           >
             <article className="content-card admin-detail-card">
               <div className="configurator-form">
@@ -663,7 +663,7 @@ function OrderDetailPage() {
 
           <AdminSection
             description="Panel premium de atencion al cliente, approvals, SLA e incidencias con lectura operativa completa."
-            title="Client service panel"
+            title="Panel de atencion"
           >
             <article className="content-card admin-detail-card">
               <div className="configurator-form">
@@ -824,7 +824,7 @@ function OrderDetailPage() {
 
           <AdminSection
             description="Historial de approvals e incidencias para mantener trazabilidad operativa."
-            title="Approvals e incident timeline"
+            title="Aprobaciones e incidencias"
           >
             <article className="content-card admin-detail-card">
               <div className="summary-stack">
@@ -842,7 +842,7 @@ function OrderDetailPage() {
 
           <AdminSection
             description="Templates premium de respuesta al cliente para revisar y adaptar antes del envio."
-            title="Response templates"
+            title="Plantillas de respuesta"
           >
             <ClientServiceTemplatePreviewList items={clientServiceTemplates} />
           </AdminSection>

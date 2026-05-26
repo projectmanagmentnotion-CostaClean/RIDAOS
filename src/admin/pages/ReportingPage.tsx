@@ -32,11 +32,11 @@ function ReportingPage() {
   return (
     <AdminShell
       description="Centro de reportes, exportacion y documentos operativos preparado para JSON, CSV y vista imprimible."
-      title="Reporting y exports"
+      title="Reportes y exportaciones"
     >
       <AdminSection
         description="Catalogo de reportes disponibles para pedidos, produccion, preprensa, dispatch, service y KPIs."
-        title="Reporting center"
+        title="Centro de reportes"
       >
         <div className="admin-quick-actions">
           {definitions.map((definition) => (
@@ -48,7 +48,7 @@ function ReportingPage() {
       <div className="admin-two-column">
         <AdminSection
           description="Vista de referencia para exportacion ejecutiva desde el dashboard operativo."
-          title="Admin KPI report"
+          title="Reporte de KPIs"
         >
           {kpiReport ? (
             <ReportPreviewPanel report={kpiReport} title="REPORT_ADMIN_KPIS" />

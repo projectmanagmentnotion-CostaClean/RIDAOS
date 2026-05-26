@@ -36,12 +36,12 @@ function ClientServicePage() {
   return (
     <AdminShell
       description="Mesa interna de atencion al cliente, approvals, SLA y escalado con lectura operativa unificada."
-      title="Client service y approvals"
+      title="Atencion al cliente y aprobaciones"
     >
       {dashboard ? (
         <AdminSection
           description="Open tickets, SLA, approvals y escalados en una sola lectura operativa."
-          title="Service dashboard"
+          title="Panel de atencion"
         >
           <ClientServiceDashboardWidgets data={dashboard} />
         </AdminSection>
@@ -49,7 +49,7 @@ function ClientServicePage() {
 
       <AdminSection
         description="Busca por cliente, estado, SLA, approval o tipo de incidencia."
-        title="Filtros de soporte"
+        title="Filtros de servicio"
       >
         <AdminFilterBar>
           <AdminSearchInput
@@ -135,7 +135,7 @@ function ClientServicePage() {
       </AdminSection>
 
       <div className="admin-two-column">
-        <AdminSection description="Tickets con approval, SLA y recommendation de respuesta." title="Tickets y approvals">
+        <AdminSection description="Tickets con aprobacion, SLA y recomendacion de respuesta." title="Tickets y aprobaciones">
           {tickets.length === 0 ? (
             <EmptyAdminState title="Sin tickets para estos filtros" description="Prueba otra combinacion para recuperar la cola de trabajo." />
           ) : (
@@ -151,14 +151,14 @@ function ClientServicePage() {
       <div className="admin-two-column">
         {clientServiceReport ? (
           <AdminSection
-            description="Resumen exportable del ticket, SLA, approval y escalado actual."
-            title="Client service report"
+            description="Resumen exportable del ticket, SLA, aprobacion y escalado actual."
+            title="Reporte de atencion"
           >
             <ReportPreviewPanel report={clientServiceReport} title="REPORT_EXPORTS" />
           </AdminSection>
         ) : null}
 
-        <AdminSection description="Previews premium de mensajes listos para adaptar y enviar desde operativa." title="Response templates">
+        <AdminSection description="Mensajes listos para adaptar y enviar desde operativa." title="Plantillas de respuesta">
           {messagePreviews.length ? (
             <ClientServiceTemplatePreviewList items={messagePreviews} />
           ) : (
@@ -166,7 +166,7 @@ function ClientServicePage() {
           )}
         </AdminSection>
 
-        <AdminSection description="Atajos para approvals y escalaciones urgentes." title="Quick actions">
+        <AdminSection description="Atajos para aprobaciones y escalaciones urgentes." title="Acciones rapidas">
           <div className="admin-quick-actions">
             <a className="content-card admin-quick-action" href="#/admin/uploads">
               <strong>Artwork review</strong>

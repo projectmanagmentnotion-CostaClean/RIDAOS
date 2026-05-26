@@ -23,7 +23,7 @@ function AccountsPage() {
   return (
     <AdminShell
       description="Usuarios internos, roles, permisos visuales, ownership y trazabilidad administrativa en una sola vista."
-      title="Accounts, roles y approvals"
+      title="Cuentas, roles y aprobaciones"
     >
       {!dashboard ? (
         <EmptyAdminState title="Cargando cuentas" description="Preparando usuarios, roles y cadenas de aprobacion." />
@@ -46,7 +46,7 @@ function AccountsPage() {
 
             <AdminSection
               description="Cadenas de aprobacion activas o preparadas para artwork, incidencias y contenido."
-              title="Approval chains"
+              title="Cadenas de aprobacion"
             >
               <AdminApprovalChainsPanel chains={dashboard.approvalChains} />
             </AdminSection>
@@ -54,7 +54,7 @@ function AccountsPage() {
 
           <AdminSection
             description="Timeline de auditoria sobre cambios internos, ownership y acciones operativas."
-            title="Audit trail"
+            title="Trazabilidad"
           >
             <AdminAuditTrailList entries={dashboard.recentAudit} />
           </AdminSection>

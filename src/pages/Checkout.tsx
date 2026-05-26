@@ -254,7 +254,7 @@ function Checkout() {
               </div>
               {uiError ? <p className="field-error">{uiError}</p> : null}
               {loading ? <p className="inline-notice">Registrando tu solicitud...</p> : null}
-              <CommercialNotice className="checkout-notice" title="Condiciones del pedido" />
+              <CommercialNotice className="checkout-notice" title="Resumen de cierre" />
               <div className="form-actions">
                 <button className="action-button action-button-muted" onClick={() => setStep('shipping')} type="button">
                   Volver a entrega

@@ -20,7 +20,7 @@ export function CartSummaryPanel({
   return (
     <div className="summary-stack">
       <article className="content-card premium-cart-summary" data-cursor-zone="conversion">
-        <p className="section-label">Resumen premium</p>
+        <p className="section-label">Resumen del pedido</p>
         <div className="summary-list">
           <div className="summary-row">
             <span>Lineas</span>
@@ -35,11 +35,11 @@ export function CartSummaryPanel({
             <strong>{formatCurrency(summary.subtotal)}</strong>
           </div>
           <div className="summary-row">
-            <span>Envio mock</span>
+            <span>Entrega</span>
             <strong>{formatCurrency(summary.shipping.price)}</strong>
           </div>
           <div className="summary-row">
-            <span>Impuestos mock</span>
+            <span>Impuestos</span>
             <strong>{formatCurrency(summary.taxes)}</strong>
           </div>
           <div className="summary-row">
@@ -55,7 +55,7 @@ export function CartSummaryPanel({
         </div>
 
         <div className="premium-cart-summary__group">
-          <p className="section-label">Envio</p>
+          <p className="section-label">Entrega</p>
           <div className="shipping-option-list">
             {['pickup', 'standard', 'express'].map((methodId) => (
               <button
@@ -71,7 +71,7 @@ export function CartSummaryPanel({
                       ? 'Envio peninsula'
                       : 'Envio prioritario'}
                 </strong>
-                <span>{methodId === 'pickup' ? 'Sin coste' : methodId === 'standard' ? '48-72h mock' : '24-48h mock'}</span>
+                <span>{methodId === 'pickup' ? 'Sin coste' : methodId === 'standard' ? '48-72 h estimadas' : '24-48 h estimadas'}</span>
               </button>
             ))}
           </div>
@@ -81,7 +81,7 @@ export function CartSummaryPanel({
         </div>
 
         <div className="premium-cart-summary__group">
-          <p className="section-label">Cupon mock</p>
+          <p className="section-label">Cupon</p>
           <div className="coupon-row">
             <input
               className="form-input"
@@ -95,14 +95,14 @@ export function CartSummaryPanel({
             </button>
           </div>
           <p className="catalog-result-caption">
-            Simulacion local. No conecta cupones reales ni backend.
+            Aplicamos el codigo sobre este resumen para que puedas revisar el pedido con claridad.
           </p>
         </div>
 
         <ul className="hint-list">
-          <li>Los totales se actualizan al instante y se guardan en localStorage.</li>
+          <li>Los totales se actualizan al instante para que no pierdas contexto durante la compra.</li>
           <li>La urgencia del configurador se refleja en cada linea, no en un checkout opaco.</li>
-          <li>Los impuestos y el envio siguen siendo mock hasta la capa real.</li>
+          <li>Entrega, impuestos y descuentos se mantienen visibles antes de confirmar la solicitud.</li>
         </ul>
       </article>
     </div>

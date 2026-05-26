@@ -3,7 +3,7 @@ import { getPublicCtaHref, getPublicHref } from '../lib/navigation'
 export const navigationContent = {
   brandLabel: 'RIDAOSPRINT',
   mainLinks: [
-    { href: getPublicHref('home'), label: 'Home', route: 'home' as const },
+    { href: getPublicHref('home'), label: 'Inicio', route: 'home' as const },
     { href: getPublicCtaHref('catalogo'), label: 'Catalogo', route: 'catalogo' as const },
     { href: getPublicCtaHref('dtf'), label: 'DTI por metro', route: 'dtf' as const },
     { href: getPublicHref('rotulacion'), label: 'Rotulacion', route: 'rotulacion' as const },

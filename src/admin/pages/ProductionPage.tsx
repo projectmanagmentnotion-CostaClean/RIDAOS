@@ -62,7 +62,7 @@ function ProductionPage() {
   return (
     <AdminShell
       description="Pipeline operativo desde triage, impresion y control de calidad hasta salida."
-      title="Produccion y pipeline"
+      title="Produccion y flujo operativo"
     >
       <div className="admin-stat-grid">
         <AdminStatCard label="Revision arte" note="Pedidos bloqueados por archivo o aprobacion." value={stats?.artworkPending ?? '...'} />
@@ -140,7 +140,7 @@ function ProductionPage() {
       {schedule ? (
         <AdminSection
           description="Board semanal con slots por maquina, entregas previstas y conflictos de capacidad."
-          title="Scheduling board"
+          title="Planificacion semanal"
         >
           <SchedulingBoard board={schedule} />
         </AdminSection>
@@ -149,7 +149,7 @@ function ProductionPage() {
       {dispatchBoard ? (
         <AdminSection
           description="Board de packing, pickup, entrega e incidencias con acciones de handoff."
-          title="Dispatch board"
+          title="Panel de despacho"
         >
           <DispatchBoard
             board={dispatchBoard}
@@ -189,7 +189,7 @@ function ProductionPage() {
         {productionReport ? (
           <AdminSection
             description="Hoja operativa de produccion para compartir internamente o imprimir."
-            title="Production sheet"
+            title="Hoja de produccion"
           >
             <ReportPreviewPanel report={productionReport} title="REPORT_PRODUCTION_SHEET" />
           </AdminSection>
@@ -198,7 +198,7 @@ function ProductionPage() {
         {dispatchReport ? (
           <AdminSection
             description="Resumen de packing, pickup, entregas e incidencias activas."
-            title="Dispatch report"
+            title="Reporte de despacho"
           >
             <ReportPreviewPanel report={dispatchReport} title="REPORT_EXPORTS" />
           </AdminSection>

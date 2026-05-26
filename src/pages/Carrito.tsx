@@ -94,10 +94,10 @@ function Carrito() {
           <div className="premium-panel-header">
             <div>
               <p className="section-label">Items</p>
-              <h2>Lineas preparadas para produccion.</h2>
+              <h2>Lineas listas para revisar y confirmar.</h2>
             </div>
             <span className="premium-caption">
-              {summary.lineCount} unidades en cesta
+              {summary.lineCount} unidades en el pedido
             </span>
           </div>
 
@@ -138,7 +138,7 @@ function Carrito() {
 
           <article className="content-card premium-cart-cta" data-cursor-zone="conversion">
             <p className="section-label">Siguiente paso</p>
-            <h3>Cierra el flujo sin perder contexto.</h3>
+            <h3>Confirma tu pedido sin perder contexto.</h3>
             <ul className="hint-list">
               <li>El checkout mantiene entrega, cupon y lectura del pedido sin rehacer tu configuracion.</li>
               <li>La comprobacion tecnica sigue siendo el paso previo a cualquier produccion real.</li>

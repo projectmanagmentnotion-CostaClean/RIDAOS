@@ -1,7 +1,7 @@
 export const homeHeroContent = {
   fallbackEyebrow: 'DTI por metro para pedidos agiles',
   fallbackDescription:
-    'Compra DTI por metro lineal con una base clara para pedidos agiles: configura tu tirada, sube tus disenos y avanza con una experiencia directa y profesional.',
+    'Compra DTI por metro lineal con una experiencia directa, profesional y pensada para marcas, talleres y producciones agiles.',
   orbitLines: [
     'Configuracion por metro lineal',
     'Archivo y precio visibles antes de avanzar',
@@ -31,7 +31,7 @@ export const homeMetricsContent = [
 
 export const homeFoundationContent = {
   panelLabel: 'Pedido claro',
-  panelTitle: 'Un frente claro para ventas DTI por metro.',
+  panelTitle: 'DTI por metro con una experiencia clara desde el primer paso.',
   panelDescription:
     'Pasa del catalogo al pedido con una lectura clara de archivo, precio y siguiente paso.',
   panelPrimaryCtaLabel: 'Ver catalogo',
@@ -46,7 +46,7 @@ export const homeFoundationContent = {
 
 export const homeProcessContent = {
   eyebrow: 'Como funciona',
-  title: 'Proceso base de pedido.',
+  title: 'Del archivo al pedido sin rodeos.',
 }
 
 export const homeEditorialContent = {
@@ -61,5 +61,5 @@ export const homePreparationContent = {
 
 export const homeTrustContent = {
   eyebrow: 'Confianza',
-  title: 'Un proceso claro desde el diseno hasta la entrega.',
+  title: 'Diseño, produccion y entrega con una lectura clara desde el inicio.',
 }

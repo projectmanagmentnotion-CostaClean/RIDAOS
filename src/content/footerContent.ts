@@ -2,7 +2,7 @@ import { getPublicCtaHref } from '../lib/navigation'
 
 export const footerContent = {
   description:
-    'RidaosPrint centraliza catalogo, configuracion y seguimiento del pedido en un mismo recorrido.',
+    'Impresion personalizada, DTI por metro y rotulacion profesional para marcas, negocios y producciones a medida.',
   links: [
     { href: '#/mi-cuenta', label: 'Mi cuenta' },
     { href: getPublicCtaHref('guia'), label: 'Guia de archivos' },

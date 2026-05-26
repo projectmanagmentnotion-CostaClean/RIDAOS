@@ -61,7 +61,7 @@ export function ProductConfiguratorSection({
       data-product-reveal
       id="product-configurator"
     >
-      <SectionHeader eyebrow="Configurador" title={`Configura ${entry.name.toLowerCase()}.`} />
+      <SectionHeader eyebrow="Configurador" title={`Configura ${entry.name.toLowerCase()} de forma clara y rapida.`} />
       <div className="configurator-form">
         {fields.filter((field) => field.type !== 'file').map((field) => (
           <ConfiguratorFieldRenderer
@@ -77,7 +77,7 @@ export function ProductConfiguratorSection({
         {artworkField ? (
           <ArtworkUploadFlow
             acceptedFormats={artworkField.accept}
-            description="Sube el archivo, revisa guias de imprenta y confirma la pieza antes de seguir."
+            description="Sube el archivo, revisa la guia de impresion y confirma la pieza antes de continuar."
             file={selectedFile}
             onFileChange={(file) => onFileChange?.(artworkField.key, file)}
             onStateChange={(state) => {
@@ -88,7 +88,7 @@ export function ProductConfiguratorSection({
               }
             }}
             ruleKey={artworkRuleKey}
-            title="Artwork upload y print preview"
+            title="Sube tu diseño y revisa la vista previa"
           />
         ) : null}
 

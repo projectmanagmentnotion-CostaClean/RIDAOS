@@ -518,9 +518,8 @@ select {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 30;
+  z-index: 120;
   padding: 20px clamp(18px, 3vw, 42px) 0;
-  transform: translate3d(0, 0, 0);
   transition: transform 220ms ease, opacity 220ms ease;
 }
 
@@ -635,6 +634,7 @@ select {
 
 .ridaos-nav__actions {
   justify-content: flex-end;
+  gap: 10px;
 }
 
 .ridaos-nav__link,
@@ -659,7 +659,9 @@ select {
 }
 
 .ridaos-nav__link {
-  padding: 0 14px;
+  gap: 8px;
+  padding: 0 15px;
+  font-weight: 600;
 }
 
 .ridaos-nav__link::after {
@@ -699,19 +701,12 @@ select {
 
 .ridaos-nav__trigger,
 .ridaos-nav__mobile-toggle {
-  gap: 10px;
+  gap: 9px;
   padding: 0 16px;
   border-color: rgba(255, 255, 255, 0.08);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.01)),
     rgba(16, 17, 19, 0.78);
-}
-
-.ridaos-nav__trigger small {
-  color: var(--ridaos-cyan);
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
 .ridaos-nav__trigger.is-open,
@@ -722,26 +717,78 @@ select {
   box-shadow: var(--ridaos-glow-cyan);
 }
 
+.ridaos-nav__mobile-toggle:hover,
+.ridaos-nav__mobile-toggle:focus-visible,
+.ridaos-nav__mobile-toggle[aria-expanded='true'] {
+  border-color: rgba(26, 217, 226, 0.28);
+  box-shadow: var(--ridaos-glow-cyan);
+}
+
 .ridaos-nav__cta {
   min-height: 44px;
   padding-inline: 18px;
+  gap: 9px;
 }
 
 .ridaos-nav__mobile-toggle {
   display: none;
-}
-
-.ridaos-nav__mobile-toggle span {
-  display: block;
-  width: 16px;
-  height: 1px;
-  border-radius: 999px;
-  background: var(--ridaos-soft-white);
+  min-width: 44px;
+  padding-inline: 14px 16px;
+  color: var(--ridaos-soft-white);
+  border-color: rgba(26, 217, 226, 0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 0 0 1px rgba(26, 217, 226, 0.04);
 }
 
 .ridaos-nav__mobile-toggle strong {
   font-size: 0.9rem;
   font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.ridaos-nav__button-icon,
+.ridaos-nav__item-icon,
+.ridaos-nav__section-icon,
+.ridaos-nav__link-icon,
+.ridaos-nav__featured-icon {
+  flex: 0 0 auto;
+  display: block;
+}
+
+.ridaos-nav__button-icon {
+  width: 16px;
+  height: 16px;
+  color: rgba(231, 227, 218, 0.82);
+}
+
+.ridaos-nav__button-icon--menu {
+  width: 15px;
+  height: 15px;
+}
+
+.ridaos-nav__item-icon {
+  width: 16px;
+  height: 16px;
+  color: color-mix(in srgb, currentColor 68%, rgba(255, 255, 255, 0.34));
+}
+
+.ridaos-nav__link-icon {
+  width: 14px;
+  height: 14px;
+  color: rgba(231, 227, 218, 0.56);
+}
+
+.ridaos-nav__section-icon {
+  width: 14px;
+  height: 14px;
+  color: rgba(231, 227, 218, 0.78);
+}
+
+.ridaos-nav__featured-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--ridaos-neon-green);
 }
 
 .ridaos-nav__panel-backdrop,
@@ -756,6 +803,25 @@ select {
   pointer-events: none;
 }
 
+.ridaos-nav__panel-backdrop {
+  z-index: 54;
+}
+
+.ridaos-nav__drawer-backdrop {
+  z-index: 74;
+  background:
+    linear-gradient(180deg, rgba(4, 4, 4, 0.76), rgba(4, 4, 4, 0.58)),
+    radial-gradient(circle at top right, rgba(26, 217, 226, 0.08), transparent 30%);
+  backdrop-filter: blur(10px);
+}
+
+.ridaos-nav__drawer-backdrop.is-open,
+.ridaos-nav__drawer.is-open {
+  display: block;
+  opacity: 1;
+  pointer-events: auto;
+}
+
 .ridaos-nav__panel {
   position: absolute;
   top: calc(100% + 14px);
@@ -765,6 +831,7 @@ select {
   opacity: 0;
   pointer-events: none;
   transform: translateY(-10px) scale(0.985);
+  z-index: 55;
 }
 
 .ridaos-nav__panel-grid {
@@ -823,6 +890,13 @@ select {
   gap: 10px;
 }
 
+.ridaos-nav__section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  width: fit-content;
+}
+
 .ridaos-nav__panel-head p,
 .ridaos-nav__drawer-section header p {
   margin: 0;
@@ -859,6 +933,9 @@ select {
 .ridaos-nav__mobile-link {
   position: relative;
   display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  column-gap: 12px;
   gap: 8px;
   padding: 14px 16px;
   border-radius: 18px;
@@ -873,12 +950,12 @@ select {
 }
 
 .ridaos-nav__panel-link-copy,
-.ridaos-nav__mobile-link {
+.ridaos-nav__mobile-link-copy {
   min-width: 0;
 }
 
 .ridaos-nav__panel-link-title {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
   color: var(--ridaos-soft-white);
@@ -978,6 +1055,13 @@ select {
   margin: 0;
 }
 
+.ridaos-nav__featured-title {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
 .ridaos-nav__featured-chips {
   display: flex;
   flex-wrap: wrap;
@@ -996,25 +1080,52 @@ select {
 .ridaos-nav__drawer {
   position: fixed;
   inset: 0 0 0 auto;
-  width: min(100%, 560px);
+  width: min(calc(100vw - 18px), 560px);
+  max-width: calc(100vw - 18px);
   display: none;
   opacity: 0;
   pointer-events: none;
+  z-index: 75;
+  overflow: hidden;
 }
 
 .ridaos-nav__drawer-shell {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 18px;
   height: 100%;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   padding:
     max(20px, env(safe-area-inset-top))
-    18px
-    max(22px, env(safe-area-inset-bottom));
+    clamp(18px, 5vw, 34px)
+    max(28px, calc(env(safe-area-inset-bottom) + 20px));
   background:
-    radial-gradient(circle at top right, rgba(26, 217, 226, 0.1), transparent 22%),
-    radial-gradient(circle at 18% 10%, rgba(217, 255, 0, 0.08), transparent 18%),
-    linear-gradient(180deg, rgba(23, 17, 17, 0.98), rgba(5, 5, 5, 0.99));
-  border-left: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: -28px 0 80px rgba(0, 0, 0, 0.36);
+    radial-gradient(circle at 90% 8%, rgba(26, 217, 226, 0.06), transparent 12%),
+    radial-gradient(circle at 12% 0%, rgba(217, 255, 0, 0.045), transparent 14%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.015), transparent 20%),
+    linear-gradient(135deg, rgba(23, 17, 17, 0.98), rgba(5, 5, 5, 1) 56%);
+}
+
+.ridaos-nav__drawer-shell::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(118deg, transparent 0%, rgba(240, 20, 216, 0.04) 46%, transparent 100%);
+  background-size: 100% 56px, 56px 100%, 100% 100%;
+  opacity: 0.12;
+  pointer-events: none;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0.75));
+}
+
+.ridaos-nav__drawer-shell > * {
+  position: relative;
+  z-index: 1;
 }
 
 .ridaos-nav__drawer-header,
@@ -1025,8 +1136,29 @@ select {
 
 .ridaos-nav__drawer-header {
   grid-template-columns: minmax(0, 1fr) auto;
-  align-items: start;
-  margin-bottom: 18px;
+  align-items: center;
+  position: sticky;
+  top: calc(env(safe-area-inset-top) * -1);
+  margin: calc(env(safe-area-inset-top) * -1) calc(clamp(18px, 5vw, 34px) * -1) 2px;
+  padding:
+    max(20px, env(safe-area-inset-top))
+    clamp(18px, 5vw, 34px)
+    16px;
+  background:
+    linear-gradient(180deg, rgba(5, 5, 5, 0.985), rgba(5, 5, 5, 0.9)),
+    rgba(5, 5, 5, 0.94);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(22px);
+  z-index: 2;
+}
+
+.ridaos-nav__drawer-brand {
+  display: grid;
+  gap: 10px;
+}
+
+.ridaos-nav__drawer-logo {
+  max-width: min(220px, 58vw);
 }
 
 .ridaos-nav__drawer-header p,
@@ -1035,34 +1167,37 @@ select {
   color: rgba(231, 227, 218, 0.72);
 }
 
+.ridaos-nav__drawer-header h2 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  line-height: 0.95;
+}
+
 .ridaos-nav__mobile-close {
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 46px;
   height: 46px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.03);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)),
+    rgba(16, 17, 19, 0.84);
+  box-shadow: 0 0 0 1px rgba(26, 217, 226, 0.03);
 }
 
-.ridaos-nav__mobile-close span {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 18px;
-  height: 1px;
-  background: var(--ridaos-soft-white);
-}
-
-.ridaos-nav__mobile-close span:first-child {
-  transform: translate(-50%, -50%) rotate(45deg);
-}
-
-.ridaos-nav__mobile-close span:last-child {
-  transform: translate(-50%, -50%) rotate(-45deg);
+.ridaos-nav__mobile-close:hover,
+.ridaos-nav__mobile-close:focus-visible {
+  border-color: rgba(26, 217, 226, 0.22);
+  box-shadow: var(--ridaos-glow-cyan);
 }
 
 .ridaos-nav__drawer-cta {
-  margin-bottom: 18px;
+  width: 100%;
+  justify-content: center;
+  min-height: 48px;
+  border-radius: 18px;
 }
 
 .ridaos-nav__mobile-grid {
@@ -1073,23 +1208,43 @@ select {
 }
 
 .ridaos-nav__mobile-card {
+  position: relative;
   display: grid;
-  gap: 8px;
-  min-height: 120px;
-  padding: 16px;
-  border-radius: 22px;
+  gap: 12px;
+  min-height: 138px;
+  padding: 18px;
+  border-radius: 24px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.01)),
-    rgba(16, 17, 19, 0.88);
+    linear-gradient(135deg, rgba(16, 17, 19, 0.96), rgba(5, 5, 5, 0.98));
+  overflow: hidden;
   transition:
     transform 180ms ease,
     border-color 180ms ease,
     box-shadow 180ms ease;
 }
 
+.ridaos-nav__mobile-card::before {
+  content: '';
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  top: 0;
+  height: 1px;
+  opacity: 0.88;
+}
+
 .ridaos-nav__mobile-card strong {
   color: var(--ridaos-soft-white);
+  font-size: 1rem;
+}
+
+.ridaos-nav__mobile-card-head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
 }
 
 .ridaos-nav__mobile-card span {
@@ -1101,24 +1256,73 @@ select {
   box-shadow: inset 0 0 0 1px rgba(217, 255, 0, 0.03);
 }
 
+.ridaos-nav__mobile-card[data-accent='green']::before {
+  background: linear-gradient(90deg, rgba(217, 255, 0, 0.9), transparent);
+}
+
 .ridaos-nav__mobile-card[data-accent='pink'] {
   box-shadow: inset 0 0 0 1px rgba(240, 20, 216, 0.03);
+}
+
+.ridaos-nav__mobile-card[data-accent='pink']::before {
+  background: linear-gradient(90deg, rgba(240, 20, 216, 0.9), transparent);
 }
 
 .ridaos-nav__mobile-card[data-accent='cyan'] {
   box-shadow: inset 0 0 0 1px rgba(26, 217, 226, 0.03);
 }
 
+.ridaos-nav__mobile-card[data-accent='cyan']::before {
+  background: linear-gradient(90deg, rgba(26, 217, 226, 0.9), transparent);
+}
+
+.ridaos-nav__mobile-card[data-accent='neutral']::before {
+  background: linear-gradient(90deg, rgba(231, 227, 218, 0.82), transparent);
+}
+
+.ridaos-nav__mobile-link {
+  min-height: 78px;
+  padding-right: 18px;
+}
+
 .ridaos-nav__drawer-section {
-  margin-bottom: 18px;
-  padding: 16px;
-  border-radius: 22px;
+  padding: 18px;
+  border-radius: 24px;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.02);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.01)),
+    rgba(10, 10, 10, 0.68);
+}
+
+.ridaos-nav__drawer-section header {
+  display: grid;
+  gap: 10px;
+}
+
+.ridaos-nav__drawer-section header::after {
+  content: '';
+  width: 56px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(217, 255, 0, 0.8), transparent);
 }
 
 .ridaos-nav__drawer-footer {
-  padding-top: 4px;
+  padding: 6px 2px 0;
+}
+
+.ridaos-nav__mobile-link-copy {
+  display: grid;
+  gap: 6px;
+}
+
+.ridaos-nav__mobile-link-copy > span {
+  color: var(--ridaos-soft-white);
+  font-weight: 650;
+}
+
+body[data-mobile-nav-open='true'] .live-toast-viewport {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .ridaos-nav__link,
@@ -4199,10 +4403,17 @@ body.lenis {
   }
 
   .ridaos-nav__drawer {
-    width: 100%;
+    width: calc(100vw - 14px);
+    max-width: calc(100vw - 14px);
   }
 
   .ridaos-nav__drawer-shell {
+    gap: 16px;
+    padding-inline: 16px;
+  }
+
+  .ridaos-nav__drawer-header {
+    margin-inline: -16px;
     padding-inline: 16px;
   }
 
@@ -4610,6 +4821,32 @@ body.lenis {
 .objection-block {
   display: grid;
   gap: 18px;
+}
+
+@media (max-width: 768px) {
+  .ridaos-nav__drawer-shell {
+    padding-bottom: max(32px, calc(env(safe-area-inset-bottom) + 24px));
+  }
+
+  .ridaos-nav__mobile-card {
+    min-height: 128px;
+  }
+}
+
+@media (max-width: 430px) {
+  .ridaos-nav__drawer-header h2 {
+    font-size: 1.38rem;
+  }
+
+  .ridaos-nav__drawer-section,
+  .ridaos-nav__mobile-card {
+    border-radius: 22px;
+  }
+
+  .ridaos-nav__mobile-link {
+    min-height: 72px;
+    padding: 14px 15px;
+  }
 }
 
 @media (max-width: 860px) {

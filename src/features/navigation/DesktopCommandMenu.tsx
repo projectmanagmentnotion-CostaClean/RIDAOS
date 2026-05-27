@@ -1,4 +1,5 @@
 import type { RefObject } from 'react'
+import { NavigationIcon } from './NavigationIcons'
 import {
   featuredLinks,
   isNavigationItemActive,
@@ -43,6 +44,7 @@ function CommandLinkItem({
       onClick={onNavigate}
       tabIndex={open ? 0 : -1}
     >
+      {item.icon ? <NavigationIcon className="ridaos-nav__item-icon" name={item.icon} /> : null}
       <div className="ridaos-nav__panel-link-copy">
         <span className="ridaos-nav__panel-link-title">
           {item.label}
@@ -82,7 +84,10 @@ export function DesktopCommandMenu({
         <div className="ridaos-nav__panel-grid">
           <section className="ridaos-nav__panel-card" data-accent="green">
             <header className="ridaos-nav__panel-head">
-              <p>Productos</p>
+              <div className="ridaos-nav__section-label">
+                <NavigationIcon className="ridaos-nav__section-icon" name={navigationMeta.sectionIcons.products} />
+                <p>Productos</p>
+              </div>
               <span className="ridaos-nav__section-line ridaos-nav__accent-line" aria-hidden="true" />
             </header>
             <div className="ridaos-nav__panel-list">
@@ -100,7 +105,10 @@ export function DesktopCommandMenu({
 
           <section className="ridaos-nav__panel-card ridaos-nav__panel-card--wrap" data-accent="pink">
             <header className="ridaos-nav__panel-head">
-              <p>Rotulacion</p>
+              <div className="ridaos-nav__section-label">
+                <NavigationIcon className="ridaos-nav__section-icon" name={navigationMeta.sectionIcons.rotulacion} />
+                <p>Rotulacion</p>
+              </div>
               <span className="ridaos-nav__section-line ridaos-nav__accent-line" aria-hidden="true" />
             </header>
             <div className="ridaos-nav__panel-list">
@@ -118,7 +126,10 @@ export function DesktopCommandMenu({
 
           <section className="ridaos-nav__panel-card" data-accent="cyan">
             <header className="ridaos-nav__panel-head">
-              <p>Prepara tu produccion</p>
+              <div className="ridaos-nav__section-label">
+                <NavigationIcon className="ridaos-nav__section-icon" name={navigationMeta.sectionIcons.resources} />
+                <p>Recursos</p>
+              </div>
               <span className="ridaos-nav__section-line ridaos-nav__accent-line" aria-hidden="true" />
             </header>
             <div className="ridaos-nav__panel-list">
@@ -138,7 +149,10 @@ export function DesktopCommandMenu({
             <div className="ridaos-nav__featured-glow" aria-hidden="true" />
             <div className="ridaos-nav__featured-grid" aria-hidden="true" />
             <p className="ridaos-nav__featured-eyebrow">{navigationMeta.featuredBlock.eyebrow}</p>
-            <h3>{navigationMeta.featuredBlock.title}</h3>
+            <div className="ridaos-nav__featured-title">
+              <NavigationIcon className="ridaos-nav__featured-icon" name={navigationMeta.featuredBlock.icon} />
+              <h3>{navigationMeta.featuredBlock.title}</h3>
+            </div>
             <div className="ridaos-nav__featured-chips">
               {navigationMeta.featuredBlock.chips.map((chip) => (
                 <span key={chip}>{chip}</span>
@@ -163,6 +177,7 @@ export function DesktopCommandMenu({
               onClick={onNavigate}
               tabIndex={open ? 0 : -1}
             >
+              <NavigationIcon className="ridaos-nav__button-icon" name={navigationMeta.primaryCta.icon} />
               {navigationMeta.featuredBlock.ctaLabel}
             </a>
           </aside>

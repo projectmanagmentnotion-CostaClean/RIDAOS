@@ -1,58 +1,111 @@
 # Ridaos Navigation System
 
-## 1. Concepto
+## 1. Objetivo
 
-`Ridaos Command Navigation` define la navegacion publica premium de RidaosPrint.
+La navegacion publica de RidaosPrint queda cerrada con dos experiencias distintas:
 
-La idea es un panel de control visual para exploracion comercial:
+- desktop: barra fija premium con exploracion desplegable
+- mobile: drawer premium de pantalla casi completa
 
-- desktop: barra fija compacta + command panel desplegable
-- mobile: command drawer fullscreen
-- tono visual: dark garage premium
-- enfoque: acceso rapido a catalogo, DTI, rotulacion y preparacion de archivo
+La prioridad es mobile-first, dark garage y claridad comercial.
 
-## 2. Estructura desktop
+## 2. Labels finales
 
-La barra desktop vive en:
+Textos visibles aprobados:
 
-- [C:\Users\USUARIO\Documents\ridaosprint-pro\src\features\navigation\PremiumNavBar.tsx](C:\Users\USUARIO\Documents\ridaosprint-pro\src\features\navigation\PremiumNavBar.tsx)
+- desktop trigger: `Explorar`
+- mobile trigger: `Menu`
+- mobile dialog title: `Menu`
+- CTA principal: `Configurar DTI`
 
-Bloques:
+Textos prohibidos en UI publica:
 
-1. logo RidaosPrint
-2. links primarios
-3. trigger `Explorar`
-4. CTA `Configurar DTI`
-5. panel desplegable:
-   - Productos
+- `Command`
+- `COMMAND`
+- `Ridaos Command`
+- `debug`
+- `mock`
+- `internal`
+- `experimental`
+- `prototype`
+- `dev`
+- cualquier copy que suene a sistema, entorno interno o produccion
+
+## 3. Iconografia
+
+Archivo:
+
+- [NavigationIcons.tsx](C:\Users\USUARIO\Documents\ridaosprint-pro\src\features\navigation\NavigationIcons.tsx)
+
+Reglas:
+
+- iconos SVG propios
+- estilo fino y discreto
+- mismo lenguaje visual en desktop y mobile
+- se usan para orientar, no para decorar
+- `aria-hidden` cuando son decorativos
+
+Asignaciones activas:
+
+- Catalogo: grid
+- DTI: layers
+- Rotulacion: vehiculo
+- Subir archivo: upload
+- Guia / revision: documento
+- Explorar / CTA: acento de exploracion sutil
+- Menu: lineas premium
+- Cerrar: `X` limpia
+
+## 4. Desktop final
+
+Archivos:
+
+- [PremiumNavBar.tsx](C:\Users\USUARIO\Documents\ridaosprint-pro\src\features\navigation\PremiumNavBar.tsx)
+- [DesktopCommandMenu.tsx](C:\Users\USUARIO\Documents\ridaosprint-pro\src\features\navigation\DesktopCommandMenu.tsx)
+
+Desktop mantiene:
+
+- logo
+- links principales con iconografia ligera
+- trigger `Explorar`
+- CTA `Configurar DTI`
+- panel desplegable con productos, rotulacion y recursos
+
+No se comprime en formato mobile.
+
+## 5. Mobile final
+
+Archivo:
+
+- [MobileCommandDrawer.tsx](C:\Users\USUARIO\Documents\ridaosprint-pro\src\features\navigation\MobileCommandDrawer.tsx)
+
+Header exterior:
+
+- logo
+- boton `Menu`
+
+Drawer:
+
+1. header sticky con logo, `Menu` y cierre
+2. CTA principal `Configurar DTI`
+3. cards tactiles:
+   - DTI por metro
    - Rotulacion
-   - Prepara tu produccion
-   - bloque destacado DTI
-
-## 3. Estructura mobile
-
-El drawer mobile vive en:
-
-- [C:\Users\USUARIO\Documents\ridaosprint-pro\src\features\navigation\MobileCommandDrawer.tsx](C:\Users\USUARIO\Documents\ridaosprint-pro\src\features\navigation\MobileCommandDrawer.tsx)
-
-Bloques:
-
-1. header con cierre
-2. CTA principal DTI
-3. cards tactiles principales
+   - Catalogo
+   - Subir archivo
 4. secciones:
    - Productos
-   - Rotulacion
    - Recursos
-5. footer corto de contexto
+5. footer:
+   - `Impresion, rotulacion y DTI con revision tecnica.`
 
-## 4. Fuente de datos
+## 6. Fuente de datos
 
-La data de navegacion vive en:
+Archivo:
 
-- [C:\Users\USUARIO\Documents\ridaosprint-pro\src\features\navigation\navigationData.ts](C:\Users\USUARIO\Documents\ridaosprint-pro\src\features\navigation\navigationData.ts)
+- [navigationData.ts](C:\Users\USUARIO\Documents\ridaosprint-pro\src\features\navigation\navigationData.ts)
 
-Grupos:
+Grupos activos:
 
 - `primaryLinks`
 - `productLinks`
@@ -60,107 +113,94 @@ Grupos:
 - `resourceLinks`
 - `featuredLinks`
 - `mobilePrimaryCards`
+- `mobileProductLinks`
+- `mobileResourceLinks`
 - `navigationMeta`
 
-Cada item soporta:
+Cada item soporta `icon` para mantener consistencia entre desktop y mobile.
 
-- `label`
-- `href`
-- `description`
-- `badge`
-- `accent`
-- `priority`
-- `matchHrefs`
-- `matchPrefixes`
+## 7. Motion y GSAP
 
-## 5. Rutas publicas
+Archivo:
 
-Rutas principales conectadas:
-
-- `#/catalogo`
-- `#/producto/dti-por-metro`
-- `#/catalogo/rotulacion`
-- `#/upload`
-- `#/guia`
-- `#/producto/pegatinas-personalizadas`
-- `#/producto/tarjetas-visita`
-- `#/producto/flyers-personalizados`
-- `#/producto/vinilo-impreso`
-- `#/producto/textil-personalizado`
-- `#/producto/rotulacion-furgonetas`
-
-No se expone admin en la navegacion publica.
-
-## 6. Motion y GSAP
-
-La animacion de navegacion vive en:
-
-- [C:\Users\USUARIO\Documents\ridaosprint-pro\src\features\navigation\useNavigationMotion.ts](C:\Users\USUARIO\Documents\ridaosprint-pro\src\features\navigation\useNavigationMotion.ts)
+- [useNavigationMotion.ts](C:\Users\USUARIO\Documents\ridaosprint-pro\src\features\navigation\useNavigationMotion.ts)
 
 Desktop:
 
-- fade del backdrop
-- panel con `y` corto y `scale` ligera
-- stagger de items
-- reveal de accent lines
+- backdrop fade
+- panel con fade, `y` corto y `scale` sutil
+- stagger corto de items
 
 Mobile:
 
 - backdrop fade
-- drawer con entrada corta
-- stagger suave de CTA, cards y secciones
+- drawer `y: 24 -> 0`
+- stagger corto de CTA, cards y secciones
 
-## 7. Reduced Motion
+Reglas:
 
-Si `prefers-reduced-motion` esta activo:
-
-- se reduce la transformacion
-- se mantiene opacidad simple
-- no se deja contenido oculto
-- la navegacion sigue siendo operativa
+- sin rebotes
+- sin overshoot
+- reduced motion simple
+- si GSAP falla, el drawer no debe quedar invisible
 
 ## 8. Accesibilidad
 
-Reglas aplicadas:
+Obligatorio:
 
-- trigger desktop con `aria-expanded`, `aria-controls`, `aria-haspopup`
-- trigger mobile con `aria-expanded`, `aria-controls`, `aria-haspopup`
+- trigger desktop real `button`
+- trigger mobile real `button`
+- cierre mobile real `button`
+- `aria-expanded`
+- `aria-controls`
+- `aria-haspopup`
+- drawer con `role="dialog"` y `aria-modal="true"`
 - cierre por `Escape`
-- cierre por click fuera en desktop
-- cierre al navegar por cambio de hash
-- drawer mobile con `role="dialog"` y `aria-modal="true"`
-- foco devuelto al trigger al cerrar por interaccion de cierre
-- links reales `<a>`
+- cierre por backdrop
+- foco visible
+- foco devuelto al trigger al cerrar
+- links no focusables cuando el drawer esta cerrado
 
-## 9. Z-index y convivencia
+## 9. Scroll Lock y Safe Area
 
-La navegacion convive con:
+Con el menu mobile abierto:
 
-- `PremiumCursor`
-- live toasts
-- confirmation dialogs
-- success modal
-- cinematic overlays
+- el `body` se bloquea
+- el scroll vive dentro del drawer
+- se respetan `safe-area-inset-top` y `safe-area-inset-bottom`
+- los toasts se desactivan visualmente
 
-Regla:
+Al cerrar:
 
-- la navegacion queda por encima del contenido normal
-- no pisa modales criticos ni toasts
-- se cierra al cambiar de ruta
+- se restaura el body
+- no queda scroll bloqueado
 
-## 10. Como anadir un link
+## 10. QA final
 
-1. abrir [C:\Users\USUARIO\Documents\ridaosprint-pro\src\features\navigation\navigationData.ts](C:\Users\USUARIO\Documents\ridaosprint-pro\src\features\navigation\navigationData.ts)
-2. anadir el item al grupo correcto
-3. definir `href`, `description` y `accent`
-4. completar `matchHrefs` o `matchPrefixes` si necesita estado activo correcto
-5. evitar meter listas nuevas dentro de JSX
+Breakpoints obligatorios:
 
-## 11. Que no hacer
+1. `390px`
+2. `430px`
+3. `768px`
 
-- no hardcodear listas grandes en `App.tsx`
-- no enlazar rutas admin desde la capa publica
-- no anadir links sin alias o ruta real
-- no usar animaciones lentas o invasivas
-- no convertir el menu desktop en un drawer comprimido
-- no convertir el mobile en un mega menu de escritorio
+Checklist mobile:
+
+- header estable
+- `Menu` visible
+- drawer abre y cierra
+- CTA visible
+- cards con aire
+- scroll interno correcto
+- cierre por `X`
+- cierre por backdrop
+- cierre por `Escape`
+- cierre al navegar
+
+Checklist desktop:
+
+- `Explorar` abre el desplegable
+- click fuera cierra
+- `Escape` cierra
+- CTA `Configurar DTI` funciona
+- no aparece `Command`
+- iconos no saturan el header ni el panel

@@ -18,6 +18,15 @@ export function useNavigationMotion(currentHashRoute: string) {
   const mobileDrawerRef = useRef<HTMLElement | null>(null)
   const desktopTimelineRef = useRef<gsap.core.Timeline | null>(null)
   const mobileTimelineRef = useRef<gsap.core.Timeline | null>(null)
+  const scrollLockRef = useRef({
+    scrollY: 0,
+    overflow: '',
+    position: '',
+    top: '',
+    left: '',
+    right: '',
+    width: '',
+  })
 
   const closeDesktop = useCallback((restoreFocus = false) => {
     setDesktopOpen(false)
@@ -56,14 +65,39 @@ export function useNavigationMotion(currentHashRoute: string) {
 
   useEffect(() => {
     if (!mobileOpen) {
+      document.body.removeAttribute('data-mobile-nav-open')
       return
     }
 
-    const previousOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
+    const { style } = document.body
+    scrollLockRef.current = {
+      scrollY: window.scrollY,
+      overflow: style.overflow,
+      position: style.position,
+      top: style.top,
+      left: style.left,
+      right: style.right,
+      width: style.width,
+    }
+
+    document.body.setAttribute('data-mobile-nav-open', 'true')
+    style.overflow = 'hidden'
+    style.position = 'fixed'
+    style.top = `-${scrollLockRef.current.scrollY}px`
+    style.left = '0'
+    style.right = '0'
+    style.width = '100%'
 
     return () => {
-      document.body.style.overflow = previousOverflow
+      const lockedScroll = scrollLockRef.current.scrollY
+      document.body.removeAttribute('data-mobile-nav-open')
+      style.overflow = scrollLockRef.current.overflow
+      style.position = scrollLockRef.current.position
+      style.top = scrollLockRef.current.top
+      style.left = scrollLockRef.current.left
+      style.right = scrollLockRef.current.right
+      style.width = scrollLockRef.current.width
+      window.scrollTo({ top: lockedScroll, behavior: 'auto' })
     }
   }, [mobileOpen])
 
@@ -200,17 +234,17 @@ export function useNavigationMotion(currentHashRoute: string) {
 
       const timeline = gsap.timeline({ defaults: { ease: 'power3.out' } })
       timeline
-        .fromTo(backdrop, { autoAlpha: 0 }, { autoAlpha: 1, duration: reducedMotion ? 0.18 : 0.26 }, 0)
+        .fromTo(backdrop, { autoAlpha: 0 }, { autoAlpha: 1, duration: reducedMotion ? 0.14 : 0.24 }, 0)
         .fromTo(
           drawer,
-          { autoAlpha: 0, xPercent: reducedMotion ? 0 : 8, y: reducedMotion ? 0 : 24 },
-          { autoAlpha: 1, xPercent: 0, y: 0, duration: reducedMotion ? 0.22 : 0.42 },
+          { autoAlpha: 0, y: reducedMotion ? 0 : 24 },
+          { autoAlpha: 1, y: 0, duration: reducedMotion ? 0.18 : 0.4 },
           0,
         )
         .fromTo(
           items,
           { autoAlpha: 0, y: reducedMotion ? 0 : 12 },
-          { autoAlpha: 1, y: 0, duration: reducedMotion ? 0.18 : 0.24, stagger: reducedMotion ? 0 : 0.035 },
+          { autoAlpha: 1, y: 0, duration: reducedMotion ? 0.16 : 0.24, stagger: reducedMotion ? 0 : 0.035 },
           0.08,
         )
 
@@ -221,14 +255,16 @@ export function useNavigationMotion(currentHashRoute: string) {
       }
     }
 
+    gsap.set([backdrop, drawer], { display: 'block', pointerEvents: 'auto' })
+
     const timeline = gsap.timeline({
       defaults: { ease: 'power2.inOut' },
       onComplete: () => gsap.set([backdrop, drawer], { clearProps: 'all', display: 'none', pointerEvents: 'none' }),
     })
     timeline
-      .to(items, { autoAlpha: 0, y: reducedMotion ? 0 : -6, duration: reducedMotion ? 0.1 : 0.14, stagger: 0.01 }, 0)
-      .to(drawer, { autoAlpha: 0, xPercent: reducedMotion ? 0 : 8, y: reducedMotion ? 0 : 16, duration: reducedMotion ? 0.16 : 0.22 }, 0.03)
-      .to(backdrop, { autoAlpha: 0, duration: reducedMotion ? 0.12 : 0.2 }, 0.05)
+      .to(items, { autoAlpha: 0, y: reducedMotion ? 0 : -4, duration: reducedMotion ? 0.08 : 0.12, stagger: 0.008 }, 0)
+      .to(drawer, { autoAlpha: 0, y: reducedMotion ? 0 : 16, duration: reducedMotion ? 0.14 : 0.24 }, 0.02)
+      .to(backdrop, { autoAlpha: 0, duration: reducedMotion ? 0.1 : 0.18 }, 0.04)
 
     mobileTimelineRef.current = timeline
     return () => {

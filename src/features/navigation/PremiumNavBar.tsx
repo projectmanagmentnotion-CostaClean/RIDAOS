@@ -1,5 +1,6 @@
 import { DesktopCommandMenu } from './DesktopCommandMenu'
 import { MobileCommandDrawer } from './MobileCommandDrawer'
+import { NavigationIcon } from './NavigationIcons'
 import { isNavigationItemActive, navigationMeta, primaryLinks } from './navigationData'
 import { useNavigationMotion } from './useNavigationMotion'
 import { getPublicHref } from '../../lib/navigation'
@@ -58,6 +59,7 @@ export function PremiumNavBar({ brandLabel, currentHashRoute }: PremiumNavBarPro
                 href={item.href}
                 key={item.href}
               >
+                {item.icon ? <NavigationIcon className="ridaos-nav__link-icon" name={item.icon} /> : null}
                 {item.label}
               </a>
             )
@@ -69,14 +71,15 @@ export function PremiumNavBar({ brandLabel, currentHashRoute }: PremiumNavBarPro
             aria-controls="ridaos-command-panel"
             aria-expanded={desktopOpen}
             aria-haspopup="dialog"
+            aria-label="Abrir exploracion"
             className={`ridaos-nav__trigger ridaos-nav__trigger--desktop${desktopOpen ? ' is-open' : ''}`}
             data-cursor="interactive"
             onClick={toggleDesktop}
             ref={desktopTriggerRef}
             type="button"
           >
+            <NavigationIcon className="ridaos-nav__button-icon" name={navigationMeta.desktopTriggerIcon} />
             <span>{navigationMeta.desktopTriggerLabel}</span>
-            <small>Command</small>
           </button>
 
           <a
@@ -84,6 +87,7 @@ export function PremiumNavBar({ brandLabel, currentHashRoute }: PremiumNavBarPro
             data-cursor="sales"
             href={navigationMeta.primaryCta.href}
           >
+            <NavigationIcon className="ridaos-nav__button-icon" name={navigationMeta.primaryCta.icon} />
             {navigationMeta.primaryCta.label}
           </a>
 
@@ -91,16 +95,15 @@ export function PremiumNavBar({ brandLabel, currentHashRoute }: PremiumNavBarPro
             aria-controls="ridaos-mobile-drawer"
             aria-expanded={mobileOpen}
             aria-haspopup="dialog"
+            aria-label={navigationMeta.mobileAriaLabel}
             className="ridaos-nav__mobile-toggle"
             data-cursor="interactive"
             onClick={openMobile}
             ref={mobileTriggerRef}
             type="button"
           >
-            <span />
-            <span />
-            <span />
-            <strong>Menu</strong>
+            <NavigationIcon className="ridaos-nav__button-icon ridaos-nav__button-icon--menu" name={navigationMeta.mobileTriggerIcon} />
+            <strong>{navigationMeta.mobileTriggerLabel}</strong>
           </button>
         </div>
       </nav>

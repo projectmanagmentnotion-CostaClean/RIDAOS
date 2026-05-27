@@ -1,11 +1,11 @@
 import type { RefObject } from 'react'
+import { NavigationIcon } from './NavigationIcons'
 import {
   isNavigationItemActive,
+  mobileProductLinks,
   mobilePrimaryCards,
+  mobileResourceLinks,
   navigationMeta,
-  productLinks,
-  resourceLinks,
-  serviceLinks,
   type NavigationLinkItem,
 } from './navigationData'
 
@@ -45,8 +45,11 @@ function MobileLink({
       onClick={onNavigate}
       tabIndex={open ? 0 : -1}
     >
-      <span>{item.label}</span>
-      <small>{item.description}</small>
+      {item.icon ? <NavigationIcon className="ridaos-nav__item-icon" name={item.icon} /> : null}
+      <div className="ridaos-nav__mobile-link-copy">
+        <span>{item.label}</span>
+        <small>{item.description}</small>
+      </div>
     </a>
   )
 }
@@ -66,35 +69,49 @@ export function MobileCommandDrawer({
     <>
       <div
         aria-hidden={!open}
-        className="ridaos-nav__drawer-backdrop"
+        className={`ridaos-nav__drawer-backdrop${open ? ' is-open' : ''}`}
         onClick={onClose}
         ref={backdropRef}
       />
       <aside
         aria-hidden={!open}
         aria-labelledby="ridaos-mobile-nav-title"
+        aria-label={navigationMeta.mobileDialogLabel}
         aria-modal="true"
-        className="ridaos-nav__drawer"
+        className={`ridaos-nav__drawer${open ? ' is-open' : ''}`}
         id={drawerId}
         ref={drawerRef}
         role="dialog"
       >
         <div className="ridaos-nav__drawer-shell">
           <header className="ridaos-nav__drawer-header">
-            <div>
-              <p className="section-label">Navegacion</p>
+            <div className="ridaos-nav__drawer-brand">
+              <a
+                aria-label="Ir a la pagina de inicio"
+                className="brand ridaos-nav__drawer-logo"
+                data-cursor="interactive"
+                href="#/"
+                onClick={onNavigate}
+                tabIndex={open ? 0 : -1}
+              >
+                <img
+                  alt={brandLabel}
+                  className="brand__logo"
+                  loading="eager"
+                  src="/assets/brand/ridaos-logo-main.png"
+                />
+              </a>
               <h2 id="ridaos-mobile-nav-title">{navigationMeta.mobileTitle}</h2>
-              <p>{brandLabel}</p>
+              <p>Acceso rapido a catalogo, rotulacion y DTI.</p>
             </div>
             <button
-              aria-label="Cerrar menu"
+              aria-label={navigationMeta.mobileCloseAriaLabel}
               className="ridaos-nav__mobile-close"
               onClick={onClose}
               ref={closeButtonRef}
               type="button"
             >
-              <span />
-              <span />
+              <NavigationIcon className="ridaos-nav__button-icon" name={navigationMeta.mobileCloseIcon} />
             </button>
           </header>
 
@@ -106,6 +123,7 @@ export function MobileCommandDrawer({
             onClick={onNavigate}
             tabIndex={open ? 0 : -1}
           >
+            <NavigationIcon className="ridaos-nav__button-icon" name={navigationMeta.primaryCta.icon} />
             {navigationMeta.primaryCta.label}
           </a>
 
@@ -121,7 +139,10 @@ export function MobileCommandDrawer({
                 onClick={onNavigate}
                 tabIndex={open ? 0 : -1}
               >
-                <strong>{item.label}</strong>
+                <div className="ridaos-nav__mobile-card-head">
+                  {item.icon ? <NavigationIcon className="ridaos-nav__item-icon" name={item.icon} /> : null}
+                  <strong>{item.label}</strong>
+                </div>
                 <span>{item.description}</span>
               </a>
             ))}
@@ -129,10 +150,13 @@ export function MobileCommandDrawer({
 
           <section className="ridaos-nav__drawer-section">
             <header>
-              <p>Productos</p>
+              <div className="ridaos-nav__section-label">
+                <NavigationIcon className="ridaos-nav__section-icon" name={navigationMeta.sectionIcons.products} />
+                <p>Productos</p>
+              </div>
             </header>
             <div className="ridaos-nav__mobile-links">
-              {productLinks.map((item) => (
+              {mobileProductLinks.map((item) => (
                 <MobileLink
                   currentHashRoute={currentHashRoute}
                   item={item}
@@ -146,27 +170,13 @@ export function MobileCommandDrawer({
 
           <section className="ridaos-nav__drawer-section">
             <header>
-              <p>Rotulacion</p>
+              <div className="ridaos-nav__section-label">
+                <NavigationIcon className="ridaos-nav__section-icon" name={navigationMeta.sectionIcons.resources} />
+                <p>Recursos</p>
+              </div>
             </header>
             <div className="ridaos-nav__mobile-links">
-              {serviceLinks.map((item) => (
-                <MobileLink
-                  currentHashRoute={currentHashRoute}
-                  item={item}
-                  key={item.href}
-                  onNavigate={onNavigate}
-                  open={open}
-                />
-              ))}
-            </div>
-          </section>
-
-          <section className="ridaos-nav__drawer-section">
-            <header>
-              <p>Recursos</p>
-            </header>
-            <div className="ridaos-nav__mobile-links">
-              {resourceLinks.map((item) => (
+              {mobileResourceLinks.map((item) => (
                 <MobileLink
                   currentHashRoute={currentHashRoute}
                   item={item}

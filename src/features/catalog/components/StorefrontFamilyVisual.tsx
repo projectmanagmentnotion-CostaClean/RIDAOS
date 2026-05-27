@@ -31,10 +31,10 @@ export function StorefrontFamilyVisual({
       data-variant={variant}
       style={style}
     >
-      <div className="storefront-family-visual__backdrop" />
-      <div className="storefront-family-visual__beam" />
+      <div className="storefront-family-visual__backdrop" data-overlay-reveal />
+      <div className="storefront-family-visual__beam" data-overlay-reveal />
       <div className="storefront-family-visual__grid" />
-      <div className="storefront-family-visual__image" />
+      <div className="storefront-family-visual__image" data-parallax data-parallax-strength={variant === 'hero' ? '7' : '4'} />
       <div className="storefront-family-visual__chrome">
         {eyebrow ? <span className="storefront-family-visual__eyebrow">{eyebrow}</span> : null}
         <strong className="storefront-family-visual__title">{title}</strong>

@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { footerContent, pricingContent } from '../content'
 import { CartLineItem } from '../features/cart/components/CartLineItem'
 import { CartRecommendations } from '../features/cart/components/CartRecommendations'
 import { CartSummaryPanel } from '../features/cart/components/CartSummaryPanel'
 import { useCartSummary } from '../features/cart/hooks/useCartSummary'
 import { useLiveToast } from '../features/live-feedback'
+import { initStorefrontRevealAnimations } from '../features/motion/revealAnimations'
 import { getContinueShoppingHref, publicRoutes } from '../lib/navigation'
 import { useCartStore } from '../store/useCartStore'
 
@@ -20,6 +21,7 @@ const formatCurrency = (value: number) =>
  * Visual component: src/pages/Carrito.tsx
  */
 function Carrito() {
+  const pageRef = useRef<HTMLElement | null>(null)
   const items = useCartStore((state) => state.items)
   const couponCode = useCartStore((state) => state.couponCode)
   const removeItem = useCartStore((state) => state.removeItem)
@@ -30,6 +32,17 @@ function Carrito() {
   const summary = useCartSummary()
   const [couponDraft, setCouponDraft] = useState(couponCode)
   const { confirm, info, success, toast, warning } = useLiveToast()
+
+  useEffect(() => {
+    const root = pageRef.current
+
+    if (!root) {
+      return
+    }
+
+    const context = initStorefrontRevealAnimations(root)
+    return () => context.revert()
+  }, [])
 
   const handleRemoveItem = (itemId: string) => {
     const removedItem = items.find((item) => item.id === itemId)
@@ -82,15 +95,15 @@ function Carrito() {
   }
 
   return (
-    <section className="page">
-      <div className="page-hero">
+    <section className="page" ref={pageRef}>
+      <div className="page-hero" data-animate="hero">
         <p className="eyebrow">{pricingContent.cart.heroEyebrow}</p>
         <h1>{pricingContent.cart.heroTitle}</h1>
         <p>{pricingContent.cart.heroDescription}</p>
       </div>
 
-      <div className="split-grid cart-layout cart-layout--premium">
-        <article className="content-card">
+      <div className="split-grid cart-layout cart-layout--premium" data-animate="reveal">
+        <article className="content-card" data-animate="panel">
           <div className="premium-panel-header">
             <div>
               <p className="section-label">Items</p>
@@ -126,7 +139,7 @@ function Carrito() {
           )}
         </article>
 
-        <div className="summary-stack">
+        <div className="summary-stack" data-animate="reveal">
           <CartSummaryPanel
             couponDraft={couponDraft}
             formatCurrency={formatCurrency}
@@ -136,7 +149,7 @@ function Carrito() {
             summary={summary}
           />
 
-          <article className="content-card premium-cart-cta" data-cursor-zone="conversion">
+          <article className="content-card premium-cart-cta" data-animate="panel" data-cursor-zone="conversion">
             <p className="section-label">Siguiente paso</p>
             <h3>Confirma tu pedido sin perder contexto.</h3>
             <ul className="hint-list">
@@ -178,7 +191,9 @@ function Carrito() {
         </div>
       </div>
 
-      <CartRecommendations />
+      <div data-animate="reveal">
+        <CartRecommendations />
+      </div>
     </section>
   )
 }

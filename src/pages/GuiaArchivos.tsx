@@ -1,8 +1,10 @@
+import { useEffect, useRef } from 'react'
 import FAQSection from '../components/FAQSection'
 import PageShell from '../components/PageShell'
 import ProcessSteps from '../components/ProcessSteps'
 import SectionHeader from '../components/SectionHeader'
 import TrustGrid from '../components/TrustGrid'
+import { initStorefrontRevealAnimations } from '../features/motion/revealAnimations'
 import { getPublicCtaHref } from '../lib/navigation'
 
 const acceptedFormats = ['PDF', 'AI', 'EPS', 'SVG', 'PNG', 'JPG', 'TIFF', 'ZIP']
@@ -39,11 +41,24 @@ const guideFaq = [
 ]
 
 function GuiaArchivos() {
+  const pageRef = useRef<HTMLElement | null>(null)
+
+  useEffect(() => {
+    const root = pageRef.current
+
+    if (!root) {
+      return
+    }
+
+    const context = initStorefrontRevealAnimations(root)
+    return () => context.revert()
+  }, [])
+
   return (
-    <PageShell className="guide-page premium-page">
+    <PageShell className="guide-page premium-page" ref={pageRef}>
       <SectionHeader
         className="guide-hero premium-hero"
-        description="Esta guia concentra criterios tecnicos para reducir errores antes de pasar por el configurador DTF o solicitar un presupuesto para otras lineas del catalogo."
+        description="Esta guia concentra criterios tecnicos para reducir errores antes de pasar por el configurador DTI o solicitar un presupuesto para otras lineas del catalogo."
         eyebrow="Preparacion de archivos"
         hero
         title="Arte listo para fabricar sin friccion innecesaria."
@@ -88,8 +103,8 @@ function GuiaArchivos() {
               <span>Maximo recomendado: estructura limpia por proyecto</span>
             </div>
           </div>
-          <a aria-label="Ir al producto DTF por metro" className="action-button action-link-button" href={getPublicCtaHref('dtf')}>
-            Ir a DTF por metro
+          <a aria-label="Ir al producto DTI por metro" className="action-button action-link-button" href={getPublicCtaHref('dtf')}>
+            Ir a DTI por metro
           </a>
         </article>
       </div>

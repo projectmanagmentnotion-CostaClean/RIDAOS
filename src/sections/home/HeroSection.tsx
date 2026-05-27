@@ -25,7 +25,7 @@ function HeroSection({ content }: HeroSectionProps) {
     <section className="home-sequence-scroll" data-scene="HERO_CINEMATIC" data-zone="HOME_HERO">
       <div className="home-sequence-sticky">
         <HomeVehicleScrollSequence />
-        <div className="home-hero-stage">
+        <div className="home-hero-stage" data-animate="hero">
           <SectionHeader
             className="premium-hero home-hero-copy type-split"
             description={previewHeroContent.fallbackDescription}

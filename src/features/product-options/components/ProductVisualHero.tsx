@@ -35,10 +35,10 @@ export function ProductVisualHero({ hero, primaryHref, secondaryHref }: ProductV
           </div>
         </div>
         <div className="product-visual-hero__visual" data-status={hero.asset.status}>
-          <div className="product-visual-hero__backdrop" aria-hidden="true" />
+          <div className="product-visual-hero__backdrop" aria-hidden="true" data-overlay-reveal />
           <div className="product-visual-hero__grid" aria-hidden="true" />
-          <div className="product-visual-hero__glow" aria-hidden="true" />
-          <div className="product-visual-hero__image" aria-hidden="true" />
+          <div className="product-visual-hero__glow" aria-hidden="true" data-overlay-reveal />
+          <div className="product-visual-hero__image" aria-hidden="true" data-parallax data-parallax-strength="5" />
           <div className="product-visual-hero__asset-card">
             <p className="section-label">{hero.asset.label}</p>
             <strong>Referencia principal del producto</strong>

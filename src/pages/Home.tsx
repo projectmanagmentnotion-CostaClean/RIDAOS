@@ -1,8 +1,9 @@
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import PageShell from '../components/PageShell'
 import { getContentByEntryId } from '../catalog/content/contentSelectors'
 import { dtfEntry } from '../catalog/products/dtf'
 import CinematicHomeScroll from '../motion/cinematic/CinematicHomeScroll'
+import { initStorefrontRevealAnimations } from '../features/motion/revealAnimations'
 import AnswersSection from '../sections/home/AnswersSection'
 import EditorialSection from '../sections/home/EditorialSection'
 import FinalCtaSection from '../sections/home/FinalCtaSection'
@@ -28,6 +29,15 @@ import TrustSection from '../sections/home/TrustSection'
 function Home() {
   const pageRef = useRef<HTMLElement | null>(null)
   const homeContent = useMemo(() => getContentByEntryId(dtfEntry.id), [])
+
+  useEffect(() => {
+    if (!pageRef.current) {
+      return
+    }
+
+    const context = initStorefrontRevealAnimations(pageRef.current)
+    return () => context.revert()
+  }, [])
 
   return (
     <PageShell className="hero-page premium-page home-page" ref={pageRef}>

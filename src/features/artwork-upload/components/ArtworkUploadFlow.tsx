@@ -35,6 +35,19 @@ function getStatusLabel(status: ArtworkPreviewSummary['workflowStatus']) {
   }
 }
 
+function getCheckStatusLabel(status: ArtworkPreviewSummary['advancedChecks'][number]['status']) {
+  switch (status) {
+    case 'fail':
+      return 'Corregir'
+    case 'warning':
+      return 'Revisar'
+    case 'pass':
+      return 'Correcto'
+    default:
+      return 'Info'
+  }
+}
+
 export function ArtworkUploadFlow({
   file,
   onFileChange,
@@ -83,14 +96,19 @@ export function ArtworkUploadFlow({
           <h3>{title}</h3>
           <p>{description}</p>
         </div>
-        <span className={`status-badge status-${summary?.workflowStatus === 'blocked' ? 'danger' : summary?.workflowStatus === 'needs_review' ? 'warning' : summary?.workflowStatus === 'warning' ? 'warning' : 'success'}`}>
+        <span
+          className={`status-badge status-${summary?.workflowStatus === 'blocked' ? 'danger' : summary?.workflowStatus === 'needs_review' ? 'warning' : summary?.workflowStatus === 'warning' ? 'warning' : 'success'}`}
+        >
           {summary ? getStatusLabel(summary.workflowStatus) : 'Por revisar'}
         </span>
       </div>
 
       <ol className="artwork-upload-flow__steps">
         {steps.map((step, index) => (
-          <li className={`artwork-upload-flow__step${metadata && index < 5 ? ' is-complete' : ''}${confirmed && index === 5 ? ' is-complete' : ''}`} key={step}>
+          <li
+            className={`artwork-upload-flow__step${metadata && index < 5 ? ' is-complete' : ''}${confirmed && index === 5 ? ' is-complete' : ''}`}
+            key={step}
+          >
             <span>{index + 1}</span>
             <strong>{step}</strong>
           </li>
@@ -128,7 +146,7 @@ export function ArtworkUploadFlow({
           <article className="content-card artwork-upload-flow__panel">
             <p className="section-label">Revision automatica</p>
             {isLoading ? <p>Analizando archivo...</p> : null}
-            {!summary && !isLoading ? <p>Sube tu diseño para activar checks, guias y confirmacion.</p> : null}
+            {!summary && !isLoading ? <p>Sube tu diseno para activar checks, guias y confirmacion.</p> : null}
             {summary ? (
               <div className="summary-list compact-summary">
                 <div className="summary-row">
@@ -164,8 +182,10 @@ export function ArtworkUploadFlow({
                       <p>{check.description}</p>
                       <small>{check.productionImpact}</small>
                     </div>
-                    <span className={`status-badge status-${check.status === 'fail' ? 'danger' : check.status === 'warning' ? 'warning' : check.status === 'pass' ? 'success' : 'info'}`}>
-                      {check.status}
+                    <span
+                      className={`status-badge status-${check.status === 'fail' ? 'danger' : check.status === 'warning' ? 'warning' : check.status === 'pass' ? 'success' : 'info'}`}
+                    >
+                      {getCheckStatusLabel(check.status)}
                     </span>
                   </article>
                 ))}

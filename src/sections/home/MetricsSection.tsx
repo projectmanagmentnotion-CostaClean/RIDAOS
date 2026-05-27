@@ -8,7 +8,7 @@ import { homeStats } from './homeData'
  */
 function MetricsSection() {
   return (
-    <div aria-label="Resumen" className="stats-grid" data-zone="HOME_METRICS">
+    <div aria-label="Resumen" className="stats-grid" data-animate="reveal" data-zone="HOME_METRICS">
       {homeStats.map((stat) => (
         <MetricCard className="hover-lift premium-value-card cursor-interest" key={stat.label} label={stat.label} note={stat.note} value={stat.value} />
       ))}

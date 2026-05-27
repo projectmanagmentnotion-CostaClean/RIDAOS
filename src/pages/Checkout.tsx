@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import CommercialNotice from '../components/CommercialNotice'
 import { pricingContent } from '../content'
 import { checkoutSteps, paymentMocks } from '../features/cart/data/checkoutMock'
@@ -6,6 +6,7 @@ import { CheckoutStepRail } from '../features/cart/components/CheckoutStepRail'
 import { useCartSummary } from '../features/cart/hooks/useCartSummary'
 import type { CartSummary } from '../features/cart/types/cart.types'
 import { useLiveToast } from '../features/live-feedback'
+import { initStorefrontRevealAnimations } from '../features/motion/revealAnimations'
 import { multiplyOrderItemPricing } from '../features/cart/utils/cartPricing'
 import { OrderLifecycleTimeline } from '../features/orders/components/OrderLifecycleTimeline'
 import { getContinueShoppingHref } from '../lib/navigation'
@@ -31,6 +32,7 @@ const formatCurrency = (value: number) =>
  * Visual component: src/pages/Checkout.tsx
  */
 function Checkout() {
+  const pageRef = useRef<HTMLElement | null>(null)
   const cartItems = useCartStore((state) => state.items)
   const clearCart = useCartStore((state) => state.clearCart)
   const summary = useCartSummary()
@@ -52,6 +54,17 @@ function Checkout() {
   const { dismiss, error, info, progress, showSuccessModal, success } = useLiveToast()
 
   const canAdvance = useMemo(() => cartItems.length > 0, [cartItems.length])
+
+  useEffect(() => {
+    const root = pageRef.current
+
+    if (!root) {
+      return
+    }
+
+    const context = initStorefrontRevealAnimations(root)
+    return () => context.revert()
+  }, [])
 
   const handleFieldChange =
     (field: keyof CustomerData) =>
@@ -133,17 +146,19 @@ function Checkout() {
   const activeSummary = submittedSummary ?? summary
 
   return (
-    <section className="page">
-      <div className="page-hero">
+    <section className="page" ref={pageRef}>
+      <div className="page-hero" data-animate="hero">
         <p className="eyebrow">{pricingContent.checkout.heroEyebrow}</p>
         <h1>{pricingContent.checkout.heroTitle}</h1>
         <p>{pricingContent.checkout.heroDescription}</p>
       </div>
 
-      <CheckoutStepRail activeStep={step} steps={checkoutSteps} />
+      <div data-animate="reveal">
+        <CheckoutStepRail activeStep={step} steps={checkoutSteps} />
+      </div>
 
-      <div className="split-grid cart-layout checkout-layout--premium">
-        <article className="content-card" data-cursor-zone="conversion">
+      <div className="split-grid cart-layout checkout-layout--premium" data-animate="reveal">
+        <article className="content-card" data-animate="panel" data-cursor-zone="conversion">
           {step === 'review' ? (
             <>
               <p className="section-label">Revision final</p>
@@ -293,8 +308,8 @@ function Checkout() {
           ) : null}
         </article>
 
-        <div className="summary-stack">
-          <article className="content-card premium-cart-summary" data-cursor-zone="conversion">
+        <div className="summary-stack" data-animate="reveal">
+          <article className="content-card premium-cart-summary" data-animate="panel" data-cursor-zone="conversion">
             <p className="section-label">Resumen de checkout</p>
             <div className="summary-list">
               <div className="summary-row">
@@ -326,7 +341,7 @@ function Checkout() {
           </article>
 
           {confirmation ? (
-            <article className="content-card success-card" data-cursor-zone="conversion">
+            <article className="content-card success-card" data-animate="panel" data-cursor-zone="conversion">
               <p className="section-label">Siguiente lectura</p>
               <p>
                 El pedido ya aparece en tu historial con su estado inicial de revision de archivo y preparacion.

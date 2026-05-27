@@ -10,7 +10,7 @@ import { faqContent } from '../../content/faqContent'
  */
 function AnswersSection() {
   return (
-    <section className="content-section" data-zone="HOME_FAQ">
+    <section className="content-section" data-animate="reveal" data-zone="HOME_FAQ">
       <ObjectionHandlerBlock entryId={dtfEntry.id} title={faqContent.home.objectionsTitle} />
       <FaqBlock entryId={dtfEntry.id} title={faqContent.home.faqTitle} />
     </section>

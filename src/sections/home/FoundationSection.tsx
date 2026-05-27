@@ -10,7 +10,7 @@ import { getPublicCtaHref } from '../../lib/navigation'
  */
 function FoundationSection() {
   return (
-    <div className="split-grid home-lower-grid" data-scene="TEXTILE_DTF_TRANSITION" data-zone="HOME_FOUNDATION">
+    <div className="split-grid home-lower-grid" data-animate="reveal" data-scene="TEXTILE_DTF_TRANSITION" data-zone="HOME_FOUNDATION">
       <CtaPanel
         actions={
           <>
@@ -28,7 +28,7 @@ function FoundationSection() {
         title={homeFoundationContent.panelTitle}
       />
 
-      <article className="content-card home-quick-panel hover-lift cursor-interest" data-cursor="interest" tabIndex={0}>
+      <article className="content-card home-quick-panel hover-lift cursor-interest" data-animate="panel" data-cursor="interest" tabIndex={0}>
         <SectionHeader title={homeFoundationContent.quickPanelTitle} />
         <ul className="detail-list">
           {homeFoundationContent.quickLinks.map((link) => (

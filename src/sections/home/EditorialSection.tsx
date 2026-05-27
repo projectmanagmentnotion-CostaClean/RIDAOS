@@ -9,7 +9,7 @@ import { homeEditorialContent } from '../../content/homeContent'
  */
 function EditorialSection() {
   return (
-    <section className="content-section content-grid-two" data-scene="PRODUCTION_DETAIL_TRANSITION" data-zone="HOME_EDITORIAL">
+    <section className="content-section content-grid-two" data-animate="reveal" data-scene="PRODUCTION_DETAIL_TRANSITION" data-zone="HOME_EDITORIAL">
       <SeoContentBlock entryId={dtfEntry.id} title={homeEditorialContent.primaryTitle} />
       <SeoContentBlock entryId={dtfEntry.id} mode="useCases" title={homeEditorialContent.secondaryTitle} />
     </section>

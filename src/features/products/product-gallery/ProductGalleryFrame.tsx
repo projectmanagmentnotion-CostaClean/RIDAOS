@@ -18,9 +18,9 @@ export function ProductGalleryFrame({ label, title, description, assetFileName, 
     <article className="content-card product-gallery-frame" aria-hidden="true">
       <p className="section-label">{label}</p>
       <div className="product-gallery-frame__visual" data-status={assetStatus} style={style}>
-        <div className="product-gallery-frame__backdrop" />
-        <div className="product-gallery-frame__grid" />
-        <div className="product-gallery-frame__image" />
+        <div className="product-gallery-frame__backdrop" data-overlay-reveal />
+        <div className="product-gallery-frame__grid" data-overlay-reveal />
+        <div className="product-gallery-frame__image" data-parallax data-parallax-strength="4" />
         {assetFileName || assetPath || assetStatus ? (
           <div className="product-gallery-frame__asset">
             <strong>{title}</strong>

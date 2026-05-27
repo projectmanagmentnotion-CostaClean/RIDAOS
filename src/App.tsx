@@ -12,6 +12,7 @@ import { getCatalogFamilyHref, getProductPageHref, getPublicCtaHref, getPublicHr
 import { getCurrentHashRoute, navigateToHashRoute, normalizeHashRoute } from './lib/hashRouting'
 import { footerContent, navigationContent } from './content'
 import { useCmsPreviewDocument } from './features/cms-preview'
+import { PremiumNavBar } from './features/navigation'
 
 type RouteKey =
   | 'home'
@@ -237,52 +238,6 @@ function getRouteFromHash(hash: string): RouteKey {
   return routes[normalizedHash] ?? 'notFound'
 }
 
-function isNavigationActive(route: RouteKey, itemRoute: RouteKey) {
-  if (itemRoute === 'catalogo') {
-    return (
-      route === 'catalogo' ||
-      route === 'catalogoDti' ||
-      route === 'papeleria' ||
-      route === 'catalogoFlyers' ||
-      route === 'materiales' ||
-      route === 'accesorios'
-    )
-  }
-
-  if (itemRoute === 'dtf') {
-    return route === 'dtf' || route === 'catalogoDti'
-  }
-
-  if (itemRoute === 'textil') {
-    return route === 'textil' || route === 'productTextil'
-  }
-
-  if (itemRoute === 'rotulacion') {
-    return route === 'rotulacion' || route === 'productRotulacion'
-  }
-
-  if (itemRoute === 'miCuenta') {
-    return route === 'miCuenta' || route === 'misPedidos' || route === 'detallePedido' || route === 'historialArchivos'
-  }
-
-  if (itemRoute === 'admin') {
-    return (
-      route === 'admin' ||
-      route === 'adminContent' ||
-      route === 'adminService' ||
-      route === 'adminAccounts' ||
-      route === 'adminReporting' ||
-      route === 'adminOrders' ||
-      route === 'adminOrderDetail' ||
-      route === 'adminUploads' ||
-      route === 'adminCustomers' ||
-      route === 'adminProduction'
-    )
-  }
-
-  return route === itemRoute
-}
-
 function PageLoadingFallback() {
   return (
     <section className="page-loading-shell" aria-live="polite">
@@ -398,30 +353,7 @@ function App() {
               isHeaderHidden ? ' site-header--hidden' : ''
             }${isHeaderSolid ? ' site-header--solid' : ''}`}
           >
-            <nav className="site-nav" aria-label="Principal">
-              <a aria-label="Ir a la pagina de inicio" className="brand" data-cursor="interactive" href={getPublicHref('home')}>
-                <img
-                  alt={previewNavigation.brandLabel}
-                  className="brand__logo"
-                  loading="eager"
-                  src="/assets/brand/ridaos-logo-main.png"
-                />
-                <span className="sr-only">{previewNavigation.brandLabel}</span>
-              </a>
-              <div className="nav-links">
-                {previewNavigation.mainLinks.map((item) => (
-                  <a
-                    aria-current={isNavigationActive(route, item.route) ? 'page' : undefined}
-                    className={isNavigationActive(route, item.route) ? 'is-active' : undefined}
-                    data-cursor="interactive"
-                    href={item.href}
-                    key={item.href}
-                  >
-                    {item.label}
-                  </a>
-                ))}
-              </div>
-            </nav>
+            <PremiumNavBar brandLabel={previewNavigation.brandLabel} currentHashRoute={currentHashRoute} />
           </header>
 
           <main className={`page-shell${route === 'home' ? ' page-shell--home' : ''}`} id="main-content" tabIndex={-1}>

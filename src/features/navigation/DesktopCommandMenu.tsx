@@ -1,0 +1,173 @@
+import type { RefObject } from 'react'
+import {
+  featuredLinks,
+  isNavigationItemActive,
+  navigationMeta,
+  productLinks,
+  resourceLinks,
+  serviceLinks,
+  type NavigationLinkItem,
+} from './navigationData'
+
+type DesktopCommandMenuProps = {
+  currentHashRoute: string
+  open: boolean
+  panelId: string
+  backdropRef: RefObject<HTMLDivElement | null>
+  panelRef: RefObject<HTMLDivElement | null>
+  onClose: () => void
+  onNavigate: () => void
+}
+
+function CommandLinkItem({
+  item,
+  currentHashRoute,
+  open,
+  onNavigate,
+}: {
+  item: NavigationLinkItem
+  currentHashRoute: string
+  open: boolean
+  onNavigate: () => void
+}) {
+  const isActive = isNavigationItemActive(currentHashRoute, item)
+
+  return (
+    <a
+      aria-current={isActive ? 'page' : undefined}
+      className={`ridaos-nav__panel-link${isActive ? ' is-active' : ''}`}
+      data-accent={item.accent}
+      data-cursor="interactive"
+      data-nav-item
+      href={item.href}
+      onClick={onNavigate}
+      tabIndex={open ? 0 : -1}
+    >
+      <div className="ridaos-nav__panel-link-copy">
+        <span className="ridaos-nav__panel-link-title">
+          {item.label}
+          {item.badge ? <small>{item.badge}</small> : null}
+        </span>
+        <span>{item.description}</span>
+      </div>
+      <span className="ridaos-nav__panel-link-line ridaos-nav__accent-line" aria-hidden="true" />
+    </a>
+  )
+}
+
+export function DesktopCommandMenu({
+  currentHashRoute,
+  open,
+  panelId,
+  backdropRef,
+  panelRef,
+  onClose,
+  onNavigate,
+}: DesktopCommandMenuProps) {
+  return (
+    <>
+      <div
+        aria-hidden={!open}
+        className="ridaos-nav__panel-backdrop"
+        onClick={onClose}
+        ref={backdropRef}
+      />
+      <div
+        aria-hidden={!open}
+        className="ridaos-nav__panel"
+        id={panelId}
+        ref={panelRef}
+        role="group"
+      >
+        <div className="ridaos-nav__panel-grid">
+          <section className="ridaos-nav__panel-card" data-accent="green">
+            <header className="ridaos-nav__panel-head">
+              <p>Productos</p>
+              <span className="ridaos-nav__section-line ridaos-nav__accent-line" aria-hidden="true" />
+            </header>
+            <div className="ridaos-nav__panel-list">
+              {productLinks.map((item) => (
+                <CommandLinkItem
+                  currentHashRoute={currentHashRoute}
+                  item={item}
+                  key={item.href}
+                  onNavigate={onNavigate}
+                  open={open}
+                />
+              ))}
+            </div>
+          </section>
+
+          <section className="ridaos-nav__panel-card ridaos-nav__panel-card--wrap" data-accent="pink">
+            <header className="ridaos-nav__panel-head">
+              <p>Rotulacion</p>
+              <span className="ridaos-nav__section-line ridaos-nav__accent-line" aria-hidden="true" />
+            </header>
+            <div className="ridaos-nav__panel-list">
+              {serviceLinks.map((item) => (
+                <CommandLinkItem
+                  currentHashRoute={currentHashRoute}
+                  item={item}
+                  key={item.href}
+                  onNavigate={onNavigate}
+                  open={open}
+                />
+              ))}
+            </div>
+          </section>
+
+          <section className="ridaos-nav__panel-card" data-accent="cyan">
+            <header className="ridaos-nav__panel-head">
+              <p>Prepara tu produccion</p>
+              <span className="ridaos-nav__section-line ridaos-nav__accent-line" aria-hidden="true" />
+            </header>
+            <div className="ridaos-nav__panel-list">
+              {resourceLinks.map((item) => (
+                <CommandLinkItem
+                  currentHashRoute={currentHashRoute}
+                  item={item}
+                  key={item.href}
+                  onNavigate={onNavigate}
+                  open={open}
+                />
+              ))}
+            </div>
+          </section>
+
+          <aside className="ridaos-nav__featured" data-accent="green">
+            <div className="ridaos-nav__featured-glow" aria-hidden="true" />
+            <div className="ridaos-nav__featured-grid" aria-hidden="true" />
+            <p className="ridaos-nav__featured-eyebrow">{navigationMeta.featuredBlock.eyebrow}</p>
+            <h3>{navigationMeta.featuredBlock.title}</h3>
+            <div className="ridaos-nav__featured-chips">
+              {navigationMeta.featuredBlock.chips.map((chip) => (
+                <span key={chip}>{chip}</span>
+              ))}
+            </div>
+            <div className="ridaos-nav__featured-links">
+              {featuredLinks.map((item) => (
+                <CommandLinkItem
+                  currentHashRoute={currentHashRoute}
+                  item={item}
+                  key={item.href}
+                  onNavigate={onNavigate}
+                  open={open}
+                />
+              ))}
+            </div>
+            <a
+              className="action-button action-link-button"
+              data-cursor="sales"
+              data-nav-item
+              href={navigationMeta.featuredBlock.ctaHref}
+              onClick={onNavigate}
+              tabIndex={open ? 0 : -1}
+            >
+              {navigationMeta.featuredBlock.ctaLabel}
+            </a>
+          </aside>
+        </div>
+      </div>
+    </>
+  )
+}

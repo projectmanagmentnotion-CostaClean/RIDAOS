@@ -2,6 +2,7 @@ import type { RefObject } from 'react'
 import { NavigationIcon } from './NavigationIcons'
 import {
   featuredLinks,
+  getNavigationItemKey,
   isNavigationItemActive,
   navigationMeta,
   productLinks,
@@ -95,7 +96,7 @@ export function DesktopCommandMenu({
                 <CommandLinkItem
                   currentHashRoute={currentHashRoute}
                   item={item}
-                  key={item.href}
+                  key={getNavigationItemKey(item)}
                   onNavigate={onNavigate}
                   open={open}
                 />
@@ -116,7 +117,7 @@ export function DesktopCommandMenu({
                 <CommandLinkItem
                   currentHashRoute={currentHashRoute}
                   item={item}
-                  key={item.href}
+                  key={getNavigationItemKey(item)}
                   onNavigate={onNavigate}
                   open={open}
                 />
@@ -137,7 +138,7 @@ export function DesktopCommandMenu({
                 <CommandLinkItem
                   currentHashRoute={currentHashRoute}
                   item={item}
-                  key={item.href}
+                  key={getNavigationItemKey(item)}
                   onNavigate={onNavigate}
                   open={open}
                 />
@@ -163,7 +164,7 @@ export function DesktopCommandMenu({
                 <CommandLinkItem
                   currentHashRoute={currentHashRoute}
                   item={item}
-                  key={item.href}
+                  key={getNavigationItemKey(item)}
                   onNavigate={onNavigate}
                   open={open}
                 />

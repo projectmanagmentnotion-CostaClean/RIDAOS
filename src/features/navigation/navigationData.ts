@@ -25,6 +25,10 @@ function route(href: string) {
   return normalizeHashRoute(href)
 }
 
+export function getNavigationItemKey(item: NavigationLinkItem) {
+  return `${item.href}::${item.label}`
+}
+
 export const primaryLinks: NavigationLinkItem[] = [
   {
     label: 'Catalogo',
@@ -42,6 +46,11 @@ export const primaryLinks: NavigationLinkItem[] = [
       publicRoutes.catalogoTarjetas,
       publicRoutes.catalogoFlyers,
       publicRoutes.catalogoVinilo,
+      publicRoutes.productoPegatinas,
+      publicRoutes.productoTarjetas,
+      publicRoutes.productoFlyers,
+      publicRoutes.productoVinilo,
+      publicRoutes.productoTextil,
     ],
   },
   {

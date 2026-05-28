@@ -1,6 +1,7 @@
 import type { RefObject } from 'react'
 import { NavigationIcon } from './NavigationIcons'
 import {
+  getNavigationItemKey,
   isNavigationItemActive,
   mobileProductLinks,
   mobilePrimaryCards,
@@ -160,7 +161,7 @@ export function MobileCommandDrawer({
                 <MobileLink
                   currentHashRoute={currentHashRoute}
                   item={item}
-                  key={item.href}
+                  key={getNavigationItemKey(item)}
                   onNavigate={onNavigate}
                   open={open}
                 />
@@ -180,7 +181,7 @@ export function MobileCommandDrawer({
                 <MobileLink
                   currentHashRoute={currentHashRoute}
                   item={item}
-                  key={item.href}
+                  key={getNavigationItemKey(item)}
                   onNavigate={onNavigate}
                   open={open}
                 />

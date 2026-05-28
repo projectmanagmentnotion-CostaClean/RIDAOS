@@ -119,6 +119,12 @@ Grupos activos:
 
 Cada item soporta `icon` para mantener consistencia entre desktop y mobile.
 
+Guardas de implementacion:
+
+- las listas del panel y del drawer usan claves estables por `href + label`
+- no reutilizar `href` como `key` unico si el mismo destino aparece en grupos distintos
+- las PDP del catalogo deben marcar `Catalogo` como activo cuando no pertenecen a `DTI`, `Rotulacion` o `Subir archivo`
+
 ## 7. Motion y GSAP
 
 Archivo:
@@ -204,3 +210,10 @@ Checklist desktop:
 - CTA `Configurar DTI` funciona
 - no aparece `Command`
 - iconos no saturan el header ni el panel
+
+Checklist storefront post-nav:
+
+- las PDP de pegatinas, tarjetas, flyers, vinilo y textil mantienen `Catalogo` activo
+- no aparecen warnings de claves duplicadas en la navegacion
+- el drawer mobile limpia `body[data-mobile-nav-open]` al navegar y al cerrar
+- backdrop desktop y mobile no dejan capas colgadas

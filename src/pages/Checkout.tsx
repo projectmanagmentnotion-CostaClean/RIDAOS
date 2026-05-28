@@ -9,6 +9,7 @@ import { useLiveToast } from '../features/live-feedback'
 import { initStorefrontRevealAnimations } from '../features/motion/revealAnimations'
 import { multiplyOrderItemPricing } from '../features/cart/utils/cartPricing'
 import { OrderLifecycleTimeline } from '../features/orders/components/OrderLifecycleTimeline'
+import { formatArtworkAcceptanceStatus } from '../features/artwork-upload/utils/formatArtworkAcceptance'
 import { getContinueShoppingHref } from '../lib/navigation'
 import { getOrderItemSummary } from '../lib/products'
 import { upsertCustomerProfile } from '../services/customerService'
@@ -112,13 +113,13 @@ function Checkout() {
   const handleSubmit = async () => {
     if (!validateCustomer()) {
       setConfirmation(null)
-      error('Revisa tus datos', 'Necesitamos un nombre, email, telefono y al menos un producto en el pedido.')
+      error('Revisa tus datos', 'Necesitamos un nombre, email, telefono y al menos un producto en la solicitud.')
       return
     }
 
     setLoading('checkout', true)
     clearError('checkout')
-    const progressToastId = progress('Pedido en preparacion', 'Estamos registrando tu solicitud y los datos de entrega.')
+    const progressToastId = progress('Solicitud en preparacion', 'Estamos registrando tu solicitud y los datos de entrega.')
 
     try {
       const savedCustomer = await upsertCustomerProfile(customer)
@@ -140,8 +141,8 @@ function Checkout() {
       })
       setStep('success')
       showSuccessModal({
-        title: 'Pedido preparado',
-        description: `El pedido ${order.id} ya queda listo para seguimiento y comprobacion de archivo.`,
+        title: 'Solicitud registrada',
+        description: `La solicitud ${order.id} ya queda lista para seguimiento y comprobacion de archivo.`,
         ctaLabel: 'Seguir revisando',
       })
       success('Solicitud registrada', 'Tu resumen ya pasa a revision interna.', 2600)
@@ -191,7 +192,7 @@ function Checkout() {
                           <h3>{item.productName}</h3>
                           <p>{getOrderItemSummary(item).join(' | ') || item.artwork.fileName}</p>
                           <p className="file-meta">
-                            Archivo: {item.artwork.fileName} | Estado: {item.artwork.acceptance?.statusLabel ?? 'Pendiente'}
+                            Archivo: {item.artwork.fileName} | Estado: {formatArtworkAcceptanceStatus(item.artwork.acceptance)}
                           </p>
                           {needsArtworkApproval(item) ? (
                             <p className="field-error">
@@ -205,7 +206,7 @@ function Checkout() {
                   </div>
                   <ul className="hint-list">
                     <li>Antes de confirmar, revisa que el archivo y la configuracion coincidan con cada producto.</li>
-                    <li>Usaremos esta informacion para preparar tu solicitud, no para activar produccion automatica.</li>
+                  <li>Usaremos esta informacion para preparar tu solicitud, no para activar produccion automatica.</li>
                     <li>Si un archivo no esta listo, puedes continuar solo cuando se haya solicitado ayuda de diseno.</li>
                   </ul>
                   {errors.artwork ? <p className="field-error">{errors.artwork}</p> : null}
@@ -250,7 +251,7 @@ function Checkout() {
                 {errors.cart ? <p className="field-error">{errors.cart}</p> : null}
                 {errors.artwork ? <p className="field-error">{errors.artwork}</p> : null}
                 <ul className="hint-list">
-                  <li>Usamos estos datos para preparar la entrega y la confirmacion del pedido.</li>
+                  <li>Usamos estos datos para preparar la entrega y la confirmacion de la solicitud.</li>
                   <li>El metodo de entrega elegido en el carrito se mantiene aqui para que no pierdas contexto.</li>
                   <li>Si no tienes el archivo final aceptado, vuelve a la PDP o solicita ayuda de diseno.</li>
                 </ul>
@@ -297,7 +298,7 @@ function Checkout() {
                 {cartItems.map((item) => (
                   <div className="summary-row" key={`artwork-${item.id}`}>
                     <span>{item.productName}</span>
-                    <strong>{item.artwork.acceptance?.statusLabel ?? 'Archivo pendiente'}</strong>
+                    <strong>{formatArtworkAcceptanceStatus(item.artwork.acceptance)}</strong>
                   </div>
                 ))}
               </div>
@@ -328,7 +329,7 @@ function Checkout() {
               <h2>{pricingContent.checkout.successTitle}</h2>
               <div className="summary-list">
                 <div className="summary-row">
-                  <span>Pedido</span>
+                  <span>Solicitud</span>
                   <strong>{confirmation.id}</strong>
                 </div>
                 <div className="summary-row">
@@ -385,7 +386,7 @@ function Checkout() {
             <article className="content-card success-card" data-animate="panel" data-cursor-zone="conversion">
               <p className="section-label">Siguiente lectura</p>
               <p>
-                El pedido ya aparece en tu historial con su estado inicial de revision de archivo y preparacion.
+                La solicitud ya aparece en tu historial con su estado inicial de revision de archivo y preparacion.
               </p>
             </article>
           ) : null}

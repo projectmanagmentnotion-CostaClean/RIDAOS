@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useRef, type ReactNode } from 'react'
 import ConfiguratorFieldRenderer from '../../../../components/ConfiguratorFieldRenderer'
 import ConfiguratorSupportBlock from '../../../../components/ConfiguratorSupportBlock'
 import SectionHeader from '../../../../components/SectionHeader'
@@ -43,6 +43,7 @@ export function ProductConfiguratorSection({
 }: ProductConfiguratorSectionProps) {
   const artworkField = fields.find((field) => field.type === 'file')
   const { success } = useLiveToast()
+  const confirmedToastShownRef = useRef(false)
 
   const handleFieldChange = (key: string, value: string) => {
     onConfigChange(key, value)
@@ -86,8 +87,11 @@ export function ProductConfiguratorSection({
             onStateChange={(state) => {
               onArtworkStateChange?.(state)
 
-              if (state.confirmed) {
+              if (state.confirmed && !confirmedToastShownRef.current) {
+                confirmedToastShownRef.current = true
                 success('Archivo confirmado', 'La pieza queda lista para continuar con tu pedido.', 2200)
+              } else if (!state.confirmed) {
+                confirmedToastShownRef.current = false
               }
             }}
             ruleKey={artworkRuleKey}

@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
+import type { ArtworkReferenceAcceptance } from '../../../domain/storage'
 import { addToCart } from '../../../lib/cart'
+import { publicRoutes } from '../../../lib/navigation'
 import { BASE_PRICE_PER_METER, calculateDTFPricing, type DTFQuality, type DTFUrgency } from '../../../lib/pricing'
 import type { CartItem } from '../../../types/ecommerce'
 import type { ArtworkPreviewSummary } from '../../artwork-upload'
-import type { ArtworkReferenceAcceptance } from '../../../domain/storage'
 import { useLiveToast } from '../../live-feedback'
-import { publicRoutes } from '../../../lib/navigation'
 
 type SimulationResult = {
   meters: number
@@ -206,7 +206,7 @@ export function useDtfConfiguratorState() {
     setCartMessage(
       'Pedido preparado en tu carrito. Mantiene urgencia, turnaround y extras listos para pasar a confirmacion.',
     )
-    success('Añadido al carrito', 'Tu pedido DTI ya aparece en el resumen de compra.')
+    success('Anadido al carrito', 'Tu pedido DTI ya aparece en el resumen de compra.')
   }
 
   const handleSimulateOrder = () => {

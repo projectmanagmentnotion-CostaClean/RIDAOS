@@ -16,11 +16,17 @@ export function ArtworkIssueModal({
   onRequestDesignerHelp,
 }: ArtworkIssueModalProps) {
   const panelRef = useRef<HTMLDivElement | null>(null)
+  const previousFocusRef = useRef<HTMLElement | null>(null)
 
   useEffect(() => {
     if (!open) {
+      if (previousFocusRef.current) {
+        previousFocusRef.current.focus()
+      }
       return
     }
+
+    previousFocusRef.current = document.activeElement as HTMLElement | null
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -43,20 +49,27 @@ export function ArtworkIssueModal({
   }
 
   return (
-    <div className="live-dialog-backdrop" role="presentation">
+    <div
+      aria-hidden="true"
+      className="live-dialog-backdrop"
+      onClick={onClose}
+      role="presentation"
+    >
       <div
         aria-describedby="artwork-issue-description"
         aria-labelledby="artwork-issue-title"
         aria-modal="true"
         className="live-dialog live-dialog--default"
+        onClick={(event) => event.stopPropagation()}
         ref={panelRef}
         role="dialog"
       >
         <div className="live-dialog__copy">
-          <p className="section-label">Comprobacion inicial</p>
-          <h2 id="artwork-issue-title">Tu archivo necesita un ajuste antes de imprimir.</h2>
+          <p className="section-label">Revision del archivo</p>
+          <h2 id="artwork-issue-title">Tu archivo necesita un pequeno ajuste antes de seguir.</h2>
           <p id="artwork-issue-description">
-            Hemos detectado puntos que conviene corregir o revisar antes de usar este archivo como referencia de impresion.
+            Hemos detectado un punto importante para preparar bien la referencia de impresion. Aqui te explicamos que
+            revisar y como resolverlo sin perder la solicitud.
           </p>
           <div className="admin-list-card">
             {issues.map((issue) => (
@@ -70,7 +83,7 @@ export function ArtworkIssueModal({
                 <span
                   className={`status-badge status-${issue.severity === 'critical' ? 'danger' : issue.severity === 'warning' ? 'warning' : 'info'}`}
                 >
-                  {issue.severity === 'critical' ? 'Corregir' : issue.severity === 'warning' ? 'Revisar' : 'Info'}
+                  {issue.severity === 'critical' ? 'Ajuste necesario' : issue.severity === 'warning' ? 'Conviene revisar' : 'Informacion'}
                 </span>
               </article>
             ))}
@@ -81,10 +94,10 @@ export function ArtworkIssueModal({
             Subir otro archivo
           </button>
           <a className="action-button action-button-muted action-link-button" href={publicRoutes.guia} onClick={onClose}>
-            Ver requisitos del archivo
+            Ver requisitos
           </a>
           <button className="action-button" onClick={onRequestDesignerHelp} type="button">
-            Solicitar ayuda de diseño Ridaos
+            Solicitar ayuda de diseno Ridaos
           </button>
         </div>
       </div>

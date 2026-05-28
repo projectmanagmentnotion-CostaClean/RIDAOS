@@ -6,8 +6,8 @@ import { addToCart } from '../../../../lib/cart'
 import { createInitialConfig, getRequiredFieldErrors, updateConfigValue, type ConfigState } from '../../../../lib/configuratorState'
 import { getProductById, getProductsByCategory } from '../../../../lib/products'
 import type { CatalogCategoryKey } from '../../../../types/product'
-import type { ArtworkPreviewSummary } from '../../../artwork-upload'
 import type { ArtworkReferenceAcceptance } from '../../../../domain/storage'
+import type { ArtworkPreviewSummary } from '../../../artwork-upload'
 import { useLiveToast } from '../../../live-feedback'
 import { getProductOptionDefinition } from '../../../product-options'
 import { productExperienceContent } from '../data/productExperienceContent'
@@ -84,11 +84,11 @@ export function useProductDetailState(
 
   const selectedProduct = useMemo(() => getProductById(productId), [productId])
   const displayEntry = useMemo(() => buildDisplayEntry(productId), [productId])
-  const optionDefinition = useMemo(() => (selectedProduct ? getProductOptionDefinition(selectedProduct.id) : null), [selectedProduct])
-  const content = useMemo(
-    () => (selectedProduct ? getContentByEntryId(selectedProduct.id) : null),
+  const optionDefinition = useMemo(
+    () => (selectedProduct ? getProductOptionDefinition(selectedProduct.id) : null),
     [selectedProduct],
   )
+  const content = useMemo(() => (selectedProduct ? getContentByEntryId(selectedProduct.id) : null), [selectedProduct])
 
   const estimate = useMemo(
     () => (displayEntry ? getCatalogPricingResult(displayEntry, config) : null),
@@ -143,14 +143,14 @@ export function useProductDetailState(
           fileName,
           fileType: selectedFile?.type ?? 'text/plain',
           fileSize: selectedFile?.size ?? 0,
-          formatLabel: previewSummary?.formatLabel ?? (fileName === 'Sin archivo adjunto' ? 'POR CONFIRMAR' : 'ARCHIVO'),
+          formatLabel: previewSummary?.formatLabel ?? (fileName === 'Sin archivo adjunto' ? 'Por confirmar' : 'Archivo'),
           notes: config.notes?.trim() ?? '',
           previewSummary: previewSummary ?? undefined,
           productHref: displayEntry.route,
         }),
       )
       setMessage(`${selectedProduct.name} anadido al carrito.`)
-      success('Añadido al carrito', `${selectedProduct.name} ya aparece en tu resumen de compra.`)
+      success('Anadido al carrito', `${selectedProduct.name} ya aparece en tu resumen de compra.`)
       return
     }
 
@@ -176,8 +176,7 @@ export function useProductDetailState(
     handleConfigChange,
     handleFileChange,
     handlePrimaryAction,
-    isDirectFlow:
-      selectedProduct?.purchaseMode === 'direct' || selectedProduct?.purchaseMode === 'hybrid',
+    isDirectFlow: selectedProduct?.purchaseMode === 'direct' || selectedProduct?.purchaseMode === 'hybrid',
     purchaseMode: selectedProduct?.purchaseMode ?? 'quote',
     pricingMode: selectedProduct?.pricingMode ?? 'quote',
   }

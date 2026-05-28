@@ -162,7 +162,7 @@ function Carrito() {
             </ul>
             {pendingArtworkItems.length ? (
               <p className="inline-notice">
-                Tienes {pendingArtworkItems.length} linea(s) con archivo pendiente de aceptar. Puedes revisarlas desde cada producto o continuar para validarlas en checkout.
+                Tienes {pendingArtworkItems.length} linea(s) con archivo pendiente de aceptar. Puedes revisarlas desde cada producto o continuar al checkout para ver exactamente que falta.
               </p>
             ) : null}
 

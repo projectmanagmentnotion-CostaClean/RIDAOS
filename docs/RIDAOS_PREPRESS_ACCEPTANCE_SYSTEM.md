@@ -157,6 +157,32 @@ Boton:
 - si falta aceptacion final y no hay ayuda de diseno, checkout bloquea la confirmacion
 - si no hay archivo, la solicitud puede continuar como flujo comercial y el equipo indicara el siguiente paso
 
+## Reglas QA validadas
+
+- `Archivo aceptado` es el label visible para estados confirmados por cliente y para el salto interno posterior al pedido mock
+- `Ayuda de diseno solicitada` permite continuar la solicitud sin aceptar el archivo final
+- `Necesita correccion` bloquea el cierre hasta que el cliente suba otro archivo o pida ayuda
+- tarjetas con `Foil oro`, `Foil plata` y `Barniz 3D` muestran copy especifico de reserva separada
+- flyers a `Dos caras` mantienen la advertencia de PDF multipagina o caras separadas cuando el formato no es PDF
+- DTI muestra `Archivo pendiente`, `Archivo recibido`, `Listo para revisar` y `Archivo aceptado` sin mezclar estados tecnicos
+- carrito y checkout deben renderizar labels humanos, nunca keys internas ni `undefined` o `null`
+
+## Casos donde ayuda de diseno permite continuar
+
+- cuando el cliente marca `Ayuda con archivo`
+- cuando el producto deriva a soporte de estudio o revision asistida
+- cuando el modal de incidencias ofrece salida comercial y el cliente la acepta
+
+En estos casos el pedido sigue como solicitud pendiente de revision con Ridaos. No implica validacion tecnica cerrada ni produccion automatica.
+
+## Limitaciones frontend actuales
+
+- la comprobacion sigue siendo orientativa y local
+- no detectamos de forma fiable capas internas de foil, barniz o paginas reales dentro de un PDF
+- la doble cara se infiere por contexto de producto y formato, no por lectura real de paginacion
+- no hay persistencia backend real ni versionado de reuploads en este sprint
+- no se emiten emails ni se activan pagos
+
 ## Ayuda de diseno Ridaos
 
 Microcopy base:

@@ -23,6 +23,7 @@ import { DtfPresetSelector } from '../features/dtf/components/DtfPresetSelector'
 import { DtfProgressSteps } from '../features/dtf/components/DtfProgressSteps'
 import { DtfStickySummaryCard } from '../features/dtf/components/DtfStickySummaryCard'
 import { useDtfConfiguratorState } from '../features/dtf/hooks/useDtfConfiguratorState'
+import { formatArtworkAcceptanceStatus } from '../features/artwork-upload/utils/formatArtworkAcceptance'
 import { ProductTemplateDownloads } from '../features/print-templates'
 import { initCinematicScroll, initCursorAwareReveals, initUrbanTextMotion } from '../lib/animations'
 import { publicRoutes } from '../lib/navigation'
@@ -275,7 +276,7 @@ function DTFPage() {
           <DtfStickySummaryCard
             base={`${formatCurrency(BASE_PRICE_PER_METER)}/metro`}
             extras={formatCurrency(pricing.extras)}
-            fileStatus={artworkState.acceptance?.statusLabel ?? (artworkState.confirmed ? 'Aceptado' : 'Pendiente')}
+            fileStatus={formatArtworkAcceptanceStatus(artworkState.acceptance)}
             subtotal={formatCurrency(pricing.subtotal)}
             summaryItems={summaryItems}
             total={formatCurrency(pricing.total)}
@@ -301,7 +302,7 @@ function DTFPage() {
                     </div>
                     <div className="summary-row">
                       <span>Estado</span>
-                      <strong>{artworkState.acceptance?.statusLabel ?? artworkState.summary.workflowStatus}</strong>
+                      <strong>{formatArtworkAcceptanceStatus(artworkState.acceptance)}</strong>
                     </div>
                     <div className="summary-row">
                       <span>Guia</span>

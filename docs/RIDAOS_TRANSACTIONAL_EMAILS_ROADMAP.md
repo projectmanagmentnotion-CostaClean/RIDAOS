@@ -78,3 +78,17 @@ Cada evento deberia incluir:
 - registrar reenvios desde admin
 - dejar trazabilidad por cliente y pedido
 - no prometer tiempos de entrega automatizados sin backend real
+
+## Ajuste de copy tras QA prepress
+
+- en storefront visible usar `Archivo aceptado`, no `archivo aceptado para produccion`
+- `Ayuda de diseno solicitada` debe comunicar continuidad comercial, no cierre tecnico
+- `Necesita correccion` debe explicar el ajuste sin tono de error de sistema
+- cualquier email futuro sobre archivo debe hablar de `referencia de impresion` o `revision de archivo`, no de produccion automatica
+
+## Pendientes backend futuros
+
+- persistir auditoria de aceptacion y solicitud de ayuda por linea
+- versionar reuploads y registrar motivo de correccion
+- disparar eventos transaccionales solo cuando exista backend real
+- conectar estados de pedido y archivo a trazabilidad de admin sin reusar copy tecnico en storefront

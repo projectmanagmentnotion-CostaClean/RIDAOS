@@ -107,6 +107,25 @@ Guardas:
 - revisar sticky summary, carrito y checkout basico
 - confirmar que DTI, pegatinas, vinilo, rotulacion y textil siguen con grupos propios
 
+## QA validada en este sprint
+
+- tarjetas: `2500 uds` + `Esquinas redondeadas` + `Texturizado especial` + `Soft touch` + `Anverso y reverso` + `Foil oro`
+- tarjetas: variante paralela con `Foil plata`
+- tarjetas: variante paralela con `Barniz 3D`
+- flyers: `5000 uds` + `A3` + `Horizontal` + `Dos caras` + `300 g rigido` + `Soft touch`
+- DTI: sin archivo, archivo recibido, archivo aceptado y ayuda de diseno solicitada
+- pegatinas: troquel personalizado o `kiss cut` con salida a ayuda
+- vinilo: archivo raster orientativo con mensaje de revision
+- textil: recomendacion de PNG transparente o vector
+- rotulacion: flujo comercial con ayuda de diseno y sin forzar checkout de pago
+
+## Reglas de bloqueo comercial
+
+- en productos directos o hibridos, el CTA principal queda bloqueado si hay archivo subido y falta aceptacion final sin ayuda de diseno
+- en carrito se mantiene el estado visible por linea pero no se bloquea la navegacion
+- en checkout se bloquea solo la confirmacion final cuando hay lineas con aceptacion pendiente y sin ayuda
+- si no hay archivo, el flujo puede seguir como solicitud comercial cuando el producto lo permite
+
 ## Checklist de nuevos CTAs
 
 - usar siempre `src/lib/navigation.ts` como fuente unica para rutas publicas y PDP

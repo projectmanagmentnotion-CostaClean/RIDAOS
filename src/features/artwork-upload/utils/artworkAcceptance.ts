@@ -34,13 +34,44 @@ function hasSpecialFinish(configuration?: Partial<Record<string, string>>) {
   return finish === 'foil-gold' || finish === 'foil-silver' || finish === 'varnish-3d'
 }
 
+function buildSpecialFinishIssue(configuration?: Partial<Record<string, string>>): ArtworkReferenceIssue | null {
+  switch (configuration?.specialFinish) {
+    case 'foil-gold':
+      return {
+        id: 'special-finish-layer-gold-foil',
+        severity: 'critical',
+        title: 'Reserva separada para foil oro',
+        description: 'El foil oro necesita una capa o pagina separada para indicar con claridad donde va el efecto.',
+        whyItMatters: 'Sin esa reserva, el acabado puede interpretarse de forma incorrecta durante la preparacion.',
+        correctionHint: 'Sube un PDF con la reserva del foil en negro 100% o solicita ayuda de diseno Ridaos.',
+      }
+    case 'foil-silver':
+      return {
+        id: 'special-finish-layer-silver-foil',
+        severity: 'critical',
+        title: 'Reserva separada para foil plata',
+        description: 'El foil plata necesita una capa o pagina separada para marcar la zona exacta del acabado.',
+        whyItMatters: 'Esa reserva evita dudas al preparar la referencia final de impresion.',
+        correctionHint: 'Sube un PDF con la reserva del foil en negro 100% o solicita ayuda de diseno Ridaos.',
+      }
+    case 'varnish-3d':
+      return {
+        id: 'special-finish-layer-varnish-3d',
+        severity: 'critical',
+        title: 'Reserva separada para barniz 3D',
+        description: 'El barniz 3D necesita una capa o pagina separada para definir con precision la zona de relieve.',
+        whyItMatters: 'Sin esa reserva, el efecto puede aplicarse en zonas equivocadas o perder definicion.',
+        correctionHint: 'Sube un PDF con la reserva del barniz en negro 100% o solicita ayuda de diseno Ridaos.',
+      }
+    default:
+      return null
+  }
+}
+
 function prefersDesignerHelp(configuration?: Partial<Record<string, string>>) {
   const values = Object.values(configuration ?? {})
-  return values.some((value) =>
-    value === 'assisted' ||
-    value === 'review' ||
-    value === 'need-help' ||
-    value === 'studio-support',
+  return values.some(
+    (value) => value === 'assisted' || value === 'review' || value === 'need-help' || value === 'studio-support',
   )
 }
 
@@ -90,14 +121,11 @@ function buildProductSpecificIssues(
   }
 
   if (hasSpecialFinish(configuration)) {
-    issues.push({
-      id: 'special-finish-layer',
-      severity: 'critical',
-      title: 'Capa separada para acabado especial',
-      description: 'Foil oro, foil plata y barniz 3D necesitan una capa o pagina separada para marcar la reserva.',
-      whyItMatters: 'Sin esa reserva no podemos interpretar con precision donde aplicar el acabado.',
-      correctionHint: 'Prepara una capa o pagina separada con la reserva en negro 100% o solicita ayuda de diseño Ridaos.',
-    })
+    const specialFinishIssue = buildSpecialFinishIssue(configuration)
+
+    if (specialFinishIssue) {
+      issues.push(specialFinishIssue)
+    }
   }
 
   if (ruleKey === 'stickers' && (configuration?.shape === 'custom' || configuration?.shape === 'kiss-cut')) {
@@ -107,7 +135,7 @@ function buildProductSpecificIssues(
       title: 'Contorno o linea de corte',
       description: 'El troquel personalizado necesita una linea de corte clara o una indicacion precisa del contorno.',
       whyItMatters: 'El corte define la silueta final y evita interpretaciones manuales.',
-      correctionHint: 'Aporta una cutline vectorial o pide ayuda de diseño para preparar el troquel.',
+      correctionHint: 'Aporta una cutline vectorial o pide ayuda de diseno para preparar el troquel.',
     })
   }
 
@@ -117,8 +145,8 @@ function buildProductSpecificIssues(
       severity: 'warning',
       title: 'Formato recomendado para DTI',
       description: 'Para DTI por metro recomendamos PNG con fondo limpio o PDF preparado.',
-      whyItMatters: 'Facilita revisar transparencia, separacion de diseños y aprovechamiento del rollo.',
-      correctionHint: 'Exporta una version mas limpia o solicita ayuda para revisar el archivo antes de producir.',
+      whyItMatters: 'Facilita revisar transparencia, separacion de disenos y aprovechamiento del rollo.',
+      correctionHint: 'Exporta una version mas limpia o solicita ayuda para revisar el archivo antes de preparar la solicitud.',
     })
   }
 
@@ -129,7 +157,7 @@ function buildProductSpecificIssues(
       title: 'Formato recomendado para textil',
       description: 'En textil recomendamos PNG transparente, PDF o vector para revisar mejor el marcaje.',
       whyItMatters: 'Ayuda a confirmar fondo, zona de impresion y nitidez final sobre la prenda.',
-      correctionHint: 'Sube una version con fondo transparente o solicita ayuda de diseño Ridaos.',
+      correctionHint: 'Sube una version con fondo transparente o solicita ayuda de diseno Ridaos.',
     })
   }
 
@@ -147,13 +175,13 @@ function getStatusLabel(status: ArtworkReferenceAcceptance['status']) {
     case 'needs-correction':
       return 'Necesita correccion'
     case 'needs-designer':
-      return 'Ayuda de diseño solicitada'
+      return 'Ayuda de diseno solicitada'
     case 'ready-for-approval':
       return 'Listo para revisar'
     case 'client-approved':
-      return 'Aprobado por el cliente'
+      return 'Archivo aceptado'
     case 'accepted-for-production':
-      return 'Aceptado para preparar impresion'
+      return 'Archivo aceptado'
     default:
       return 'Archivo pendiente'
   }
@@ -175,7 +203,7 @@ export function buildArtworkAcceptance({
   const guidanceLabel =
     summary?.suggestedActionLabel ??
     (designerHelpRequested
-      ? 'Seguiremos la solicitud contigo antes de preparar impresion.'
+      ? 'Seguiremos la solicitud contigo antes de preparar la referencia de impresion.'
       : 'Sube un archivo para activar la comprobacion inicial.')
   const baseIssues = summary ? buildGeneralIssues(summary) : []
   const productIssues = buildProductSpecificIssues(ruleKey, metadata, context)
@@ -203,10 +231,7 @@ export function buildArtworkAcceptance({
     acceptanceRequired: Boolean(metadata) && !requestedDesigner,
     clientAccepted,
     designerHelpRequested: requestedDesigner,
-    canContinue:
-      requestedDesigner ||
-      !metadata ||
-      status === 'client-approved',
+    canContinue: requestedDesigner || !metadata || status === 'client-approved',
     formatRecommended,
     preferredFormats,
     lastCheckedAt: metadata ? new Date().toISOString() : undefined,

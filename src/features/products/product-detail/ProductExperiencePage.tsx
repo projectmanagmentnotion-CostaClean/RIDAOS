@@ -18,6 +18,7 @@ import { ProductStickySummarySection } from './sections/ProductStickySummarySect
 import { ProductStorySection } from './sections/ProductStorySection'
 import { ProductTemplateDownloads } from '../../print-templates'
 import { ProductOptionAssetPanel } from '../../product-options'
+import { formatArtworkAcceptanceStatus } from '../../artwork-upload/utils/formatArtworkAcceptance'
 import {
   FrequentlyCombinedSection,
   InternalLinkGrid,
@@ -239,7 +240,9 @@ export function ProductExperiencePage({
             summaryAction={renderPrimaryActionButtons()}
             summaryItems={[
               ...summaryItems,
-              ...(artworkState.acceptance ? [{ label: 'Archivo', value: artworkState.acceptance.statusLabel }] : []),
+              ...(artworkState.acceptance
+                ? [{ label: 'Archivo', value: formatArtworkAcceptanceStatus(artworkState.acceptance) }]
+                : []),
             ]}
             successLinks={
               isDirectFlow ? (

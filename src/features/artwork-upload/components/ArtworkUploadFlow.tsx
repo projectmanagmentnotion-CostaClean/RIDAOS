@@ -10,6 +10,7 @@ import type {
   ArtworkUploadFlowState,
   ArtworkValidationContext,
 } from '../types/artworkUpload'
+import { getArtworkAcceptanceDisplayStatus } from '../utils/formatArtworkAcceptance'
 import { ArtworkIssueModal } from './ArtworkIssueModal'
 import { ArtworkReferenceApprovalCard } from './ArtworkReferenceApprovalCard'
 
@@ -98,6 +99,9 @@ export function ArtworkUploadFlow({
   const [approvalChecked, setApprovalChecked] = useState(false)
   const [issueModalOpen, setIssueModalOpen] = useState(false)
   const lastIssueTokenRef = useRef<string | null>(null)
+  const lastReadyToastTokenRef = useRef<string | null>(null)
+  const lastWarningToastTokenRef = useRef<string | null>(null)
+  const lastReceivedToastTokenRef = useRef<string | null>(null)
   const {
     rule,
     metadata,
@@ -120,12 +124,17 @@ export function ArtworkUploadFlow({
   }, [acceptance, confirmed, metadata, onStateChange, summary])
 
   useEffect(() => {
-    if (!metadata?.fileName) {
+    if (!metadata?.fileName || !fileToken) {
       return
     }
 
+    if (lastReceivedToastTokenRef.current === fileToken) {
+      return
+    }
+
+    lastReceivedToastTokenRef.current = fileToken
     info('Archivo recibido', `${metadata.fileName} ya esta listo para la comprobacion inicial.`, 2200)
-  }, [info, metadata?.fileName])
+  }, [fileToken, info, metadata?.fileName])
 
   useEffect(() => {
     if (!summary || !acceptance) {
@@ -133,14 +142,24 @@ export function ArtworkUploadFlow({
     }
 
     if (acceptance.status === 'needs-correction') {
+      if (lastWarningToastTokenRef.current === fileToken) {
+        return
+      }
+
+      lastWarningToastTokenRef.current = fileToken
       warning('El archivo necesita revision', acceptance.guidanceLabel, 3200)
       return
     }
 
     if (acceptance.status === 'ready-for-approval') {
+      if (lastReadyToastTokenRef.current === fileToken) {
+        return
+      }
+
+      lastReadyToastTokenRef.current = fileToken
       success('Archivo listo para revisar', 'Ya puedes validar la referencia final antes de continuar.', 2200)
     }
-  }, [acceptance, success, summary, warning])
+  }, [acceptance, fileToken, success, summary, warning])
 
   useEffect(() => {
     if (!acceptance || !fileToken) {
@@ -165,7 +184,7 @@ export function ArtworkUploadFlow({
   const handleApprove = () => {
     setConfirmed(true)
     setApprovalChecked(false)
-    success('Archivo aceptado para revision', 'Usaremos esta version como referencia para preparar la impresion.', 2400)
+    success('Archivo aceptado', 'Usaremos esta version como referencia para preparar la impresion.', 2400)
   }
 
   const handleReset = () => {
@@ -181,7 +200,7 @@ export function ArtworkUploadFlow({
     setIssueModalOpen(false)
     info(
       'Ayuda de diseno Ridaos solicitada',
-      'Seguiremos la solicitud contigo antes de preparar la impresion.',
+      'Seguiremos la solicitud contigo antes de preparar la referencia de impresion.',
       2600,
     )
   }
@@ -201,7 +220,9 @@ export function ArtworkUploadFlow({
             <h3>{title}</h3>
             <p>{description}</p>
           </div>
-          <span className={`status-badge status-${getStatusTone(summary)}`}>{acceptance?.statusLabel ?? getStatusLabel(summary)}</span>
+          <span className={`status-badge status-${getStatusTone(summary)}`}>
+            {getArtworkAcceptanceDisplayStatus(acceptance) ?? getStatusLabel(summary)}
+          </span>
         </div>
 
         <ol className="artwork-upload-flow__steps">
@@ -271,7 +292,7 @@ export function ArtworkUploadFlow({
                   </div>
                   <div className="summary-row">
                     <span>Estado</span>
-                    <strong>{acceptance?.statusLabel ?? getStatusLabel(summary)}</strong>
+                    <strong>{getArtworkAcceptanceDisplayStatus(acceptance) ?? getStatusLabel(summary)}</strong>
                   </div>
                 </div>
               ) : null}

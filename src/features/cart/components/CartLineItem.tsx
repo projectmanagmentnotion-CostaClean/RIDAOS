@@ -1,8 +1,12 @@
 import { getOrderItemSummary } from '../../../lib/products'
 import type { CartItem } from '../../../types/ecommerce'
+import {
+  formatArtworkAcceptanceStatus,
+  getArtworkAcceptanceCtaLabel,
+  getArtworkAcceptanceDecisionLabel,
+} from '../../artwork-upload/utils/formatArtworkAcceptance'
 import { getCartItemLineExtras, getCartItemLineSubtotal, getCartItemLineTotal, getItemLineQuantity } from '../utils/cartPricing'
 import { QuantityStepper } from './QuantityStepper'
-import { formatArtworkAcceptanceStatus, getArtworkAcceptanceCtaLabel } from '../../artwork-upload/utils/formatArtworkAcceptance'
 
 type CartLineItemProps = {
   item: CartItem
@@ -29,11 +33,7 @@ export function CartLineItem({
           <p className="section-label">{item.productName}</p>
           <h3>{formatCurrency(getCartItemLineTotal(item))}</h3>
         </div>
-        <button
-          className="action-button action-button-muted action-button-small"
-          onClick={onRemove}
-          type="button"
-        >
+        <button className="action-button action-button-muted action-button-small" onClick={onRemove} type="button">
           Quitar
         </button>
       </div>
@@ -42,9 +42,7 @@ export function CartLineItem({
         <QuantityStepper onChange={onQuantityChange} value={quantity} />
         <div className="premium-pill-row">
           {item.configuration.urgency ? (
-            <span className="premium-pill">
-              {item.configuration.urgency === 'express' ? 'Urgente' : 'Normal'}
-            </span>
+            <span className="premium-pill">{item.configuration.urgency === 'express' ? 'Urgente' : 'Normal'}</span>
           ) : null}
           {item.configuration.turnaroundPreference ? (
             <span className="premium-pill">{item.configuration.turnaroundPreference}</span>
@@ -68,8 +66,8 @@ export function CartLineItem({
           <strong>{acceptanceStatus}</strong>
         </div>
         <div className="summary-row">
-          <span>Aceptacion cliente</span>
-          <strong>{acceptance?.clientAccepted ? 'Aceptado' : acceptance?.designerHelpRequested ? 'Con ayuda' : 'Pendiente'}</strong>
+          <span>Confirmacion</span>
+          <strong>{getArtworkAcceptanceDecisionLabel(acceptance)}</strong>
         </div>
       </div>
 
@@ -86,7 +84,7 @@ export function CartLineItem({
       {acceptance?.issues.length ? (
         <div className="summary-list compact-summary">
           <div className="summary-row">
-            <span>Advertencia</span>
+            <span>Advertencia principal</span>
             <strong>{acceptance.issues[0]?.title}</strong>
           </div>
           <p className="cart-notes">{acceptance.issues[0]?.correctionHint}</p>
@@ -97,7 +95,7 @@ export function CartLineItem({
         <div className="summary-list compact-summary">
           <div className="summary-row">
             <span>Extras activos</span>
-            <strong>{item.configuration.extras.join(' · ')}</strong>
+            <strong>{item.configuration.extras.join(', ')}</strong>
           </div>
         </div>
       ) : null}

@@ -116,9 +116,8 @@ export function NavigationIcon({
     case 'menu':
       return (
         <svg {...sharedProps}>
-          <path d="M5 8h14" />
-          <path d="M5 12h10" />
-          <path d="M5 16h14" />
+          <path d="M5 8.5h14" />
+          <path d="M5 15.5h10" />
         </svg>
       )
     case 'close':

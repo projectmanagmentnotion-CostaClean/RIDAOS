@@ -46,7 +46,6 @@ function MobileLink({
       onClick={onNavigate}
       tabIndex={open ? 0 : -1}
     >
-      {item.icon ? <NavigationIcon className="ridaos-nav__item-icon" name={item.icon} /> : null}
       <div className="ridaos-nav__mobile-link-copy">
         <span>{item.label}</span>
         <small>{item.description}</small>
@@ -124,7 +123,6 @@ export function MobileCommandDrawer({
             onClick={onNavigate}
             tabIndex={open ? 0 : -1}
           >
-            <NavigationIcon className="ridaos-nav__button-icon" name={navigationMeta.primaryCta.icon} />
             {navigationMeta.primaryCta.label}
           </a>
 
@@ -141,7 +139,6 @@ export function MobileCommandDrawer({
                 tabIndex={open ? 0 : -1}
               >
                 <div className="ridaos-nav__mobile-card-head">
-                  {item.icon ? <NavigationIcon className="ridaos-nav__item-icon" name={item.icon} /> : null}
                   <strong>{item.label}</strong>
                 </div>
                 <span>{item.description}</span>
@@ -152,7 +149,6 @@ export function MobileCommandDrawer({
           <section className="ridaos-nav__drawer-section">
             <header>
               <div className="ridaos-nav__section-label">
-                <NavigationIcon className="ridaos-nav__section-icon" name={navigationMeta.sectionIcons.products} />
                 <p>Productos</p>
               </div>
             </header>
@@ -172,7 +168,6 @@ export function MobileCommandDrawer({
           <section className="ridaos-nav__drawer-section">
             <header>
               <div className="ridaos-nav__section-label">
-                <NavigationIcon className="ridaos-nav__section-icon" name={navigationMeta.sectionIcons.resources} />
                 <p>Recursos</p>
               </div>
             </header>

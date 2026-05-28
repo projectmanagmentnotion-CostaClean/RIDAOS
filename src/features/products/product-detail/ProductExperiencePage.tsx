@@ -121,8 +121,7 @@ export function ProductExperiencePage({
           value: displayValue,
         }
       })
-      .filter(Boolean)
-      .slice(0, 5) as Array<{ label: string; value: string }>
+      .filter(Boolean) as Array<{ label: string; value: string }>
   }, [config, optionDefinition])
 
   if (!selectedProduct || !displayEntry) {

@@ -776,7 +776,7 @@ select {
 .ridaos-nav__link-icon {
   width: 14px;
   height: 14px;
-  color: rgba(231, 227, 218, 0.56);
+  color: rgba(231, 227, 218, 0.6);
 }
 
 .ridaos-nav__section-icon {
@@ -951,15 +951,19 @@ select {
 
 .ridaos-nav__panel-link-copy,
 .ridaos-nav__mobile-link-copy {
+  display: grid;
+  gap: 5px;
   min-width: 0;
 }
 
 .ridaos-nav__panel-link-title {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
   color: var(--ridaos-soft-white);
   font-weight: 700;
+  line-height: 1.22;
 }
 
 .ridaos-nav__panel-link-title small {
@@ -974,6 +978,7 @@ select {
 
 .ridaos-nav__panel-link-copy span:last-child,
 .ridaos-nav__mobile-link small {
+  display: block;
   color: rgba(231, 227, 218, 0.68);
   line-height: 1.45;
 }
@@ -1236,18 +1241,18 @@ select {
 }
 
 .ridaos-nav__mobile-card strong {
+  display: block;
   color: var(--ridaos-soft-white);
   font-size: 1rem;
+  line-height: 1.22;
 }
 
 .ridaos-nav__mobile-card-head {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 12px;
-  align-items: center;
+  display: block;
 }
 
 .ridaos-nav__mobile-card span {
+  display: block;
   color: rgba(231, 227, 218, 0.7);
   line-height: 1.45;
 }
@@ -5881,6 +5886,8 @@ body.lenis {
 .product-visual-hero__asset-card {
   position: relative;
   z-index: 1;
+  display: grid;
+  gap: 6px;
   margin-top: auto;
   padding: 22px;
   border-radius: 20px;
@@ -5897,11 +5904,15 @@ body.lenis {
 }
 
 .product-visual-hero__asset-card strong {
+  display: block;
   font-size: 1.12rem;
+  line-height: 1.25;
 }
 
 .product-visual-hero__asset-card span {
+  display: block;
   color: rgba(246, 239, 231, 0.68);
+  line-height: 1.45;
 }
 
 .product-visual-hero__benefits {
@@ -6076,6 +6087,7 @@ body.lenis {
 .product-summary-card__row strong {
   margin: 0;
   font-size: 0.9rem;
+  line-height: 1.42;
 }
 
 .product-summary-card__row span {
@@ -6088,6 +6100,39 @@ body.lenis {
 
 .product-summary-card__actions {
   margin-top: 4px;
+}
+
+.dtf-artwork-review-card {
+  display: grid;
+  gap: 18px;
+}
+
+.dtf-artwork-review-card__grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.dtf-artwork-review-card__section {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.01)),
+    rgba(12, 12, 12, 0.64);
+}
+
+.dtf-artwork-review-card__section h3 {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.dtf-artwork-review-card__section .summary-list,
+.dtf-artwork-review-card__section .preflight-list {
+  gap: 12px;
 }
 
 .sticky-summary-panel--product .content-card,
@@ -6399,6 +6444,10 @@ body.lenis {
 
   .sticky-summary-panel {
     position: static;
+  }
+
+  .dtf-artwork-review-card__grid {
+    grid-template-columns: 1fr;
   }
 
   .product-visual-hero__benefits {

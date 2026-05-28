@@ -87,7 +87,6 @@ export function PremiumNavBar({ brandLabel, currentHashRoute }: PremiumNavBarPro
             data-cursor="sales"
             href={navigationMeta.primaryCta.href}
           >
-            <NavigationIcon className="ridaos-nav__button-icon" name={navigationMeta.primaryCta.icon} />
             {navigationMeta.primaryCta.label}
           </a>
 

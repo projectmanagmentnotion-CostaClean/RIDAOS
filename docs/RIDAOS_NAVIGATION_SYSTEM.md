@@ -42,19 +42,23 @@ Reglas:
 - iconos SVG propios
 - estilo fino y discreto
 - mismo lenguaje visual en desktop y mobile
-- se usan para orientar, no para decorar
+- se usan solo cuando aportan orientacion real
+- el panel desktop y las listas secundarias mobile deben priorizar tipografia, aire y acentos lineales
 - `aria-hidden` cuando son decorativos
 
 Asignaciones activas:
 
-- Catalogo: grid
-- DTI: layers
-- Rotulacion: vehiculo
 - Subir archivo: upload
-- Guia / revision: documento
-- Explorar / CTA: acento de exploracion sutil
+- Explorar: acento de exploracion sutil
 - Menu: lineas premium
 - Cerrar: `X` limpia
+
+Iconos eliminados del cierre final:
+
+- iconos repetidos por cada producto del panel desktop
+- iconos secundarios del drawer mobile
+- iconos decorativos en cards principales cuando la jerarquia funciona mejor con linea de acento
+- icono de la CTA principal cuando ensucia la lectura
 
 ## 4. Desktop final
 
@@ -66,7 +70,7 @@ Archivos:
 Desktop mantiene:
 
 - logo
-- links principales con iconografia ligera
+- links principales limpios; solo `Subir archivo` conserva icono funcional
 - trigger `Explorar`
 - CTA `Configurar DTI`
 - panel desplegable con productos, rotulacion y recursos
@@ -118,6 +122,10 @@ Grupos activos:
 - `navigationMeta`
 
 Cada item soporta `icon` para mantener consistencia entre desktop y mobile.
+
+Regla actual:
+
+- el dato puede soportar `icon`, pero el render final solo lo usa en puntos funcionales y no en todas las listas
 
 Guardas de implementacion:
 
@@ -217,3 +225,4 @@ Checklist storefront post-nav:
 - no aparecen warnings de claves duplicadas en la navegacion
 - el drawer mobile limpia `body[data-mobile-nav-open]` al navegar y al cerrar
 - backdrop desktop y mobile no dejan capas colgadas
+- no deben aparecer labels pegados tipo `TituloDescripcion` dentro del panel o drawer

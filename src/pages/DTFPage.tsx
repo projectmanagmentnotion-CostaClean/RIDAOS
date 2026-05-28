@@ -155,8 +155,8 @@ function DTFPage() {
             <label className="field-group" htmlFor="dtf-meters">
               <span className="field-label">Metros</span>
               <input
-                id="dtf-meters"
                 className="form-input"
+                id="dtf-meters"
                 min="0"
                 onChange={(event) => setMeters(event.target.value)}
                 step="0.1"
@@ -164,11 +164,7 @@ function DTFPage() {
                 value={meters}
               />
               <span className="file-meta">{previewDtfContent.fieldHelp.meters}</span>
-              <DtfPresetSelector
-                onSelect={setMeters}
-                presets={previewDtfContent.meterPresets}
-                value={meters}
-              />
+              <DtfPresetSelector onSelect={setMeters} presets={previewDtfContent.meterPresets} value={meters} />
               {errors.meters ? <span className="field-error">{errors.meters}</span> : null}
             </label>
 
@@ -186,8 +182,8 @@ function DTFPage() {
             <label className="field-group" htmlFor="dtf-notes">
               <span className="field-label">Notas</span>
               <textarea
-                id="dtf-notes"
                 className="form-input form-textarea"
+                id="dtf-notes"
                 onChange={(event) => setNotes(event.target.value)}
                 rows={5}
                 value={notes}
@@ -197,7 +193,7 @@ function DTFPage() {
 
             <ArtworkUploadFlow
               acceptedFormats=".pdf,.ai,.eps,.svg,.png,.jpg,.jpeg,.tiff,.zip"
-              description="Sube el arte final, revisa guías de rollo DTI y confirma el archivo antes de añadirlo al carrito."
+              description="Sube el arte final, revisa las guias de rollo DTI y confirma el archivo antes de anadirlo al carrito."
               file={selectedFile}
               onFileChange={setFile}
               onStateChange={setArtworkState}
@@ -273,65 +269,64 @@ function DTFPage() {
           />
 
           <article
-            className="content-card file-preview-card hover-lift premium-preview-panel"
+            className="content-card file-preview-card hover-lift premium-preview-panel dtf-artwork-review-card"
             data-animate="panel"
             data-cursor="interactive"
             data-depth="0.06"
             data-scroll-scene="dtf-preview"
             tabIndex={0}
           >
-            <SectionHeader eyebrow="Archivo confirmado" title="Resumen del archivo listo para revisar." />
-            {artworkState.summary ? (
-              <div className="summary-list">
-                <div className="summary-row">
-                  <span>Archivo</span>
-                  <strong>{artworkState.summary.fileName}</strong>
-                </div>
-                <div className="summary-row">
-                  <span>Estado</span>
-                  <strong>{artworkState.summary.workflowStatus}</strong>
-                </div>
-                <div className="summary-row">
-                  <span>Guía</span>
-                  <strong>{artworkState.summary.estimatedPhysicalSizeLabel}</strong>
-                </div>
-              </div>
-            ) : (
-              <div className="empty-state premium-empty-state">
-                <p>Sube y confirma el archivo para activar el resumen del rollo.</p>
-              </div>
-            )}
-          </article>
+            <SectionHeader eyebrow="Archivo y comprobacion" title="Archivo listo para revisar sin competir con el resumen de precio." />
+            <div className="dtf-artwork-review-card__grid">
+              <section className="dtf-artwork-review-card__section">
+                <h3>Archivo confirmado</h3>
+                {artworkState.summary ? (
+                  <div className="summary-list">
+                    <div className="summary-row">
+                      <span>Archivo</span>
+                      <strong>{artworkState.summary.fileName}</strong>
+                    </div>
+                    <div className="summary-row">
+                      <span>Estado</span>
+                      <strong>{artworkState.summary.workflowStatus}</strong>
+                    </div>
+                    <div className="summary-row">
+                      <span>Guia</span>
+                      <strong>{artworkState.summary.estimatedPhysicalSizeLabel}</strong>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="empty-state premium-empty-state">
+                    <p>Sube y confirma el archivo para activar el resumen del rollo.</p>
+                  </div>
+                )}
+              </section>
 
-          <article
-            className="content-card preflight-card hover-lift premium-preflight-panel"
-            data-animate="panel"
-            data-cursor="interactive"
-            data-scroll-scene="dtf-preflight"
-            tabIndex={0}
-          >
-            <SectionHeader eyebrow="Comprobacion previa" title="Resumen claro antes de confirmar la solicitud." />
-            <div className="preflight-list">
-              <div className="preflight-item">
-                <span>Formato detectado</span>
-                <strong>{artworkState.summary ? artworkState.summary.formatLabel : 'Por confirmar'}</strong>
-              </div>
-              <div className="preflight-item">
-                <span>Archivo seleccionado</span>
-                <strong>{artworkState.summary ? 'Si' : 'Por confirmar'}</strong>
-              </div>
-              <div className="preflight-item">
-                <span>Turnaround</span>
-                <strong>{turnaroundPreference}</strong>
-              </div>
-              <div className="preflight-item">
-                <span>Extras</span>
-                <strong>{selectedExtras.length ? selectedExtras.join(' · ') : 'Sin extras'}</strong>
-              </div>
-              <div className="preflight-item">
-                <span>Resolucion</span>
-                <strong>{artworkState.summary?.workflowStatus === 'ready' ? 'Lista para revisar' : 'Requiere comprobacion'}</strong>
-              </div>
+              <section className="dtf-artwork-review-card__section">
+                <h3>Comprobacion previa</h3>
+                <div className="preflight-list">
+                  <div className="preflight-item">
+                    <span>Formato detectado</span>
+                    <strong>{artworkState.summary ? artworkState.summary.formatLabel : 'Por confirmar'}</strong>
+                  </div>
+                  <div className="preflight-item">
+                    <span>Archivo seleccionado</span>
+                    <strong>{artworkState.summary ? 'Si' : 'Por confirmar'}</strong>
+                  </div>
+                  <div className="preflight-item">
+                    <span>Turnaround</span>
+                    <strong>{turnaroundPreference}</strong>
+                  </div>
+                  <div className="preflight-item">
+                    <span>Extras</span>
+                    <strong>{selectedExtras.length ? selectedExtras.join(' · ') : 'Sin extras'}</strong>
+                  </div>
+                  <div className="preflight-item">
+                    <span>Resolucion</span>
+                    <strong>{artworkState.summary?.workflowStatus === 'ready' ? 'Lista para revisar' : 'Requiere comprobacion'}</strong>
+                  </div>
+                </div>
+              </section>
             </div>
           </article>
 
@@ -347,18 +342,18 @@ function DTFPage() {
                   </a>
                 </>
               }
-            className="success-card"
+              className="success-card"
               description={`Metraje: ${simulation.meters} m | Calidad: ${
                 simulation.quality === 'premium' ? 'Premium' : 'Standard'
               } | Urgencia: ${simulation.urgency === 'express' ? 'Express' : 'Normal'} | Turnaround: ${
                 simulation.turnaroundPreference
               } | Archivo: ${simulation.fileName} | Notas: ${simulation.notes || 'Sin notas'} | Total: ${formatCurrency(
-              simulation.total,
-            )}`}
-            label="Configuracion lista"
-            title="La configuracion esta lista para pasar al carrito."
-          />
-        ) : null}
+                simulation.total,
+              )}`}
+              label="Configuracion lista"
+              title="La configuracion esta lista para pasar al carrito."
+            />
+          ) : null}
 
           <CommercialNoticeGroup noticeKeys={dtfEntry.legalNotes} />
         </div>
@@ -407,4 +402,3 @@ function DTFPage() {
 }
 
 export default DTFPage
-

@@ -149,25 +149,72 @@ function calculateBusinessCardPricing(config: ConfigState): CatalogPricingResult
     quantity >= 250 ? 39 :
     32
 
-  const formatExtras: Record<string, number> = { standard: 0, square: 14, rounded: 10 }
-  const stockExtras: Record<string, number> = { '300': 0, '350': 8, '400': 16, '450': 26 }
-  const paperExtras: Record<string, number> = {
-    'coated-matte': 0,
-    'coated-gloss': 4,
-    recycled: 6,
-    'soft-touch': 14,
+  const formatExtras: Record<string, number> = {
+    standard: 0,
+    european: 4,
+    compact: 2,
+    square: 14,
+    rounded: 11,
   }
-  const finishExtras: Record<string, number> = {
+  const paperStockExtras: Record<string, number> = {
+    'coated-350': 0,
+    'premium-400': 14,
+    'recycled-300': 10,
+    'textured-special': 22,
+  }
+  const laminationExtras: Record<string, number> = {
     none: 0,
-    'laminate-matte': 8,
-    'laminate-gloss': 8,
+    matte: 8,
+    gloss: 8,
     'soft-touch': 18,
+  }
+  const specialFinishExtras: Record<string, number> = {
+    none: 0,
     'varnish-3d': 24,
     'foil-gold': 28,
     'foil-silver': 28,
   }
-  const sideFactor = config.printSides === 'double' ? 1.22 : 1
-  const base = round((baseByQuantity + (formatExtras[config.format || 'standard'] ?? 0) + (stockExtras[config.stock || '300'] ?? 0) + (paperExtras[config.paper || 'coated-matte'] ?? 0) + (finishExtras[config.finish || 'none'] ?? 0)) * sideFactor)
+  const reviewExtras: Record<string, number> = { basic: 0, advanced: 12, assisted: 24 }
+  const formatLabels: Record<string, string> = {
+    standard: 'Estandar 85 x 55 mm',
+    european: 'Europeo 90 x 50 mm',
+    compact: 'Compacto 85 x 50 mm',
+    square: 'Cuadrada 55 x 55 mm',
+    rounded: 'Esquinas redondeadas',
+  }
+  const paperStockLabels: Record<string, string> = {
+    'coated-350': 'Estucado 350 g',
+    'premium-400': 'Premium 400 g',
+    'recycled-300': 'Reciclado 300 g',
+    'textured-special': 'Texturizado especial',
+  }
+  const laminationLabels: Record<string, string> = {
+    none: 'Sin laminado',
+    matte: 'Laminado mate',
+    gloss: 'Laminado brillo',
+    'soft-touch': 'Soft touch',
+  }
+  const specialFinishLabels: Record<string, string> = {
+    none: 'Ninguno',
+    'foil-gold': 'Foil oro',
+    'foil-silver': 'Foil plata',
+    'varnish-3d': 'Barniz 3D',
+  }
+  const reviewLabels: Record<string, string> = {
+    basic: 'Revision basica incluida',
+    advanced: 'Revision avanzada',
+    assisted: 'Ayuda con archivo',
+  }
+  const sideFactor = config.printSides === 'double' ? 1.22 : config.printSides === 'back-only' ? 1.08 : 1
+  const base = round(
+    (baseByQuantity +
+      (formatExtras[config.format || 'standard'] ?? 0) +
+      (paperStockExtras[config.paperStock || 'coated-350'] ?? 0) +
+      (laminationExtras[config.lamination || 'none'] ?? 0) +
+      (specialFinishExtras[config.specialFinish || 'none'] ?? 0) +
+      (reviewExtras[config.fileReview || 'basic'] ?? 0)) *
+      sideFactor,
+  )
   const total = base
 
   return createResult({
@@ -178,17 +225,20 @@ function calculateBusinessCardPricing(config: ConfigState): CatalogPricingResult
     pricingLabel: formatCurrency(total),
     breakdown: [
       buildFieldSummary('Cantidad', `${quantity} uds`),
-      buildFieldSummary('Formato', config.format || 'standard'),
-      buildFieldSummary('Gramaje', config.stock || '300'),
-      buildFieldSummary('Papel', config.paper || 'coated-matte'),
-      buildFieldSummary('Acabado', config.finish || 'none'),
-      buildFieldSummary('Impresion', config.printSides === 'double' ? '2 caras' : '1 cara'),
+      buildFieldSummary('Formato', formatLabels[config.format || 'standard'] ?? 'Estandar 85 x 55 mm'),
+      buildFieldSummary('Papel', paperStockLabels[config.paperStock || 'coated-350'] ?? 'Estucado 350 g'),
+      buildFieldSummary('Laminado', laminationLabels[config.lamination || 'none'] ?? 'Sin laminado'),
+      buildFieldSummary('Acabado exclusivo', specialFinishLabels[config.specialFinish || 'none'] ?? 'Ninguno'),
+      buildFieldSummary('Impresion', config.printSides === 'double' ? 'Anverso y reverso' : config.printSides === 'back-only' ? 'Solo reverso' : 'Solo anverso'),
+      buildFieldSummary('Revision', reviewLabels[config.fileReview || 'basic'] ?? 'Revision basica incluida'),
     ],
     warnings:
-      config.finish === 'varnish-3d'
+      config.specialFinish === 'varnish-3d'
         ? ['El barniz 3D requiere una capa de acabado bien separada en el archivo.']
-        : config.finish?.startsWith('foil')
+        : config.specialFinish?.startsWith('foil')
           ? ['Los acabados oro/plata se confirman tras revisar la reserva del acabado.']
+          : config.fileReview === 'assisted'
+            ? ['La ayuda con archivo cubre ajuste comercial y lectura preprensa antes de validar la tirada.']
           : [],
     canAddToCart: true,
   })
@@ -209,23 +259,46 @@ function calculateFlyerPricing(entry: CatalogEntry, config: ConfigState): Catalo
   }
 
   const formatFactor: Record<string, number> = {
-    a6: 1,
     a5: 1.34,
     a4: 1.92,
     a3: 2.65,
-    '10x15': 1.08,
-    '10x21': 1.22,
-    '17x24': 1.58,
-    custom: 1.86,
+    a6: 1,
+    dl: 1.16,
   }
-  const stockFactor: Record<string, number> = { '135': 1, '170': 1.12, '250': 1.34, '300': 1.52 }
-  const paperFactor: Record<string, number> = {
-    'coated-gloss': 1,
-    'coated-matte': 1.04,
-    recycled: 1.08,
-    'natural-premium': 1.15,
+  const paperStockFactor: Record<string, number> = {
+    '135-gloss': 1,
+    '170-matte': 1.12,
+    '250-matte': 1.34,
+    '300-matte': 1.52,
+    '170-recycled': 1.18,
   }
-  const finishExtras: Record<string, number> = { none: 0, 'laminate-matte': 12, 'laminate-gloss': 12, 'soft-touch': 18 }
+  const finishExtras: Record<string, number> = { none: 0, matte: 10, gloss: 10, 'soft-touch': 18 }
+  const reviewExtras: Record<string, number> = { basic: 0, advanced: 12, assisted: 24 }
+  const formatLabels: Record<string, string> = {
+    a3: 'A3',
+    a4: 'A4',
+    a5: 'A5',
+    a6: 'A6',
+    dl: 'DL 99 x 210 mm',
+  }
+  const paperStockLabels: Record<string, string> = {
+    '135-gloss': '135 g estucado',
+    '170-matte': '170 g estucado',
+    '250-matte': '250 g premium',
+    '300-matte': '300 g rigido',
+    '170-recycled': 'Reciclado 170 g',
+  }
+  const finishLabels: Record<string, string> = {
+    none: 'Sin acabado',
+    matte: 'Mate',
+    gloss: 'Brillo',
+    'soft-touch': 'Soft touch',
+  }
+  const reviewLabels: Record<string, string> = {
+    basic: 'Revision basica incluida',
+    advanced: 'Revision avanzada',
+    assisted: 'Ayuda con archivo',
+  }
   const doubleSideFactor = config.printSides === 'double' ? 1.18 : 1
   const volumeDiscount = quantityDiscount(quantity, [
     { min: 1000, discount: 0.08 },
@@ -233,7 +306,15 @@ function calculateFlyerPricing(entry: CatalogEntry, config: ConfigState): Catalo
     { min: 5000, discount: 0.18 },
   ])
   const baseUnit = entry.id === 'flyer-a5' ? 0.18 : 0.14
-  const subtotal = round(quantity * baseUnit * (formatFactor[config.format || 'a6'] ?? 1) * (stockFactor[config.stock || '135'] ?? 1) * (paperFactor[config.paper || 'coated-gloss'] ?? 1) * doubleSideFactor + (finishExtras[config.finish || 'none'] ?? 0))
+  const subtotal = round(
+    quantity *
+      baseUnit *
+      (formatFactor[config.format || 'a5'] ?? 1) *
+      (paperStockFactor[config.paperStock || '135-gloss'] ?? 1) *
+      doubleSideFactor +
+      (finishExtras[config.finish || 'none'] ?? 0) +
+      (reviewExtras[config.fileReview || 'basic'] ?? 0),
+  )
   const total = round(subtotal * (1 - volumeDiscount))
 
   return createResult({
@@ -243,14 +324,18 @@ function calculateFlyerPricing(entry: CatalogEntry, config: ConfigState): Catalo
     unitLabel: 'ud',
     pricingLabel: formatCurrency(total),
     breakdown: [
-      buildFieldSummary('Formato', config.format || 'a6'),
+      buildFieldSummary('Formato', formatLabels[config.format || 'a5'] ?? 'A5'),
       buildFieldSummary('Orientacion', config.orientation || 'vertical'),
-      buildFieldSummary('Impresion', config.printSides === 'double' ? '2 caras' : '1 cara'),
-      buildFieldSummary('Gramaje', config.stock || '135'),
-      buildFieldSummary('Papel', config.paper || 'coated-gloss'),
+      buildFieldSummary('Caras', config.printSides === 'double' ? 'Dos caras' : 'Una cara'),
+      buildFieldSummary('Papel', paperStockLabels[config.paperStock || '135-gloss'] ?? '135 g estucado'),
+      buildFieldSummary('Acabado', finishLabels[config.finish || 'none'] ?? 'Sin acabado'),
+      buildFieldSummary('Revision', reviewLabels[config.fileReview || 'basic'] ?? 'Revision basica incluida'),
       volumeDiscount > 0 ? `Descuento volumen: -${Math.round(volumeDiscount * 100)}%` : 'Sin descuento por volumen',
     ],
-    warnings: config.format === 'custom' ? ['Los formatos personalizados se confirman definitivamente al revisar el arte final.'] : [],
+    warnings:
+      config.fileReview === 'assisted'
+        ? ['La ayuda con archivo suma revision comercial y preparacion antes de validar la impresion.']
+        : [],
     canAddToCart: entry.purchaseMode !== 'quote',
     quoteRequired: entry.purchaseMode === 'quote',
     rangeLabel: entry.purchaseMode === 'quote' ? formatRange(round(total * 0.92), round(total * 1.18)) : undefined,

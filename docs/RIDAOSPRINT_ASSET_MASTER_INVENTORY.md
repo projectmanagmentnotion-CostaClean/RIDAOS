@@ -238,6 +238,45 @@ Las landings de categoria usan hero, visual secundario y fallback. Referencia pr
 Ruta base: `/public/assets/products/dti/`
 
 | Tipo | Archivo | Uso | Prioridad |
+
+### Tarjetas de visita
+
+Ruta base: `/public/assets/previews/cards/`
+
+Assets esperados para el configurador premium:
+
+- `business-card-standard-preview.webp`
+- `business-card-square-preview.webp`
+- `business-card-rounded-preview.webp`
+- `business-card-gold-foil-preview.webp`
+- `business-card-silver-foil-preview.webp`
+- `business-card-3d-varnish-preview.webp`
+- `business-card-soft-touch-preview.webp`
+- `business-card-stack-premium.webp`
+
+Regla:
+
+- si falta una variante concreta, usar `business-card-stack-premium.webp` como fallback editorial
+- no mostrar estados tipo placeholder ni “imagen pendiente” en UI publica
+
+### Flyers y folletos
+
+Ruta base: `/public/assets/previews/paper/`
+
+Assets esperados para el configurador premium:
+
+- `flyer-a3-preview.webp`
+- `flyer-a4-preview.webp`
+- `flyer-a5-preview.webp`
+- `flyer-a6-preview.webp`
+- `flyer-stack-preview.webp`
+- `flyer-double-sided-preview.webp`
+- `flyer-soft-touch-preview.webp`
+
+Regla:
+
+- si falta un formato puntual, usar `flyer-stack-preview.webp` como fallback premium
+- el fallback debe seguir pareciendo una pieza editorial, no un recurso tecnico vacio
 | --- | --- | --- | --- |
 | Hero | `dti-product-hero-roll-v1.webp` | hero PDP | alta |
 | Galeria | `dti-meter-preview-v1.webp` | preview principal | alta |

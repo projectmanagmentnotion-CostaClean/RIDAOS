@@ -5,9 +5,11 @@ type TemplateGuidePanelProps = {
 }
 
 export function TemplateGuidePanel({ template }: TemplateGuidePanelProps) {
+  const orientationLabel = template.orientation === 'landscape' ? 'Horizontal' : 'Vertical'
+
   return (
     <article className="content-card template-guide-panel">
-      <p className="section-label">PRINT_TEMPLATE_GUIDES</p>
+      <p className="section-label">Guia de plantilla</p>
       <div className="summary-list compact-summary">
         <div className="summary-row">
           <span>Sangrado</span>
@@ -23,7 +25,7 @@ export function TemplateGuidePanel({ template }: TemplateGuidePanelProps) {
         </div>
         <div className="summary-row">
           <span>Orientacion</span>
-          <strong>{template.orientation}</strong>
+          <strong>{orientationLabel}</strong>
         </div>
       </div>
       <ul className="hint-list">

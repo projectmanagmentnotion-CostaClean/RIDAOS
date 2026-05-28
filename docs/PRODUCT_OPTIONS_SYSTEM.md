@@ -66,6 +66,7 @@ Guardas:
 
 - tarjetas: cantidad, formato, papel, laminado, acabado exclusivo, caras y revision alteran el total
 - flyers: cantidad, formato, papel, acabado, caras y revision alteran el total
+- DTI, pegatinas, vinilo, textil y rotulacion tambien deben traducir cualquier `value` tecnico a label comercial antes de renderizar el breakdown
 - el breakdown del panel comercial debe usar labels de cliente, no keys internas como `coated-350`
 
 ## Resumen y carrito
@@ -80,3 +81,10 @@ Guardas:
 - verificar `#/producto/flyers-personalizados`
 - revisar sticky summary, carrito y checkout basico
 - confirmar que DTI, pegatinas, vinilo, rotulacion y textil siguen con grupos propios
+
+## Checklist QA validado
+
+- tarjetas: `Esquinas redondeadas` + `Texturizado especial` + `Soft touch` + `Foil oro` + `Anverso y reverso` + `Ayuda con archivo`
+- flyers: `A3` + `Horizontal` + `Dos caras` + `300 g rigido` + `Soft touch` + `Ayuda con archivo`
+- carrito y checkout deben conservar esas labels sin `undefined`, sin keys tecnicas y sin separadores corruptos
+- las guias de plantilla no deben mostrar etiquetas internas como `PRINT_TEMPLATE_GUIDES`

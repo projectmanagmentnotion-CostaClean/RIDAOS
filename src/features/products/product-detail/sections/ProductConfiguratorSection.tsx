@@ -7,7 +7,6 @@ import type { CatalogEntry, ConfiguratorField } from '../../../../types/product'
 import { ArtworkUploadFlow } from '../../../artwork-upload'
 import type { ArtworkPreviewSummary, ArtworkProductRuleKey, ArtworkUploadFlowState } from '../../../artwork-upload'
 import { useLiveToast } from '../../../live-feedback'
-import { getConfigFeedbackLabel } from '../../../live-feedback/utils/feedbackCopy'
 import type { ProductSupportSection } from '../types/productExperience.types'
 
 type ProductConfiguratorSectionProps = {
@@ -42,16 +41,10 @@ export function ProductConfiguratorSection({
   onArtworkStateChange,
 }: ProductConfiguratorSectionProps) {
   const artworkField = fields.find((field) => field.type === 'file')
-  const { info, success } = useLiveToast()
+  const { success } = useLiveToast()
 
   const handleFieldChange = (key: string, value: string) => {
     onConfigChange(key, value)
-
-    if (!value || key === 'notes') {
-      return
-    }
-
-    info(getConfigFeedbackLabel(key), 'Tu resumen y el precio estimado se han actualizado.', 1800)
   }
 
   return (
@@ -97,7 +90,7 @@ export function ProductConfiguratorSection({
               }
             }}
             ruleKey={artworkRuleKey}
-            title="Sube tu diseño y revisa la vista previa"
+            title="Sube tu diseno y revisa la vista previa"
           />
         ) : null}
 

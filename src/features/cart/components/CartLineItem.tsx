@@ -68,7 +68,7 @@ export function CartLineItem({
       {item.artwork.previewSummary?.recommendations.length ? (
         <div className="summary-list compact-summary">
           <div className="summary-row">
-            <span>Guía artwork</span>
+            <span>Guia de archivo</span>
             <strong>{item.artwork.previewSummary.estimatedPhysicalSizeLabel}</strong>
           </div>
           <p className="cart-notes">{item.artwork.previewSummary.recommendations[0]?.message}</p>

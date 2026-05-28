@@ -42,6 +42,10 @@ function buildFieldSummary(label: string, value: string) {
   return `${label}: ${value}`
 }
 
+function toOrientationLabel(value: string | undefined) {
+  return value === 'horizontal' ? 'Horizontal' : 'Vertical'
+}
+
 function calculateStickerPricing(_entry: CatalogEntry, config: ConfigState): CatalogPricingResult {
   const quantity = getQuantity(config.quantity)
   if (!Number.isFinite(quantity) || quantity < 50) {
@@ -86,6 +90,19 @@ function calculateStickerPricing(_entry: CatalogEntry, config: ConfigState): Cat
     'premium-clear': 18,
     'outdoor-protect': 20,
   }
+  const materialLabels: Record<string, string> = {
+    white: 'Blanco',
+    transparent: 'Transparente',
+    'outdoor-vinyl': 'Vinilo exterior',
+    'adhesive-paper': 'Papel adhesivo',
+    repositionable: 'Reposicionable',
+  }
+  const finishLabels: Record<string, string> = {
+    matte: 'Mate',
+    gloss: 'Brillo',
+    'premium-clear': 'Laminado premium',
+    'outdoor-protect': 'Proteccion exterior',
+  }
 
   const shapeExtras: Record<string, number> = {
     square: 0,
@@ -95,6 +112,15 @@ function calculateStickerPricing(_entry: CatalogEntry, config: ConfigState): Cat
     custom: 22,
     'full-cut': 12,
     'kiss-cut': 14,
+  }
+  const shapeLabels: Record<string, string> = {
+    square: 'Cuadrada',
+    rectangular: 'Rectangular',
+    circle: 'Circular',
+    oval: 'Ovalada',
+    custom: 'Troquel personalizada',
+    'full-cut': 'Corte completo',
+    'kiss-cut': 'Medio corte',
   }
 
   const base = round(quantity * quantityBase * (sizeFactorMap[config.sizePreset || '10x10'] ?? 1))
@@ -117,9 +143,9 @@ function calculateStickerPricing(_entry: CatalogEntry, config: ConfigState): Cat
     pricingLabel: formatCurrency(total),
     breakdown: [
       buildFieldSummary('Cantidad', `${quantity} uds`),
-      buildFieldSummary('Troquel', config.shape || 'square'),
-      buildFieldSummary('Material', config.material || 'white'),
-      buildFieldSummary('Acabado', config.finish || 'matte'),
+      buildFieldSummary('Troquel', shapeLabels[config.shape || 'square'] ?? 'Cuadrada'),
+      buildFieldSummary('Material', materialLabels[config.material || 'white'] ?? 'Blanco'),
+      buildFieldSummary('Acabado', finishLabels[config.finish || 'matte'] ?? 'Mate'),
       discount > 0 ? `Descuento volumen: -${Math.round(discount * 100)}%` : 'Sin descuento por volumen',
     ],
     warnings: config.shape === 'custom' ? ['La forma personalizada debe entrar con contorno claro en el archivo.'] : [],
@@ -325,7 +351,7 @@ function calculateFlyerPricing(entry: CatalogEntry, config: ConfigState): Catalo
     pricingLabel: formatCurrency(total),
     breakdown: [
       buildFieldSummary('Formato', formatLabels[config.format || 'a5'] ?? 'A5'),
-      buildFieldSummary('Orientacion', config.orientation || 'vertical'),
+      buildFieldSummary('Orientacion', toOrientationLabel(config.orientation)),
       buildFieldSummary('Caras', config.printSides === 'double' ? 'Dos caras' : 'Una cara'),
       buildFieldSummary('Papel', paperStockLabels[config.paperStock || '135-gloss'] ?? '135 g estucado'),
       buildFieldSummary('Acabado', finishLabels[config.finish || 'none'] ?? 'Sin acabado'),
@@ -361,6 +387,11 @@ function calculateDtiPricing(config: ConfigState): CatalogPricingResult {
   const urgencyExtras: Record<string, number> = { '72h': 0, '48h': 8, '24h': 18 }
   const reviewExtra = config.professionalReview === 'review' ? 12 : 0
   const artworkHelpExtra = config.artworkMode === 'need-help' ? 8 : 0
+  const urgencyLabels: Record<string, string> = {
+    '72h': 'Planificacion estandar',
+    '48h': 'Ventana prioritaria',
+    '24h': 'Salida compacta 24/48h',
+  }
   const volumeDiscount = quantityDiscount(meters, [
     { min: 10, discount: 0.05 },
     { min: 25, discount: 0.1 },
@@ -379,7 +410,7 @@ function calculateDtiPricing(config: ConfigState): CatalogPricingResult {
       buildFieldSummary('Metros', `${meters} m`),
       buildFieldSummary('Ancho util', `${config.usableWidth || '58'} cm`),
       buildFieldSummary('Calidad', config.quality === 'premium' ? 'Premium' : 'Estandar'),
-      buildFieldSummary('Urgencia', config.urgency || '72h'),
+      buildFieldSummary('Urgencia', urgencyLabels[config.urgency || '72h'] ?? 'Planificacion estandar'),
       buildFieldSummary('Archivo', config.artworkMode === 'need-help' ? 'Necesito ayuda' : 'Listo'),
       volumeDiscount > 0 ? `Descuento por volumen: -${Math.round(volumeDiscount * 100)}%` : 'Sin descuento por volumen',
     ],
@@ -413,6 +444,29 @@ function calculateVehicleWrapPricing(entry: CatalogEntry, config: ConfigState): 
   const designExtra = config.designService === 'studio-support' ? 220 : 0
   const installExtra = config.installation === 'material-only' ? -140 : 180
   const vinylExtra = config.vinylTier === 'premium' ? 180 : config.vinylTier === 'cast' ? 420 : 0
+  const vehicleLabels: Record<string, string> = {
+    'van-small': 'Furgoneta pequena',
+    'van-medium': 'Furgoneta media',
+    'van-large': 'Furgoneta grande',
+    car: 'Coche',
+    company: 'Vehiculo comercial',
+    fleet: 'Flota',
+  }
+  const wrapLabels: Record<string, string> = {
+    partial: 'Rotulacion parcial',
+    half: 'Media rotulacion',
+    'integral-lite': 'Semi integral',
+    integral: 'Integral',
+    'cut-vinyl': 'Vinilo de corte',
+    'printed-vinyl': 'Vinilo impreso',
+    'design-install': 'Diseno e instalacion',
+    fleet: 'Cobertura de flota',
+  }
+  const vinylLabels: Record<string, string> = {
+    standard: 'Vinilo estandar',
+    premium: 'Vinilo premium',
+    cast: 'Vinilo cast',
+  }
   const base = vehicleBaseMap[config.vehicleType || 'van-medium'] ?? 520
   const wrapExtra = wrapTypeExtra[config.wrapType || 'partial'] ?? 0
   const fleetUnits = Math.max(1, getQuantity(config.fleetUnits) || 1)
@@ -431,11 +485,11 @@ function calculateVehicleWrapPricing(entry: CatalogEntry, config: ConfigState): 
     pricingLabel: quoteRequired ? formatRange(min, max) : `${formatCurrency(max)} orientativo`,
     rangeLabel: formatRange(min, max),
     breakdown: [
-      buildFieldSummary('Vehiculo', config.vehicleType || 'van-medium'),
-      buildFieldSummary('Cobertura', config.wrapType || 'partial'),
+      buildFieldSummary('Vehiculo', vehicleLabels[config.vehicleType || 'van-medium'] ?? 'Furgoneta media'),
+      buildFieldSummary('Cobertura', wrapLabels[config.wrapType || 'partial'] ?? 'Rotulacion parcial'),
       buildFieldSummary('Diseno', config.designService === 'studio-support' ? 'Estudio' : 'Aportado'),
       buildFieldSummary('Instalacion', config.installation === 'material-only' ? 'Solo material' : 'Con instalacion'),
-      buildFieldSummary('Vinilo', config.vinylTier || 'standard'),
+      buildFieldSummary('Vinilo', vinylLabels[config.vinylTier || 'standard'] ?? 'Vinilo estandar'),
     ],
     warnings: ['La referencia final se confirma tras medir soporte, juntas, pliegues y calendario real de instalacion.'],
     canAddToCart: false,
@@ -467,6 +521,15 @@ function calculateTextilePricing(entry: CatalogEntry, config: ConfigState): Cata
   const placementExtra: Record<string, number> = { front: 0, 'front-back': 3, 'chest-sleeve': 2 }
   const turnaroundExtra: Record<string, number> = { standard: 0, fast: 18 }
   const reviewExtra = config.artworkSupport === 'review' ? 10 : 0
+  const placementLabels: Record<string, string> = {
+    front: 'Frontal',
+    'front-back': 'Frontal y espalda',
+    'chest-sleeve': 'Pecho y manga',
+  }
+  const turnaroundLabels: Record<string, string> = {
+    standard: 'Produccion estandar',
+    fast: 'Salida prioritaria',
+  }
   const volumeDiscount = quantityDiscount(quantity, [
     { min: 10, discount: 0.06 },
     { min: 25, discount: 0.12 },
@@ -483,8 +546,8 @@ function calculateTextilePricing(entry: CatalogEntry, config: ConfigState): Cata
     pricingLabel: formatCurrency(total),
     breakdown: [
       buildFieldSummary('Prenda', entry.name),
-      buildFieldSummary('Marcaje', config.printPlacement || 'front'),
-      buildFieldSummary('Urgencia', config.turnaround || 'standard'),
+      buildFieldSummary('Marcaje', placementLabels[config.printPlacement || 'front'] ?? 'Frontal'),
+      buildFieldSummary('Urgencia', turnaroundLabels[config.turnaround || 'standard'] ?? 'Produccion estandar'),
       volumeDiscount > 0 ? `Descuento volumen: -${Math.round(volumeDiscount * 100)}%` : 'Sin descuento por volumen',
     ],
     warnings: config.artworkSupport === 'review' ? ['La revision del archivo se suma antes de fabricar.'] : [],
@@ -515,6 +578,15 @@ function calculatePrintedVinylPricing(entry: CatalogEntry, config: ConfigState):
   const laminationExtra: Record<string, number> = { none: 0, matte: 4, gloss: 4 }
   const installationExtra: Record<string, number> = { 'material-only': 0, install: 18 }
   const urgencyExtra: Record<string, number> = { standard: 0, priority: 22 }
+  const laminationLabels: Record<string, string> = {
+    none: 'Sin laminado',
+    matte: 'Laminado mate',
+    gloss: 'Laminado brillo',
+  }
+  const installationLabels: Record<string, string> = {
+    'material-only': 'Solo material',
+    install: 'Con instalacion',
+  }
   const unitPrice = baseByEntry[entry.id] ?? 32
   const subtotal = round(area * (unitPrice + (laminationExtra[config.lamination || 'none'] ?? 0) + (installationExtra[config.installation || 'material-only'] ?? 0)) + (urgencyExtra[config.urgency || 'standard'] ?? 0))
   const quoteRequired = area > 12 || config.installation === 'install'
@@ -527,8 +599,8 @@ function calculatePrintedVinylPricing(entry: CatalogEntry, config: ConfigState):
     pricingLabel: quoteRequired ? `${formatCurrency(subtotal)} desde` : formatCurrency(subtotal),
     breakdown: [
       buildFieldSummary('Superficie', `${area} m2`),
-      buildFieldSummary('Laminado', config.lamination || 'none'),
-      buildFieldSummary('Montaje', config.installation || 'material-only'),
+      buildFieldSummary('Laminado', laminationLabels[config.lamination || 'none'] ?? 'Sin laminado'),
+      buildFieldSummary('Montaje', installationLabels[config.installation || 'material-only'] ?? 'Solo material'),
     ],
     warnings: quoteRequired ? ['Las instalaciones y superficies amplias se cierran con propuesta personalizada.'] : [],
     canAddToCart: !quoteRequired,

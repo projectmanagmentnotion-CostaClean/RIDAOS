@@ -2,6 +2,7 @@ import { getOrderItemSummary } from '../../../lib/products'
 import type { CartItem } from '../../../types/ecommerce'
 import { getCartItemLineExtras, getCartItemLineSubtotal, getCartItemLineTotal, getItemLineQuantity } from '../utils/cartPricing'
 import { QuantityStepper } from './QuantityStepper'
+import { formatArtworkAcceptanceStatus, getArtworkAcceptanceCtaLabel } from '../../artwork-upload/utils/formatArtworkAcceptance'
 
 type CartLineItemProps = {
   item: CartItem
@@ -17,6 +18,9 @@ export function CartLineItem({
   onRemove,
 }: CartLineItemProps) {
   const quantity = getItemLineQuantity(item)
+  const acceptance = item.artwork.acceptance
+  const acceptanceStatus = formatArtworkAcceptanceStatus(acceptance)
+  const reviewHref = item.configuration.productHref ?? '#/checkout'
 
   return (
     <article className="cart-item-card premium-cart-item" data-cursor="interest">
@@ -60,8 +64,12 @@ export function CartLineItem({
           <strong>{item.artwork.fileName}</strong>
         </div>
         <div className="summary-row">
-          <span>Revision</span>
-          <strong>{item.artwork.previewSummary ? item.artwork.previewSummary.workflowStatus : 'Comprobacion tecnica incluida'}</strong>
+          <span>Estado</span>
+          <strong>{acceptanceStatus}</strong>
+        </div>
+        <div className="summary-row">
+          <span>Aceptacion cliente</span>
+          <strong>{acceptance?.clientAccepted ? 'Aceptado' : acceptance?.designerHelpRequested ? 'Con ayuda' : 'Pendiente'}</strong>
         </div>
       </div>
 
@@ -72,6 +80,16 @@ export function CartLineItem({
             <strong>{item.artwork.previewSummary.estimatedPhysicalSizeLabel}</strong>
           </div>
           <p className="cart-notes">{item.artwork.previewSummary.recommendations[0]?.message}</p>
+        </div>
+      ) : null}
+
+      {acceptance?.issues.length ? (
+        <div className="summary-list compact-summary">
+          <div className="summary-row">
+            <span>Advertencia</span>
+            <strong>{acceptance.issues[0]?.title}</strong>
+          </div>
+          <p className="cart-notes">{acceptance.issues[0]?.correctionHint}</p>
         </div>
       ) : null}
 
@@ -98,6 +116,14 @@ export function CartLineItem({
           <strong>{formatCurrency(getCartItemLineExtras(item))}</strong>
         </div>
       </div>
+
+      {!acceptance?.clientAccepted ? (
+        <div className="catalog-cta-row">
+          <a className="card-link" href={reviewHref}>
+            {getArtworkAcceptanceCtaLabel(acceptance)}
+          </a>
+        </div>
+      ) : null}
 
       {item.configuration.notes ? <p className="cart-notes">Notas: {item.configuration.notes}</p> : null}
     </article>

@@ -2,7 +2,7 @@ import type { ConfigState } from '../../lib/configuratorState'
 import type { CartItem } from '../../types/ecommerce'
 import type { CatalogEntry, ConfiguratorField } from '../../types/product'
 import type { CatalogPricingResult } from './catalogPricingAdapter'
-import type { ArtworkPreviewSummary } from '../../domain/storage'
+import type { ArtworkPreviewSummary, ArtworkReferenceAcceptance } from '../../domain/storage'
 
 type UploadMeta = {
   fileName?: string
@@ -11,6 +11,8 @@ type UploadMeta = {
   formatLabel?: string
   notes?: string
   previewSummary?: ArtworkPreviewSummary
+  acceptance?: ArtworkReferenceAcceptance
+  productHref?: string
 }
 
 function mapProductType(entry: CatalogEntry): CartItem['productType'] {
@@ -87,6 +89,7 @@ export function createCatalogCartItem(entry: CatalogEntry, config: ConfigState, 
       variant: entry.name,
       summary: buildSummary(entry, config),
       notes,
+      productHref: uploadMeta?.productHref ?? entry.route,
     },
     pricing: {
       unitPrice: pricing.unitPrice ?? 0,
@@ -106,6 +109,7 @@ export function createCatalogCartItem(entry: CatalogEntry, config: ConfigState, 
       status: 'pending_review',
       uploadedAt: new Date().toISOString(),
       notes,
+      acceptance: uploadMeta?.acceptance,
       previewSummary: uploadMeta?.previewSummary,
     },
   }

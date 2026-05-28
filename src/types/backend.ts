@@ -44,6 +44,7 @@ export type OrderItem = {
     turnaroundPreference?: string
     extras?: string[]
     notes: string
+    productHref?: string
   }
   pricing: {
     unitPrice: number

@@ -23,6 +23,43 @@ export type ArtworkUploadStatus =
   | 'completed'
   | 'cancelled'
 
+export type ArtworkReferenceStatus =
+  | 'no-file'
+  | 'uploaded'
+  | 'checking'
+  | 'needs-correction'
+  | 'needs-designer'
+  | 'ready-for-approval'
+  | 'client-approved'
+  | 'accepted-for-production'
+
+export type ArtworkReferenceIssueSeverity = 'info' | 'warning' | 'critical'
+
+export type ArtworkReferenceIssue = {
+  id: string
+  severity: ArtworkReferenceIssueSeverity
+  title: string
+  description: string
+  whyItMatters: string
+  correctionHint: string
+}
+
+export type ArtworkReferenceAcceptance = {
+  status: ArtworkReferenceStatus
+  statusLabel: string
+  acceptanceRequired: boolean
+  clientAccepted: boolean
+  designerHelpRequested: boolean
+  canContinue: boolean
+  formatRecommended: boolean
+  preferredFormats: string[]
+  lastCheckedAt?: string
+  acceptedAt?: string
+  guidanceLabel: string
+  warnings: string[]
+  issues: ArtworkReferenceIssue[]
+}
+
 export type ArtworkValidationCheck = {
   id: string
   label: string
@@ -202,6 +239,7 @@ export type ArtworkUploadRecord = UploadAsset & {
   storageFile?: MockStorageFile
   preview?: ArtworkPreview
   previewSummary?: ArtworkValidationResult
+  acceptance?: ArtworkReferenceAcceptance
 }
 
 export type ArtworkPreviewSummary = ArtworkValidationResult

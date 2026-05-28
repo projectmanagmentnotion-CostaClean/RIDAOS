@@ -23,6 +23,7 @@ type ProductConfiguratorSectionProps = {
   onArtworkStateChange?: (state: {
     metadata: ArtworkUploadFlowState['metadata']
     summary: ArtworkPreviewSummary | null
+    acceptance: ArtworkUploadFlowState['acceptance']
     confirmed: boolean
   }) => void
 }
@@ -90,7 +91,28 @@ export function ProductConfiguratorSection({
               }
             }}
             ruleKey={artworkRuleKey}
+            summaryItems={fields
+              .filter((field) => field.type !== 'file')
+              .map((field) => {
+                const selectedValue = config[field.key]
+
+                if (!selectedValue) {
+                  return null
+                }
+
+                const optionLabel =
+                  field.type === 'select' || field.type === 'variant' || field.type === 'size'
+                    ? field.options.find((option) => option.value === selectedValue)?.label ?? selectedValue
+                    : selectedValue
+
+                return {
+                  label: field.label,
+                  value: optionLabel,
+                }
+              })
+              .filter(Boolean) as Array<{ label: string; value: string }>}
             title="Sube tu diseno y revisa la vista previa"
+            validationContext={{ configuration: config, productName: entry.name }}
           />
         ) : null}
 

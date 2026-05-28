@@ -1,4 +1,9 @@
-import type { ArtworkGuide as ArtworkGuideSpec, ArtworkPreview as ArtworkPreviewMetadata, ArtworkPreviewSummary } from '../../../domain/storage'
+import type {
+  ArtworkGuide as ArtworkGuideSpec,
+  ArtworkPreview as ArtworkPreviewMetadata,
+  ArtworkPreviewSummary,
+  ArtworkReferenceAcceptance,
+} from '../../../domain/storage'
 
 export type {
   ArtworkOrientation,
@@ -11,9 +16,15 @@ export type {
 
 export type { ArtworkGuideSpec, ArtworkPreviewMetadata, ArtworkPreviewSummary }
 
+export type ArtworkValidationContext = {
+  productName?: string
+  configuration?: Partial<Record<string, string>>
+}
+
 export type ArtworkUploadFlowState = {
   selectedFile: File | null
   metadata: ArtworkPreviewMetadata | null
   summary: ArtworkPreviewSummary | null
+  acceptance: ArtworkReferenceAcceptance | null
   confirmed: boolean
 }

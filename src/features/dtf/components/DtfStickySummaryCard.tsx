@@ -7,7 +7,7 @@ type DtfStickySummaryCardProps = {
   base: string
   subtotal: string
   extras: string
-  fileReady: boolean
+  fileStatus: string
 }
 
 export function DtfStickySummaryCard({
@@ -16,7 +16,7 @@ export function DtfStickySummaryCard({
   base,
   subtotal,
   extras,
-  fileReady,
+  fileStatus,
 }: DtfStickySummaryCardProps) {
   return (
     <StickySummaryPanel
@@ -41,7 +41,7 @@ export function DtfStickySummaryCard({
         <MetricCard className="hover-lift" label="Base" value={base} />
         <MetricCard className="hover-lift" label="Subtotal" value={subtotal} />
         <MetricCard className="hover-lift" label="Extras" value={extras} />
-        <MetricCard className="hover-lift" label="Archivo" value={fileReady ? 'Listo' : 'Pendiente'} />
+        <MetricCard className="hover-lift" label="Archivo" value={fileStatus} />
       </div>
     </StickySummaryPanel>
   )

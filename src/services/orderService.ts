@@ -1,4 +1,5 @@
 import { getOrderRepository } from '../infrastructure/repositoryFactory'
+import { promoteArtworkAcceptanceForOrder } from '../features/artwork-upload/utils/artworkAcceptance'
 import type { Order } from '../types/backend'
 import type { CartItem, CustomerData } from '../types/ecommerce'
 
@@ -43,6 +44,7 @@ export async function submitOrder(input: {
       ...item,
       artwork: {
         ...item.artwork,
+        acceptance: promoteArtworkAcceptanceForOrder(item.artwork.acceptance),
         orderId,
         status: 'pending_review',
       },

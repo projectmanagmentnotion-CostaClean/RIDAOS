@@ -7,6 +7,7 @@ import { createInitialConfig, getRequiredFieldErrors, updateConfigValue, type Co
 import { getProductById, getProductsByCategory } from '../../../../lib/products'
 import type { CatalogCategoryKey } from '../../../../types/product'
 import type { ArtworkPreviewSummary } from '../../../artwork-upload'
+import type { ArtworkReferenceAcceptance } from '../../../../domain/storage'
 import { useLiveToast } from '../../../live-feedback'
 import { getProductOptionDefinition } from '../../../product-options'
 import { productExperienceContent } from '../data/productExperienceContent'
@@ -119,7 +120,10 @@ export function useProductDetailState(
     setFieldErrors((current) => ({ ...current, file: undefined }))
   }
 
-  const handlePrimaryAction = (previewSummary?: ArtworkPreviewSummary | null) => {
+  const handlePrimaryAction = (
+    previewSummary?: ArtworkPreviewSummary | null,
+    acceptance?: ArtworkReferenceAcceptance | null,
+  ) => {
     if (!selectedProduct || !displayEntry) {
       return
     }
@@ -135,12 +139,14 @@ export function useProductDetailState(
       const fileName = config.file || 'Sin archivo adjunto'
       addToCart(
         createCatalogCartItem(displayEntry, config, estimate, {
+          acceptance: acceptance ?? undefined,
           fileName,
           fileType: selectedFile?.type ?? 'text/plain',
           fileSize: selectedFile?.size ?? 0,
           formatLabel: previewSummary?.formatLabel ?? (fileName === 'Sin archivo adjunto' ? 'POR CONFIRMAR' : 'ARCHIVO'),
           notes: config.notes?.trim() ?? '',
           previewSummary: previewSummary ?? undefined,
+          productHref: displayEntry.route,
         }),
       )
       setMessage(`${selectedProduct.name} anadido al carrito.`)

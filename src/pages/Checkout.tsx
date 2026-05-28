@@ -15,16 +15,22 @@ import { upsertCustomerProfile } from '../services/customerService'
 import { submitOrder } from '../services/orderService'
 import { useCartStore } from '../store/useCartStore'
 import { useUIStore } from '../store/useUIStore'
-import type { CustomerData, SimulatedOrder } from '../types/ecommerce'
+import type { CartItem, CustomerData, SimulatedOrder } from '../types/ecommerce'
 
 type CheckoutStep = (typeof checkoutSteps)[number]['id']
 type PaymentMockId = (typeof paymentMocks)[number]['id']
+type CheckoutErrorKey = keyof CustomerData | 'cart' | 'artwork'
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat(pricingContent.locale, {
     style: 'currency',
     currency: pricingContent.currency,
   }).format(value)
+
+function needsArtworkApproval(item: CartItem) {
+  const acceptance = item.artwork.acceptance
+  return Boolean(acceptance?.acceptanceRequired && !acceptance.clientAccepted && !acceptance.designerHelpRequested)
+}
 
 /**
  * Editable Zone: CHECKOUT_MOCK_FLOW
@@ -44,7 +50,7 @@ function Checkout() {
     email: '',
     phone: '',
   })
-  const [errors, setErrors] = useState<Partial<Record<keyof CustomerData | 'cart', string>>>({})
+  const [errors, setErrors] = useState<Partial<Record<CheckoutErrorKey, string>>>({})
   const [confirmation, setConfirmation] = useState<SimulatedOrder | null>(null)
   const loading = useUIStore((state) => state.loadingScopes.checkout ?? false)
   const uiError = useUIStore((state) => state.errorScopes.checkout)
@@ -52,6 +58,7 @@ function Checkout() {
   const setError = useUIStore((state) => state.setError)
   const clearError = useUIStore((state) => state.clearError)
   const { dismiss, error, info, progress, showSuccessModal, success } = useLiveToast()
+  const pendingArtworkItems = useMemo(() => cartItems.filter((item) => needsArtworkApproval(item)), [cartItems])
 
   const canAdvance = useMemo(() => cartItems.length > 0, [cartItems.length])
 
@@ -75,7 +82,7 @@ function Checkout() {
     }
 
   const validateCustomer = () => {
-    const nextErrors: Partial<Record<keyof CustomerData | 'cart', string>> = {}
+    const nextErrors: Partial<Record<CheckoutErrorKey, string>> = {}
 
     if (!customer.name.trim()) {
       nextErrors.name = 'Introduce el nombre del cliente.'
@@ -91,6 +98,11 @@ function Checkout() {
 
     if (cartItems.length === 0) {
       nextErrors.cart = 'Necesitas al menos un articulo en el carrito para continuar.'
+    }
+
+    if (pendingArtworkItems.length > 0) {
+      nextErrors.artwork =
+        'Antes de confirmar, revisa y acepta el archivo final o solicita ayuda de diseno en cada linea pendiente.'
     }
 
     setErrors(nextErrors)
@@ -178,16 +190,25 @@ function Checkout() {
                         <div>
                           <h3>{item.productName}</h3>
                           <p>{getOrderItemSummary(item).join(' | ') || item.artwork.fileName}</p>
+                          <p className="file-meta">
+                            Archivo: {item.artwork.fileName} | Estado: {item.artwork.acceptance?.statusLabel ?? 'Pendiente'}
+                          </p>
+                          {needsArtworkApproval(item) ? (
+                            <p className="field-error">
+                              Falta aceptar este archivo o solicitar ayuda de diseno Ridaos antes de confirmar.
+                            </p>
+                          ) : null}
                         </div>
                         <strong>{formatCurrency(item.pricing.total * (item.lineQuantity ?? 1))}</strong>
                       </div>
                     ))}
                   </div>
                   <ul className="hint-list">
-                    <li>Revisa ahora cantidades, urgencias y extras antes de enviar la solicitud.</li>
-                    <li>Revisamos archivo, entrega y acabados antes de cerrar la produccion.</li>
-                    <li>La comprobacion tecnica se mantiene como primer punto de control del pedido.</li>
+                    <li>Antes de confirmar, revisa que el archivo y la configuracion coincidan con cada producto.</li>
+                    <li>Usaremos esta informacion para preparar tu solicitud, no para activar produccion automatica.</li>
+                    <li>Si un archivo no esta listo, puedes continuar solo cuando se haya solicitado ayuda de diseno.</li>
                   </ul>
+                  {errors.artwork ? <p className="field-error">{errors.artwork}</p> : null}
                   <div className="form-actions">
                     <button
                       className="action-button"
@@ -227,9 +248,11 @@ function Checkout() {
                   {errors.phone ? <span className="field-error">{errors.phone}</span> : null}
                 </label>
                 {errors.cart ? <p className="field-error">{errors.cart}</p> : null}
+                {errors.artwork ? <p className="field-error">{errors.artwork}</p> : null}
                 <ul className="hint-list">
                   <li>Usamos estos datos para preparar la entrega y la confirmacion del pedido.</li>
                   <li>El metodo de entrega elegido en el carrito se mantiene aqui para que no pierdas contexto.</li>
+                  <li>Si no tienes el archivo final aceptado, vuelve a la PDP o solicita ayuda de diseno.</li>
                 </ul>
                 <div className="form-actions">
                   <button className="action-button action-button-muted" onClick={() => setStep('review')} type="button">
@@ -270,6 +293,24 @@ function Checkout() {
               {uiError ? <p className="field-error">{uiError}</p> : null}
               {loading ? <p className="inline-notice">Registrando tu solicitud...</p> : null}
               <CommercialNotice className="checkout-notice" title="Resumen de cierre" />
+              <div className="summary-list compact-summary">
+                {cartItems.map((item) => (
+                  <div className="summary-row" key={`artwork-${item.id}`}>
+                    <span>{item.productName}</span>
+                    <strong>{item.artwork.acceptance?.statusLabel ?? 'Archivo pendiente'}</strong>
+                  </div>
+                ))}
+              </div>
+              {errors.artwork ? <p className="field-error">{errors.artwork}</p> : null}
+              {pendingArtworkItems.length ? (
+                <p className="inline-notice">
+                  Puedes enviar la solicitud sin archivo final aceptado solo cuando hayas pedido ayuda de diseno Ridaos.
+                </p>
+              ) : (
+                <p className="inline-notice">
+                  Antes de confirmar, revisa que el archivo y la configuracion coincidan. Usaremos esta informacion para preparar tu solicitud.
+                </p>
+              )}
               <div className="form-actions">
                 <button className="action-button action-button-muted" onClick={() => setStep('shipping')} type="button">
                   Volver a entrega
@@ -335,7 +376,7 @@ function Checkout() {
             </div>
             <ul className="hint-list">
               <li>El total mantiene entrega, impuestos y descuentos visibles antes de confirmar.</li>
-              <li>La comprobacion tecnica sigue separada para proteger archivo, medidas y acabados.</li>
+              <li>La comprobacion inicial del archivo sigue separada para proteger medidas, formato y acabados.</li>
               <li>Tu solicitud queda registrada con el mismo resumen que has revisado durante el proceso.</li>
             </ul>
           </article>

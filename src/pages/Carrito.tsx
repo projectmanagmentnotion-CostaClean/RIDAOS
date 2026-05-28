@@ -32,6 +32,9 @@ function Carrito() {
   const summary = useCartSummary()
   const [couponDraft, setCouponDraft] = useState(couponCode)
   const { confirm, info, success, toast, warning } = useLiveToast()
+  const pendingArtworkItems = items.filter(
+    (item) => item.artwork.acceptance?.acceptanceRequired && !item.artwork.acceptance.clientAccepted && !item.artwork.acceptance.designerHelpRequested,
+  )
 
   useEffect(() => {
     const root = pageRef.current
@@ -157,6 +160,11 @@ function Carrito() {
               <li>La comprobacion tecnica sigue siendo el paso previo a cualquier produccion real.</li>
               <li>{footerContent.description}</li>
             </ul>
+            {pendingArtworkItems.length ? (
+              <p className="inline-notice">
+                Tienes {pendingArtworkItems.length} linea(s) con archivo pendiente de aceptar. Puedes revisarlas desde cada producto o continuar para validarlas en checkout.
+              </p>
+            ) : null}
 
             <div className="form-actions">
               <button

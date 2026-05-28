@@ -3,7 +3,9 @@ import { addToCart } from '../../../lib/cart'
 import { BASE_PRICE_PER_METER, calculateDTFPricing, type DTFQuality, type DTFUrgency } from '../../../lib/pricing'
 import type { CartItem } from '../../../types/ecommerce'
 import type { ArtworkPreviewSummary } from '../../artwork-upload'
+import type { ArtworkReferenceAcceptance } from '../../../domain/storage'
 import { useLiveToast } from '../../live-feedback'
+import { publicRoutes } from '../../../lib/navigation'
 
 type SimulationResult = {
   meters: number
@@ -144,7 +146,10 @@ export function useDtfConfiguratorState() {
     return Object.keys(nextErrors).length === 0
   }
 
-  const handleAddToCart = (previewSummary?: ArtworkPreviewSummary | null) => {
+  const handleAddToCart = (
+    previewSummary?: ArtworkPreviewSummary | null,
+    acceptance?: ArtworkReferenceAcceptance | null,
+  ) => {
     if (!validate() || !selectedFile) {
       error('Faltan datos por revisar', 'Completa el metraje y confirma un archivo antes de continuar.')
       return
@@ -162,6 +167,7 @@ export function useDtfConfiguratorState() {
         urgency,
         turnaroundPreference,
         extras: selectedExtras,
+        productHref: publicRoutes.dtf,
         summary: [
           'Producto: DTI por metro',
           `Metraje: ${metersValue} m`,
@@ -190,6 +196,7 @@ export function useDtfConfiguratorState() {
         status: 'pending_review',
         uploadedAt: new Date().toISOString(),
         notes: notes.trim(),
+        acceptance: acceptance ?? undefined,
         previewSummary: previewSummary ?? undefined,
       },
     }

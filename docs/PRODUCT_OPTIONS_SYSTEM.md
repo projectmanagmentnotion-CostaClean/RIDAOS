@@ -83,7 +83,22 @@ Guardas:
 
 - `ProductExperiencePage` no limita ya el resumen a cinco items cuando el producto necesita mas contexto comercial
 - `catalogCartAdapter` convierte cada field en una linea legible para el carrito
+- el objeto `artwork.acceptance` viaja desde el upload hasta carrito y checkout
+- si hay archivo final, el cliente debe aceptarlo explicitamente o solicitar ayuda de diseno antes de cerrar la solicitud
 - si aparece `undefined`, ids tecnicos o labels pegados, se considera regression
+
+## Sistema de aceptacion de archivo
+
+- el upload usa estados visibles: `no-file`, `uploaded`, `checking`, `needs-correction`, `needs-designer`, `ready-for-approval`, `client-approved`, `accepted-for-production`
+- la comprobacion es inicial y orientativa; no se debe vender como certificacion tecnica completa
+- `Foil oro`, `Foil plata` y `Barniz 3D` disparan advertencia de capa o pagina separada
+- `Ayuda con archivo` debe mantener salida comercial clara y permitir continuar como solicitud con apoyo de Ridaos
+- formatos recomendados por familia:
+- tarjetas y flyers: PDF
+- pegatinas: PDF, SVG, AI o EPS
+- DTI: PNG limpio, PDF o AI
+- vinilo y rotulacion: PDF, AI o EPS
+- textil: PNG transparente, PDF o AI
 
 ## QA minima
 

@@ -432,6 +432,11 @@ Rutas base:
 | `prepress-textile-placement` | `textile-placement-guide-v1.svg` | funcional | area textil | alta |
 | `upload-placeholder` | `upload-placeholder-v1.webp` | decorativo/UX | empty state upload | media |
 | `technical-preview-frame` | `technical-preview-frame-v1.webp` | decorativo/UX | marco de vista previa | media |
+| `prepress-error-modal-visual` | `prepress-error-modal-visual-v1.webp` | decorativo/UX | soporte visual para modal de incidencias | baja |
+| `file-accepted-badge` | `file-accepted-badge-v1.svg` | funcional | estado visual de archivo aceptado | media |
+| `special-finish-layer-guide` | `special-finish-layer-guide-v1.svg` | funcional | guia general para capa separada | media |
+| `foil-mask-guide` | `foil-mask-guide-v1.svg` | funcional | guia de mascara para foil oro/plata | media |
+| `varnish-mask-guide` | `varnish-mask-guide-v1.svg` | funcional | guia de mascara para barniz 3D | media |
 
 ## 11. Assets de Carrito / Checkout
 

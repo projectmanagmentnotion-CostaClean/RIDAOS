@@ -90,10 +90,12 @@ export function ProductExperiencePage({
   const [artworkState, setArtworkState] = useState<{
     metadata: ArtworkUploadFlowState['metadata']
     summary: ArtworkPreviewSummary | null
+    acceptance: ArtworkUploadFlowState['acceptance']
     confirmed: boolean
   }>({
     metadata: null,
     summary: null,
+    acceptance: null,
     confirmed: false,
   })
 
@@ -129,7 +131,10 @@ export function ProductExperiencePage({
   }
 
   const artworkRuleKey = optionDefinition?.prepressRuleKey ?? resolveArtworkRuleForEntry(displayEntry)
-  const artworkGateBlocked = Boolean(selectedFile) && !artworkState.confirmed
+  const artworkGateBlocked =
+    Boolean(selectedFile) &&
+    !artworkState.confirmed &&
+    !artworkState.acceptance?.designerHelpRequested
   const galleryFrames = optionDefinition
     ? pageConfig.galleryFrames.map((frame, index) => {
         const asset = optionDefinition.assetRequirements[index]
@@ -159,7 +164,7 @@ export function ProductExperiencePage({
       <button
         className="action-button"
         disabled={primaryActionDisabled}
-        onClick={() => handlePrimaryAction(artworkState.summary)}
+        onClick={() => handlePrimaryAction(artworkState.summary, artworkState.acceptance)}
         type="button"
       >
         {primaryActionLabel}
@@ -232,7 +237,10 @@ export function ProductExperiencePage({
             estimate={estimate}
             message={message}
             summaryAction={renderPrimaryActionButtons()}
-            summaryItems={summaryItems}
+            summaryItems={[
+              ...summaryItems,
+              ...(artworkState.acceptance ? [{ label: 'Archivo', value: artworkState.acceptance.statusLabel }] : []),
+            ]}
             successLinks={
               isDirectFlow ? (
                 <>

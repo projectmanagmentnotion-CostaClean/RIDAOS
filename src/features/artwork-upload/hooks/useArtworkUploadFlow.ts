@@ -1,14 +1,26 @@
 import { useEffect, useMemo, useState } from 'react'
 import { artworkProductRules } from '../product-rules/artworkProductRules'
 import { extractArtworkMetadata } from '../services/extractArtworkMetadata'
-import type { ArtworkPreviewSummary, ArtworkProductRuleKey, ArtworkUploadFlowState } from '../types/artworkUpload'
+import type {
+  ArtworkPreviewSummary,
+  ArtworkProductRuleKey,
+  ArtworkUploadFlowState,
+  ArtworkValidationContext,
+} from '../types/artworkUpload'
+import { buildArtworkAcceptance } from '../utils/artworkAcceptance'
 import { validateArtworkFile } from '../validation/validateArtworkFile'
 
-export function useArtworkUploadFlow(ruleKey: ArtworkProductRuleKey, file: File | null) {
+export function useArtworkUploadFlow(
+  ruleKey: ArtworkProductRuleKey,
+  file: File | null,
+  context?: ArtworkValidationContext,
+) {
   const rule = artworkProductRules[ruleKey]
   const [metadata, setMetadata] = useState<ArtworkUploadFlowState['metadata']>(null)
   const [summary, setSummary] = useState<ArtworkPreviewSummary | null>(null)
   const [confirmedToken, setConfirmedToken] = useState<string | null>(null)
+  const [designerHelpRequested, setDesignerHelpRequested] = useState(false)
+  const [acceptedAt, setAcceptedAt] = useState<string | undefined>(undefined)
   const [isLoading, setIsLoading] = useState(false)
   const fileToken = file ? `${file.name}-${file.size}-${file.lastModified}` : null
 
@@ -20,6 +32,7 @@ export function useArtworkUploadFlow(ruleKey: ArtworkProductRuleKey, file: File 
         if (!cancelled) {
           setMetadata(null)
           setSummary(null)
+          setAcceptedAt(undefined)
           setIsLoading(false)
         }
       })
@@ -64,27 +77,55 @@ export function useArtworkUploadFlow(ruleKey: ArtworkProductRuleKey, file: File 
     [metadata],
   )
 
-const steps = useMemo(
+  const acceptance = useMemo(
+    () =>
+      buildArtworkAcceptance({
+        ruleKey,
+        metadata,
+        summary,
+        isLoading,
+        clientAccepted: Boolean(fileToken) && confirmedToken === fileToken,
+        designerHelpRequested,
+        acceptedAt,
+        context,
+      }),
+    [acceptedAt, confirmedToken, context, designerHelpRequested, fileToken, isLoading, metadata, ruleKey, summary],
+  )
+
+  const steps = useMemo(
     () => [
       'Selecciona producto o formato',
       'Sube tu archivo',
-      'Revisión automática',
-      'Vista previa con guías',
+      'Comprobacion inicial',
+      'Vista previa con guias',
       'Recomendaciones',
-      'Confirmar archivo',
-      'Añadir al carrito',
+      'Aceptar archivo',
+      'Continuar solicitud',
     ],
     [],
   )
-
-  const confirmed = Boolean(fileToken) && confirmedToken === fileToken
 
   return {
     rule,
     metadata,
     summary,
-    confirmed,
-    setConfirmed: (nextConfirmed: boolean) => setConfirmedToken(nextConfirmed ? fileToken : null),
+    acceptance,
+    confirmed: acceptance.canContinue,
+    setConfirmed: (nextConfirmed: boolean) => {
+      if (!fileToken) {
+        return
+      }
+
+      setConfirmedToken(nextConfirmed ? fileToken : null)
+      setAcceptedAt(nextConfirmed ? new Date().toISOString() : undefined)
+    },
+    requestDesignerHelp: (nextValue: boolean) => {
+      setDesignerHelpRequested(nextValue)
+      if (nextValue) {
+        setConfirmedToken(null)
+        setAcceptedAt(undefined)
+      }
+    },
     isLoading,
     steps,
   }

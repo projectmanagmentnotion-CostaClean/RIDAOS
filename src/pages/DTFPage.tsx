@@ -50,10 +50,12 @@ function DTFPage() {
   const [artworkState, setArtworkState] = useState<{
     metadata: ArtworkUploadFlowState['metadata']
     summary: ArtworkPreviewSummary | null
+    acceptance: ArtworkUploadFlowState['acceptance']
     confirmed: boolean
   }>({
     metadata: null,
     summary: null,
+    acceptance: null,
     confirmed: false,
   })
   const previewDtfContent = useCmsPreviewDocument('src/content/dtfContent.ts', dtfPageContent)
@@ -198,7 +200,18 @@ function DTFPage() {
               onFileChange={setFile}
               onStateChange={setArtworkState}
               ruleKey="dtf_meter"
+              summaryItems={summaryItems}
               title="Sube tu archivo DTI"
+              validationContext={{
+                configuration: {
+                  meters,
+                  quality,
+                  urgency,
+                  turnaroundPreference,
+                  extras: selectedExtras.join(','),
+                },
+                productName: 'DTI por metro',
+              }}
             />
             {errors.file ? <span className="field-error">{errors.file}</span> : null}
 
@@ -223,7 +236,7 @@ function DTFPage() {
                 className="action-button action-button-muted"
                 data-cursor="sales"
                 disabled={!artworkState.confirmed}
-                onClick={() => handleAddToCart(artworkState.summary)}
+                onClick={() => handleAddToCart(artworkState.summary, artworkState.acceptance)}
                 type="button"
               >
                 {previewDtfContent.actions.addToCartLabel}
@@ -262,7 +275,7 @@ function DTFPage() {
           <DtfStickySummaryCard
             base={`${formatCurrency(BASE_PRICE_PER_METER)}/metro`}
             extras={formatCurrency(pricing.extras)}
-            fileReady={artworkState.confirmed}
+            fileStatus={artworkState.acceptance?.statusLabel ?? (artworkState.confirmed ? 'Aceptado' : 'Pendiente')}
             subtotal={formatCurrency(pricing.subtotal)}
             summaryItems={summaryItems}
             total={formatCurrency(pricing.total)}
@@ -288,7 +301,7 @@ function DTFPage() {
                     </div>
                     <div className="summary-row">
                       <span>Estado</span>
-                      <strong>{artworkState.summary.workflowStatus}</strong>
+                      <strong>{artworkState.acceptance?.statusLabel ?? artworkState.summary.workflowStatus}</strong>
                     </div>
                     <div className="summary-row">
                       <span>Guia</span>
@@ -323,7 +336,13 @@ function DTFPage() {
                   </div>
                   <div className="preflight-item">
                     <span>Resolucion</span>
-                    <strong>{artworkState.summary?.workflowStatus === 'ready' ? 'Lista para revisar' : 'Requiere comprobacion'}</strong>
+                    <strong>
+                      {artworkState.acceptance?.clientAccepted
+                        ? 'Aceptada por el cliente'
+                        : artworkState.summary?.workflowStatus === 'ready'
+                          ? 'Lista para revisar'
+                          : 'Requiere comprobacion'}
+                    </strong>
                   </div>
                 </div>
               </section>

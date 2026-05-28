@@ -36,6 +36,40 @@ export const publicRoutes = {
   historialArchivos: '#/mi-cuenta/archivos',
 } as const
 
+export const canonicalProductRoutes = {
+  dtf: publicRoutes.dtf,
+  pegatinas: publicRoutes.productoPegatinas,
+  tarjetas: publicRoutes.productoTarjetas,
+  flyers: publicRoutes.productoFlyers,
+  vinilo: publicRoutes.productoVinilo,
+  rotulacion: publicRoutes.productoRotulacion,
+  textil: publicRoutes.productoTextil,
+} as const
+
+export type CanonicalProductKey = keyof typeof canonicalProductRoutes
+
+export const primaryProductRoutesByCategory = {
+  dtf: canonicalProductRoutes.dtf,
+  textil: canonicalProductRoutes.textil,
+  papeleria: canonicalProductRoutes.tarjetas,
+  materiales: canonicalProductRoutes.vinilo,
+  accesorios: canonicalProductRoutes.pegatinas,
+  rotulacion: canonicalProductRoutes.rotulacion,
+} as const
+
+export type PrimaryProductCategoryKey = keyof typeof primaryProductRoutesByCategory
+
+export const legacyRouteRedirects: Record<string, string> = {
+  '#/dtf': publicRoutes.dtf,
+  '#/papeleria': publicRoutes.catalogoTarjetas,
+  '#/materiales': publicRoutes.catalogoVinilo,
+  '#/servicios/rotulacion': publicRoutes.rotulacion,
+  '#/producto/dtf': canonicalProductRoutes.dtf,
+  '#/producto/textil': canonicalProductRoutes.textil,
+  '#/producto/papeleria': canonicalProductRoutes.tarjetas,
+  '#/producto/materiales': canonicalProductRoutes.vinilo,
+} as const
+
 export type PublicRouteKey = keyof typeof publicRoutes
 
 export type PublicCtaKey =
@@ -89,6 +123,14 @@ export function getCatalogFamilyHref(route: CatalogFamilyRouteKey) {
 
 export function getProductPageHref(route: ProductPageRouteKey) {
   return normalizeHashRoute(publicRoutes[route])
+}
+
+export function getCanonicalProductHref(product: CanonicalProductKey) {
+  return normalizeHashRoute(canonicalProductRoutes[product])
+}
+
+export function getPrimaryProductHrefByCategory(category: PrimaryProductCategoryKey) {
+  return normalizeHashRoute(primaryProductRoutesByCategory[category])
 }
 
 export type QuoteServiceKey =

@@ -1,4 +1,5 @@
 import {
+  getCanonicalProductHref,
   getProductPageHref,
   getPublicCtaHref,
   getPublicHref,
@@ -58,7 +59,7 @@ export const primaryLinks: NavigationLinkItem[] = [
     description: 'Produccion por metro para marcas, talleres y drops.',
     accent: 'green',
     priority: 'high',
-    matchHrefs: [publicRoutes.dtf, publicRoutes.catalogoDti, '#/dtf', '#/producto/dtf'],
+    matchHrefs: [publicRoutes.dtf, publicRoutes.catalogoDti],
   },
   {
     label: 'Rotulacion',
@@ -66,7 +67,7 @@ export const primaryLinks: NavigationLinkItem[] = [
     description: 'Furgonetas, presencia comercial y vinilo aplicado.',
     accent: 'pink',
     priority: 'high',
-    matchHrefs: [publicRoutes.rotulacion, publicRoutes.productoRotulacion, '#/servicios/rotulacion'],
+    matchHrefs: [publicRoutes.rotulacion, publicRoutes.productoRotulacion],
   },
   {
     label: 'Subir archivo',
@@ -147,7 +148,7 @@ export const serviceLinks: NavigationLinkItem[] = [
     description: 'Fachadas, flotas y cobertura visual.',
     accent: 'pink',
     priority: 'high',
-    matchHrefs: [publicRoutes.rotulacion, '#/servicios/rotulacion'],
+    matchHrefs: [publicRoutes.rotulacion],
   },
   {
     label: 'Vinilo impreso',
@@ -292,7 +293,7 @@ export const navigationMeta = {
     title: 'Produccion textil flexible para marcas, talleres y drops.',
     chips: ['Marcas', 'Talleres', 'Drops', 'Revision tecnica'],
     ctaLabel: 'Configurar DTI',
-    ctaHref: getProductPageHref('dtf'),
+    ctaHref: getCanonicalProductHref('dtf'),
   },
 } as const
 

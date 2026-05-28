@@ -1,3 +1,4 @@
+import { getCanonicalProductHref } from '../../../lib/navigation'
 import { relatedGuides } from '../articles/relatedGuides'
 import { internalLinkGraph } from '../internal-links/internalLinkGraph'
 import { relatedServicesByKey } from '../related/relatedServices'
@@ -11,7 +12,7 @@ export const discoverabilityHubs: DiscoverabilityHub[] = [
     primaryKeywords: ['DTI por metro', 'DTF por metro', 'impresion DTF', 'DTF textil'],
     relatedServices: relatedServicesByKey.dtf,
     relatedProducts: [
-      { id: 'hub-dtf-textil', title: 'Textil personalizado', description: 'Soportes finales para aplicar DTF y producir prendas.', href: '#/producto/textil', tag: 'Apparel' },
+      { id: 'hub-dtf-textil', title: 'Textil personalizado', description: 'Soportes finales para aplicar DTF y producir prendas.', href: getCanonicalProductHref('textil'), tag: 'Apparel' },
     ],
     relatedGuides: relatedGuides.filter((guide) => ['guide-dti-vs-dtf', 'guide-prepare-dti'].includes(guide.id)),
     localVariants: ['DTF Barcelona', 'DTF Blanes', 'DTF Girona', 'DTI Espana'],
@@ -25,7 +26,7 @@ export const discoverabilityHubs: DiscoverabilityHub[] = [
     primaryKeywords: ['Rotulacion comercial', 'Rotulacion de vehiculos empresa', 'Rotulacion integral'],
     relatedServices: relatedServicesByKey.rotulacion,
     relatedProducts: [
-      { id: 'hub-rot-cards', title: 'Tarjetas y papeleria', description: 'Soporte comercial complementario.', href: '#/producto/papeleria', tag: 'Branding' },
+      { id: 'hub-rot-cards', title: 'Tarjetas y papeleria', description: 'Soporte comercial complementario.', href: getCanonicalProductHref('tarjetas'), tag: 'Branding' },
       { id: 'hub-rot-stickers', title: 'Pegatinas branding', description: 'Aplica la marca a packaging y punto de entrega.', href: '#/catalogo', tag: 'Sticker' },
     ],
     relatedGuides: relatedGuides.filter((guide) => ['guide-wrap-price', 'guide-wrap-ideas', 'guide-window-vinyl'].includes(guide.id)),
@@ -51,7 +52,7 @@ export const discoverabilityHubs: DiscoverabilityHub[] = [
     description: 'Nodo para prendas, uniformes y branding textil conectado a DTF y preparacion de archivo.',
     primaryKeywords: ['textil personalizado', 'uniformes empresa', 'camisetas personalizadas'],
     relatedServices: relatedServicesByKey.dtf,
-    relatedProducts: [{ id: 'hub-textil-dtf', title: 'DTF por metro', description: 'Motor de produccion para textil y series cortas.', href: '#/producto/dtf', tag: 'DTF' }],
+    relatedProducts: [{ id: 'hub-textil-dtf', title: 'DTF por metro', description: 'Motor de produccion para textil y series cortas.', href: getCanonicalProductHref('dtf'), tag: 'DTF' }],
     relatedGuides: relatedGuides.filter((guide) => guide.id === 'guide-prepare-dti'),
     localVariants: ['textil personalizado Barcelona', 'uniformes empresa Girona'],
     upsellRules: ['upsell-dtf'],
@@ -63,7 +64,7 @@ export const discoverabilityHubs: DiscoverabilityHub[] = [
     description: 'Nodo para adhesivos, branding, packaging y punto de venta.',
     primaryKeywords: ['pegatinas personalizadas', 'pegatinas troqueladas', 'adhesivos personalizados'],
     relatedServices: relatedServicesByKey.pegatinas,
-    relatedProducts: [{ id: 'hub-sticker-print', title: 'Papeleria y tarjetas', description: 'Cruce comercial para negocios locales.', href: '#/producto/papeleria', tag: 'Cross-sell' }],
+    relatedProducts: [{ id: 'hub-sticker-print', title: 'Papeleria y tarjetas', description: 'Cruce comercial para negocios locales.', href: getCanonicalProductHref('tarjetas'), tag: 'Cross-sell' }],
     relatedGuides: relatedGuides.filter((guide) => guide.id === 'guide-bleed-cutline'),
     localVariants: ['pegatinas Barcelona', 'pegatinas Girona'],
     upsellRules: ['upsell-tarjetas'],
@@ -75,7 +76,7 @@ export const discoverabilityHubs: DiscoverabilityHub[] = [
     description: 'Nodo para vinilo comercial, escaparates, senaletica y continuidad visual de marca.',
     primaryKeywords: ['vinilo impreso', 'vinilos comerciales', 'vinilo escaparate'],
     relatedServices: relatedServicesByKey.rotulacion,
-    relatedProducts: [{ id: 'hub-vinyl-rot', title: 'Rotulacion comercial', description: 'Lleva el vinilo a vehiculo, flota y retail.', href: '#/servicios/rotulacion', tag: 'Vehicle' }],
+    relatedProducts: [{ id: 'hub-vinyl-rot', title: 'Rotulacion comercial', description: 'Lleva el vinilo a vehiculo, flota y retail.', href: getCanonicalProductHref('rotulacion'), tag: 'Vehicle' }],
     relatedGuides: relatedGuides.filter((guide) => guide.id === 'guide-window-vinyl'),
     localVariants: ['vinilos comerciales Girona', 'vinilo escaparate Barcelona'],
     upsellRules: ['upsell-rotulacion-furgoneta'],
@@ -87,7 +88,7 @@ export const discoverabilityHubs: DiscoverabilityHub[] = [
     description: 'Nodo para material comercial de empresa con salida hacia branding fisico y retail.',
     primaryKeywords: ['tarjetas empresa', 'tarjetas personalizadas', 'papeleria corporativa'],
     relatedServices: relatedServicesByKey.pegatinas,
-    relatedProducts: [{ id: 'hub-paper-flyers', title: 'Flyers y folletos', description: 'Continua la conversacion comercial con material de reparto.', href: '#/producto/papeleria', tag: 'Print' }],
+    relatedProducts: [{ id: 'hub-paper-flyers', title: 'Flyers y folletos', description: 'Continua la conversacion comercial con material de reparto.', href: getCanonicalProductHref('flyers'), tag: 'Print' }],
     relatedGuides: relatedGuides.filter((guide) => guide.id === 'guide-bleed-cutline'),
     localVariants: ['tarjetas empresa Barcelona', 'tarjetas visita Girona'],
     upsellRules: ['upsell-tarjetas'],

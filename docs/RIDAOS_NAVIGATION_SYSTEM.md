@@ -132,6 +132,9 @@ Guardas de implementacion:
 - las listas del panel y del drawer usan claves estables por `href + label`
 - no reutilizar `href` como `key` unico si el mismo destino aparece en grupos distintos
 - las PDP del catalogo deben marcar `Catalogo` como activo cuando no pertenecen a `DTI`, `Rotulacion` o `Subir archivo`
+- `src/lib/navigation.ts` es la fuente unica de rutas canonicas de producto y redirects legacy
+- no generar enlaces a `#/product-configurator` ni a aliases legacy como `#/producto/dtf`, `#/producto/papeleria`, `#/producto/materiales` o `#/producto/textil`
+- si entra trafico legacy, el router debe redirigir a la ruta canonica o mostrar fallback comercial claro
 
 ## 7. Motion y GSAP
 

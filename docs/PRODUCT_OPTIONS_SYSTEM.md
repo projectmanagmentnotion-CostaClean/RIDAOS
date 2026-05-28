@@ -15,7 +15,17 @@ Este documento fija las reglas del configurador storefront para que cada PDP ten
 ## Reglas de producto
 
 - cada PDP canonica usa un configurador unico
+- las rutas canonicas activas son:
+- `#/producto/dti-por-metro`
+- `#/producto/pegatinas-personalizadas`
+- `#/producto/tarjetas-visita`
+- `#/producto/flyers-personalizados`
+- `#/producto/vinilo-impreso`
+- `#/producto/rotulacion-furgonetas`
+- `#/producto/textil-personalizado`
 - no duplicar configuradores en catalogo ni en landings de categoria
+- prohibido crear CTAs, recomendaciones o fallbacks hacia `#/product-configurator`
+- prohibido reutilizar rutas legacy como `#/producto/dtf`, `#/producto/papeleria`, `#/producto/materiales` o `#/producto/textil`
 - el resumen sticky debe mostrar labels legibles, nunca ids tecnicos
 - el carrito debe heredar labels finales desde los fields del configurador
 - el pricing sigue siendo mock/local; no prometer cobro ni produccion real
@@ -81,6 +91,13 @@ Guardas:
 - verificar `#/producto/flyers-personalizados`
 - revisar sticky summary, carrito y checkout basico
 - confirmar que DTI, pegatinas, vinilo, rotulacion y textil siguen con grupos propios
+
+## Checklist de nuevos CTAs
+
+- usar siempre `src/lib/navigation.ts` como fuente unica para rutas publicas y PDP
+- si un CTA apunta a una familia de producto, resolver el PDP canonico correspondiente en lugar de inventar aliases
+- si el destino no existe, redirigir a `#/catalogo` o a un PDP canonico; no dejar placeholders ni hashes legacy
+- revisar carrito, discoverability, landings y docs antes de cerrar el cambio
 
 ## Checklist QA validado
 

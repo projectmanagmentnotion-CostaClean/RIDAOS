@@ -6,7 +6,7 @@ Este mapa define hubs, clusters y enlaces internos sugeridos para construir auto
 
 ### Hub 1: Rotulacion comercial
 
-- Hub URL: `#/servicios/rotulacion`
+- Hub URL: `#/catalogo/rotulacion`
 - Objetivo:
   - capturar demanda comercial y local sobre vehiculos de empresa, furgonetas, flotas, escaparates y senaletica
 - Clusters:
@@ -27,7 +27,7 @@ Enlaces internos sugeridos:
 
 ### Hub 2: DTF por metro
 
-- Hub URL: `#/producto/dtf`
+- Hub URL: `#/producto/dti-por-metro`
 - Objetivo:
   - capturar busquedas transaccionales y de preparacion tecnica sobre DTF por metro
 - Clusters:
@@ -58,8 +58,8 @@ Enlaces internos sugeridos:
 
 Enlaces internos sugeridos:
 
-- Catalogo -> Papeleria
-- Catalogo -> Materiales
+- Catalogo -> Tarjetas de visita
+- Catalogo -> Vinilo impreso
 - Catalogo -> Pegatinas
 - Catalogo -> Rotulacion
 
@@ -67,9 +67,9 @@ Enlaces internos sugeridos:
 
 | Cluster | Hub | Paginas soporte | Preguntas |
 | --- | --- | --- | --- |
-| rotulacion-hub | `#/servicios/rotulacion` | `#/servicios/carteleria`, `#/portafolio`, `#/contacto`, `#/catalogo` | coste, plazo, cobertura local |
-| dtf-hub | `#/producto/dtf` | `#/guia`, `#/catalogo`, `#/contacto` | DTI vs DTF, preparar archivo |
-| print-basics-hub | `#/catalogo` | `#/producto/papeleria`, `#/producto/materiales`, `#/guia` | imprimir desde foto, cantidad tarjetas |
+| rotulacion-hub | `#/catalogo/rotulacion` | `#/servicios/carteleria`, `#/portafolio`, `#/contacto`, `#/catalogo` | coste, plazo, cobertura local |
+| dtf-hub | `#/producto/dti-por-metro` | `#/guia`, `#/catalogo`, `#/contacto` | DTI vs DTF, preparar archivo |
+| print-basics-hub | `#/catalogo` | `#/producto/tarjetas-visita`, `#/producto/vinilo-impreso`, `#/guia` | imprimir desde foto, cantidad tarjetas |
 
 ## Relaciones entre servicios
 

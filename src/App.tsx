@@ -8,7 +8,7 @@ import Home from './pages/Home'
 import { applySEO } from './lib/seo'
 import { initSmoothScroll } from './lib/smoothScroll'
 import { refreshScrollNarrative, syncScrollTriggerWithLenis } from './lib/animations'
-import { getCatalogFamilyHref, getProductPageHref, getPublicCtaHref, getPublicHref } from './lib/navigation'
+import { getCatalogFamilyHref, getProductPageHref, getPublicCtaHref, getPublicHref, legacyRouteRedirects } from './lib/navigation'
 import { getCurrentHashRoute, navigateToHashRoute, normalizeHashRoute } from './lib/hashRouting'
 import { footerContent, navigationContent } from './content'
 import { useCmsPreviewDocument } from './features/cms-preview'
@@ -51,8 +51,8 @@ type RouteKey =
   | 'productFlyers'
   | 'productVinilo'
   | 'productRotulacion'
-  | 'productPapeleriaLegacy'
   | 'productAccesoriosLegacy'
+  | 'legacyConfigurator'
   | 'textil'
   | 'papeleria'
   | 'carteleria'
@@ -74,15 +74,11 @@ const routes: Record<string, RouteKey> = {
   [getCatalogFamilyHref('catalogoFlyers')]: 'catalogoFlyers',
   [getCatalogFamilyHref('catalogoVinilo')]: 'materiales',
   [getPublicHref('papeleria')]: 'papeleria',
-  '#/papeleria': 'papeleria',
   [getPublicHref('carteleria')]: 'carteleria',
-  '#/carteleria': 'carteleria',
   [getPublicHref('materiales')]: 'materiales',
-  '#/materiales': 'materiales',
   [getPublicHref('accesorios')]: 'accesorios',
   '#/accesorios': 'accesorios',
   [getPublicHref('rotulacion')]: 'rotulacion',
-  '#/servicios/rotulacion': 'rotulacion',
   [getPublicHref('neones')]: 'neones',
   [getProductPageHref('productoTextil')]: 'productTextil',
   [getProductPageHref('productoPegatinas')]: 'productPegatinas',
@@ -90,11 +86,8 @@ const routes: Record<string, RouteKey> = {
   [getProductPageHref('productoFlyers')]: 'productFlyers',
   [getProductPageHref('productoVinilo')]: 'productVinilo',
   [getProductPageHref('productoRotulacion')]: 'productRotulacion',
-  '#/producto/textil': 'productTextil',
-  '#/producto/papeleria': 'productPapeleriaLegacy',
-  '#/producto/materiales': 'productVinilo',
   '#/producto/accesorios': 'productAccesoriosLegacy',
-  '#/producto/dtf': 'dtf',
+  '#/product-configurator': 'legacyConfigurator',
   [getPublicCtaHref('carrito')]: 'carrito',
   '#/checkout': 'checkout',
   [getPublicCtaHref('upload')]: 'upload',
@@ -146,8 +139,8 @@ const ProductoTarjetasPage = lazy(() => import('./pages/ProductoTarjetasPage'))
 const ProductoFlyersPage = lazy(() => import('./pages/ProductoFlyersPage'))
 const ProductoViniloPage = lazy(() => import('./pages/ProductoViniloPage'))
 const ProductoRotulacionPage = lazy(() => import('./pages/ProductoRotulacionPage'))
-const ProductoPapeleriaPage = lazy(() => import('./pages/ProductoPapeleriaPage'))
 const ProductoAccesoriosPage = lazy(() => import('./pages/ProductoAccesoriosPage'))
+const LegacyProductConfiguratorPage = lazy(() => import('./pages/LegacyProductConfiguratorPage'))
 const Carrito = lazy(() => import('./pages/Carrito'))
 const Checkout = lazy(() => import('./pages/Checkout'))
 const GuiaArchivos = lazy(() => import('./pages/GuiaArchivos'))
@@ -191,8 +184,8 @@ const pageComponents: Record<RouteKey, ComponentType> = {
   productFlyers: ProductoFlyersPage,
   productVinilo: ProductoViniloPage,
   productRotulacion: ProductoRotulacionPage,
-  productPapeleriaLegacy: ProductoPapeleriaPage,
   productAccesoriosLegacy: ProductoAccesoriosPage,
+  legacyConfigurator: LegacyProductConfiguratorPage,
   carrito: Carrito,
   checkout: Checkout,
   upload: GuiaArchivos,
@@ -264,6 +257,13 @@ function App() {
 
     const syncRoute = () => {
       const nextHashRoute = getCurrentHashRoute()
+      const redirectTarget = legacyRouteRedirects[nextHashRoute]
+
+      if (redirectTarget) {
+        navigateToHashRoute(redirectTarget)
+        return
+      }
+
       setCurrentHashRoute(nextHashRoute)
       setRoute(getRouteFromHash(nextHashRoute))
     }

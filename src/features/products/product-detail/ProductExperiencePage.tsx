@@ -188,6 +188,7 @@ export function ProductExperiencePage({
             entry={displayEntry}
             fieldErrors={fieldErrors}
             fields={displayEntry.configuratorFields}
+            hideProductField={Boolean(initialProductId)}
             onConfigChange={handleConfigChange}
             onArtworkStateChange={setArtworkState}
             onFileChange={handleFileChange}

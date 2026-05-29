@@ -64,6 +64,14 @@ export function ArtworkIssueModal({
         ref={panelRef}
         role="dialog"
       >
+        <button
+          aria-label="Cerrar revision del archivo"
+          className="live-dialog__close"
+          onClick={onClose}
+          type="button"
+        >
+          ×
+        </button>
         <div className="live-dialog__copy">
           <p className="section-label">Revision del archivo</p>
           <h2 id="artwork-issue-title">Tu archivo necesita un pequeno ajuste antes de seguir.</h2>

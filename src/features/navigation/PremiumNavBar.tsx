@@ -78,7 +78,6 @@ export function PremiumNavBar({ brandLabel, currentHashRoute }: PremiumNavBarPro
             ref={desktopTriggerRef}
             type="button"
           >
-            <NavigationIcon className="ridaos-nav__button-icon" name={navigationMeta.desktopTriggerIcon} />
             <span>{navigationMeta.desktopTriggerLabel}</span>
           </button>
 

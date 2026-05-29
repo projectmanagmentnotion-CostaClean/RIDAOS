@@ -126,6 +126,19 @@ Guardas:
 - en checkout se bloquea solo la confirmacion final cuando hay lineas con aceptacion pendiente y sin ayuda
 - si no hay archivo, el flujo puede seguir como solicitud comercial cuando el producto lo permite
 
+## QA visual del storefront
+
+- PDPs canonicas: ocultado el selector `Producto` para evitar mezclar familias dentro de la misma ruta
+- navegacion desktop: eliminado el icono del trigger `Explorar`
+- upload y aceptacion: mejorada la legibilidad del checkbox y del bloque de referencia final
+- modal de archivo: cierre visible, mejor scroll y stack de acciones en mobile
+- sticky summary: comportamiento menos intrusivo en mobile
+
+## Limitaciones pendientes
+
+- la validacion visual real en navegador integrado sigue condicionada por el runtime local de Windows
+- las comprobaciones de rutas se han verificado por codigo, build y estructura de enlaces, no con captura automatizada del navegador embebido
+
 ## Checklist de nuevos CTAs
 
 - usar siempre `src/lib/navigation.ts` como fuente unica para rutas publicas y PDP

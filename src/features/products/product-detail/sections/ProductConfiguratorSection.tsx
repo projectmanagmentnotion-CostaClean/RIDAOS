@@ -12,6 +12,7 @@ import type { ProductSupportSection } from '../types/productExperience.types'
 type ProductConfiguratorSectionProps = {
   entry: CatalogEntry
   fields: ConfiguratorField[]
+  hideProductField?: boolean
   config: ConfigState
   fieldErrors: Partial<Record<string, string>>
   supportSections: ProductSupportSection[]
@@ -31,6 +32,7 @@ type ProductConfiguratorSectionProps = {
 export function ProductConfiguratorSection({
   entry,
   fields,
+  hideProductField = false,
   config,
   fieldErrors,
   supportSections,
@@ -44,6 +46,17 @@ export function ProductConfiguratorSection({
   const artworkField = fields.find((field) => field.type === 'file')
   const { success } = useLiveToast()
   const confirmedToastShownRef = useRef(false)
+  const visibleFields = fields.filter((field) => {
+    if (field.type === 'file') {
+      return false
+    }
+
+    if (hideProductField && field.key === 'product') {
+      return false
+    }
+
+    return true
+  })
 
   const handleFieldChange = (key: string, value: string) => {
     onConfigChange(key, value)
@@ -67,7 +80,7 @@ export function ProductConfiguratorSection({
         <span>Produccion profesional</span>
       </div>
       <div className="configurator-form">
-        {fields.filter((field) => field.type !== 'file').map((field) => (
+        {visibleFields.map((field) => (
           <ConfiguratorFieldRenderer
             error={fieldErrors[field.key]}
             field={field}
@@ -95,8 +108,7 @@ export function ProductConfiguratorSection({
               }
             }}
             ruleKey={artworkRuleKey}
-            summaryItems={fields
-              .filter((field) => field.type !== 'file')
+            summaryItems={visibleFields
               .map((field) => {
                 const selectedValue = config[field.key]
 

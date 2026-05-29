@@ -280,7 +280,6 @@ export const navigationMeta = {
   mobileAriaLabel: 'Abrir menu',
   mobileCloseAriaLabel: 'Cerrar menu',
   mobileDialogLabel: 'Menu principal',
-  desktopTriggerIcon: 'explore' as const,
   mobileTriggerIcon: 'menu' as const,
   mobileCloseIcon: 'close' as const,
   primaryCta: {

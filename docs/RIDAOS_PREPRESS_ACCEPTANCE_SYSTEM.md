@@ -183,6 +183,30 @@ En estos casos el pedido sigue como solicitud pendiente de revision con Ridaos. 
 - no hay persistencia backend real ni versionado de reuploads en este sprint
 - no se emiten emails ni se activan pagos
 
+## QA visual validada
+
+- se oculta el selector `Producto` en PDPs canonicas para evitar cruces visuales entre familias
+- el trigger desktop mantiene `Explorar` sin icono adicional
+- el modal de incidencias gana cierre visible, mejor scroll interno y acciones apiladas en mobile
+- el bloque de aceptacion usa una fila de checkbox mas tactil y legible
+- el sticky summary de producto deja de fijarse en mobile para evitar competencia con el configurador y el upload
+
+## Problemas encontrados y correcciones
+
+- trigger de navegacion con icono redundante en `Explorar`
+- selector `Producto` visible en rutas canonicas de producto
+- checkbox de aceptacion sin estilos propios ni area tactil suficiente
+- modal de archivo sin cierre visible y con riesgo de corte vertical en pantallas pequenas
+- sticky summary demasiado insistente en breakpoints moviles
+
+## Checklist mobile
+
+- 390px: pasos del upload en una sola columna
+- 430px: checkbox mas amplio y cierre de modal accesible
+- 768px: sticky summary pasa a flujo normal y no compite con el contenido
+- modal con scroll interno y acciones en columna
+- toasts siguen ocultandose cuando el drawer mobile esta abierto
+
 ## Ayuda de diseno Ridaos
 
 Microcopy base:

@@ -202,6 +202,7 @@ En estos casos el pedido sigue como solicitud pendiente de revision con Ridaos. 
 - sticky summary demasiado insistente en breakpoints moviles
 - configuradores con selects demasiado planos para productos de imprenta premium
 - falta de jerarquia visible entre configuracion comercial y bloque de archivo
+- `aria-label` del checkout con lenguaje `mock` heredado en accesibilidad
 
 ## Checklist mobile
 
@@ -212,11 +213,13 @@ En estos casos el pedido sigue como solicitud pendiente de revision con Ridaos. 
 - toasts siguen ocultandose cuando el drawer mobile esta abierto
 - cards visuales del configurador en una columna cuando no caben dos
 - filas de opciones premium con area tactil completa y sin overflow horizontal
+- rail de checkout sin copy tecnico en atributos accesibles
 
 ## Limitaciones visuales pendientes
 
 - la validacion visual real en navegador embebido sigue condicionada por el runtime local del sandbox de Windows
 - el nuevo patron visual usa previews CSS y no assets dedicados; si en el futuro se crean miniaturas finales, deben respetar este mismo mapa de secciones
+- la comprobacion final de selected states, hover y tooltips con captura automatizada sigue dependiendo de una sesion de navegador con artefactos graficos disponibles
 
 ## Ayuda de diseno Ridaos
 

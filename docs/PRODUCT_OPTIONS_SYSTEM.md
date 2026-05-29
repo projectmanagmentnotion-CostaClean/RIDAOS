@@ -176,6 +176,15 @@ Guardas:
 - sticky summary: comportamiento menos intrusivo en mobile
 - configuradores de tarjetas, flyers y pegatinas: nuevo patron por secciones con cards visuales y filas premium
 - resumen lateral: tono de `Resumen de presupuesto` en lugar de panel tecnico generico
+- checkout: limpiado el `aria-label` del rail para no exponer lenguaje de mock en accesibilidad
+
+## QA visual final
+
+- verificacion tecnica completada con `git status`, `npm run lint` y `npm run build`
+- servidor local confirmado en `http://localhost:5173`
+- rutas principales comprobadas en entorno local: tarjetas, flyers, pegatinas, DTI, carrito, checkout y upload
+- captura visual automatizada intentada con navegador headless local; el sandbox de Windows sigue limitando la exportacion fiable de screenshots
+- no se han detectado nuevas fugas visibles de keys internas en configurador, carrito o checkout durante esta pasada por codigo y DOM servido
 
 ## Limitaciones pendientes
 
@@ -183,6 +192,7 @@ Guardas:
 - las comprobaciones de rutas se han verificado por codigo, build y estructura de enlaces, no con captura automatizada del navegador embebido
 - `paperStock` sigue combinando papel y gramaje a nivel de datos; visualmente se presenta mejor, pero no se ha separado el modelo interno en este sprint
 - flyers siguen usando `Una cara` y `Dos caras` en pricing; no se ha introducido una distincion nueva entre reverso igual o diferente
+- sigue pendiente una ronda manual con interacción de viewport real para confirmar spacing fino, hover y selected states fuera del sandbox
 
 ## Checklist de nuevos CTAs
 

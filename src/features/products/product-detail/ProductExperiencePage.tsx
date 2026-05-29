@@ -269,10 +269,10 @@ export function ProductExperiencePage({
             summaryAccent={optionDefinition?.hero.accent}
             summaryTitle={
               displayEntry.purchaseMode === 'quote'
-                ? 'Referencia comercial'
+                ? 'Resumen orientativo'
                 : displayEntry.purchaseMode === 'hybrid'
-                  ? 'Estimacion preparada'
-                  : 'Precio en vivo'
+                  ? 'Presupuesto preparado'
+                  : 'Presupuesto estimado'
             }
           />
         ) : null

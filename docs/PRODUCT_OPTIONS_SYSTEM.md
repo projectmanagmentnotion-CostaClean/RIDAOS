@@ -10,6 +10,7 @@ Este documento fija las reglas del configurador storefront para que cada PDP ten
 - [productOptionPricing.ts](C:\Users\USUARIO\Documents\ridaosprint-pro\src\features\product-options\pricing\productOptionPricing.ts)
 - [ProductExperiencePage.tsx](C:\Users\USUARIO\Documents\ridaosprint-pro\src\features\products\product-detail\ProductExperiencePage.tsx)
 - [ConfiguratorFieldRenderer.tsx](C:\Users\USUARIO\Documents\ridaosprint-pro\src\components\ConfiguratorFieldRenderer.tsx)
+- [ProductConfiguratorVisualFields.tsx](C:\Users\USUARIO\Documents\ridaosprint-pro\src\features\products\product-detail\components\ProductConfiguratorVisualFields.tsx)
 - [catalogCartAdapter.ts](C:\Users\USUARIO\Documents\ridaosprint-pro\src\catalog\adapters\catalogCartAdapter.ts)
 
 ## Reglas de producto
@@ -50,6 +51,8 @@ Guardas:
 
 - si se usa `Foil` o `Barniz 3D`, el sistema debe mostrar aviso de capa o reserva separada
 - no mostrar variantes futuras como PVC si no estan soportadas comercialmente en esta fase
+- el configurador renderiza bloques visuales para `Cantidad`, `Formato`, `Caras e impresion` y `Acabado especial`
+- `Papel y gramaje`, `Laminado` y `Preparacion de archivo` se muestran como filas premium, no como selects planos
 
 ## Flyers y folletos
 
@@ -71,6 +74,44 @@ Guardas:
 
 - no activar plegado mientras el producto siga representando flyers y folletos ligeros en el mismo PDP
 - A5, A4 y A3 deben quedar explicados con microcopy visible en hints, no en labels interminables
+- `Orientacion`, `Formato` y `Caras` se renderizan como tarjetas visuales
+- `Papel y gramaje`, `Acabado` y `Preparacion de archivo` se renderizan como filas premium reutilizables
+
+## Pegatinas
+
+Ruta:
+
+- `#/producto/pegatinas-personalizadas`
+
+Grupos activos:
+
+- cantidad
+- forma y corte
+- tamano
+- material
+- acabado
+- notas del trabajo
+
+Guardas:
+
+- si se usa `custom`, `full-cut` o `kiss-cut`, el configurador debe mostrar aviso de linea de corte o salida a ayuda
+- la lectura visual del corte debe ser clara aunque el pricing siga usando los mismos `value` internos
+
+## Patron visual del configurador
+
+- `ProductConfiguratorVisualFields` agrupa cada PDP por secciones con titulo, descripcion y estado seleccionado
+- `VisualOptionCard` se usa para opciones que ganan lectura por miniatura o forma: formato, orientacion, caras, troquel y acabados especiales
+- `RadioOptionRow` se usa para opciones mas densas o comparativas: papel, gramaje combinado, laminado, material y ayuda de archivo
+- los `value` internos no cambian; solo cambia la presentacion
+- `ConfiguratorFieldRenderer` sigue siendo el fallback para inputs numericos, textarea y otros campos no visuales
+- no reintroducir selects nativos visibles en tarjetas, flyers o pegatinas salvo que una regresion obligue a fallback temporal
+
+## Reglas mobile
+
+- por debajo de `900px` el resumen sticky deja de fijarse
+- por debajo de `768px` las cards visuales pasan a una sola columna
+- en `430px` las pills compactas, las filas premium y las cards reducen padding para mantener targets tactiles sin overflow
+- no permitir que el resumen compita con el upload ni con el CTA principal
 
 ## Pricing mock
 
@@ -133,11 +174,15 @@ Guardas:
 - upload y aceptacion: mejorada la legibilidad del checkbox y del bloque de referencia final
 - modal de archivo: cierre visible, mejor scroll y stack de acciones en mobile
 - sticky summary: comportamiento menos intrusivo en mobile
+- configuradores de tarjetas, flyers y pegatinas: nuevo patron por secciones con cards visuales y filas premium
+- resumen lateral: tono de `Resumen de presupuesto` en lugar de panel tecnico generico
 
 ## Limitaciones pendientes
 
 - la validacion visual real en navegador integrado sigue condicionada por el runtime local de Windows
 - las comprobaciones de rutas se han verificado por codigo, build y estructura de enlaces, no con captura automatizada del navegador embebido
+- `paperStock` sigue combinando papel y gramaje a nivel de datos; visualmente se presenta mejor, pero no se ha separado el modelo interno en este sprint
+- flyers siguen usando `Una cara` y `Dos caras` en pricing; no se ha introducido una distincion nueva entre reverso igual o diferente
 
 ## Checklist de nuevos CTAs
 

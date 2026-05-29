@@ -34,10 +34,10 @@ export function ProductStickySummarySection({
         style={{ '--product-summary-accent': summaryAccent ?? 'rgba(217, 255, 0, 0.16)' } as CSSProperties}
       >
         <article className="content-card product-summary-card">
-          <p className="section-label">Resumen del producto</p>
+          <p className="section-label">Resumen de presupuesto</p>
           <h3>{entry.name}</h3>
           <p className="product-summary-card__copy">
-            Configuracion elegida, revision tecnica y siguiente paso en una sola vista.
+            Configuracion elegida, archivo asociado y siguiente paso comercial en una sola vista.
           </p>
           {summaryItems.length ? (
             <div className="product-summary-card__meta">

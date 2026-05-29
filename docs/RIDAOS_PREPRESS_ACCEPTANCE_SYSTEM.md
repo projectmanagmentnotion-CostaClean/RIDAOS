@@ -190,6 +190,8 @@ En estos casos el pedido sigue como solicitud pendiente de revision con Ridaos. 
 - el modal de incidencias gana cierre visible, mejor scroll interno y acciones apiladas en mobile
 - el bloque de aceptacion usa una fila de checkbox mas tactil y legible
 - el sticky summary de producto deja de fijarse en mobile para evitar competencia con el configurador y el upload
+- tarjetas, flyers y pegatinas integran el prepress dentro de un flujo por secciones en lugar de un formulario plano
+- las indicaciones de prepress aparecen antes del upload cuando el producto requiere reserva especial, doble cara o linea de corte
 
 ## Problemas encontrados y correcciones
 
@@ -198,6 +200,8 @@ En estos casos el pedido sigue como solicitud pendiente de revision con Ridaos. 
 - checkbox de aceptacion sin estilos propios ni area tactil suficiente
 - modal de archivo sin cierre visible y con riesgo de corte vertical en pantallas pequenas
 - sticky summary demasiado insistente en breakpoints moviles
+- configuradores con selects demasiado planos para productos de imprenta premium
+- falta de jerarquia visible entre configuracion comercial y bloque de archivo
 
 ## Checklist mobile
 
@@ -206,6 +210,13 @@ En estos casos el pedido sigue como solicitud pendiente de revision con Ridaos. 
 - 768px: sticky summary pasa a flujo normal y no compite con el contenido
 - modal con scroll interno y acciones en columna
 - toasts siguen ocultandose cuando el drawer mobile esta abierto
+- cards visuales del configurador en una columna cuando no caben dos
+- filas de opciones premium con area tactil completa y sin overflow horizontal
+
+## Limitaciones visuales pendientes
+
+- la validacion visual real en navegador embebido sigue condicionada por el runtime local del sandbox de Windows
+- el nuevo patron visual usa previews CSS y no assets dedicados; si en el futuro se crean miniaturas finales, deben respetar este mismo mapa de secciones
 
 ## Ayuda de diseno Ridaos
 

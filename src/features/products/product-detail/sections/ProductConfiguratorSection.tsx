@@ -1,5 +1,4 @@
 import { useRef, type ReactNode } from 'react'
-import ConfiguratorFieldRenderer from '../../../../components/ConfiguratorFieldRenderer'
 import ConfiguratorSupportBlock from '../../../../components/ConfiguratorSupportBlock'
 import SectionHeader from '../../../../components/SectionHeader'
 import type { ConfigState } from '../../../../lib/configuratorState'
@@ -7,6 +6,7 @@ import type { CatalogEntry, ConfiguratorField } from '../../../../types/product'
 import { ArtworkUploadFlow } from '../../../artwork-upload'
 import type { ArtworkPreviewSummary, ArtworkProductRuleKey, ArtworkUploadFlowState } from '../../../artwork-upload'
 import { useLiveToast } from '../../../live-feedback'
+import { ProductConfiguratorVisualFields } from '../components/ProductConfiguratorVisualFields'
 import type { ProductSupportSection } from '../types/productExperience.types'
 
 type ProductConfiguratorSectionProps = {
@@ -62,6 +62,63 @@ export function ProductConfiguratorSection({
     onConfigChange(key, value)
   }
 
+  const hasDesignerAssistanceOption = visibleFields.some(
+    (field) =>
+      (field.key === 'fileReview' || field.key === 'designService') &&
+      (field.type === 'select' || field.type === 'variant' || field.type === 'size') &&
+      field.options.some((option) => option.value === 'assisted' || option.value === 'studio-support'),
+  )
+  const specialFinishValue = config.specialFinish ?? 'none'
+  const needsSpecialFinishGuidance = entry.id === 'tarjetas-estandar' && specialFinishValue !== 'none'
+  const needsFlyerDuplexGuidance = (entry.id === 'flyer-a6' || entry.id === 'flyer-a5') && config.printSides === 'double'
+  const needsStickerCutlineGuidance =
+    (entry.id === 'pegatina-sin-laminar' || entry.id === 'pegatina-laminada') &&
+    ['custom', 'full-cut', 'kiss-cut'].includes(config.shape ?? '')
+  const contextualGuidance = [
+    needsSpecialFinishGuidance
+      ? {
+          title: specialFinishValue === 'varnish-3d' ? 'Reserva para barniz 3D' : 'Reserva para acabado metalico',
+          body:
+            'Este acabado necesita una capa o pagina separada indicando exactamente donde aplicar el efecto, sin degradados ni transparencias.',
+        }
+      : null,
+    needsFlyerDuplexGuidance
+      ? {
+          title: 'Archivo recomendado para doble cara',
+          body:
+            'Para una pieza a dos caras recomendamos un PDF con anverso y reverso en paginas separadas o claramente identificadas.',
+        }
+      : null,
+    needsStickerCutlineGuidance
+      ? {
+          title: 'Linea de corte recomendada',
+          body:
+            'Si el corte es personalizado, completo o kiss cut, prepara una linea de corte clara o pide ayuda de diseno Ridaos.',
+        }
+      : null,
+  ].filter(Boolean) as Array<{ title: string; body: string }>
+
+  const handleDesignerSupportSelection = () => {
+    const assistanceField = visibleFields.find(
+      (field) =>
+        (field.key === 'fileReview' || field.key === 'designService') &&
+        (field.type === 'select' || field.type === 'variant' || field.type === 'size'),
+    )
+
+    if (!assistanceField || !('options' in assistanceField)) {
+      return
+    }
+
+    if (assistanceField.options.some((option) => option.value === 'assisted')) {
+      onConfigChange(assistanceField.key, 'assisted')
+      return
+    }
+
+    if (assistanceField.options.some((option) => option.value === 'studio-support')) {
+      onConfigChange(assistanceField.key, 'studio-support')
+    }
+  }
+
   return (
     <article
       className="content-card product-config-card product-experience-config"
@@ -69,27 +126,45 @@ export function ProductConfiguratorSection({
       data-product-reveal
       id="product-configurator"
     >
-      <SectionHeader eyebrow="Configurador" title={`Configura ${entry.name.toLowerCase()} con una lectura clara y directa.`} />
+      <SectionHeader eyebrow="Configura tu producto" title={`Configura ${entry.name.toLowerCase()} con una lectura clara y profesional.`} />
       <p className="product-config-card__intro">
-        Elige lo importante, revisa el precio estimado y sube tu archivo cuando la pieza ya este lista para pasar a
-        revision.
+        Elige formato, materiales y archivo con una estructura por bloques pensada para imprenta online, sin perder la lectura comercial.
       </p>
       <div className="storefront-inline-tags product-config-card__tags">
-        <span>Precio estimado en vivo</span>
-        <span>Revision tecnica</span>
-        <span>Produccion profesional</span>
+        <span>Resumen de presupuesto</span>
+        <span>Prepress integrado</span>
+        <span>Ayuda Ridaos visible</span>
       </div>
       <div className="configurator-form">
-        {visibleFields.map((field) => (
-          <ConfiguratorFieldRenderer
-            error={fieldErrors[field.key]}
-            field={field}
-            key={`${entry.id}-${field.key}`}
-            onChange={handleFieldChange}
-            onFileChange={onFileChange}
-            value={config[field.key] ?? ''}
-          />
-        ))}
+        <ProductConfiguratorVisualFields
+          config={config}
+          entryId={entry.id}
+          fieldErrors={fieldErrors}
+          fields={visibleFields}
+          onChange={handleFieldChange}
+          onFileChange={onFileChange}
+        />
+
+        {contextualGuidance.length ? (
+          <article className="content-card product-config-guidance">
+            <p className="section-label">Indicaciones de prepress</p>
+            <div className="product-config-guidance__stack">
+              {contextualGuidance.map((item) => (
+                <div className="product-config-guidance__item" key={item.title}>
+                  <strong>{item.title}</strong>
+                  <p>{item.body}</p>
+                </div>
+              ))}
+            </div>
+            {hasDesignerAssistanceOption ? (
+              <div className="catalog-cta-row">
+                <button className="action-button action-button-muted" onClick={handleDesignerSupportSelection} type="button">
+                  Solicitar ayuda de diseno Ridaos
+                </button>
+              </div>
+            ) : null}
+          </article>
+        ) : null}
 
         {artworkField ? (
           <ArtworkUploadFlow

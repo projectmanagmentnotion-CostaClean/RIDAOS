@@ -5,12 +5,13 @@
 - Confirmación de repo, rama de trabajo aislada, HEAD base y despliegue existente.
 - Auditoría de mocks, persistencia, formularios y límites de Supabase.
 - Cinco landings reutilizando catálogo/productos existentes, con UTM en borrador de correo.
+- Formulario de presupuesto con campos obligatorios y errores accesibles, autocompletado de contacto y selector de servicio con estado anunciado.
 - Rutas limpias públicas con HTML por campaña y metadatos OG/Twitter/canonical en build.
 - Verificador sin dependencias de las páginas estáticas generado como parte de `npm run build`.
 - Formulario transparente: prepara borrador, no afirma envío o recepción.
 - Contratos neutrales de Growth para leads, consentimiento, atribución, etiquetas, estados, interacciones, vínculos y conversiones.
 - Fixture CRM exclusivamente en memoria, contrato Meta desacoplado y verificador local de challenge/firma, probados mediante diez pruebas clasificadas PASS_MOCK/PASS_REAL.
-- Preview de Vercel del commit `5eccd62c8818a379981d1deae7bd3d9918c3fb6e` listo; las cinco rutas limpias devuelven HTTP 200, título, `lang=es` y canonical correcto (**PASS_REAL Preview**, comprobado con acceso autenticado de Vercel).
+- Preview de Vercel del commit `e35cb6a844e9fb920fb5b2a2966de3e551dc5862` listo; las cinco rutas limpias devuelven HTTP 200, título, `lang=es` y canonical correcto (**PASS_REAL Preview**, comprobado con acceso autenticado de Vercel).
 - Lockfile sincronizado y dependencias sin hallazgos en `npm audit` tras reparación compatible.
 - Ocho documentos del sistema.
 

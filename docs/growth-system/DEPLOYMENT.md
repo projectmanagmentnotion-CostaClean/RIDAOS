@@ -2,7 +2,7 @@
 
 ## Estado
 
-Aplicación Vite estática, build listo. Vercel ya tiene el proyecto `ridaos`; Producción sigue en `main` con `1b21fb68d527fc73b6c15280ac0a7f0c34bcab4e`. El Preview vigente `dpl_263pY4zqYd8ZmWjbCjsLknZk9FEb` del commit `5eccd62c8818a379981d1deae7bd3d9918c3fb6e` está `READY`: las cinco rutas limpias devolvieron HTTP 200 con `lang=es`, título y canonical correctos al leerlas por el acceso autenticado de Vercel. Producción no se modificó. La revisión visual no se completó.
+Aplicación Vite estática, build listo. Vercel ya tiene el proyecto `ridaos`; Producción sigue en `main` con `1b21fb68d527fc73b6c15280ac0a7f0c34bcab4e`. El Preview vigente `dpl_3Ywpsajay3ZGivT8in7tcx8NpRfb` del commit `e35cb6a844e9fb920fb5b2a2966de3e551dc5862` está `READY`: las cinco rutas limpias devolvieron HTTP 200, `lang=es`, título y canonical de `https://ridaos.vercel.app/growth/{slug}` al leerlas por el acceso autenticado de Vercel. Producción no se modificó. La revisión visual no se completó.
 
 Preparación actual: **PASS_REAL para build estático y routing de Preview**, no lista para activar captación o Meta. La revisión visual del navegador, Instagram in-app, rendimiento y accesibilidad siguen pendientes. No existe endpoint Growth ni variable/credencial Meta configurada.
 

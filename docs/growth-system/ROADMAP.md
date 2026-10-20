@@ -10,6 +10,7 @@
 - Formulario transparente: prepara borrador, no afirma envío o recepción.
 - Contratos neutrales de Growth para leads, consentimiento, atribución, etiquetas, estados, interacciones, vínculos y conversiones.
 - Fixture CRM exclusivamente en memoria, contrato Meta desacoplado y verificador local de challenge/firma, probados mediante diez pruebas clasificadas PASS_MOCK/PASS_REAL.
+- Preview de Vercel del commit `d576d6e1b8b86b7a9ede8040210c2ba69d11e9fe` listo; las cinco rutas limpias devuelven HTTP 200 y canonical correcto (**PASS_REAL Preview**).
 - Lockfile sincronizado y dependencias sin hallazgos en `npm audit` tras reparación compatible.
 - Ocho documentos del sistema.
 
@@ -18,7 +19,7 @@
 1. Completar revisión visual y accesibilidad en viewport móvil; Computer Use detuvo la revisión al no poder identificar con confianza la URL del navegador y no hay Playwright instalado.
 2. Ampliar pruebas unitarias de navegación y mensajes de formulario; ya existen pruebas para UTM en landing→producto→presupuesto, artefactos estáticos, fixture CRM en memoria y seguridad criptográfica local.
 3. Completar contenido comercial y legal con datos aprobados por titular.
-4. Confirmar las rewrites de URL limpia en un deployment Preview autorizado; el build local genera los HTML y valida la configuración, pero no prueba el routing en Vercel.
+4. Completar revisión manual de landings en Preview y comprobar el navegador in-app de Instagram; no hay automatización de navegador instalada y Computer Use no pudo obtener un estado de URL confiable.
 5. Implementar y probar persistencia solo tras identificar un backend RidaosPrint autorizado; hoy existe el contrato y fixture PASS_MOCK, sin adaptador de persistencia conectado.
 
 ## Bloqueos de integración

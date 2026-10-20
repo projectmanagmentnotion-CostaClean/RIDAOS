@@ -26,10 +26,10 @@ Los parámetros UTM pueden acompañar el hash. La landing los conserva al abrir 
 
 ## Evidencia de validación
 
-- **PASS_REAL (local):** TypeScript, ESLint, build Vite, generación/verificación local de cinco páginas estáticas, cuatro pruebas de atribución y dos del verificador HMAC/challenge con secretos ficticios. Esto no demuestra entregas reales desde Meta.
+- **PASS_REAL:** TypeScript, ESLint, build Vite, cinco páginas estáticas verificadas, las cinco rutas limpias servidas por Vercel Preview con HTTP 200 y canonical correcto, cuatro pruebas de atribución y dos del verificador HMAC/challenge con secretos ficticios. Esto no demuestra entregas reales desde Meta.
 - **PASS_MOCK:** cuatro pruebas del fixture CRM en memoria; no validan persistencia ni seguridad de servidor.
 - **BLOCKED_EXTERNAL:** persistencia CRM real y todas las integraciones Meta; faltan backend RidaosPrint, propiedad/autorizaciones, credenciales y permisos.
-- **NOT_VERIFIED:** rutas limpias en un deployment Vercel, navegador in-app real de Instagram, revisión visual completa en iOS/Android y auditoría instrumental de accesibilidad/rendimiento.
+- **NOT_VERIFIED:** renderizado visual automatizado, navegador in-app real de Instagram, revisión visual completa en iOS/Android y auditoría instrumental de accesibilidad/rendimiento. La comprobación de URL protegida se hizo con lectura HTTP autenticada, no con navegador.
 
 ## Criterio para activar captación
 

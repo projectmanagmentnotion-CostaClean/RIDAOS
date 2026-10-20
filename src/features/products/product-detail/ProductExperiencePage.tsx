@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from 'react'
 import type { ArtworkPreviewSummary, ArtworkUploadFlowState } from '../../artwork-upload'
 import { resolveArtworkRuleForEntry } from '../../artwork-upload'
 import { getContinueShoppingHref, getQuoteHref, publicRoutes } from '../../../lib/navigation'
+import { carryCampaignAttribution } from '../../growth-system/campaignAttribution.mjs'
 import type { CatalogCategoryKey, ConfiguratorField } from '../../../types/product'
 import { ProductExperienceLayout } from './layouts/ProductExperienceLayout'
 import { useProductDetailState } from './hooks/useProductDetailState'
@@ -102,7 +103,11 @@ export function ProductExperiencePage({
 
   useProductExperienceMotion(pageRef)
 
-  const primaryHref = useMemo(() => getQuoteHref(category === 'accesorios' ? 'otro' : category), [category])
+  const primaryHref = useMemo(() => carryCampaignAttribution(
+    getQuoteHref(category === 'accesorios' ? 'otro' : category),
+    window.location.search,
+    window.location.hash,
+  ), [category])
   const enabled = new Set(pageConfig.sections)
   const discoverability = useDiscoverability({ category, entry: displayEntry ?? selectedProduct })
   const summaryItems = useMemo(() => {

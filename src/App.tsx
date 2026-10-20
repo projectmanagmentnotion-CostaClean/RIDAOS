@@ -40,6 +40,7 @@ type RouteKey =
   | 'adminCustomers'
   | 'adminProduction'
   | 'presupuesto'
+  | 'growthLanding'
   | 'motionTest'
   | 'cursorTest'
   | 'notFound'
@@ -112,6 +113,11 @@ const routes: Record<string, RouteKey> = {
   '#/admin/pedidos': 'adminOrders',
   '#/admin/archivos': 'adminUploads',
   [getPublicCtaHref('presupuesto')]: 'presupuesto',
+  '#/growth/rotulacion-vehiculos': 'growthLanding',
+  '#/growth/dtf-por-metro': 'growthLanding',
+  '#/growth/textil-personalizado': 'growthLanding',
+  '#/growth/papeleria': 'growthLanding',
+  '#/growth/promociones': 'growthLanding',
   '#/solicitar-presupuesto': 'presupuesto',
   '#/motion-test': 'motionTest',
   '#/cursor-test': 'cursorTest',
@@ -152,6 +158,7 @@ const MisPedidos = lazy(() => import('./pages/MisPedidos'))
 const DetallePedido = lazy(() => import('./pages/DetallePedido'))
 const HistorialArchivos = lazy(() => import('./pages/HistorialArchivos'))
 const SolicitarPresupuesto = lazy(() => import('./pages/SolicitarPresupuesto'))
+const GrowthLandingPage = lazy(() => import('./features/growth-system/GrowthLandingPage'))
 const MotionTest = lazy(() => import('./pages/MotionTest'))
 const CursorTestPage = lazy(() => import('./pages/CursorTestPage'))
 const DashboardPage = lazy(() => import('./admin/pages/DashboardPage'))
@@ -208,6 +215,7 @@ const pageComponents: Record<RouteKey, ComponentType> = {
   adminCustomers: CustomersPage,
   adminProduction: ProductionPage,
   presupuesto: SolicitarPresupuesto,
+  growthLanding: GrowthLandingPage,
   motionTest: MotionTest,
   cursorTest: CursorTestPage,
   notFound: NotFoundPage,
@@ -251,7 +259,7 @@ function App() {
     const smoothScroll = initSmoothScroll()
     syncScrollTriggerWithLenis()
 
-    if (!window.location.hash || window.location.hash === '#') {
+    if ((!window.location.hash || window.location.hash === '#') && !window.location.pathname.startsWith('/growth/')) {
       navigateToHashRoute('#/')
     }
 

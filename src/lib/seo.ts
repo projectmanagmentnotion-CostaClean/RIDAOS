@@ -2,6 +2,7 @@ import { getSeoForRoute } from '../catalog/content/contentSelectors'
 import { catalogEntries } from '../catalog/registry/catalogRegistry'
 import { localSeoContent, siteUrl } from '../content/localSeoContent'
 import { publicRoutes } from './navigation'
+import { getGrowthCampaignFromHash } from '../features/growth-system/campaigns'
 
 type StaticSeoEntry = {
   title: string
@@ -416,10 +417,11 @@ export function applySEO(routeHash: string) {
   const normalizedHash = normalizeHash(routeHash)
   const pathOnly = getPathOnlyHash(normalizedHash)
   const staticSeo = staticRouteSEO[pathOnly] ?? defaultSEO
+  const growthCampaign = getGrowthCampaignFromHash(normalizedHash)
   const contentSeo = getSeoForRoute(normalizedHash)
   const canonicalUrl = buildAbsoluteUrl(normalizedHash)
-  const title = buildPageTitle(contentSeo?.seoTitle ?? staticSeo.title)
-  const description = buildMetaDescription(contentSeo?.metaDescription ?? staticSeo.description)
+  const title = buildPageTitle(growthCampaign ? `${growthCampaign.eyebrow} | RidaosPrint` : contentSeo?.seoTitle ?? staticSeo.title)
+  const description = buildMetaDescription(growthCampaign?.description ?? contentSeo?.metaDescription ?? staticSeo.description)
   const ogData = buildOpenGraphData({
     title,
     description,

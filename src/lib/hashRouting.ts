@@ -33,7 +33,13 @@ export function getCurrentHashRoute() {
     return '#/'
   }
 
-  return normalizeHashRoute(window.location.hash)
+  if (window.location.hash && window.location.hash !== '#') {
+    return normalizeHashRoute(window.location.hash)
+  }
+
+  return window.location.pathname.startsWith('/growth/')
+    ? normalizeHashRoute(window.location.pathname)
+    : '#/'
 }
 
 export function navigateToHashRoute(route: string) {

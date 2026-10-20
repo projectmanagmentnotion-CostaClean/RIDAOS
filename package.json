@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build --debug",
+    "build": "tsc -b && vite build && npm run test:growth",
     "lint": "eslint .",
+    "test:growth": "node --test scripts/growth-system.test.mjs && node scripts/verify-growth-build.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

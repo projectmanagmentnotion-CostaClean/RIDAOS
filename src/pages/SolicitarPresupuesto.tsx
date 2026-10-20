@@ -6,6 +6,7 @@ import PageShell from '../components/PageShell'
 import SectionHeader from '../components/SectionHeader'
 import { getQuoteServices } from '../lib/catalogSelectors'
 import { publicRoutes } from '../lib/navigation'
+import { localSeoContent } from '../content/localSeoContent'
 import type { ConfiguratorField } from '../types/product'
 
 type QuoteForm = {
@@ -126,6 +127,8 @@ function SolicitarPresupuesto() {
 
     if (!form.email.trim()) {
       nextErrors.email = 'Introduce un email de contacto.'
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
+      nextErrors.email = 'Introduce un email válido.'
     }
 
     if (!form.telefono.trim()) {
@@ -139,6 +142,25 @@ function SolicitarPresupuesto() {
       return
     }
 
+    const hashQuery = window.location.hash.includes('?') ? window.location.hash.split('?').slice(1).join('?') : ''
+    const attribution = new URLSearchParams(`${window.location.search.slice(1)}&${hashQuery}`)
+    const attributionLines = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term']
+      .flatMap((key) => {
+        const value = attribution.get(key)
+        return value ? [`${key}: ${value}`] : []
+      })
+    const body = [
+      `Nombre: ${form.nombre.trim()}`,
+      `Email: ${form.email.trim()}`,
+      `Teléfono: ${form.telefono.trim()}`,
+      `Servicio: ${selectedService?.label ?? form.service}`,
+      `Detalles: ${form.details.trim()}`,
+      `Medidas: ${form.width || '-'} x ${form.height || '-'}`,
+      `Archivo de referencia indicado: ${form.fileName || 'No adjunto (este correo no incluye archivos)'}`,
+      ...(attributionLines.length ? ['', 'Origen de campaña:', ...attributionLines] : []),
+    ].join('\n')
+    const mailto = `mailto:${localSeoContent.organization.email}?subject=${encodeURIComponent(`Solicitud de presupuesto: ${selectedService?.label ?? form.service}`)}&body=${encodeURIComponent(body)}`
+    window.location.assign(mailto)
     setSubmitted(true)
   }
 
@@ -220,7 +242,7 @@ function SolicitarPresupuesto() {
 
             <div className="form-actions">
               <button className="action-button" data-cursor="sales" onClick={handleSubmit} type="button">
-                Enviar solicitud
+                Preparar correo
               </button>
             </div>
           </div>
@@ -230,7 +252,7 @@ function SolicitarPresupuesto() {
           <CommercialNotice items={selectedService?.legalNotes ?? []} />
 
           <article className="content-card quote-summary-panel hover-lift" data-animate="panel" data-cursor-zone="conversion" tabIndex={0}>
-            <SectionHeader eyebrow="Resumen comercial" title="Lo que recibira el equipo." />
+            <SectionHeader eyebrow="Resumen comercial" title="Contenido para el borrador." />
             <div className="summary-list">
               <div className="summary-row">
                 <span>Servicio</span>
@@ -252,7 +274,7 @@ function SolicitarPresupuesto() {
               </div>
               <div className="summary-row summary-row-total">
                 <span>Estado</span>
-                <strong>Solicitud lista para enviar</strong>
+                <strong>No se guarda ni se envía desde esta web</strong>
               </div>
             </div>
           </article>
@@ -266,9 +288,9 @@ function SolicitarPresupuesto() {
                 </>
               }
               className="success-card quote-success-panel"
-              description="Revisaremos tu proyecto y te responderemos con una propuesta personalizada."
-              label="Solicitud recibida"
-              title="Tu proyecto ya esta listo para recibir una propuesta."
+              description="El sitio intentó abrir un borrador en tu aplicación de correo. Comprueba que se haya abierto y envíalo para que el equipo lo reciba."
+              label="Correo por enviar"
+              title="Confirma y envía el correo para completar la solicitud."
             />
           ) : (
             <article className="content-card hover-lift" data-animate="panel" data-cursor="interactive" tabIndex={0}>

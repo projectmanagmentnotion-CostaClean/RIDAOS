@@ -34,3 +34,5 @@
 ## Infraestructura ajena excluida
 
 El proyecto Supabase QA inspeccionado pertenece a CostaClean. Su `public-lead-intake` impone environment `qa`, refiere explícitamente `kpvvydthlxupjjqqdpxy` y evalúa presupuestos de limpieza CostaClean. Aunque usa validación, firma, idempotencia y límites, reutilizarlo cruzaría clientes/datos. No se hizo ninguna escritura remota.
+
+La lista de proyectos Supabase accesibles se volvió a comprobar durante esta fase: solo muestra `CostaClean QA` (`kpvvydthlxupjjqqdpxy`) y `CostaClean` (`wfxnwfcdjainpojhbdri`); no hay proyecto identificado como Ridaos Print. Los archivos `supabase/schema/*.sql` son planes comentados, no migraciones aplicadas. Los repositorios de `src/infrastructure/supabase/` siguen marcados como placeholder y lanzan error; no hay persistencia Growth conectada ni políticas RLS verificadas.

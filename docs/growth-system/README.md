@@ -35,4 +35,6 @@ Los parámetros UTM pueden acompañar el hash. La landing los conserva al abrir 
 
 Hace falta una base/backend de RidaosPrint autorizado, contrato y retención definidos, endpoint protegido, consentimiento y aviso de privacidad completos, reglas de acceso/RLS, entorno de pruebas, gestión administrativa de leads y pruebas de seguridad. La función `public-lead-intake` inspeccionada corresponde a CostaClean y queda excluida.
 
+La comprobación actual de proyectos Supabase accesibles devuelve `CostaClean QA` y `CostaClean`; no aparece un proyecto de RidaosPrint. Los SQL bajo `supabase/schema/` están marcados como planes y no se ejecutaron; los repositorios Supabase del frontend siguen siendo placeholders. No se conectaron ni consultaron filas de CostaClean. La guía oficial de Supabase exige RLS, permisos mínimos y pruebas antes de exponer tablas a la app; el plan local todavía no demuestra esos controles ([guía RLS](https://supabase.com/docs/guides/database/postgres/row-level-security)).
+
 Consulta [arquitectura](ARCHITECTURE.md), [auditoría de reutilización](REUSE_AUDIT.md), [capacidades Meta](META_CAPABILITIES.md), [roadmap](ROADMAP.md), [seguridad](SECURITY.md), [despliegue](DEPLOYMENT.md) y [operaciones](OPERATIONS.md).

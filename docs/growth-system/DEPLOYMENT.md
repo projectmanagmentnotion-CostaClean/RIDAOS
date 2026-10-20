@@ -2,7 +2,7 @@
 
 ## Estado
 
-Aplicación Vite estática, build listo. Vercel ya tiene el proyecto `ridaos`; Producción sigue en `main` con `1b21fb68d527fc73b6c15280ac0a7f0c34bcab4e`. El deployment Preview `dpl_62ZicoRuHqZvLs6PfVGC94M8MczF` del commit `d576d6e1b8b86b7a9ede8040210c2ba69d11e9fe` está `READY`: las cinco rutas limpias devolvieron HTTP 200 con HTML en español y canonical único correcto al leerlas por el acceso autenticado de Vercel. Producción no se modificó.
+Aplicación Vite estática, build listo. Vercel ya tiene el proyecto `ridaos`; Producción sigue en `main` con `1b21fb68d527fc73b6c15280ac0a7f0c34bcab4e`. El Preview vigente `dpl_263pY4zqYd8ZmWjbCjsLknZk9FEb` del commit `5eccd62c8818a379981d1deae7bd3d9918c3fb6e` está `READY`: las cinco rutas limpias devolvieron HTTP 200 con `lang=es`, título y canonical correctos al leerlas por el acceso autenticado de Vercel. Producción no se modificó. La revisión visual no se completó.
 
 Preparación actual: **PASS_REAL para build estático y routing de Preview**, no lista para activar captación o Meta. La revisión visual del navegador, Instagram in-app, rendimiento y accesibilidad siguen pendientes. No existe endpoint Growth ni variable/credencial Meta configurada.
 
@@ -17,7 +17,7 @@ Preparación actual: **PASS_REAL para build estático y routing de Preview**, no
 
 ## Separación de entornos futura
 
-1. Usar backend de RidaosPrint en Preview/staging con datos de prueba.
+1. Identificar un backend de RidaosPrint; la cuenta conectada solo muestra proyectos CostaClean. No reutilizar esos proyectos. Si se autoriza o identifica un backend Ridaos, usarlo primero en Preview/staging con datos de prueba.
 2. Validar auth, políticas, endpoint, consentimiento, logs y eliminación antes de producción.
 3. Configurar secretos server-side en Vercel/Supabase por entorno. Nunca prefijar secreto con `VITE_`.
 4. Promover solo con revisión de PR, aceptación legal y checklist de release.

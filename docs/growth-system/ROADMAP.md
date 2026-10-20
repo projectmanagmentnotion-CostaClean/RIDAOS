@@ -10,7 +10,7 @@
 - Formulario transparente: prepara borrador, no afirma envío o recepción.
 - Contratos neutrales de Growth para leads, consentimiento, atribución, etiquetas, estados, interacciones, vínculos y conversiones.
 - Fixture CRM exclusivamente en memoria, contrato Meta desacoplado y verificador local de challenge/firma, probados mediante diez pruebas clasificadas PASS_MOCK/PASS_REAL.
-- Preview de Vercel del commit `d576d6e1b8b86b7a9ede8040210c2ba69d11e9fe` listo; las cinco rutas limpias devuelven HTTP 200 y canonical correcto (**PASS_REAL Preview**).
+- Preview de Vercel del commit `5eccd62c8818a379981d1deae7bd3d9918c3fb6e` listo; las cinco rutas limpias devuelven HTTP 200, título, `lang=es` y canonical correcto (**PASS_REAL Preview**, comprobado con acceso autenticado de Vercel).
 - Lockfile sincronizado y dependencias sin hallazgos en `npm audit` tras reparación compatible.
 - Ocho documentos del sistema.
 
@@ -24,7 +24,7 @@
 
 ## Bloqueos de integración
 
-1. Identificar un backend/proyecto Supabase propiedad de RidaosPrint o autorizar crear/usar uno. Los dos proyectos visibles son CostaClean y no deben recibir leads Ridaos.
+1. Identificar un backend/proyecto Supabase propiedad de RidaosPrint o autorizar crear/usar uno. La lista actual solo muestra dos proyectos CostaClean y ninguno debe recibir leads Ridaos. El SQL existente es planificación sin ejecutar y carece de políticas RLS operativas verificadas.
 2. Aprobar titularidad, campos, retención, consentimiento, política de privacidad y accesos de CRM.
 3. Para Meta: aportar acceso Business/Instagram profesional y app con los permisos aprobados.
 4. Para analytics/cookies: definir consentimiento y herramienta; no instalar Pixel antes de ello.

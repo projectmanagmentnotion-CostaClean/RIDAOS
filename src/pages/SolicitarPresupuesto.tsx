@@ -184,6 +184,7 @@ function SolicitarPresupuesto() {
                 className={`service-selector-card${form.service === service.key ? ' is-selected' : ''}`}
                 data-cursor="sales"
                 key={service.key}
+                aria-pressed={form.service === service.key}
                 onClick={() => setField('service', service.key)}
                 type="button"
               >
@@ -207,37 +208,49 @@ function SolicitarPresupuesto() {
             <label className="field-group" htmlFor="quote-name">
               <span className="field-label">Nombre</span>
               <input
+                aria-describedby={errors.nombre ? 'quote-name-error' : undefined}
+                aria-invalid={Boolean(errors.nombre)}
+                autoComplete="name"
                 className="form-input"
                 id="quote-name"
                 onChange={(event) => setField('nombre', event.target.value)}
+                required
                 type="text"
                 value={form.nombre}
               />
-              {errors.nombre ? <span className="field-error">{errors.nombre}</span> : null}
+              {errors.nombre ? <span className="field-error" id="quote-name-error" role="alert">{errors.nombre}</span> : null}
             </label>
 
             <label className="field-group" htmlFor="quote-email">
               <span className="field-label">Email</span>
               <input
+                aria-describedby={errors.email ? 'quote-email-error' : undefined}
+                aria-invalid={Boolean(errors.email)}
+                autoComplete="email"
                 className="form-input"
                 id="quote-email"
                 onChange={(event) => setField('email', event.target.value)}
+                required
                 type="email"
                 value={form.email}
               />
-              {errors.email ? <span className="field-error">{errors.email}</span> : null}
+              {errors.email ? <span className="field-error" id="quote-email-error" role="alert">{errors.email}</span> : null}
             </label>
 
             <label className="field-group" htmlFor="quote-phone">
               <span className="field-label">Telefono</span>
               <input
+                aria-describedby={errors.telefono ? 'quote-phone-error' : undefined}
+                aria-invalid={Boolean(errors.telefono)}
+                autoComplete="tel"
                 className="form-input"
                 id="quote-phone"
                 onChange={(event) => setField('telefono', event.target.value)}
+                required
                 type="tel"
                 value={form.telefono}
               />
-              {errors.telefono ? <span className="field-error">{errors.telefono}</span> : null}
+              {errors.telefono ? <span className="field-error" id="quote-phone-error" role="alert">{errors.telefono}</span> : null}
             </label>
 
             <div className="form-actions">

@@ -21,24 +21,28 @@ La rama contiene una base de backend aislada para revisión local:
 
 Los handlers están preparados para un proyecto QA dedicado de Ridaos con `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `DTI_GUEST_TOKEN_SECRET` (32+ caracteres), `DTI_ALLOWED_ORIGIN`, `STRIPE_SECRET_KEY` de test y `STRIPE_WEBHOOK_SECRET` de test. Pedidos invitados deben enviar una clave `x-dti-recovery-key` aleatoria de 32 bytes en base64url; el token de acceso se deriva sin almacenar el token en claro. Las claves privadas solo se usan en servidor. El webhook requiere una URL HTTPS registrada en Stripe Test Mode.
 
-## Verificación hecha
+## Estado QA verificado (24-11-2026)
 
 - `npm ci --ignore-scripts --no-audit --no-fund`: instalación limpia aprobada; 158 paquetes desde el lockfile.
 - `npm run test`: 18 pruebas unitarias aprobadas. Cubren precios, límites de metraje, IVA, direcciones peninsulares, despacho/corte, carritos nuevo y persistido, carrito mixto, validación PNG/PDF, revisión profesional, firmas de webhook e idempotencia.
-- `supabase/tests/dti-commerce.integration.sql`: ejecutado y aprobado en PostgreSQL 17.10 temporal. Se aplicó toda la migración y se verificaron RPCs públicos con permisos, RLS/Storage privado, direcciones, totales, reintentos, presupuestos, aceptación idempotente, webhooks, revisión técnica, liberación a producción y confirmación de plazos largos.
+- `supabase/tests/dti-commerce.integration.sql`: ejecutado y aprobado previamente en PostgreSQL 17.10 temporal. Se amplió para comprobar las 10 políticas RLS restrictivas; la migración correspondiente se aplicó en QA y las 10 políticas se verificaron allí mediante consulta de solo lectura.
 - `npm run lint`: aprobado.
 - `npm run build`: aprobado (TypeScript y Vite).
-- `git diff --check`: aprobado, con aviso de normalización LF/CRLF en `src/pages/DTFPage.tsx`.
+- `git diff --check`: aprobado; Git avisa de la normalización LF/CRLF del archivo SQL de integración.
 
-La prueba SQL usó un Postgres desechable con stubs mínimos para `auth.users` y `storage.buckets`; no sustituye Supabase Auth, Storage ni Edge Runtime. Docker, Deno y Supabase CLI local no están disponibles, y no hay un proyecto QA de Ridaos. No se desplegó ni se aplicó ninguna migración remota. El checkout DTI está conectado en código, pero el flujo frontend contra servicios, pagos, webhooks, Storage y Apple Pay no se ha probado en un entorno QA real. No se ejecutó E2E de navegador del flujo DTI actualizado.
+La prueba SQL usó un Postgres desechable con stubs mínimos para `auth.users` y `storage.buckets`; no sustituye Supabase Auth, Storage ni Edge Runtime. En el proyecto dedicado **Ridaos DTI QA** (`uzldkpnenmfjfwqfkhre`) se aplicaron las migraciones `dti_innuro_ecommerce_v1` y `dti_restrict_direct_client_rls`. Las siete Edge Functions quedaron activas con `verify_jwt=false` porque sus handlers hacen autenticación o validación de firma propias. Los asesores de seguridad y salud de Supabase no devuelven avisos. La migración inicial crea el bucket privado `dti-artwork` de 20 MiB.
+
+Con autorización del usuario se guardaron `DTI_GUEST_TOKEN_SECRET` aleatorio (32 bytes) y `DTI_ALLOWED_ORIGIN=http://localhost:5173` en secretos cifrados de ese proyecto QA. `.env.local` local solo configura el URL QA y su publishable key pública; está ignorado por Git. Pruebas reales de integración con datos sintéticos verificaron preflight CORS 200, creación de pedido invitado (1 m, 1.500 céntimos), reintento idempotente, lectura con token correcto (200), denegación con token incorrecto (403), subida de PNG 1×1 (201, validación `passed`), reintento de subida (200 y misma versión), y rechazo de lectura directa de `dti_orders` por anon (401). El listado Storage con JWT de rol `anon` respondió sin exponer objetos (0 visibles). Todas las funciones respondieron en vivo: solicitudes inválidas se rechazaron según handler; `dti-staff-operations` devolvió 401 sin sesión; `dti-payment-intent` y `stripe-webhook` devolvieron 503 sin secretos Stripe TEST. La orden y el PNG de prueba permanecen en el proyecto QA para auditoría.
+
+Stripe TEST no está configurado: no se crearon PaymentIntents ni se enviaron webhooks; tampoco se activó Stripe Live. No se ejecutó E2E de navegador del flujo DTI actualizado. El entorno browser no pudo conectar con el servidor local, por lo que las verificaciones funcionales se hicieron directamente por HTTPS contra Edge Functions/Storage de QA.
 
 ## Restricciones y pendientes de servicio
 
-- La organización Supabase disponible contiene proyectos CostaClean, incluido uno QA con esquema CostaClean. No es un backend DTI de Ridaos y no se ha conectado ni modificado.
+- Las operaciones Supabase se limitaron al proyecto dedicado Ridaos DTI QA `uzldkpnenmfjfwqfkhre` (eu-west-3). No se modificaron CostaClean, TeamGest, Berrozpe ni otros proyectos.
 - Vercel tiene un proyecto `ridaos`, pero no hay variables de Preview configuradas y las funciones actuales de Vercel no sustituyen el backend Supabase aislado.
 - No se encontraron credenciales autorizadas de Stripe Test Mode ni un conector Stripe. No se creó infraestructura ni se llamó a Stripe.
 - El dominio `dti.ridaosprint.com` aún no está disponible/verificado para Apple Pay. No se modificó DNS.
-- Falta provisionar/autorizar un proyecto QA dedicado de Ridaos, aplicar la migración allí y desplegar las funciones con secretos TEST. Hasta entonces la rama no conecta con servicios reales y ningún pago puede funcionar. La UI de Payment Element está condicionada a credenciales `pk_test_`/`sk_test_`; el checkout genérico sigue simulado y DTI falla cerrado cuando no hay QA configurado.
+- Las credenciales Stripe TEST siguen ausentes; Payment Element, PaymentIntent y webhook quedan sin capacidad de pago y no se activa Stripe Live. El checkout genérico sigue simulado.
 - Las comprobaciones de PNG/PDF no son análisis antivirus ni certificación completa de preimpresión. PNG entrelazados, PDF grandes o sospechosos y AI/PSD/SVG/CDR requieren revisión profesional. La aceptación del cliente no aprueba producción.
 - Las fechas de despacho omiten festivos nacionales, catalanes y locales. Antes de presentar una fecha estimada como compromiso, QA necesita un calendario laboral aprobado.
 - ESLint y pruebas Node no sustituyen `deno check` ni un entorno Supabase real. El clúster temporal sí ejecutó las funciones PL/pgSQL, pero falta validar las Edge Functions y las rutas de Storage con el runtime y servicios Supabase.

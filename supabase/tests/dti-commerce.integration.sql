@@ -29,6 +29,13 @@ begin
   if has_schema_privilege('anon', 'dti_private', 'usage') or has_schema_privilege('authenticated', 'dti_private', 'usage') then
     raise exception 'customer roles can access the private DTI implementation schema';
   end if;
+  if (select count(*) from pg_policies
+      where schemaname = 'public' and tablename like 'dti_%'
+        and policyname = 'dti_deny_client_access' and permissive = 'RESTRICTIVE'
+        and roles @> array['anon'::name, 'authenticated'::name] and cardinality(roles) = 2
+        and coalesce(qual, '') = 'false' and coalesce(with_check, '') = 'false') <> 10 then
+    raise exception 'explicit restrictive deny policies must cover all DTI tables for anon and authenticated';
+  end if;
   if exists (
     select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace
     where n.nspname = 'public' and p.proname ~ '^dti_'

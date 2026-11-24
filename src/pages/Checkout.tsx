@@ -17,12 +17,14 @@ import { submitOrder } from '../services/orderService'
 import { useCartStore } from '../store/useCartStore'
 import { useUIStore } from '../store/useUIStore'
 import type { CartItem, CustomerData, SimulatedOrder } from '../types/ecommerce'
-import { callDtiFunction, dtiBackendConfigured, dtiIdempotencyKey, dtiOrderKey, dtiRecoveryKey, finishDtiOrderAttempt, forgetDtiArtwork, getDtiArtwork, hasOnlyOneDtiLine, isDtiCart } from '../features/dtf/dtiCheckout'
+import { callDtiFunction, dtiBackendConfigured, dtiIdempotencyKey, dtiOrderKey, dtiRecoveryKey, dtiStripeTestConfigured, finishDtiOrderAttempt, forgetDtiArtwork, getDtiArtwork, hasOnlyOneDtiLine, isDtiCart } from '../features/dtf/dtiCheckout'
+import { DtiStripePayment } from '../features/dtf/DtiStripePayment'
 
 type CheckoutStep = (typeof checkoutSteps)[number]['id']
 type PaymentMockId = (typeof paymentMocks)[number]['id']
 type CheckoutErrorKey = keyof CustomerData | 'cart' | 'artwork'
-type DtiAddress = { line1: string; city: string; postalCode: string }
+type DtiAddress = { line1: string; city: string; province: string; postalCode: string }
+type DtiOrderAccess = { orderId: string; token: string; itemId: string }
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat(pricingContent.locale, {
@@ -64,9 +66,18 @@ function Checkout() {
   const { dismiss, error, info, progress, showSuccessModal, success } = useLiveToast()
   const pendingArtworkItems = useMemo(() => cartItems.filter((item) => needsArtworkApproval(item)), [cartItems])
   const dtiOnly = isDtiCart(cartItems)
-  const [dtiAddress, setDtiAddress] = useState<DtiAddress>({ line1: '', city: '', postalCode: '' })
+  const [dtiAddress, setDtiAddress] = useState<DtiAddress>({ line1: '', city: '', province: '', postalCode: '' })
   const [dtiStatus, setDtiStatus] = useState('')
   const [dtiClientAccepted, setDtiClientAccepted] = useState(false)
+  const [dtiOrderAccess, setDtiOrderAccess] = useState<DtiOrderAccess | null>(() => {
+    const saved = sessionStorage.getItem('dti-current-order')
+    if (!saved) return null
+    try {
+      const orderAccess = JSON.parse(saved) as DtiOrderAccess
+      return orderAccess.itemId === cartItems[0]?.id ? orderAccess : null
+    } catch { return null }
+  })
+  const [dtiRemoteOrder, setDtiRemoteOrder] = useState<{ order?: Record<string, unknown>; latestArtwork?: Record<string, unknown> | null; adaptationQuote?: Record<string, unknown> | null } | null>(null)
 
   const canAdvance = useMemo(() => cartItems.length > 0, [cartItems.length])
 
@@ -116,7 +127,7 @@ function Checkout() {
     if (dtiOnly && !hasOnlyOneDtiLine(cartItems)) nextErrors.cart = 'Para usar el checkout DTI de pruebas, tramita una sola línea DTI por pedido y separa otros productos.'
     if (dtiOnly && !dtiBackendConfigured()) nextErrors.cart = 'Checkout DTI desactivado: falta conectar un proyecto Supabase QA aislado.'
     if (dtiOnly && cartShippingMethod !== 'pickup') {
-      if (!dtiAddress.line1.trim() || !dtiAddress.city.trim() || !/^\d{5}$/.test(dtiAddress.postalCode)) nextErrors.cart = 'Completa una dirección y un código postal peninsular de 5 cifras.'
+      if (!dtiAddress.line1.trim() || !dtiAddress.city.trim() || !dtiAddress.province.trim() || !/^\d{5}$/.test(dtiAddress.postalCode)) nextErrors.cart = 'Completa dirección, municipio, provincia y código postal peninsular.'
     }
 
     setErrors(nextErrors)
@@ -142,10 +153,13 @@ function Checkout() {
         const order = await callDtiFunction<{ orderId: string; guestAccessToken: string; totalCents: number; status: string }>('dti-orders', {
           customerName: customer.name, email: customer.email, phone: customer.phone,
           meters: Number(item.configuration.meters), shippingMethod: cartShippingMethod === 'pickup' ? 'pickup' : 'standard',
-          adaptationRequested: false,
-          shippingAddress: cartShippingMethod === 'pickup' ? null : { line1: dtiAddress.line1, city: dtiAddress.city, postalCode: dtiAddress.postalCode, country: 'ES' },
+          adaptationRequested: Boolean(item.configuration.adaptationRequested || item.pricing.quoteRequired),
+          shippingAddress: cartShippingMethod === 'pickup' ? null : { line1: dtiAddress.line1, city: dtiAddress.city, province: dtiAddress.province, postalCode: dtiAddress.postalCode, countryCode: 'ES' },
         }, { idempotencyKey: dtiOrderKey(), recoveryKey: dtiRecoveryKey() })
         const token = order.guestAccessToken
+        const access = { orderId: order.orderId, token, itemId: item.id }
+        sessionStorage.setItem('dti-current-order', JSON.stringify(access))
+        setDtiOrderAccess(access)
         const upload = await callDtiFunction<{ versionId: string; validation: string; reviewRequired: boolean }>('dti-artwork', {}, { file, orderId: order.orderId, orderToken: token, idempotencyKey: dtiIdempotencyKey(order.orderId) })
         if (dtiClientAccepted && ['passed', 'manual_review'].includes(upload.validation)) {
           await callDtiFunction('dti-accept-artwork', { orderId: order.orderId, versionId: upload.versionId }, { orderToken: token })
@@ -153,8 +167,10 @@ function Checkout() {
         forgetDtiArtwork(item.id)
         finishDtiOrderAttempt()
         setDtiStatus(upload.reviewRequired || upload.validation === 'manual_review'
-          ? `Pedido ${order.orderId} recibido. La aceptación del cliente queda registrada por separado; hace falta revisión profesional antes de habilitar pago o producción.`
-          : `Pedido ${order.orderId} y archivo recibidos. ${dtiClientAccepted ? 'Aceptación del cliente registrada por separado. ' : 'Aún falta la aceptación del cliente. '}La revisión técnica sigue pendiente y no hay cobro.`)
+          ? `Pedido ${order.orderId} recibido. El archivo requiere revisión profesional. La aceptación del cliente queda registrada por separado y no equivale a aprobación técnica.`
+          : `Pedido ${order.orderId} y archivo recibidos. ${dtiClientAccepted ? 'Aceptación del cliente registrada por separado. ' : 'Aún falta la aceptación del cliente. '}${item.configuration.adaptationRequested || item.pricing.quoteRequired ? 'El pago espera un presupuesto profesional y su aprobación.' : 'No se ha realizado ningún cobro.'}`)
+        const remote = await callDtiFunction<{ order: Record<string, unknown>; latestArtwork: Record<string, unknown> | null; adaptationQuote: Record<string, unknown> | null }>('dti-orders', { orderId: order.orderId }, { method: 'GET', orderToken: token })
+        setDtiRemoteOrder(remote)
         setErrors({})
         return
       }
@@ -293,6 +309,7 @@ function Checkout() {
                 {dtiOnly && cartShippingMethod !== 'pickup' ? <>
                   <label className="field-group" htmlFor="dti-address"><span className="field-label">Dirección de envío</span><input className="form-input" id="dti-address" value={dtiAddress.line1} onChange={(event) => setDtiAddress((current) => ({ ...current, line1: event.target.value }))} /></label>
                   <label className="field-group" htmlFor="dti-city"><span className="field-label">Municipio</span><input className="form-input" id="dti-city" value={dtiAddress.city} onChange={(event) => setDtiAddress((current) => ({ ...current, city: event.target.value }))} /></label>
+                  <label className="field-group" htmlFor="dti-province"><span className="field-label">Provincia</span><input className="form-input" id="dti-province" value={dtiAddress.province} onChange={(event) => setDtiAddress((current) => ({ ...current, province: event.target.value }))} /></label>
                   <label className="field-group" htmlFor="dti-postal"><span className="field-label">Código postal peninsular</span><input className="form-input" inputMode="numeric" maxLength={5} id="dti-postal" value={dtiAddress.postalCode} onChange={(event) => setDtiAddress((current) => ({ ...current, postalCode: event.target.value }))} /></label>
                 </> : null}
                 {errors.cart ? <p className="field-error">{errors.cart}</p> : null}
@@ -325,7 +342,41 @@ function Checkout() {
             <>
               <p className="section-label">Confirmacion</p>
               <h2>{pricingContent.checkout.paymentTitle}</h2>
-              {dtiOnly ? <p className="inline-notice">{dtiBackendConfigured() ? 'Se registrará un pedido de prueba y se validará el archivo en servidor. No se solicitará el pago hasta la revisión profesional.' : 'El pedido real de prueba no está disponible hasta configurar un proyecto Supabase QA aislado.'}</p> : <div className="shipping-option-list payment-option-list">
+              {dtiOnly ? <>
+                <p className="inline-notice">{dtiBackendConfigured() ? 'Se registrará un pedido de prueba y se validará el archivo en servidor. La aceptación del cliente, revisión técnica y aprobación de presupuesto son estados separados.' : 'El pedido real de prueba no está disponible hasta configurar un proyecto Supabase QA aislado.'}</p>
+                {dtiOrderAccess ? <div className="content-card">
+                  <p>Pedido QA: {dtiOrderAccess.orderId}</p>
+                  <button className="action-button action-button-muted" type="button" onClick={async () => {
+                    try { setDtiRemoteOrder(await callDtiFunction('dti-orders', { orderId: dtiOrderAccess.orderId }, { method: 'GET', orderToken: dtiOrderAccess.token })) }
+                    catch (cause) { setDtiStatus(cause instanceof Error ? cause.message : 'No se pudo actualizar el pedido.') }
+                  }}>Consultar estado y presupuesto</button>
+                  {dtiRemoteOrder?.adaptationQuote ? <>
+                    <p>Presupuesto de adaptación: {Number(dtiRemoteOrder.adaptationQuote.hours)} h · {formatCurrency(Number(dtiRemoteOrder.adaptationQuote.total_cents) / 100)} IVA incluido · estado: {String(dtiRemoteOrder.adaptationQuote.status)}</p>
+                    {dtiRemoteOrder.adaptationQuote.status === 'awaiting_customer_approval' ? <div className="form-actions">
+                      {(['approved', 'rejected'] as const).map((decision) => <button key={decision} className="action-button" type="button" onClick={async () => {
+                        try {
+                          await callDtiFunction('dti-adaptation-quotes', { action: 'decide', quoteId: dtiRemoteOrder.adaptationQuote!.id, decision }, { orderToken: dtiOrderAccess.token })
+                          setDtiRemoteOrder(await callDtiFunction('dti-orders', { orderId: dtiOrderAccess.orderId }, { method: 'GET', orderToken: dtiOrderAccess.token }))
+                          setDtiStatus(decision === 'approved' ? 'Presupuesto aprobado antes del pago. La aprobación técnica para producción sigue pendiente.' : 'Presupuesto rechazado; no se realizará ningún cobro.')
+                        } catch (cause) { setDtiStatus(cause instanceof Error ? cause.message : 'No se pudo guardar la decisión del presupuesto.') }
+                      }}>{decision === 'approved' ? 'Aprobar presupuesto' : 'Rechazar presupuesto'}</button>)}
+                    </div> : null}
+                  </> : null}
+                  {dtiRemoteOrder?.latestArtwork?.versionId && ['passed', 'manual_review'].includes(String(dtiRemoteOrder.latestArtwork.validation)) && !dtiRemoteOrder.latestArtwork.clientAcceptedAt ? <button className="action-button action-button-muted" type="button" onClick={async () => {
+                    try {
+                      await callDtiFunction('dti-accept-artwork', { orderId: dtiOrderAccess.orderId, versionId: dtiRemoteOrder.latestArtwork!.versionId }, { orderToken: dtiOrderAccess.token })
+                      setDtiRemoteOrder(await callDtiFunction('dti-orders', { orderId: dtiOrderAccess.orderId }, { method: 'GET', orderToken: dtiOrderAccess.token }))
+                      setDtiStatus('Aceptación del cliente registrada. Esto no sustituye la revisión técnica ni autoriza producción.')
+                    } catch (cause) { setDtiStatus(cause instanceof Error ? cause.message : 'No se pudo aceptar la versión.') }
+                  }}>Aceptar esta versión de archivo</button> : null}
+                  {dtiRemoteOrder?.latestArtwork?.validation === 'passed' && dtiRemoteOrder.latestArtwork.clientAcceptedAt && (!cartItems[0]?.configuration.adaptationRequested && !cartItems[0]?.pricing.quoteRequired || dtiRemoteOrder.adaptationQuote?.status === 'approved') && dtiStripeTestConfigured()
+                    ? <DtiStripePayment orderId={dtiOrderAccess.orderId} orderToken={dtiOrderAccess.token} />
+                    : null}
+                  {dtiRemoteOrder?.latestArtwork?.validation === 'passed' && dtiRemoteOrder.latestArtwork.clientAcceptedAt && (!cartItems[0]?.configuration.adaptationRequested && !cartItems[0]?.pricing.quoteRequired || dtiRemoteOrder.adaptationQuote?.status === 'approved') && !dtiStripeTestConfigured()
+                    ? <p className="inline-notice">Archivo validado y aceptado. El pago test está desactivado porque falta configurar la clave pública `pk_test_`.</p>
+                    : null}
+                </div> : null}
+              </> : <div className="shipping-option-list payment-option-list">
                 {paymentMocks.map((payment) => (
                   <button
                     className={`shipping-option${selectedPayment === payment.id ? ' is-active' : ''}`}
@@ -364,7 +415,7 @@ function Checkout() {
                 <button className="action-button action-button-muted" onClick={() => setStep('shipping')} type="button">
                   Volver a entrega
                 </button>
-                <button className="action-button" data-cursor="sales" disabled={loading || (dtiOnly && !dtiBackendConfigured())} onClick={handleSubmit} type="button">
+                <button className="action-button" data-cursor="sales" disabled={loading || (dtiOnly && (!dtiBackendConfigured() || Boolean(dtiOrderAccess)))} onClick={handleSubmit} type="button">
                   {dtiOnly ? 'Crear pedido de prueba' : 'Enviar solicitud'}
                 </button>
               </div>
@@ -420,7 +471,7 @@ function Checkout() {
               </div>
               <div className="summary-row summary-row-total">
                 <span>Total estimado</span>
-                <strong>{formatCurrency(activeSummary.total)}</strong>
+                <strong>{formatCurrency(typeof dtiRemoteOrder?.order?.totalCents === 'number' ? dtiRemoteOrder.order.totalCents / 100 : activeSummary.total)}</strong>
               </div>
             </div>
             <ul className="hint-list">

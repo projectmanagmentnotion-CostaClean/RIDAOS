@@ -5,6 +5,7 @@ import { initStorefrontRevealAnimations } from '../features/motion/revealAnimati
 import { useLiveToast } from '../features/live-feedback'
 import { publicRoutes } from '../lib/navigation'
 import { addToCart } from '../lib/cart'
+import { rememberDtiArtwork } from '../features/dtf/dtiCheckout'
 import { useCartStore } from '../store/useCartStore'
 import type { CartItem } from '../types/ecommerce'
 import './DTFPage.css'
@@ -76,6 +77,7 @@ function DTFPage() {
       productName: 'DTI Innuro por metro',
       configuration: {
         meters,
+        adaptationRequested,
         notes: notes.trim(),
         productHref: publicRoutes.dtf,
         extras: adaptationRequested ? [adaptationLabel] : [],
@@ -114,6 +116,7 @@ function DTFPage() {
     }
 
     addToCart(cartItem)
+    rememberDtiArtwork(itemId, selectedFile)
     setAddedToCart(true)
     success('Añadido al carrito', 'La solicitud queda guardada localmente para revisar; todavía no hay cobro.')
   }

@@ -9,6 +9,8 @@ export function forgetDtiArtwork(itemId: string) { filesByCartItem.delete(itemId
 export function isDtiCart(items: CartItem[]) { return items.some((item) => item.productType === 'dtf') }
 export function hasOnlyOneDtiLine(items: CartItem[]) { return items.length === 1 && items[0].productType === 'dtf' && (items[0].lineQuantity ?? 1) === 1 }
 export function dtiBackendConfigured() { return Boolean(env.VITE_DTI_SUPABASE_URL && env.VITE_DTI_SUPABASE_ANON_KEY) }
+export function dtiStripeTestConfigured() { return Boolean(env.VITE_DTI_STRIPE_PUBLISHABLE_KEY?.startsWith('pk_test_')) }
+export function dtiStripePublishableKey() { return env.VITE_DTI_STRIPE_PUBLISHABLE_KEY ?? '' }
 
 function getSessionValue(name: string, size = 32) {
   const existing = sessionStorage.getItem(name)

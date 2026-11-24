@@ -39,6 +39,7 @@ export type OrderItem = {
     variant?: string
     areaM2?: number
     meters?: number
+    adaptationRequested?: boolean
     quality?: DTFQuality
     urgency?: DTFUrgency
     turnaroundPreference?: string

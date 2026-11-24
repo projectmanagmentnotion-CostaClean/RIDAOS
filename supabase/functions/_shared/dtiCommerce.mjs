@@ -3,6 +3,27 @@ export const DTI_SHIPPING_CENTS = 500
 export const DTI_ADAPTATION_CENTS_PER_HOUR = 3500
 export const DTI_VAT_BASIS_POINTS = 2100
 export const DTI_MAX_FILE_BYTES = 20 * 1024 * 1024
+
+export function dtiCorsHeaders(request, configuredOrigins, allowedHeaders, allowedMethods) {
+  const origin = request.headers.get('origin')
+  const allowed = new Set(String(configuredOrigins ?? '').split(',').map((value) => value.trim()).filter((value) => {
+    if (!value) return false
+    try {
+      const parsed = new URL(value)
+      return ['http:', 'https:'].includes(parsed.protocol) && parsed.origin === value && !parsed.username && !parsed.password
+    } catch {
+      return false
+    }
+  }))
+  const headers = new Headers({
+    'access-control-allow-headers': allowedHeaders,
+    'access-control-allow-methods': allowedMethods,
+    'vary': 'Origin',
+  })
+  if (origin && allowed.has(origin)) headers.set('access-control-allow-origin', origin)
+  return headers
+}
+
 const CRC32_TABLE = Uint32Array.from({ length: 256 }, (_, value) => {
   let crc = value
   for (let bit = 0; bit < 8; bit += 1) crc = (crc >>> 1) ^ (crc & 1 ? 0xedb88320 : 0)

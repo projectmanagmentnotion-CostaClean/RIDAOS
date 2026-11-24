@@ -1,8 +1,8 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.95.0'
-import { DTI_MAX_FILE_BYTES, normalizeDtiArtworkMetadata, sha256Hex, validateDtiArtworkBytes } from '../_shared/dtiCommerce.mjs'
+import { DTI_MAX_FILE_BYTES, normalizeDtiArtworkMetadata, sha256Hex, validateDtiArtworkBytes, dtiCorsHeaders } from '../_shared/dtiCommerce.mjs'
 
-const cors = { 'access-control-allow-origin': Deno.env.get('DTI_ALLOWED_ORIGIN') ?? 'https://dti.ridaosprint.com', 'access-control-allow-headers': 'authorization, apikey, content-type, idempotency-key, x-dti-order-token', 'access-control-allow-methods': 'POST, OPTIONS' }
-const reply = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...cors, 'content-type': 'application/json', 'cache-control': 'no-store' } })
+const cors = (request: Request) => dtiCorsHeaders(request, Deno.env.get('DTI_ALLOWED_ORIGIN') ?? '', 'authorization, apikey, content-type, idempotency-key, x-dti-order-token', 'POST, OPTIONS')
+const reply = (request: Request, body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...Object.fromEntries(cors(request)), 'content-type': 'application/json', 'cache-control': 'no-store' } })
 const MAX_MULTIPART_BYTES = DTI_MAX_FILE_BYTES + 1_048_576
 
 class UploadTooLargeError extends Error {}
@@ -38,38 +38,38 @@ async function parseBoundedFormData(request: Request): Promise<FormData> {
 }
 
 Deno.serve(async (request) => {
-  if (request.method === 'OPTIONS') return new Response(null, { headers: cors })
-  if (request.method !== 'POST') return reply({ error: 'method_not_allowed' }, 405)
+  if (request.method === 'OPTIONS') return new Response(null, { status: request.headers.get('origin') && !cors(request).has('access-control-allow-origin') ? 403 : 200, headers: cors(request) })
+  if (request.method !== 'POST') return reply(request, { error: 'method_not_allowed' }, 405)
   try {
     const url = Deno.env.get('SUPABASE_URL')
     const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
-    if (!url || !serviceKey) return reply({ error: 'service_unavailable' }, 503)
+    if (!url || !serviceKey) return reply(request, { error: 'service_unavailable' }, 503)
     const idempotencyKey = request.headers.get('idempotency-key')
-    if (!idempotencyKey || !/^[A-Za-z0-9_-]{16,100}$/.test(idempotencyKey)) return reply({ error: 'idempotency_key_required' }, 400)
+    if (!idempotencyKey || !/^[A-Za-z0-9_-]{16,100}$/.test(idempotencyKey)) return reply(request, { error: 'idempotency_key_required' }, 400)
     const form = await parseBoundedFormData(request)
     const orderId = String(form.get('orderId') ?? '')
     const file = form.get('file')
-    if (!/^[0-9a-f-]{36}$/i.test(orderId) || !(file instanceof File)) return reply({ error: 'invalid_upload_request' }, 400)
-    if (file.size > DTI_MAX_FILE_BYTES) return reply({ error: 'upload_too_large' }, 413)
+    if (!/^[0-9a-f-]{36}$/i.test(orderId) || !(file instanceof File)) return reply(request, { error: 'invalid_upload_request' }, 400)
+    if (file.size > DTI_MAX_FILE_BYTES) return reply(request, { error: 'upload_too_large' }, 413)
     const admin = createClient(url, serviceKey, { auth: { persistSession: false } })
     const authorization = request.headers.get('authorization')
     const authClient = authorization ? createClient(url, Deno.env.get('SUPABASE_ANON_KEY') ?? '', { global: { headers: { Authorization: authorization } } }) : null
     const { data: authData } = authClient ? await authClient.auth.getUser() : { data: { user: null } }
-    if (authorization && !authData.user) return reply({ error: 'invalid_authentication' }, 401)
+    if (authorization && !authData.user) return reply(request, { error: 'invalid_authentication' }, 401)
     const { data: order, error: orderError } = await admin.from('dti_orders').select('id,owner_id,guest_access_token_hash,status').eq('id', orderId).maybeSingle()
     if (orderError) throw orderError
-    if (!order) return reply({ error: 'order_not_found' }, 404)
+    if (!order) return reply(request, { error: 'order_not_found' }, 404)
     let allowed = Boolean(authData.user && order.owner_id === authData.user.id)
     if (!order.owner_id && request.headers.get('x-dti-order-token')) {
       const tokenHash = await sha256Hex(request.headers.get('x-dti-order-token')!)
       allowed = tokenHash === order.guest_access_token_hash
     }
-    if (!allowed) return reply({ error: 'forbidden' }, 403)
-    if (['awaiting_payment', 'paid_awaiting_technical_review', 'queued_for_production', 'cancelled'].includes(order.status)) return reply({ error: 'order_locked' }, 409)
+    if (!allowed) return reply(request, { error: 'forbidden' }, 403)
+    if (['awaiting_payment', 'paid_awaiting_technical_review', 'queued_for_production', 'cancelled'].includes(order.status)) return reply(request, { error: 'order_locked' }, 409)
     const metadata = normalizeDtiArtworkMetadata({ fileName: file.name, mimeType: file.type, fileSizeBytes: file.size })
     const bytes = new Uint8Array(await file.arrayBuffer())
     const check = await validateDtiArtworkBytes({ format: metadata.format, bytes })
-    if (check.status === 'failed') return reply({ error: 'server_validation_failed', reason: check.reason }, 422)
+    if (check.status === 'failed') return reply(request, { error: 'server_validation_failed', reason: check.reason }, 422)
     const digest = await sha256Hex(bytes)
     const { data: existingArtwork, error } = await admin.from('dti_artwork_files').select('id').eq('order_id', orderId).maybeSingle()
     if (error) throw error
@@ -86,7 +86,7 @@ Deno.serve(async (request) => {
       .maybeSingle()
     if (priorRequestError) throw priorRequestError
     if (priorRequest) {
-      if (priorRequest.sha256_hex !== digest) return reply({ error: 'upload_idempotency_conflict' }, 409)
+      if (priorRequest.sha256_hex !== digest) return reply(request, { error: 'upload_idempotency_conflict' }, 409)
       const { error: retryEventError } = await admin.from('dti_artwork_events').upsert({
         artwork_version_id: priorRequest.id, event_type: 'upload_validated', actor_user_id: authData.user?.id ?? null,
         actor_kind: 'customer', idempotency_key: `upload:${priorRequest.id}`,
@@ -97,7 +97,7 @@ Deno.serve(async (request) => {
         const { error: statusError } = await admin.from('dti_orders').update({ status: 'awaiting_artwork_review', updated_at: new Date().toISOString() }).eq('id', orderId).in('status', ['awaiting_artwork', 'awaiting_artwork_review'])
         if (statusError) throw statusError
       }
-      return reply({ versionId: priorRequest.id, version: priorRequest.version_number, validation: priorRequest.validation_status, reviewRequired: check.status === 'manual_review' || metadata.reviewRequired })
+      return reply(request, { versionId: priorRequest.id, version: priorRequest.version_number, validation: priorRequest.validation_status, reviewRequired: check.status === 'manual_review' || metadata.reviewRequired })
     }
     const { data: prior, error: priorError } = await admin.from('dti_artwork_versions').select('version_number').eq('artwork_file_id', artwork.id).order('version_number', { ascending: false }).limit(1).maybeSingle()
     if (priorError) throw priorError
@@ -114,7 +114,7 @@ Deno.serve(async (request) => {
     }).select('id,version_number,validation_status').single()
     if (versionError) {
       await admin.storage.from('dti-artwork').remove([storagePath])
-      if (versionError.code === '23505') return reply({ error: 'retry_upload_with_same_idempotency_key' }, 409)
+      if (versionError.code === '23505') return reply(request, { error: 'retry_upload_with_same_idempotency_key' }, 409)
       throw versionError
     }
     const { error: eventError } = await admin.from('dti_artwork_events').insert({ artwork_version_id: version.id, event_type: 'upload_validated', actor_user_id: authData.user?.id ?? null, actor_kind: 'customer', idempotency_key: `upload:${version.id}`, details: { validation: check.status, sha256: digest } })
@@ -127,10 +127,10 @@ Deno.serve(async (request) => {
       const { error: statusError } = await admin.from('dti_orders').update({ status: 'awaiting_artwork_review', updated_at: new Date().toISOString() }).eq('id', orderId).in('status', ['awaiting_artwork', 'awaiting_artwork_review'])
       if (statusError) throw statusError
     }
-    return reply({ versionId: version.id, version: version.version_number, validation: version.validation_status, reviewRequired: check.status === 'manual_review' || metadata.reviewRequired }, 201)
+    return reply(request, { versionId: version.id, version: version.version_number, validation: version.validation_status, reviewRequired: check.status === 'manual_review' || metadata.reviewRequired }, 201)
   } catch (error) {
-    if (error instanceof UploadTooLargeError) return reply({ error: 'upload_too_large' }, 413)
+    if (error instanceof UploadTooLargeError) return reply(request, { error: 'upload_too_large' }, 413)
     console.error('dti-artwork failure', error instanceof Error ? error.message : 'unknown')
-    return reply({ error: 'upload_failed' }, 400)
+    return reply(request, { error: 'upload_failed' }, 400)
   }
 })

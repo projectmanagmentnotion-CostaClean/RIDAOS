@@ -6,6 +6,7 @@ import type { CartItem } from '../../../types/ecommerce'
 import type { ArtworkPreviewSummary } from '../../artwork-upload'
 import { useLiveToast } from '../../live-feedback'
 import { calculateDtiInnuroPrice, DTI_INNURO_PRICE_PER_METER } from '../../../config/pricing/dtiInnuroPricing.mjs'
+import { rememberDtiArtwork } from '../dtiCheckout'
 
 type SimulationResult = {
   meters: number
@@ -182,6 +183,7 @@ export function useDtfConfiguratorState() {
     }
 
     addToCart(cartItem)
+    rememberDtiArtwork(itemId, selectedFile)
     setErrors({})
     setCartMessage(
       'Solicitud local guardada en el carrito. No se ha realizado ningún cobro ni envío real.',

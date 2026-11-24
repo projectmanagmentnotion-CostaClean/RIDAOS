@@ -2,7 +2,7 @@
 
 ## Estado de esta rama
 
-El configurador y el checkout visibles siguen en modo local/mock. No crean pedidos reales ni muestran una confirmación de pago real. La landing conserva la experiencia Dark Garage Luxury, Liquid Glass, GSAP y mobile-first. Los metadatos globales del sitio no se fuerzan a DTI; el SEO de DTI/DTF se define en la ruta de producto.
+El configurador conserva la landing Dark Garage Luxury, Liquid Glass, GSAP y mobile-first. El checkout del resto del catálogo sigue siendo local/mock. Para una cesta con una sola línea DTI, el frontend ahora tiene un recorrido QA aislado y fail-closed: solo activa la creación si se configuran `VITE_DTI_SUPABASE_URL` y `VITE_DTI_SUPABASE_ANON_KEY`, crea el pedido usando las tarifas del servidor, sube el archivo de esta sesión y puede registrar aceptación del cliente por separado. No tiene fallback mock para DTI. El pago continúa desactivado en la interfaz y no se presenta como pedido pagado.
 
 La rama contiene una base de backend aislada para revisión local:
 
@@ -14,6 +14,7 @@ La rama contiene una base de backend aislada para revisión local:
 - `supabase/functions/dti-adaptation-quotes` permite a personal autorizado crear presupuestos versionados a 35 €/h + IVA y al cliente aceptarlos o rechazarlos antes de pagar.
 - `supabase/functions/dti-staff-operations` registra revisiones técnicas con permiso separado y solo libera a producción si el pedido está pagado y la última versión tiene aceptación del cliente, validación de servidor y aprobación técnica.
 - `supabase/functions/dti-payment-intent` reserva intentos por pedido, reutiliza el PaymentIntent para reintentos y solo crea/recupera intents con `sk_test_` y `livemode=false`. Activa métodos automáticos; Apple Pay depende de Stripe y de la verificación del dominio.
+- `src/features/dtf/dtiCheckout.ts` y `src/pages/Checkout.tsx` conectan el flujo DTI exclusivamente al proyecto QA configurado, transmiten una clave de recuperación de invitado, idempotencia de pedido/subida, dirección peninsular, archivo y consentimiento de aceptación. Para no mezclar modelos, una cesta mixta o varias líneas DTI se bloquean en el checkout real DTI.
 - `supabase/functions/stripe-webhook` valida la firma y `livemode=false`. La función SQL deduplica eventos, verifica importe/moneda y deja pedidos pagados en `paid_awaiting_technical_review`.
 - Los carritos DTI persistidos con el nombre anterior se migran a DTI Innuro a 15 €/m IVA incluido; las opciones antiguas de urgencia/calidad se descartan y el envío `express` se adapta a estándar solo para cestas exclusivamente DTI.
 
@@ -37,7 +38,7 @@ La prueba SQL usó un Postgres desechable con stubs mínimos para `auth.users` y
 - Vercel tiene un proyecto `ridaos`, pero no hay variables de Preview configuradas y las funciones actuales de Vercel no sustituyen el backend Supabase aislado.
 - No se encontraron credenciales autorizadas de Stripe Test Mode ni un conector Stripe. No se creó infraestructura ni se llamó a Stripe.
 - El dominio `dti.ridaosprint.com` aún no está disponible/verificado para Apple Pay. No se modificó DNS.
-- Falta provisionar/autorizar un proyecto QA dedicado de Ridaos, aplicar la migración allí, desplegar las funciones y secretos de prueba y conectar la UI a estos endpoints. Hasta entonces el checkout sigue siendo simulado.
+- Falta provisionar/autorizar un proyecto QA dedicado de Ridaos, aplicar la migración allí y desplegar las funciones. Hasta entonces la rama no conecta con servicios reales. También falta completar el componente Stripe Payment Element TEST tras la revisión técnica y habilitar el presupuesto de adaptación desde la UI. El checkout genérico sigue simulado; DTI falla cerrado cuando no hay QA configurado.
 - Las comprobaciones de PNG/PDF no son análisis antivirus ni certificación completa de preimpresión. PNG entrelazados, PDF grandes o sospechosos y AI/PSD/SVG/CDR requieren revisión profesional. La aceptación del cliente no aprueba producción.
 - Las fechas de despacho omiten festivos nacionales, catalanes y locales. Antes de presentar una fecha estimada como compromiso, QA necesita un calendario laboral aprobado.
 - ESLint y pruebas Node no sustituyen `deno check` ni un entorno Supabase real. El clúster temporal sí ejecutó las funciones PL/pgSQL, pero falta validar las Edge Functions y las rutas de Storage con el runtime y servicios Supabase.

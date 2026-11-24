@@ -17,10 +17,12 @@ import { submitOrder } from '../services/orderService'
 import { useCartStore } from '../store/useCartStore'
 import { useUIStore } from '../store/useUIStore'
 import type { CartItem, CustomerData, SimulatedOrder } from '../types/ecommerce'
+import { callDtiFunction, dtiBackendConfigured, dtiIdempotencyKey, dtiOrderKey, dtiRecoveryKey, finishDtiOrderAttempt, forgetDtiArtwork, getDtiArtwork, hasOnlyOneDtiLine, isDtiCart } from '../features/dtf/dtiCheckout'
 
 type CheckoutStep = (typeof checkoutSteps)[number]['id']
 type PaymentMockId = (typeof paymentMocks)[number]['id']
 type CheckoutErrorKey = keyof CustomerData | 'cart' | 'artwork'
+type DtiAddress = { line1: string; city: string; postalCode: string }
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat(pricingContent.locale, {
@@ -41,6 +43,7 @@ function needsArtworkApproval(item: CartItem) {
 function Checkout() {
   const pageRef = useRef<HTMLElement | null>(null)
   const cartItems = useCartStore((state) => state.items)
+  const cartShippingMethod = useCartStore((state) => state.shippingMethod)
   const clearCart = useCartStore((state) => state.clearCart)
   const summary = useCartSummary()
   const [step, setStep] = useState<CheckoutStep>('review')
@@ -60,6 +63,10 @@ function Checkout() {
   const clearError = useUIStore((state) => state.clearError)
   const { dismiss, error, info, progress, showSuccessModal, success } = useLiveToast()
   const pendingArtworkItems = useMemo(() => cartItems.filter((item) => needsArtworkApproval(item)), [cartItems])
+  const dtiOnly = isDtiCart(cartItems)
+  const [dtiAddress, setDtiAddress] = useState<DtiAddress>({ line1: '', city: '', postalCode: '' })
+  const [dtiStatus, setDtiStatus] = useState('')
+  const [dtiClientAccepted, setDtiClientAccepted] = useState(false)
 
   const canAdvance = useMemo(() => cartItems.length > 0, [cartItems.length])
 
@@ -101,9 +108,15 @@ function Checkout() {
       nextErrors.cart = 'Necesitas al menos un articulo en el carrito para continuar.'
     }
 
-    if (pendingArtworkItems.length > 0) {
+    if (!dtiOnly && pendingArtworkItems.length > 0) {
       nextErrors.artwork =
         'Antes de confirmar, revisa y acepta el archivo final o solicita ayuda de diseno en cada linea pendiente.'
+    }
+
+    if (dtiOnly && !hasOnlyOneDtiLine(cartItems)) nextErrors.cart = 'Para usar el checkout DTI de pruebas, tramita una sola línea DTI por pedido y separa otros productos.'
+    if (dtiOnly && !dtiBackendConfigured()) nextErrors.cart = 'Checkout DTI desactivado: falta conectar un proyecto Supabase QA aislado.'
+    if (dtiOnly && cartShippingMethod !== 'pickup') {
+      if (!dtiAddress.line1.trim() || !dtiAddress.city.trim() || !/^\d{5}$/.test(dtiAddress.postalCode)) nextErrors.cart = 'Completa una dirección y un código postal peninsular de 5 cifras.'
     }
 
     setErrors(nextErrors)
@@ -122,6 +135,29 @@ function Checkout() {
     const progressToastId = progress('Solicitud en preparacion', 'Estamos registrando tu solicitud y los datos de entrega.')
 
     try {
+      if (dtiOnly) {
+        const item = cartItems[0]
+        const file = getDtiArtwork(item.id)
+        if (!file) throw new Error('El archivo ya no está disponible en esta sesión. Vuelve al configurador y añádelo de nuevo.')
+        const order = await callDtiFunction<{ orderId: string; guestAccessToken: string; totalCents: number; status: string }>('dti-orders', {
+          customerName: customer.name, email: customer.email, phone: customer.phone,
+          meters: Number(item.configuration.meters), shippingMethod: cartShippingMethod === 'pickup' ? 'pickup' : 'standard',
+          adaptationRequested: false,
+          shippingAddress: cartShippingMethod === 'pickup' ? null : { line1: dtiAddress.line1, city: dtiAddress.city, postalCode: dtiAddress.postalCode, country: 'ES' },
+        }, { idempotencyKey: dtiOrderKey(), recoveryKey: dtiRecoveryKey() })
+        const token = order.guestAccessToken
+        const upload = await callDtiFunction<{ versionId: string; validation: string; reviewRequired: boolean }>('dti-artwork', {}, { file, orderId: order.orderId, orderToken: token, idempotencyKey: dtiIdempotencyKey(order.orderId) })
+        if (dtiClientAccepted && ['passed', 'manual_review'].includes(upload.validation)) {
+          await callDtiFunction('dti-accept-artwork', { orderId: order.orderId, versionId: upload.versionId }, { orderToken: token })
+        }
+        forgetDtiArtwork(item.id)
+        finishDtiOrderAttempt()
+        setDtiStatus(upload.reviewRequired || upload.validation === 'manual_review'
+          ? `Pedido ${order.orderId} recibido. La aceptación del cliente queda registrada por separado; hace falta revisión profesional antes de habilitar pago o producción.`
+          : `Pedido ${order.orderId} y archivo recibidos. ${dtiClientAccepted ? 'Aceptación del cliente registrada por separado. ' : 'Aún falta la aceptación del cliente. '}La revisión técnica sigue pendiente y no hay cobro.`)
+        setErrors({})
+        return
+      }
       const savedCustomer = await upsertCustomerProfile(customer)
       const normalizedItems = cartItems.map(multiplyOrderItemPricing)
       setSubmittedSummary(summary)
@@ -147,10 +183,11 @@ function Checkout() {
         ctaLabel: 'Continuar',
       })
       success('Prueba local guardada', 'No se ha enviado ningún pedido real ni se ha cobrado.', 2600)
-    } catch {
-      setError('checkout', 'No se pudo registrar la solicitud en este momento. Intentalo de nuevo.')
+    } catch (cause) {
+      const message = cause instanceof Error ? cause.message : 'No se pudo registrar la solicitud en este momento.'
+      setError('checkout', message)
       setConfirmation(null)
-      error('No se pudo registrar la solicitud', 'Intentalo otra vez desde este mismo paso.')
+      error('No se pudo registrar la solicitud', message)
     } finally {
       dismiss(progressToastId)
       setLoading('checkout', false)
@@ -168,7 +205,8 @@ function Checkout() {
         <p>{pricingContent.checkout.heroDescription}</p>
       </div>
 
-      <p className="inline-notice" role="note">Entorno de prueba local: esta pantalla no envía pedidos reales ni realiza cobros. Los archivos no salen de este navegador.</p>
+      <p className="inline-notice" role="note">{dtiOnly ? 'Checkout DTI conectado únicamente al backend QA configurado. No se realizará ningún cobro desde esta versión.' : 'Entorno de prueba local: esta pantalla no envía pedidos reales ni realiza cobros. Los archivos no salen de este navegador.'}</p>
+      {dtiStatus ? <p className="inline-notice" role="status">{dtiStatus}</p> : null}
 
       <div data-animate="reveal">
         <CheckoutStepRail activeStep={step} steps={checkoutSteps} />
@@ -252,6 +290,11 @@ function Checkout() {
                   <input className="form-input" id="checkout-phone" onChange={handleFieldChange('phone')} type="tel" value={customer.phone} />
                   {errors.phone ? <span className="field-error">{errors.phone}</span> : null}
                 </label>
+                {dtiOnly && cartShippingMethod !== 'pickup' ? <>
+                  <label className="field-group" htmlFor="dti-address"><span className="field-label">Dirección de envío</span><input className="form-input" id="dti-address" value={dtiAddress.line1} onChange={(event) => setDtiAddress((current) => ({ ...current, line1: event.target.value }))} /></label>
+                  <label className="field-group" htmlFor="dti-city"><span className="field-label">Municipio</span><input className="form-input" id="dti-city" value={dtiAddress.city} onChange={(event) => setDtiAddress((current) => ({ ...current, city: event.target.value }))} /></label>
+                  <label className="field-group" htmlFor="dti-postal"><span className="field-label">Código postal peninsular</span><input className="form-input" inputMode="numeric" maxLength={5} id="dti-postal" value={dtiAddress.postalCode} onChange={(event) => setDtiAddress((current) => ({ ...current, postalCode: event.target.value }))} /></label>
+                </> : null}
                 {errors.cart ? <p className="field-error">{errors.cart}</p> : null}
                 {errors.artwork ? <p className="field-error">{errors.artwork}</p> : null}
                 <ul className="hint-list">
@@ -282,7 +325,7 @@ function Checkout() {
             <>
               <p className="section-label">Confirmacion</p>
               <h2>{pricingContent.checkout.paymentTitle}</h2>
-              <div className="shipping-option-list payment-option-list">
+              {dtiOnly ? <p className="inline-notice">{dtiBackendConfigured() ? 'Se registrará un pedido de prueba y se validará el archivo en servidor. No se solicitará el pago hasta la revisión profesional.' : 'El pedido real de prueba no está disponible hasta configurar un proyecto Supabase QA aislado.'}</p> : <div className="shipping-option-list payment-option-list">
                 {paymentMocks.map((payment) => (
                   <button
                     className={`shipping-option${selectedPayment === payment.id ? ' is-active' : ''}`}
@@ -294,7 +337,7 @@ function Checkout() {
                   <span>{payment.description}</span>
                   </button>
                 ))}
-              </div>
+              </div>}
               {uiError ? <p className="field-error">{uiError}</p> : null}
               {loading ? <p className="inline-notice">Registrando tu solicitud...</p> : null}
               <CommercialNotice className="checkout-notice" title="Resumen de cierre" />
@@ -316,12 +359,13 @@ function Checkout() {
                   Antes de confirmar, revisa que el archivo y la configuracion coincidan. Usaremos esta informacion para preparar tu solicitud.
                 </p>
               )}
+              {dtiOnly ? <label className="field-group" htmlFor="dti-client-acceptance"><span><input id="dti-client-acceptance" type="checkbox" checked={dtiClientAccepted} onChange={(event) => setDtiClientAccepted(event.target.checked)} /> Confirmo que el archivo corresponde a mi diseño y acepto esta versión como referencia del pedido.</span><small>Esta aceptación del cliente no equivale a aprobación técnica ni autoriza producción.</small></label> : null}
               <div className="form-actions">
                 <button className="action-button action-button-muted" onClick={() => setStep('shipping')} type="button">
                   Volver a entrega
                 </button>
-                <button className="action-button" data-cursor="sales" disabled={loading} onClick={handleSubmit} type="button">
-                  Enviar solicitud
+                <button className="action-button" data-cursor="sales" disabled={loading || (dtiOnly && !dtiBackendConfigured())} onClick={handleSubmit} type="button">
+                  {dtiOnly ? 'Crear pedido de prueba' : 'Enviar solicitud'}
                 </button>
               </div>
             </>

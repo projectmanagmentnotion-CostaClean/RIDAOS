@@ -29,10 +29,10 @@ Deno.serve(async (request) => {
       allowed = tokenHash === order.guest_access_token_hash
     }
     if (!allowed) return reply({ error: 'forbidden' }, 403)
-    if (['paid_awaiting_technical_review', 'queued_for_production', 'cancelled'].includes(order.status)) return reply({ error: 'order_locked' }, 409)
+    if (['awaiting_payment', 'paid_awaiting_technical_review', 'queued_for_production', 'cancelled'].includes(order.status)) return reply({ error: 'order_locked' }, 409)
     const metadata = normalizeDtiArtworkMetadata({ fileName: file.name, mimeType: file.type, fileSizeBytes: file.size })
     const bytes = new Uint8Array(await file.arrayBuffer())
-    const check = validateDtiArtworkBytes({ format: metadata.format, bytes })
+    const check = await validateDtiArtworkBytes({ format: metadata.format, bytes })
     if (check.status === 'failed') return reply({ error: 'server_validation_failed', reason: check.reason }, 422)
     const digest = await sha256Hex(bytes)
     const { data: existingArtwork, error } = await admin.from('dti_artwork_files').select('id').eq('order_id', orderId).maybeSingle()
@@ -47,7 +47,7 @@ Deno.serve(async (request) => {
     if (priorError) throw priorError
     const versionNumber = (prior?.version_number ?? 0) + 1
     const storagePath = `${orderId}/${crypto.randomUUID()}/${metadata.safeFileName}`
-    const { error: uploadError } = await admin.storage.from('dti-artwork').upload(storagePath, new Blob([bytes], { type: metadata.mimeType }), { contentType: metadata.mimeType, upsert: false })
+    const { error: uploadError } = await admin.storage.from('dti-artwork').upload(storagePath, file, { contentType: metadata.mimeType, upsert: false })
     if (uploadError) throw uploadError
     const { data: version, error: versionError } = await admin.from('dti_artwork_versions').insert({
       artwork_file_id: artwork.id, version_number: versionNumber, storage_path: storagePath,
@@ -60,7 +60,16 @@ Deno.serve(async (request) => {
       await admin.storage.from('dti-artwork').remove([storagePath])
       throw versionError
     }
-    await admin.from('dti_artwork_events').insert({ artwork_version_id: version.id, event_type: 'upload_validated', actor_user_id: authData.user?.id ?? null, actor_kind: authData.user ? 'customer' : 'customer', details: { validation: check.status, sha256: digest } })
+    const { error: eventError } = await admin.from('dti_artwork_events').insert({ artwork_version_id: version.id, event_type: 'upload_validated', actor_user_id: authData.user?.id ?? null, actor_kind: 'customer', idempotency_key: `upload:${version.id}`, details: { validation: check.status, sha256: digest } })
+    if (eventError) {
+      await admin.from('dti_artwork_versions').delete().eq('id', version.id)
+      await admin.storage.from('dti-artwork').remove([storagePath])
+      throw eventError
+    }
+    if (check.status === 'manual_review' || metadata.reviewRequired) {
+      const { error: statusError } = await admin.from('dti_orders').update({ status: 'awaiting_artwork_review', updated_at: new Date().toISOString() }).eq('id', orderId).in('status', ['awaiting_artwork', 'awaiting_artwork_review'])
+      if (statusError) throw statusError
+    }
     return reply({ versionId: version.id, version: version.version_number, validation: version.validation_status, reviewRequired: check.status === 'manual_review' || metadata.reviewRequired }, 201)
   } catch (error) {
     console.error('dti-artwork failure', error instanceof Error ? error.message : 'unknown')

@@ -3,10 +3,15 @@ export const DTI_SHIPPING_CENTS = 500
 export const DTI_ADAPTATION_CENTS_PER_HOUR = 3500
 export const DTI_VAT_BASIS_POINTS = 2100
 export const DTI_MAX_FILE_BYTES = 262_144_000
+const CRC32_TABLE = Uint32Array.from({ length: 256 }, (_, value) => {
+  let crc = value
+  for (let bit = 0; bit < 8; bit += 1) crc = (crc >>> 1) ^ (crc & 1 ? 0xedb88320 : 0)
+  return crc >>> 0
+})
 
 const roundRatio = (value, numerator, denominator) => Math.round((value * numerator) / denominator)
 
-export function calculateDtiOrder({ meters, shippingMethod, adaptationRequested = false }) {
+export function calculateDtiOrder({ meters, shippingMethod, adaptationRequested = false, orderedAt = new Date() }) {
   const numericMeters = Number(meters)
   if (!Number.isFinite(numericMeters) || numericMeters < 1 || Math.round(numericMeters * 10) !== numericMeters * 10) {
     throw new RangeError('El pedido mínimo es 1 m y el metraje debe avanzar en pasos de 0,1 m.')
@@ -17,9 +22,12 @@ export function calculateDtiOrder({ meters, shippingMethod, adaptationRequested 
 
   const productTotalCents = Math.round(numericMeters * DTI_PRICE_CENTS_PER_METER)
   const shippingTotalCents = shippingMethod === 'standard' ? DTI_SHIPPING_CENTS : 0
+  const preparationWorkingDays = numericMeters <= 5 ? 2 : numericMeters <= 10 ? 3 : null
+  const estimatedDispatchDate = preparationWorkingDays === null ? null : estimateDtiDispatchDate(orderedAt, preparationWorkingDays)
 
   return {
     meters: numericMeters,
+    usefulWidthMm: 550,
     unitPriceCents: DTI_PRICE_CENTS_PER_METER,
     productTotalCents,
     productVatCents: roundRatio(productTotalCents, DTI_VAT_BASIS_POINTS, 10_000 + DTI_VAT_BASIS_POINTS),
@@ -30,9 +38,32 @@ export function calculateDtiOrder({ meters, shippingMethod, adaptationRequested 
       : 0,
     adaptationRequested: Boolean(adaptationRequested),
     totalCents: productTotalCents + shippingTotalCents,
-    initialStatus: numericMeters > 10 ? 'awaiting_manual_quote' : 'awaiting_artwork',
+    preparationWorkingDays,
+    estimatedDispatchDate,
+    initialStatus: numericMeters > 10 ? 'awaiting_manual_timeline' : 'awaiting_artwork',
     paymentStatus: 'not_ready',
   }
+}
+
+function estimateDtiDispatchDate(value, preparationWorkingDays) {
+  const date = value instanceof Date ? value : new Date(value)
+  if (!Number.isFinite(date.getTime())) throw new TypeError('La fecha de pedido no es válida.')
+  const parts = Object.fromEntries(new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Europe/Madrid', weekday: 'short', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
+  }).formatToParts(date).map(({ type, value: part }) => [type, part]))
+  let day = new Date(Date.UTC(Number(parts.year), Number(parts.month) - 1, Number(parts.day)))
+  const isWeekend = (candidate) => candidate.getUTCDay() === 0 || candidate.getUTCDay() === 6
+  const afterCutoff = Number(parts.hour) > 18 || (Number(parts.hour) === 18 && Number(parts.minute) >= 30)
+  if (afterCutoff || isWeekend(day)) {
+    do day.setUTCDate(day.getUTCDate() + 1)
+    while (isWeekend(day))
+  }
+  let added = 0
+  while (added < preparationWorkingDays) {
+    day.setUTCDate(day.getUTCDate() + 1)
+    if (!isWeekend(day)) added += 1
+  }
+  return day.toISOString().slice(0, 10)
 }
 
 export function calculateDtiAdaptationQuote(hours) {
@@ -72,7 +103,7 @@ export function normalizeDtiArtworkMetadata({ fileName, mimeType, fileSizeBytes 
   }
 }
 
-export function validateDtiArtworkBytes({ format, bytes }) {
+export async function validateDtiArtworkBytes({ format, bytes }) {
   const file = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes)
   if (!file.length) return { status: 'failed', reason: 'empty_file' }
 
@@ -81,14 +112,87 @@ export function validateDtiArtworkBytes({ format, bytes }) {
     if (file.length < 33 || !signature.every((value, index) => file[index] === value)) {
       return { status: 'failed', reason: 'invalid_png_signature' }
     }
-    if (String.fromCharCode(...file.slice(12, 16)) !== 'IHDR') return { status: 'failed', reason: 'missing_png_ihdr' }
     const view = new DataView(file.buffer, file.byteOffset, file.byteLength)
-    const width = view.getUint32(16)
-    const height = view.getUint32(20)
-    if (!width || !height || width > 100_000 || height > 100_000 || width * height > 120_000_000) {
-      return { status: 'failed', reason: 'png_dimensions_out_of_range' }
+    let offset = 8
+    let width = 0
+    let height = 0
+    let seenHeader = false
+    let seenImageData = false
+    let seenEnd = false
+    let interlaced = false
+    let channels = 0
+    const imageDataChunks = []
+    while (offset + 12 <= file.length) {
+      const length = view.getUint32(offset)
+      const typeStart = offset + 4
+      const dataStart = offset + 8
+      const crcStart = dataStart + length
+      const chunkEnd = crcStart + 4
+      if (length > file.length || chunkEnd > file.length) return { status: 'failed', reason: 'truncated_png_chunk' }
+      const type = String.fromCharCode(file[typeStart], file[typeStart + 1], file[typeStart + 2], file[typeStart + 3])
+      if (!seenHeader && (type !== 'IHDR' || length !== 13 || offset !== 8)) return { status: 'failed', reason: 'missing_png_ihdr' }
+      if (crc32(file, typeStart, crcStart) !== view.getUint32(crcStart)) return { status: 'failed', reason: 'png_chunk_crc_mismatch' }
+      if (type === 'IHDR') {
+        if (seenHeader || length !== 13) return { status: 'failed', reason: 'invalid_png_ihdr' }
+        width = view.getUint32(dataStart)
+        height = view.getUint32(dataStart + 4)
+        const bitDepth = file[dataStart + 8]
+        const colorType = file[dataStart + 9]
+        channels = ({ 0: 1, 2: 3, 3: 1, 4: 2, 6: 4 })[colorType] ?? 0
+        const validDepths = { 0: [1, 2, 4, 8, 16], 2: [8, 16], 3: [1, 2, 4, 8], 4: [8, 16], 6: [8, 16] }
+        if (!width || !height || width > 100_000 || height > 100_000 || width * height > 120_000_000) return { status: 'failed', reason: 'png_dimensions_out_of_range' }
+        if (!validDepths[colorType]?.includes(bitDepth) || file[dataStart + 10] !== 0 || file[dataStart + 11] !== 0 || file[dataStart + 12] > 1) return { status: 'failed', reason: 'invalid_png_ihdr_fields' }
+        interlaced = file[dataStart + 12] === 1
+        seenHeader = true
+      } else if (type === 'IDAT') {
+        if (!seenHeader || seenEnd) return { status: 'failed', reason: 'invalid_png_idat_order' }
+        seenImageData = true
+        imageDataChunks.push([dataStart, dataStart + length])
+      } else if (type === 'IEND') {
+        if (length !== 0 || !seenImageData || chunkEnd !== file.length) return { status: 'failed', reason: 'invalid_png_iend' }
+        seenEnd = true
+        offset = chunkEnd
+        break
+      } else if (!/^[a-zA-Z]{4}$/.test(type) || (type[0] === type[0].toUpperCase() && !['PLTE'].includes(type))) {
+        return { status: 'failed', reason: 'unknown_critical_png_chunk' }
+      }
+      if (type === 'acTL' || type === 'fcTL' || type === 'fdAT') return { status: 'manual_review', reason: 'animated_png_manual_review', reviewRequired: true }
+      offset = chunkEnd
     }
-    if (String.fromCharCode(...file.slice(-8, -4)) !== 'IEND') return { status: 'failed', reason: 'missing_png_iend' }
+    if (!seenEnd || offset !== file.length) return { status: 'failed', reason: 'missing_png_iend' }
+    if (interlaced) return { status: 'manual_review', reason: 'interlaced_png_manual_review', reviewRequired: true }
+    const bitDepth = file[24]
+    const rowBytes = Math.ceil((width * channels * bitDepth) / 8)
+    const expectedDecodedBytes = height * (rowBytes + 1)
+    if (!Number.isSafeInteger(expectedDecodedBytes) || expectedDecodedBytes > 64 * 1024 * 1024) {
+      return { status: 'manual_review', reason: 'large_decoded_png_manual_review', reviewRequired: true }
+    }
+    let decodedBytes = 0
+    let invalidFilter = false
+    const compressedStream = new ReadableStream({
+      start(controller) {
+        for (const [start, end] of imageDataChunks) if (end > start) controller.enqueue(file.subarray(start, end))
+        controller.close()
+      },
+    })
+    try {
+      const reader = compressedStream.pipeThrough(new DecompressionStream('deflate')).getReader()
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        for (let index = 0; index < value.length; index += 1) {
+          if ((decodedBytes + index) % (rowBytes + 1) === 0 && value[index] > 4) invalidFilter = true
+        }
+        decodedBytes += value.length
+        if (decodedBytes > expectedDecodedBytes) {
+          await reader.cancel()
+          return { status: 'failed', reason: 'png_decoded_data_exceeds_dimensions' }
+        }
+      }
+    } catch {
+      return { status: 'failed', reason: 'invalid_png_compressed_image_data' }
+    }
+    if (decodedBytes !== expectedDecodedBytes || invalidFilter) return { status: 'failed', reason: 'invalid_png_scanlines' }
     return { status: 'passed', dimensions: { width, height }, reviewRequired: false }
   }
 
@@ -99,6 +203,12 @@ export function validateDtiArtworkBytes({ format, bytes }) {
     if (!head.includes('%PDF-') || !tail.includes('%%EOF')) return { status: 'failed', reason: 'invalid_pdf_structure' }
     if (file.length > 25 * 1024 * 1024) return { status: 'manual_review', reason: 'large_pdf_manual_review', reviewRequired: true }
     const content = new TextDecoder('latin1').decode(file)
+    const xrefMatch = content.match(/\bstartxref\s+(\d+)\s+%%EOF/i)
+    const xrefOffset = xrefMatch ? Number(xrefMatch[1]) : Number.NaN
+    const xrefTarget = Number.isSafeInteger(xrefOffset) ? content.slice(xrefOffset, xrefOffset + 256) : ''
+    if (!/\/Root\s+\d+\s+\d+\s+R/.test(content) || (!/^xref(?:\r?\n)/.test(xrefTarget) && !/\/Type\s*\/XRef\b/.test(xrefTarget))) {
+      return { status: 'failed', reason: 'missing_pdf_catalog_or_xref' }
+    }
     if (/\/(?:JavaScript|JS|OpenAction|AA|Launch|EmbeddedFile|RichMedia)\b/i.test(content)) {
       return { status: 'manual_review', reason: 'pdf_active_content_marker', reviewRequired: true }
     }
@@ -112,8 +222,16 @@ export function validateDtiArtworkBytes({ format, bytes }) {
   return { status: 'failed', reason: 'unsupported_format' }
 }
 
+function crc32(bytes, start, end) {
+  let crc = 0xffffffff
+  for (let index = start; index < end; index += 1) {
+    crc = CRC32_TABLE[(crc ^ bytes[index]) & 0xff] ^ (crc >>> 8)
+  }
+  return (crc ^ 0xffffffff) >>> 0
+}
+
 export function checkDtiPaymentEligibility({ order, latestVersion, latestProfessionalReview, approvedQuote }) {
-  if (!order || !['awaiting_payment', 'awaiting_artwork', 'awaiting_artwork_review'].includes(order.status) || !['unpaid', 'not_ready'].includes(order.payment_status)) {
+  if (!order || !['awaiting_payment', 'awaiting_artwork', 'awaiting_artwork_review'].includes(order.status) || !['unpaid', 'not_ready', 'failed'].includes(order.payment_status)) {
     return { allowed: false, reason: 'order_not_payable' }
   }
   if (!latestVersion || !latestVersion.client_accepted_at) {
@@ -122,7 +240,7 @@ export function checkDtiPaymentEligibility({ order, latestVersion, latestProfess
   if (latestVersion.validation_status === 'failed' || latestVersion.validation_status === 'pending_upload' || latestVersion.validation_status === 'pending_server_validation') {
     return { allowed: false, reason: 'server_validation_required' }
   }
-  if (['AI', 'PSD', 'SVG', 'CDR'].includes(latestVersion.format) && latestProfessionalReview?.decision !== 'approved') {
+  if ((['AI', 'PSD', 'SVG', 'CDR'].includes(latestVersion.format) || latestVersion.validation_status === 'manual_review') && latestProfessionalReview?.decision !== 'approved') {
     return { allowed: false, reason: 'professional_review_required' }
   }
   if (order.adaptation_requested && (!approvedQuote || approvedQuote.status !== 'approved' || approvedQuote.id !== order.adaptation_quote_id)) {
@@ -137,10 +255,10 @@ export async function sha256Hex(value) {
   return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('')
 }
 
-export async function deriveGuestOrderToken(secret, idempotencyKey) {
+export async function deriveGuestOrderToken(secret, idempotencyKey, recoveryKey) {
   const encoder = new TextEncoder()
   const key = await crypto.subtle.importKey('raw', encoder.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'])
-  const signature = new Uint8Array(await crypto.subtle.sign('HMAC', key, encoder.encode(`dti-order:${idempotencyKey}`)))
+  const signature = new Uint8Array(await crypto.subtle.sign('HMAC', key, encoder.encode(`dti-order:${idempotencyKey}:recovery:${recoveryKey}`)))
   return Array.from(signature, (byte) => byte.toString(16).padStart(2, '0')).join('')
 }
 

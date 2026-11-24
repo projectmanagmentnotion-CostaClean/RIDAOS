@@ -2,7 +2,7 @@
 
 ## Estado de esta rama
 
-El configurador conserva la landing Dark Garage Luxury, Liquid Glass, GSAP y mobile-first. El checkout del resto del catálogo sigue siendo local/mock. Para una cesta con una sola línea DTI, el frontend ahora tiene un recorrido QA aislado y fail-closed: solo activa la creación si se configuran `VITE_DTI_SUPABASE_URL` y `VITE_DTI_SUPABASE_ANON_KEY`, crea el pedido usando las tarifas del servidor, sube el archivo de esta sesión y puede registrar aceptación del cliente por separado. No tiene fallback mock para DTI. El pago continúa desactivado en la interfaz y no se presenta como pedido pagado.
+El configurador conserva la landing Dark Garage Luxury, Liquid Glass, GSAP y mobile-first. El checkout del resto del catálogo sigue siendo local/mock. Para una cesta con una sola línea DTI, el frontend tiene un recorrido QA aislado y fail-closed: solo activa la creación si se configuran `VITE_DTI_SUPABASE_URL` y `VITE_DTI_SUPABASE_ANON_KEY`, crea el pedido usando las tarifas del servidor, sube el archivo de esta sesión y registra aceptación del cliente separada. Stripe Payment Element solo se habilita con `VITE_DTI_STRIPE_PUBLISHABLE_KEY` `pk_test_` y credenciales TEST en servidor; ningún pago se considera confirmado hasta recibir y verificar el webhook.
 
 La rama contiene una base de backend aislada para revisión local:
 
@@ -23,7 +23,6 @@ Los handlers están preparados para un proyecto QA dedicado de Ridaos con `SUPAB
 
 ## Verificación hecha
 
-- `npm ci --ignore-scripts --no-audit --no-fund`: completado; instaló 158 paquetes. Los scripts de instalación se omitieron deliberadamente.
 - `npm ci --ignore-scripts --no-audit --no-fund`: instalación limpia aprobada; 158 paquetes desde el lockfile.
 - `npm run test`: 18 pruebas unitarias aprobadas. Cubren precios, límites de metraje, IVA, direcciones peninsulares, despacho/corte, carritos nuevo y persistido, carrito mixto, validación PNG/PDF, revisión profesional, firmas de webhook e idempotencia.
 - `supabase/tests/dti-commerce.integration.sql`: ejecutado y aprobado en PostgreSQL 17.10 temporal. Se aplicó toda la migración y se verificaron RPCs públicos con permisos, RLS/Storage privado, direcciones, totales, reintentos, presupuestos, aceptación idempotente, webhooks, revisión técnica, liberación a producción y confirmación de plazos largos.
@@ -31,7 +30,7 @@ Los handlers están preparados para un proyecto QA dedicado de Ridaos con `SUPAB
 - `npm run build`: aprobado (TypeScript y Vite).
 - `git diff --check`: aprobado, con aviso de normalización LF/CRLF en `src/pages/DTFPage.tsx`.
 
-La prueba SQL usó un Postgres desechable con stubs mínimos para `auth.users` y `storage.buckets`; no sustituye Supabase Auth, Storage ni Edge Runtime. Docker, Deno y Supabase CLI local no están disponibles, y no hay un proyecto QA de Ridaos. No se desplegó ni se aplicó ninguna migración remota. No se probaron pagos, webhooks, carga a Storage ni Apple Pay en un entorno de servicio. La comprobación en navegador local se interrumpió al pulsarse Escape; el checkout visible sigue simulado y aún no consume los endpoints DTI.
+La prueba SQL usó un Postgres desechable con stubs mínimos para `auth.users` y `storage.buckets`; no sustituye Supabase Auth, Storage ni Edge Runtime. Docker, Deno y Supabase CLI local no están disponibles, y no hay un proyecto QA de Ridaos. No se desplegó ni se aplicó ninguna migración remota. El checkout DTI está conectado en código, pero el flujo frontend contra servicios, pagos, webhooks, Storage y Apple Pay no se ha probado en un entorno QA real. No se ejecutó E2E de navegador del flujo DTI actualizado.
 
 ## Restricciones y pendientes de servicio
 

@@ -469,6 +469,10 @@ function Checkout() {
                 <span>Cupon</span>
                 <strong>{activeSummary.coupon ? activeSummary.coupon.code : 'Sin cupon'}</strong>
               </div>
+              {dtiRemoteOrder?.adaptationQuote?.status === 'approved' ? <>
+                <div className="summary-row"><span>Adaptación aprobada · base</span><strong>{formatCurrency(Number(dtiRemoteOrder.adaptationQuote.net_cents) / 100)}</strong></div>
+                <div className="summary-row"><span>IVA de adaptación</span><strong>{formatCurrency(Number(dtiRemoteOrder.adaptationQuote.vat_cents) / 100)}</strong></div>
+              </> : null}
               <div className="summary-row summary-row-total">
                 <span>Total estimado</span>
                 <strong>{formatCurrency(typeof dtiRemoteOrder?.order?.totalCents === 'number' ? dtiRemoteOrder.order.totalCents / 100 : activeSummary.total)}</strong>

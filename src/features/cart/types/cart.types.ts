@@ -16,6 +16,9 @@ export type ShippingMethod = {
   description: string
   price: number
   eta: string
+  vatIncluded?: boolean
+  includedPrice?: number
+  taxablePrice?: number
 }
 
 export type CartRecommendation = {

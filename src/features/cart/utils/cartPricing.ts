@@ -1,29 +1,9 @@
 import type { CartItem } from '../../../types/ecommerce'
-import type { CartCoupon, CartSummary, ShippingMethod, ShippingMethodId } from '../types/cart.types'
+import type { CartCoupon, CartSummary, ShippingMethodId } from '../types/cart.types'
+import { calculateCartGrossTotals } from './cartGrossTotals.mjs'
+import { getCartShippingMethods, resolveCartShippingMethod, SHIPPING_METHODS } from './cartShipping.mjs'
 
-export const SHIPPING_METHODS: ShippingMethod[] = [
-  {
-    id: 'pickup',
-    label: 'Recogida en taller',
-    description: 'Sin coste. Confirmamos la salida cuando termina la comprobacion tecnica.',
-    price: 0,
-    eta: 'Aviso al finalizar produccion',
-  },
-  {
-    id: 'standard',
-    label: 'Envio peninsula',
-    description: 'Expedicion preparada para pedidos listos y validados.',
-    price: 6.9,
-    eta: '48-72h despues de producir',
-  },
-  {
-    id: 'express',
-    label: 'Envio prioritario',
-    description: 'Da prioridad a la salida una vez el archivo este aprobado.',
-    price: 14.9,
-    eta: '24-48h despues de producir',
-  },
-]
+export { SHIPPING_METHODS }
 
 export const CART_COUPONS: CartCoupon[] = [
   { code: 'RIDAOS10', label: 'Descuento lanzamiento', kind: 'percent', value: 10, minSubtotal: 60 },
@@ -55,7 +35,7 @@ export function getCartSubtotal(items: CartItem[]) {
 }
 
 export function resolveShippingMethod(id: string | undefined) {
-  return SHIPPING_METHODS.find((method) => method.id === id) ?? SHIPPING_METHODS[0]
+  return resolveCartShippingMethod(id)
 }
 
 export function resolveCoupon(code: string, subtotal: number) {
@@ -84,11 +64,9 @@ export function buildCartSummary(input: {
   couponCode: string
 }): CartSummary {
   const subtotal = getCartSubtotal(input.items)
-  const shipping = resolveShippingMethod(input.shippingMethod)
+  const shipping = resolveCartShippingMethod(input.shippingMethod, input.items)
   const { coupon, discount } = resolveCoupon(input.couponCode, subtotal)
-  const taxableBase = Math.max(0, subtotal - discount + shipping.price)
-  const taxes = roundCurrency(taxableBase * TAX_RATE)
-  const total = roundCurrency(taxableBase + taxes)
+  const { taxes, total } = calculateCartGrossTotals(input.items, shipping, discount, TAX_RATE)
 
   return {
     items: input.items,
@@ -102,6 +80,8 @@ export function buildCartSummary(input: {
     total,
   }
 }
+
+export { getCartShippingMethods }
 
 export function multiplyOrderItemPricing(item: CartItem): CartItem {
   const quantity = getItemLineQuantity(item)

@@ -4,50 +4,50 @@ import type { CatalogSeoContent } from '../types'
 export const dtfSeoContent: CatalogSeoContent = {
   entryId: dtfEntry.id,
   slug: dtfEntry.slug,
-  seoTitle: 'DTI por metro | Archivo, revision y urgencia clara | RidaosPrint',
-  metaDescription: 'DTI por metro con precio por metraje, revision de archivo y urgencia clara antes del carrito. DTF como keyword secundaria.',
+  seoTitle: 'DTI Innuro por metro | DTF textil Barcelona | RidaosPrint',
+  metaDescription: 'DTI Innuro por metro a 15 €/m IVA incluido y 55 cm de ancho útil. DTF por metro en Barcelona con revisión del archivo y envío peninsular.',
   ogImage: '/assets/seo/og-dti.jpg',
-  h1: 'DTI por metro.',
-  eyebrow: 'DTI por metro para produccion textil agil',
+  h1: 'DTI Innuro por metro.',
+  eyebrow: 'DTI Innuro para transfer textil · Barcelona',
   intro:
-    'Configura el metraje, carga el archivo y revisa el precio con un flujo claro antes de pasar al carrito. DTF queda como referencia SEO secundaria para quien llega con esa busqueda.',
+    'Configura el metraje, carga el archivo y revisa el precio antes de añadirlo al carrito. DTI Innuro es el producto real; DTF es el término de búsqueda habitual.',
   benefits: [
     'Precio por metro visible desde el inicio.',
-    'Archivo, previsualizacion y checks en el mismo recorrido.',
-    'Comprobacion tecnica antes de fabricar para evitar rehacer el pedido.',
+    'PNG y PDF con comprobación inicial; AI, PSD, SVG y CDR pasan a revisión manual.',
+    'Adaptación profesional presupuestada y aprobada antes de cualquier pago.',
   ],
   useCases: [
     'Tiradas DTI para textil propio o de cliente.',
-    'Reposiciones rapidas que necesitan precio claro y subida de archivo.',
+    'Reposiciones textiles con precio claro por metro y ancho útil de 55 cm.',
     'Pedidos que requieren una validacion tecnica antes de fabricar.',
   ],
   uploadGuidance: [
-    'Sube PDF, AI, EPS, SVG, PNG, JPG, TIFF o ZIP cuando sea posible.',
+    'Sube PNG o PDF para comprobación inicial; AI, PSD, SVG y CDR pasan a revisión manual.',
     'Incluye notas si necesitas color, prioridad o una referencia concreta de produccion.',
-    'La comprobacion final del archivo se realiza antes de fabricar.',
+    'La revisión final del archivo se realiza antes de fabricar o cobrar.',
   ],
   faq: [
     {
       question: 'Que diferencia hay entre DTI y DTF',
-      answer: 'En la web usamos DTI como naming comercial principal del producto por metro. DTF se mantiene como termino SEO secundario para capturar la busqueda habitual del mercado.',
+      answer: 'DTI Innuro es el producto que fabricamos y vendemos. DTF es el término de búsqueda habitual para este tipo de transfer textil.',
     },
     {
       question: 'Hace falta archivo para pedir DTI por metro',
-      answer: 'Si. El archivo activa la previsualizacion, el analisis previo y deja el pedido listo para confirmar.',
+      answer: 'Sí. PNG y PDF pasan una comprobación inicial; AI, PSD, SVG y CDR requieren revisión manual antes de producir.',
     },
     {
       question: 'Se fabrica al instante',
-      answer: 'No. Antes se revisa el archivo para asegurar que el pedido entra correctamente en produccion.',
+      answer: 'No. El tiempo de preparación depende del metraje; el transporte se suma por separado.',
     },
   ],
   objectionHandlers: [
     {
       title: 'No tengo claro si el archivo esta listo',
-      response: 'La carga queda registrada y el equipo revisa el archivo antes de fabricar.',
+      response: 'PNG y PDF reciben una comprobación inicial; AI, PSD, SVG y CDR se revisan manualmente antes de producir.',
     },
     {
       title: 'Necesito rapidez pero sin perder control',
-      response: 'Puedes marcar urgencia y mantener una lectura clara del total antes de cerrar.',
+      response: 'La adaptación profesional cuesta 35 €/hora + IVA. Aprobamos el presupuesto antes de cualquier pago.',
     },
   ],
   primaryCta: {

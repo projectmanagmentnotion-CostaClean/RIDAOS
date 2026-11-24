@@ -103,7 +103,7 @@ export function CartLineItem({
       <div className="summary-list compact-summary">
         <div className="summary-row">
           <span>Base</span>
-          <strong>{formatCurrency(item.pricing.unitPrice)}</strong>
+          <strong>{formatCurrency(item.pricing.unitPrice)}{item.pricing.vatIncluded ? ' · IVA incl.' : ''}</strong>
         </div>
         <div className="summary-row">
           <span>Subtotal linea</span>

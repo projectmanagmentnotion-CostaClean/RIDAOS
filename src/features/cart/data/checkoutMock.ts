@@ -7,19 +7,9 @@ export const checkoutSteps = [
 
 export const paymentMocks = [
   {
-    id: 'bank-transfer',
-    label: 'Transferencia guiada',
-    description: 'La referencia de cobro se prepara despues de revisar el archivo.',
-  },
-  {
-    id: 'bizum',
-    label: 'Bizum comercial',
-    description: 'Opcion rapida para cerrar pedidos pequenos tras validacion interna.',
-  },
-  {
-    id: 'invoice',
-    label: 'Factura proforma',
-    description: 'Pensado para clientes recurrentes o pedidos con doble aprobacion.',
+    id: 'request-only',
+    label: 'Solicitud local · sin pago',
+    description: 'Esta versión de prueba no envía el pedido ni cobra. El pago se habilitará después de revisar archivo y presupuesto.',
   },
 ] as const
 

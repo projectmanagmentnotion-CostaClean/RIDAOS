@@ -608,71 +608,10 @@ export const productOptionDefinitions: ProductOptionDefinition[] = [
       ),
     },
     fields: [
-      { key: 'meters', type: 'meters', label: 'Metros', required: true, min: 0.1, step: 0.1, hint: 'El metraje manda en el precio y en el aprovechamiento de rollo.' },
-      {
-        key: 'usableWidth',
-        type: 'select',
-        label: 'Ancho util',
-        required: true,
-        options: [
-          { value: '58', label: '58 cm' },
-          { value: '60', label: '60 cm' },
-        ],
-      },
-      {
-        key: 'quality',
-        type: 'select',
-        label: 'Calidad',
-        required: true,
-        options: [
-          { value: 'standard', label: 'Estandar' },
-          { value: 'premium', label: 'Premium' },
-        ],
-      },
-      {
-        key: 'spacing',
-        type: 'select',
-        label: 'Separacion entre disenos',
-        required: true,
-        options: [
-          { value: 'tight', label: 'Ajustada' },
-          { value: 'recommended', label: 'Recomendada' },
-          { value: 'safe', label: 'Amplia' },
-        ],
-      },
-      {
-        key: 'professionalReview',
-        type: 'select',
-        label: 'Revision profesional',
-        required: true,
-        options: [
-          { value: 'included', label: 'No, archivo listo' },
-          { value: 'review', label: 'Si, revisar archivo' },
-        ],
-      },
-      {
-        key: 'urgency',
-        type: 'select',
-        label: 'Urgencia',
-        required: true,
-        options: [
-          { value: '72h', label: '72h' },
-          { value: '48h', label: '48h' },
-          { value: '24h', label: '24h' },
-        ],
-      },
-      {
-        key: 'artworkMode',
-        type: 'select',
-        label: 'Estado del archivo',
-        required: true,
-        options: [
-          { value: 'ready', label: 'Archivo listo' },
-          { value: 'need-help', label: 'Necesito ayuda' },
-        ],
-      },
-      { key: 'file', type: 'file', label: 'Archivo', required: true, accept: '.pdf,.ai,.eps,.svg,.png,.jpg,.jpeg,.tiff,.zip' },
-      { key: 'notes', type: 'textarea', label: 'Notas', rows: 4, hint: 'Color, prioridad, referencia de aplicacion o mezcla de prendas.' },
+      { key: 'meters', type: 'meters', label: 'Metros', required: true, min: 1, step: 0.1, hint: 'Pedido mínimo de 1 m · 15 €/m IVA incluido.' },
+      { key: 'usableWidth', type: 'select', label: 'Ancho útil', required: true, options: [{ value: '55', label: '55 cm' }] },
+      { key: 'file', type: 'file', label: 'Archivo', required: true, accept: '.png,.pdf,.ai,.psd,.svg,.cdr' },
+      { key: 'notes', type: 'textarea', label: 'Notas', rows: 4, hint: 'Añade detalles para la revisión del archivo.' },
     ],
     assetRequirements: [
       heroAsset('dti-roll-transparent', 'Rollo DTI', 'dti-roll-transparent.webp', '/assets/cinematic/home/dti-roll-transparent-v1.webp', 'webp', 'Hero rollo DTI.', 'required'),
@@ -681,8 +620,8 @@ export const productOptionDefinitions: ProductOptionDefinition[] = [
       heroAsset('dti-transfer-texture', 'Textura transfer', 'dti-transfer-texture.webp', '/assets/previews/dti/dti-transfer-texture-v1.webp', 'webp', 'Textura editorial.', 'pending'),
     ],
     recommendedTemplateLabel: 'Plantilla de rollo DTI con ancho util',
-    seoTitle: 'DTI por metro | DTF textil para marcas y produccion | RidaosPrint',
-    seoDescription: 'DTI por metro con ancho util, revision profesional y urgencia 24/48/72h para produccion textil mas clara.',
+    seoTitle: 'DTI Innuro por metro | DTF textil Barcelona | RidaosPrint',
+    seoDescription: 'DTI Innuro por metro a 15 €/m IVA incluido, 55 cm útiles y revisión de archivo. Encuentra DTF por metro en Ridaos Print Barcelona.',
   },
   {
     entryId: 'rotulacion-basica',

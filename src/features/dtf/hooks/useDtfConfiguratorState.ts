@@ -2,16 +2,13 @@ import { useEffect, useMemo, useState } from 'react'
 import type { ArtworkReferenceAcceptance } from '../../../domain/storage'
 import { addToCart } from '../../../lib/cart'
 import { publicRoutes } from '../../../lib/navigation'
-import { BASE_PRICE_PER_METER, calculateDTFPricing, type DTFQuality, type DTFUrgency } from '../../../lib/pricing'
 import type { CartItem } from '../../../types/ecommerce'
 import type { ArtworkPreviewSummary } from '../../artwork-upload'
 import { useLiveToast } from '../../live-feedback'
+import { calculateDtiInnuroPrice, DTI_INNURO_PRICE_PER_METER } from '../../../config/pricing/dtiInnuroPricing.mjs'
 
 type SimulationResult = {
   meters: number
-  quality: DTFQuality
-  urgency: DTFUrgency
-  turnaroundPreference: string
   total: number
   fileName: string
   notes: string
@@ -53,27 +50,24 @@ const detectFormatLabel = (file: File) => {
 export function useDtfConfiguratorState() {
   const { error, info, success } = useLiveToast()
   const [meters, setMeters] = useState('1')
-  const [quality, setQuality] = useState<DTFQuality>('standard')
-  const [urgency, setUrgency] = useState<DTFUrgency>('normal')
-  const [turnaroundPreference, setTurnaroundPreference] = useState('Planificacion estandar')
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [notes, setNotes] = useState('')
-  const [selectedExtras, setSelectedExtras] = useState<string[]>([])
   const [errors, setErrors] = useState<{ meters?: string; file?: string }>({})
   const [simulation, setSimulation] = useState<SimulationResult | null>(null)
   const [cartMessage, setCartMessage] = useState('')
 
   const metersValue = Number(meters)
   const pricing = useMemo(() => {
-    const basePricing = calculateDTFPricing(metersValue, quality, urgency)
-    const extraServicesTotal = selectedExtras.length * 3.5
+    const price = calculateDtiInnuroPrice(metersValue)
 
     return {
-      ...basePricing,
-      extras: basePricing.extras + extraServicesTotal,
-      total: basePricing.total + extraServicesTotal,
+      subtotal: price.total,
+      extras: 0,
+      total: price.total,
+      vatIncluded: true,
+      valid: price.valid,
     }
-  }, [metersValue, quality, selectedExtras.length, urgency])
+  }, [metersValue])
 
   const previewUrl = useMemo(() => {
     if (!selectedFile || !previewableTypes.includes(selectedFile.type)) {
@@ -112,12 +106,10 @@ export function useDtfConfiguratorState() {
   const summaryItems = useMemo(
     () => [
       { label: 'Metraje', value: metersValue > 0 ? `${metersValue} m` : 'Pendiente' },
-      { label: 'Calidad', value: quality === 'premium' ? 'Premium' : 'Standard' },
-      { label: 'Urgencia', value: urgency === 'express' ? 'Express' : 'Normal' },
-      { label: 'Turnaround', value: turnaroundPreference },
+      { label: 'Ancho útil', value: '55 cm' },
       { label: 'Archivo', value: selectedFile ? selectedFile.name : 'Por subir' },
     ],
-    [metersValue, quality, selectedFile, turnaroundPreference, urgency],
+    [metersValue, selectedFile],
   )
 
   const setFile = (file: File | null) => {
@@ -125,17 +117,11 @@ export function useDtfConfiguratorState() {
     setErrors((current) => ({ ...current, file: undefined }))
   }
 
-  const toggleExtra = (label: string) => {
-    setSelectedExtras((current) =>
-      current.includes(label) ? current.filter((item) => item !== label) : [...current, label],
-    )
-  }
-
   const validate = () => {
     const nextErrors: { meters?: string; file?: string } = {}
 
-    if (!(metersValue > 0)) {
-      nextErrors.meters = 'Introduce un metraje mayor que 0.'
+    if (!(metersValue >= 1)) {
+      nextErrors.meters = 'El pedido mínimo es de 1 m.'
     }
 
     if (!selectedFile) {
@@ -160,31 +146,25 @@ export function useDtfConfiguratorState() {
       id: itemId,
       lineQuantity: 1,
       productType: 'dtf',
-      productName: 'DTI por metro',
+      productName: 'DTI Innuro por metro',
       configuration: {
         meters: metersValue,
-        quality,
-        urgency,
-        turnaroundPreference,
-        extras: selectedExtras,
         productHref: publicRoutes.dtf,
         summary: [
-          'Producto: DTI por metro',
+          'Producto: DTI Innuro',
           `Metraje: ${metersValue} m`,
-          `Calidad: ${quality === 'premium' ? 'Premium' : 'Standard'}`,
-          `Urgencia: ${urgency === 'express' ? 'Express' : 'Normal'}`,
-          `Turnaround: ${turnaroundPreference}`,
+          'Ancho útil: 55 cm',
           `Archivo: ${selectedFile.name}`,
-          ...(selectedExtras.length ? [`Extras: ${selectedExtras.join(', ')}`] : []),
         ],
         notes: notes.trim(),
       },
       pricing: {
-        unitPrice: BASE_PRICE_PER_METER,
+        unitPrice: DTI_INNURO_PRICE_PER_METER,
         unitLabel: 'metro',
         subtotal: pricing.subtotal,
         extras: pricing.extras,
         total: pricing.total,
+        vatIncluded: true,
       },
       artwork: {
         id: `upload-${Date.now()}`,
@@ -204,9 +184,9 @@ export function useDtfConfiguratorState() {
     addToCart(cartItem)
     setErrors({})
     setCartMessage(
-      'Pedido preparado en tu carrito. Mantiene urgencia, turnaround y extras listos para pasar a confirmacion.',
+      'Solicitud local guardada en el carrito. No se ha realizado ningún cobro ni envío real.',
     )
-    success('Anadido al carrito', 'Tu pedido DTI ya aparece en el resumen de compra.')
+    success('Añadido al carrito', 'Solicitud local de DTI Innuro; sin cobro.')
   }
 
   const handleSimulateOrder = () => {
@@ -218,9 +198,6 @@ export function useDtfConfiguratorState() {
 
     setSimulation({
       meters: metersValue,
-      quality,
-      urgency,
-      turnaroundPreference,
       total: pricing.total,
       fileName: selectedFile.name,
       notes: notes.trim(),
@@ -232,18 +209,10 @@ export function useDtfConfiguratorState() {
   return {
     meters,
     setMeters,
-    quality,
-    setQuality,
-    urgency,
-    setUrgency,
-    turnaroundPreference,
-    setTurnaroundPreference,
     selectedFile,
     setFile,
     notes,
     setNotes,
-    selectedExtras,
-    toggleExtra,
     errors,
     simulation,
     cartMessage,

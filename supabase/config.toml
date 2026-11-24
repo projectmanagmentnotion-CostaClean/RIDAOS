@@ -1,0 +1,25 @@
+project_id = "ridaos-dti-qa"
+
+[api]
+enabled = true
+schemas = ["public", "graphql_public", "dti_private"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+major_version = 15
+
+[functions.dti-orders]
+verify_jwt = false
+
+[functions.dti-artwork]
+verify_jwt = false
+
+[functions.dti-accept-artwork]
+verify_jwt = false
+
+[functions.dti-payment-intent]
+verify_jwt = false
+
+[functions.stripe-webhook]
+verify_jwt = false

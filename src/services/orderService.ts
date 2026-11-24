@@ -23,10 +23,11 @@ export async function submitOrder(input: {
   customer: CustomerData
   customerId: string
   items: CartItem[]
+  total: number
 }): Promise<Order> {
   const createdAt = new Date().toISOString()
   const orderId = buildOrderId()
-  const total = input.items.reduce((sum, item) => sum + item.pricing.total, 0)
+  const total = input.total
 
   const order: Order = {
     id: orderId,

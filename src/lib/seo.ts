@@ -365,6 +365,15 @@ export function buildJsonLdProductStub(entryId: string): JsonLdRecord | null {
       '@type': 'Offer',
       priceCurrency: 'EUR',
       price: entry.basePrice ?? undefined,
+      priceSpecification: entry.id === 'dtf-metro'
+        ? {
+            '@type': 'UnitPriceSpecification',
+            priceCurrency: 'EUR',
+            price: entry.basePrice ?? undefined,
+            unitText: entry.unitLabel ?? 'metro',
+            valueAddedTaxIncluded: true,
+          }
+        : undefined,
       availability: 'https://schema.org/InStock',
       url: buildAbsoluteUrl(entry.route),
     },

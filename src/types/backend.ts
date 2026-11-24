@@ -53,6 +53,7 @@ export type OrderItem = {
     extras: number
     total: number
     quoteRequired?: boolean
+    vatIncluded?: boolean
   }
   artwork: ArtworkUpload
 }

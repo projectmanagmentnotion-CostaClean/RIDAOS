@@ -1,4 +1,5 @@
 import type { CartSummary } from '../types/cart.types'
+import { getCartShippingMethods } from '../utils/cartPricing'
 
 type CartSummaryPanelProps = {
   summary: CartSummary
@@ -17,6 +18,8 @@ export function CartSummaryPanel({
   onCouponApply,
   onShippingChange,
 }: CartSummaryPanelProps) {
+  const vatAlreadyIncluded = summary.items.length > 0 && summary.items.every((item) => item.pricing.vatIncluded) && summary.shipping.vatIncluded
+
   return (
     <div className="summary-stack">
       <article className="content-card premium-cart-summary" data-cursor-zone="conversion">
@@ -31,7 +34,7 @@ export function CartSummaryPanel({
             <strong>{summary.lineCount}</strong>
           </div>
           <div className="summary-row">
-            <span>Subtotal</span>
+            <span>{vatAlreadyIncluded ? 'Productos · IVA incluido' : 'Subtotal productos'}</span>
             <strong>{formatCurrency(summary.subtotal)}</strong>
           </div>
           <div className="summary-row">
@@ -39,7 +42,7 @@ export function CartSummaryPanel({
             <strong>{formatCurrency(summary.shipping.price)}</strong>
           </div>
           <div className="summary-row">
-            <span>Impuestos</span>
+            <span>{vatAlreadyIncluded ? 'IVA incluido' : 'IVA incluido + adicional'}</span>
             <strong>{formatCurrency(summary.taxes)}</strong>
           </div>
           <div className="summary-row">
@@ -57,21 +60,15 @@ export function CartSummaryPanel({
         <div className="premium-cart-summary__group">
           <p className="section-label">Entrega</p>
           <div className="shipping-option-list">
-            {['pickup', 'standard', 'express'].map((methodId) => (
+            {getCartShippingMethods(summary.items).map((method) => (
               <button
-                className={`shipping-option${summary.shipping.id === methodId ? ' is-active' : ''}`}
-                key={methodId}
-                onClick={() => onShippingChange(methodId)}
+                className={`shipping-option${summary.shipping.id === method.id ? ' is-active' : ''}`}
+                key={method.id}
+                onClick={() => onShippingChange(method.id)}
                 type="button"
               >
-                <strong>
-                  {methodId === 'pickup'
-                    ? 'Recogida'
-                    : methodId === 'standard'
-                      ? 'Envio peninsula'
-                      : 'Envio prioritario'}
-                </strong>
-                <span>{methodId === 'pickup' ? 'Sin coste' : methodId === 'standard' ? '48-72 h estimadas' : '24-48 h estimadas'}</span>
+                <strong>{method.label}</strong>
+                <span>{formatCurrency(method.price)}{method.vatIncluded ? ' · IVA incluido' : ''}</span>
               </button>
             ))}
           </div>

@@ -21,6 +21,6 @@ export const pricingContent = {
     reviewTitle: 'Revision final antes de enviar',
     shippingTitle: 'Entrega',
     paymentTitle: 'Cierre del pedido',
-    successTitle: 'Solicitud recibida correctamente',
+    successTitle: 'Prueba local guardada',
   },
 }

@@ -129,6 +129,7 @@ function Checkout() {
         customer,
         customerId: savedCustomer.id,
         items: normalizedItems,
+        total: summary.total,
       })
 
       setConfirmation(order)
@@ -141,11 +142,11 @@ function Checkout() {
       })
       setStep('success')
       showSuccessModal({
-        title: 'Solicitud registrada',
-        description: `La solicitud ${order.id} ya queda lista para seguimiento y comprobacion de archivo.`,
-        ctaLabel: 'Seguir revisando',
+        title: 'Prueba local guardada',
+        description: `La referencia ${order.id} se ha guardado en el entorno local. No se envió ni se realizó ningún cobro.`,
+        ctaLabel: 'Continuar',
       })
-      success('Solicitud registrada', 'Tu resumen ya pasa a revision interna.', 2600)
+      success('Prueba local guardada', 'No se ha enviado ningún pedido real ni se ha cobrado.', 2600)
     } catch {
       setError('checkout', 'No se pudo registrar la solicitud en este momento. Intentalo de nuevo.')
       setConfirmation(null)
@@ -157,6 +158,7 @@ function Checkout() {
   }
 
   const activeSummary = submittedSummary ?? summary
+  const vatAlreadyIncluded = activeSummary.items.length > 0 && activeSummary.items.every((item) => item.pricing.vatIncluded) && activeSummary.shipping.vatIncluded
 
   return (
     <section className="page" ref={pageRef}>
@@ -165,6 +167,8 @@ function Checkout() {
         <h1>{pricingContent.checkout.heroTitle}</h1>
         <p>{pricingContent.checkout.heroDescription}</p>
       </div>
+
+      <p className="inline-notice" role="note">Entorno de prueba local: esta pantalla no envía pedidos reales ni realiza cobros. Los archivos no salen de este navegador.</p>
 
       <div data-animate="reveal">
         <CheckoutStepRail activeStep={step} steps={checkoutSteps} />
@@ -330,7 +334,7 @@ function Checkout() {
               <div className="summary-list">
                 <div className="summary-row">
                   <span>Solicitud</span>
-                  <strong>{confirmation.id}</strong>
+                  <strong>{confirmation.id} · local</strong>
                 </div>
                 <div className="summary-row">
                   <span>Cliente</span>
@@ -338,7 +342,7 @@ function Checkout() {
                 </div>
                 <div className="summary-row">
                   <span>Modalidad de cierre</span>
-                  <strong>{paymentMocks.find((item) => item.id === selectedPayment)?.label}</strong>
+                  <strong>Sin pago · prueba local</strong>
                 </div>
                 <div className="summary-row summary-row-total">
                   <span>Total estimado</span>
@@ -355,7 +359,7 @@ function Checkout() {
             <p className="section-label">Resumen de checkout</p>
             <div className="summary-list">
               <div className="summary-row">
-                <span>Subtotal</span>
+                <span>{vatAlreadyIncluded ? 'Productos · IVA incluido' : 'Subtotal productos'}</span>
                 <strong>{formatCurrency(activeSummary.subtotal)}</strong>
               </div>
               <div className="summary-row">
@@ -363,7 +367,7 @@ function Checkout() {
                 <strong>{formatCurrency(activeSummary.shipping.price)}</strong>
               </div>
               <div className="summary-row">
-                <span>Impuestos</span>
+                <span>{vatAlreadyIncluded ? 'IVA incluido' : 'IVA incluido + adicional'}</span>
                 <strong>{formatCurrency(activeSummary.taxes)}</strong>
               </div>
               <div className="summary-row">
@@ -378,7 +382,7 @@ function Checkout() {
             <ul className="hint-list">
               <li>El total mantiene entrega, impuestos y descuentos visibles antes de confirmar.</li>
               <li>La comprobacion inicial del archivo sigue separada para proteger medidas, formato y acabados.</li>
-              <li>Tu solicitud queda registrada con el mismo resumen que has revisado durante el proceso.</li>
+              <li>La prueba local conserva el resumen en este dispositivo; no se envía a Ridaos ni se cobra.</li>
             </ul>
           </article>
 
@@ -386,7 +390,7 @@ function Checkout() {
             <article className="content-card success-card" data-animate="panel" data-cursor-zone="conversion">
               <p className="section-label">Siguiente lectura</p>
               <p>
-                La solicitud ya aparece en tu historial con su estado inicial de revision de archivo y preparacion.
+                Esta referencia solo existe en el almacenamiento local de prueba. No se envió al taller ni es un pedido real.
               </p>
             </article>
           ) : null}

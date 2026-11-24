@@ -98,6 +98,7 @@ export function createCatalogCartItem(entry: CatalogEntry, config: ConfigState, 
       extras: 0,
       total: pricing.total,
       quoteRequired: pricing.quoteRequired,
+      vatIncluded: entry.id === 'dtf-metro',
     },
     artwork: {
       id: `upload-${Date.now()}`,

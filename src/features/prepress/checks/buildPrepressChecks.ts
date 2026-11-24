@@ -22,6 +22,7 @@ export function buildPrepressChecks(payload: PrepressAnalysisPayload): PrepressC
   const { metadata, productRule, ruleset } = payload
   const dpi = estimatedDpi(payload)
   const isVectorLike = vectorFormats.includes(metadata.formatLabel)
+  const requiresManualReview = productRule.key === 'dtf_meter' && ['AI', 'PSD', 'SVG', 'CDR'].includes(metadata.formatLabel)
   const canPreview = metadata.canPreview || previewableTypes.includes(metadata.formatLabel)
   const lowResolution = dpi !== null && dpi < ruleset.thresholds.warningMinDpi
   const missingBleed = productRule.guide.showBleedZone && productRule.guide.bleedMm > 0
@@ -33,14 +34,22 @@ export function buildPrepressChecks(payload: PrepressAnalysisPayload): PrepressC
   const checks: PrepressCheckDefinition[] = [
     {
       id: 'file_format_check',
-      status: statusFromBoolean(productRule.acceptedFormats.includes(metadata.formatLabel)),
+      status: !productRule.acceptedFormats.includes(metadata.formatLabel)
+        ? 'fail'
+        : requiresManualReview
+          ? 'warning'
+          : 'pass',
       severity: 'critical',
       title: 'Formato del archivo',
-      description: `${metadata.formatLabel} ${productRule.acceptedFormats.includes(metadata.formatLabel) ? 'entra' : 'no entra'} en los formatos previstos.`,
-      recommendation: `Usa uno de estos formatos: ${productRule.acceptedFormats.join(', ')}.`,
+      description: requiresManualReview
+        ? `${metadata.formatLabel} requiere revisión manual de preprensa.`
+        : `${metadata.formatLabel} ${productRule.acceptedFormats.includes(metadata.formatLabel) ? 'entra' : 'no entra'} en los formatos previstos.`,
+      recommendation: requiresManualReview
+        ? 'Producción y cualquier pago esperan la aprobación manual del archivo.'
+        : `Usa uno de estos formatos: ${productRule.acceptedFormats.join(', ')}.`,
       productApplicability: [productRule.key],
       productionImpact: 'Un formato incorrecto frena la entrada a produccion.',
-      blocking: true,
+      blocking: !requiresManualReview,
     },
     {
       id: 'file_size_check',

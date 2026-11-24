@@ -1,422 +1,239 @@
-import { useEffect, useRef, useState } from 'react'
-import CommercialNoticeGroup from '../components/CommercialNoticeGroup'
-import ConfiguratorSupportBlock from '../components/ConfiguratorSupportBlock'
-import ConversionTrustBlock from '../components/ConversionTrustBlock'
-import CtaPanel from '../components/CtaPanel'
-import FaqBlock from '../components/FaqBlock'
-import MouseMotionVisual from '../components/MouseMotionVisual'
-import ObjectionHandlerBlock from '../components/ObjectionHandlerBlock'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import PageShell from '../components/PageShell'
-import ProcessSteps from '../components/ProcessSteps'
-import SeoContentBlock from '../components/SeoContentBlock'
-import SectionHeader from '../components/SectionHeader'
-import TrustGrid from '../components/TrustGrid'
-import UploadGuidanceBlock from '../components/UploadGuidanceBlock'
-import { dtfEntry } from '../catalog/products/dtf'
-import { dtfPageContent } from '../content/dtfContent'
-import { faqContent } from '../content/faqContent'
-import { pricingContent } from '../content/pricingContent'
-import { useCmsPreviewDocument } from '../features/cms-preview'
 import { ArtworkUploadFlow, type ArtworkPreviewSummary, type ArtworkUploadFlowState } from '../features/artwork-upload'
-import { DtfOptionCards } from '../features/dtf/components/DtfOptionCards'
-import { DtfPresetSelector } from '../features/dtf/components/DtfPresetSelector'
-import { DtfProgressSteps } from '../features/dtf/components/DtfProgressSteps'
-import { DtfStickySummaryCard } from '../features/dtf/components/DtfStickySummaryCard'
-import { useDtfConfiguratorState } from '../features/dtf/hooks/useDtfConfiguratorState'
-import { formatArtworkAcceptanceStatus } from '../features/artwork-upload/utils/formatArtworkAcceptance'
-import { ProductTemplateDownloads } from '../features/print-templates'
-import { initCinematicScroll, initCursorAwareReveals, initUrbanTextMotion } from '../lib/animations'
+import { initStorefrontRevealAnimations } from '../features/motion/revealAnimations'
+import { useLiveToast } from '../features/live-feedback'
 import { publicRoutes } from '../lib/navigation'
-import { BASE_PRICE_PER_METER } from '../lib/pricing'
+import { addToCart } from '../lib/cart'
+import { useCartStore } from '../store/useCartStore'
+import type { CartItem } from '../types/ecommerce'
+import './DTFPage.css'
+import {
+  calculateDtiAdaptationRate,
+  calculateDtiInnuroPrice,
+  DTI_INNURO_ADAPTATION_HOURLY_RATE,
+  DTI_INNURO_MINIMUM_METERS,
+  DTI_INNURO_PRICE_PER_METER,
+  DTI_INNURO_SHIPPING_PRICE,
+  getDtiCutoffStatus,
+  getDtiPreparationPlan,
+} from '../config/pricing/dtiInnuroPricing.mjs'
 
-const formatCurrency = (value: number) =>
-  new Intl.NumberFormat(pricingContent.locale, {
-    style: 'currency',
-    currency: pricingContent.currency,
-  }).format(value)
+const currency = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' })
 
-/**
- * Editable Zone: DTF_CONFIGURATOR
- * Content: src/content/dtfContent.ts
- * Visual component: src/pages/DTFPage.tsx
- * Artwork system:
- * - ARTWORK_UPLOAD_FLOW
- * - ARTWORK_PREVIEW_CANVAS
- * - ARTWORK_VALIDATION_RULES
- * - ARTWORK_PRODUCT_GUIDES
- * - ARTWORK_RECOMMENDATIONS
- */
 function DTFPage() {
   const pageRef = useRef<HTMLElement | null>(null)
+  const { error, success } = useLiveToast()
+  const shippingMethod = useCartStore((state) => state.shippingMethod)
+  const setShippingMethod = useCartStore((state) => state.setShippingMethod)
+  const [metersInput, setMetersInput] = useState('1')
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [adaptationRequested, setAdaptationRequested] = useState(false)
+  const [addedToCart, setAddedToCart] = useState(false)
+  const [notes, setNotes] = useState('')
   const [artworkState, setArtworkState] = useState<{
     metadata: ArtworkUploadFlowState['metadata']
     summary: ArtworkPreviewSummary | null
     acceptance: ArtworkUploadFlowState['acceptance']
     confirmed: boolean
-  }>({
-    metadata: null,
-    summary: null,
-    acceptance: null,
-    confirmed: false,
-  })
-  const previewDtfContent = useCmsPreviewDocument('src/content/dtfContent.ts', dtfPageContent)
-  const {
-    meters,
-    setMeters,
-    quality,
-    setQuality,
-    urgency,
-    setUrgency,
-    turnaroundPreference,
-    setTurnaroundPreference,
-    selectedFile,
-    setFile,
-    notes,
-    setNotes,
-    selectedExtras,
-    toggleExtra,
-    errors,
-    simulation,
-    cartMessage,
-    pricing,
-    summaryItems,
-    handleAddToCart,
-    handleSimulateOrder,
-  } = useDtfConfiguratorState()
+  }>({ metadata: null, summary: null, acceptance: null, confirmed: false })
+
+  const meters = Number(metersInput)
+  const price = useMemo(() => calculateDtiInnuroPrice(meters), [meters])
+  const preparation = getDtiPreparationPlan(meters)
+  const cutoff = getDtiCutoffStatus()
+  const isPickup = shippingMethod === 'pickup'
+  const shippingPrice = isPickup ? 0 : DTI_INNURO_SHIPPING_PRICE
+  const total = price.total + shippingPrice
+  const adaptationRate = calculateDtiAdaptationRate(1)
+  const cutoffCopy = cutoff.startsNextWorkingDay
+    ? 'Los pedidos recibidos ahora pasan al siguiente día laborable.'
+    : 'Los pedidos antes de las 18:30 (Europe/Madrid) cuentan desde el mismo día laborable.'
 
   useEffect(() => {
-    const scope = pageRef.current
+    if (!pageRef.current) return
+    const context = initStorefrontRevealAnimations(pageRef.current)
+    return () => context.revert()
+  }, [])
 
-    if (!scope) {
+  const handleAddToCart = () => {
+    if (!price.valid) {
+      error('Pedido mínimo de 1 m', 'Ajusta el metraje para continuar.')
+      return
+    }
+    if (!selectedFile || !artworkState.confirmed || !artworkState.acceptance) {
+      error('Revisa el archivo', 'Sube el arte y acepta la referencia o solicita ayuda de diseño.')
       return
     }
 
-    const textContext = initUrbanTextMotion(scope)
-    const cursorContext = initCursorAwareReveals(scope)
-    const scrollContext = initCinematicScroll(scope)
-
-    return () => {
-      scrollContext.revert()
-      textContext.revert()
-      cursorContext.revert()
+    const itemId = `dti-innuro-${Date.now()}`
+    const manualReview = Boolean(artworkState.acceptance.manualReviewRequired)
+    const adaptationLabel = `Adaptación profesional solicitada · ${DTI_INNURO_ADAPTATION_HOURLY_RATE} €/h + IVA · presupuesto pendiente de aprobación`
+    const cartItem: CartItem = {
+      id: itemId,
+      lineQuantity: 1,
+      productType: 'dtf',
+      productName: 'DTI Innuro por metro',
+      configuration: {
+        meters,
+        notes: notes.trim(),
+        productHref: publicRoutes.dtf,
+        extras: adaptationRequested ? [adaptationLabel] : [],
+        summary: [
+          'Producto: DTI Innuro',
+          `Metraje: ${meters} m`,
+          'Ancho útil: 55 cm',
+          `Preparación: ${preparation.label}`,
+          isPickup ? "Recogida: Ridaos Print BCN, Carrer d'Aragó 423, Barcelona" : 'Envío peninsular: 5 € IVA incluido',
+          ...(manualReview ? ['Archivo: requiere revisión manual antes de producción y pago'] : ['Archivo: comprobación inicial y referencia aceptada']),
+          ...(adaptationRequested ? [adaptationLabel] : []),
+        ],
+      },
+      pricing: {
+        unitPrice: DTI_INNURO_PRICE_PER_METER,
+        unitLabel: 'metro',
+        subtotal: price.total,
+        extras: 0,
+        total: price.total,
+        vatIncluded: true,
+        quoteRequired: adaptationRequested,
+      },
+      artwork: {
+        id: `upload-${Date.now()}`,
+        itemId,
+        fileName: selectedFile.name,
+        fileType: selectedFile.type || 'application/octet-stream',
+        fileSize: selectedFile.size,
+        formatLabel: artworkState.metadata?.formatLabel ?? selectedFile.name.split('.').pop()?.toUpperCase() ?? 'ARCHIVO',
+        status: 'pending_review',
+        uploadedAt: new Date().toISOString(),
+        notes: notes.trim(),
+        acceptance: artworkState.acceptance,
+        previewSummary: artworkState.summary ?? undefined,
+      },
     }
-  }, [])
+
+    addToCart(cartItem)
+    setAddedToCart(true)
+    success('Añadido al carrito', 'La solicitud queda guardada localmente para revisar; todavía no hay cobro.')
+  }
 
   return (
-    <PageShell className="premium-page" ref={pageRef}>
-      <section className="dtf-hero-stage" data-motion="hero-stage" data-scroll-scene="dtf-hero">
-        <div className="hero-flash-band" aria-hidden="true" />
-        <SectionHeader
-          className="premium-hero type-split"
-          description={previewDtfContent.hero.fallbackDescription}
-          eyebrow={previewDtfContent.hero.fallbackEyebrow}
-          hero
-          stickerWords={['DTI', 'archivo']}
-          title={previewDtfContent.hero.fallbackTitle}
-          titleLines={previewDtfContent.hero.titleLines}
-        />
-        <div className="storefront-catalog-hero__chips">
-          <span>Produccion por metro</span>
-          <span>Revision tecnica</span>
-          <span>Listo para marcas y talleres</span>
+    <PageShell className="premium-page dti-innuro-page" ref={pageRef}>
+      <section className="dti-hero" data-animate="hero">
+        <div className="dti-hero__copy">
+          <p className="dti-eyebrow"><span /> RIDAOS PRINT BCN · TRANSFER TEXTIL</p>
+          <h1>DTI Innuro<span>por metro.</span></h1>
+          <p className="dti-hero__intro">Color, detalle y libertad de aplicación para marcas que producen a su manera.</p>
+          <div className="dti-hero__price"><strong>15 €</strong><span>/ metro<br />IVA incluido</span></div>
+          <div className="dti-hero__actions">
+            <a className="dti-button dti-button--accent" href="#dti-configurator">Configurar mi rollo <span aria-hidden="true">↘</span></a>
+            <a className="dti-text-link" href="#dti-specifications">Descubre Innuro</a>
+          </div>
+          <div className="dti-hero__meta"><span>01 / 04</span><span>IMPRESIÓN TRANSFER · BARCELONA</span></div>
         </div>
-        <div className="catalog-cta-row">
-          <a className="action-button action-link-button" href="#dtf-configurator">
-            Configurar DTI
-          </a>
-          <a className="action-button action-button-muted action-link-button" href={publicRoutes.guia}>
-            Preparar archivo
-          </a>
+        <div className="dti-hero__visual" aria-label="Visual del rollo DTI Innuro" role="img">
+          <div className="dti-visual__glow" />
+          <div className="dti-visual__frame"><span>INNURO / TRANSFER FILM</span><span>55 CM</span></div>
+          <div className="dti-film-roll"><div className="dti-film-roll__core" /><div className="dti-film-roll__edge" /></div>
+          <div className="dti-visual__stamp"><span>DTI</span><small>MADE FOR<br />YOUR NEXT MOVE</small></div>
+          <div className="dti-visual__caption"><span>Rollo de producción</span><strong>INNURO / 01</strong></div>
         </div>
       </section>
 
-      <section className="content-section premium-progress-section">
-        <div>
-          <p className="section-label">{previewDtfContent.progress.eyebrow}</p>
-          <h2>{previewDtfContent.progress.title}</h2>
-        </div>
-        <DtfProgressSteps />
+      <section className="dti-spec-strip" id="dti-specifications" data-animate="reveal">
+        <article><span>01 — PRECISIÓN</span><strong>55 cm</strong><p>Ancho útil fijo para cada metro Innuro.</p></article>
+        <article><span>02 — PRECIO CLARO</span><strong>15 €/m</strong><p>IVA incluido. Desde un metro.</p></article>
+        <article><span>03 — PRODUCCIÓN</span><strong>{preparation.label}</strong><p>{cutoffCopy}</p></article>
       </section>
 
-      <div
-        className="split-grid dtf-cockpit-layout dtf-layout"
-        data-animate="reveal"
-        data-motion="poster-stack"
-        data-scroll-scene="dtf-cockpit"
-      >
-        <article
-          className="content-card dtf-cockpit-panel hover-lift"
-          data-animate="panel"
-          data-cursor-zone="conversion"
-          data-scroll-scene="dtf-form"
-          id="dtf-configurator"
-          tabIndex={0}
-        >
-          <SectionHeader eyebrow="Configurador" title="Configura tu pedido DTI con una lectura clara, rapida y profesional." />
+      <section className="dti-lead-times" data-animate="reveal">
+        <div><p className="dti-eyebrow"><span /> PREPARACIÓN EN TALLER</p><h2>Plazos claros.<br /><em>Sin sorpresas.</em></h2></div>
+        <div className="dti-lead-times__rows">
+          <p><span>01 — HASTA 5 M</span><strong>48 horas laborables</strong></p>
+          <p><span>02 — MÁS DE 5 Y HASTA 10 M</span><strong>3 días laborables</strong></p>
+          <p><span>03 — MÁS DE 10 M</span><strong>Plazo bajo consulta</strong></p>
+          <small>Pedidos antes de las 18:30 Europe/Madrid cuentan desde ese día laborable; después, desde el siguiente. El transporte se añade al plazo de preparación.</small>
+        </div>
+      </section>
 
-          <div className="configurator-form">
-            <label className="field-group" htmlFor="dtf-meters">
-              <span className="field-label">Metros</span>
-              <input
-                className="form-input"
-                id="dtf-meters"
-                min="0"
-                onChange={(event) => setMeters(event.target.value)}
-                step="0.1"
-                type="number"
-                value={meters}
-              />
-              <span className="file-meta">{previewDtfContent.fieldHelp.meters}</span>
-              <DtfPresetSelector onSelect={setMeters} presets={previewDtfContent.meterPresets} value={meters} />
-              {errors.meters ? <span className="field-error">{errors.meters}</span> : null}
-            </label>
+      <section className="dti-configurator" id="dti-configurator" data-animate="reveal">
+        <div className="dti-configurator__heading">
+          <p className="dti-eyebrow"><span /> TU PEDIDO, A TU MEDIDA</p>
+          <h2>Configura tu<br /><em>próxima producción.</em></h2>
+          <p>Una decisión cada vez. El precio se actualiza al momento y el archivo se revisa antes de producir.</p>
+        </div>
 
-            <DtfOptionCards
-              onQualityChange={setQuality}
-              onToggleExtra={toggleExtra}
-              onTurnaroundChange={setTurnaroundPreference}
-              onUrgencyChange={setUrgency}
-              quality={quality}
-              selectedExtras={selectedExtras}
-              turnaroundPreference={turnaroundPreference}
-              urgency={urgency}
-            />
+        <div className="dti-configurator__grid">
+          <div className="dti-configurator__form">
+            <article className="dti-glass-panel dti-step-panel">
+              <div className="dti-step-panel__title"><span>01</span><div><h3>¿Cuánto necesitas?</h3><p>DTI Innuro por metros lineales.</p></div></div>
+              <label className="dti-meter-field" htmlFor="dti-meters">
+                <input id="dti-meters" inputMode="decimal" min={DTI_INNURO_MINIMUM_METERS} onChange={(event) => setMetersInput(event.target.value)} step="0.1" type="number" value={metersInput} />
+                <span>METROS</span>
+              </label>
+              {!price.valid ? <p className="dti-field-error" role="alert">El pedido mínimo es de 1 m.</p> : null}
+              <p className="dti-field-hint">Ancho útil fijo: <strong>55 cm</strong> · 15 €/m IVA incluido</p>
+            </article>
 
-            <label className="field-group" htmlFor="dtf-notes">
-              <span className="field-label">Notas</span>
-              <textarea
-                className="form-input form-textarea"
-                id="dtf-notes"
-                onChange={(event) => setNotes(event.target.value)}
-                rows={5}
-                value={notes}
-              />
-              <span className="file-meta">{previewDtfContent.fieldHelp.notes}</span>
-            </label>
-
-            <ArtworkUploadFlow
-              acceptedFormats=".pdf,.ai,.eps,.svg,.png,.jpg,.jpeg,.tiff,.zip"
-              description="Sube el arte final, revisa las guias de rollo DTI y confirma el archivo antes de anadirlo al carrito."
-              file={selectedFile}
-              onFileChange={setFile}
-              onStateChange={setArtworkState}
-              ruleKey="dtf_meter"
-              summaryItems={summaryItems}
-              title="Sube tu archivo DTI"
-              validationContext={{
-                configuration: {
-                  meters,
-                  quality,
-                  urgency,
-                  turnaroundPreference,
-                  extras: selectedExtras.join(','),
-                },
-                productName: 'DTI por metro',
-              }}
-            />
-            {errors.file ? <span className="field-error">{errors.file}</span> : null}
-
-            <ProductTemplateDownloads
-              compact
-              description="Guia recomendada para preparar el metro DTI antes de exportar y subir el archivo."
-              ruleKey="dtf_meter"
-              title="Descargar plantilla DTI"
-            />
-
-            <div className="form-actions">
-              <button
-                className="action-button"
-                data-cursor="sales"
-                disabled={!artworkState.confirmed}
-                onClick={handleSimulateOrder}
-                type="button"
-              >
-                {previewDtfContent.actions.prepareLabel}
-              </button>
-              <button
-                className="action-button action-button-muted"
-                data-cursor="sales"
-                disabled={!artworkState.confirmed}
-                onClick={() => handleAddToCart(artworkState.summary, artworkState.acceptance)}
-                type="button"
-              >
-                {previewDtfContent.actions.addToCartLabel}
-              </button>
-            </div>
-
-            {cartMessage ? <p className="inline-notice">{cartMessage}</p> : null}
-            {cartMessage ? (
-              <div className="catalog-cta-row">
-                <a className="card-link" data-cursor="sales" href={publicRoutes.carrito}>
-                  {previewDtfContent.actions.cartLabel}
-                </a>
-                <a className="card-link" data-cursor="interactive" href={publicRoutes.catalogo}>
-                  {previewDtfContent.actions.keepShoppingLabel}
-                </a>
+            <article className="dti-glass-panel dti-step-panel">
+              <div className="dti-step-panel__title"><span>02</span><div><h3>¿Cómo recibes tu pedido?</h3><p>El transporte se suma al tiempo de preparación.</p></div></div>
+              <div className="dti-choice-grid">
+                <button aria-pressed={isPickup} className={`dti-choice${isPickup ? ' is-active' : ''}`} onClick={() => setShippingMethod('pickup')} type="button"><span>RECOGIDA BCN</span><strong>Gratis</strong><small>Ridaos Print BCN<br />Carrer d'Aragó 423</small></button>
+                <button aria-pressed={!isPickup} className={`dti-choice${!isPickup ? ' is-active' : ''}`} onClick={() => setShippingMethod('standard')} type="button"><span>ENVÍO PENINSULAR</span><strong>5 €</strong><small>IVA incluido<br />Plazo de transporte adicional</small></button>
               </div>
-            ) : null}
+            </article>
+
+            <article className="dti-glass-panel dti-step-panel">
+              <div className="dti-step-panel__title"><span>03</span><div><h3>Prepara tu archivo</h3><p>PNG y PDF con comprobación inicial. Otros formatos pasan a revisión.</p></div></div>
+              <ArtworkUploadFlow
+                acceptedFormats=".png,.pdf,.ai,.psd,.svg,.cdr"
+                description="La comprobación del navegador es orientativa. AI, PSD, SVG y CDR requieren revisión manual antes de producir o cobrar."
+                file={selectedFile}
+                onFileChange={(file) => { setSelectedFile(file); setArtworkState((current) => ({ ...current, confirmed: false })) }}
+                onStateChange={setArtworkState}
+                ruleKey="dtf_meter"
+                summaryItems={[{ label: 'Producto', value: 'DTI Innuro' }, { label: 'Metraje', value: price.valid ? `${meters} m` : 'Pendiente' }, { label: 'Ancho útil', value: '55 cm' }]}
+                title="Sube el arte final"
+                validationContext={{ configuration: { meters: String(meters), usableWidth: '55' }, productName: 'DTI Innuro por metro' }}
+              />
+              <p className="dti-format-note"><strong>PNG / PDF</strong> · comprobación inicial y aceptación de referencia<br /><strong>AI / PSD / SVG / CDR</strong> · revisión manual antes de producir</p>
+            </article>
+
+            <article className="dti-glass-panel dti-step-panel">
+              <div className="dti-step-panel__title"><span>04</span><div><h3>¿Necesitas adaptación?</h3><p>Solicita apoyo profesional antes de preparar el archivo.</p></div></div>
+              <label className="dti-adaptation-toggle">
+                <input checked={adaptationRequested} onChange={(event) => setAdaptationRequested(event.target.checked)} type="checkbox" />
+                <span><strong>Quiero solicitar adaptación profesional</strong><small>35 €/hora + IVA ({currency.format(adaptationRate.total)}/h IVA incluido). Prepararemos un presupuesto para aprobar antes de cualquier pago.</small></span>
+              </label>
+              <label className="dti-notes-field" htmlFor="dti-notes"><span>Notas del proyecto <small>OPCIONAL</small></span><textarea id="dti-notes" onChange={(event) => setNotes(event.target.value)} placeholder="Cuéntanos qué necesitas preparar…" rows={3} value={notes} /></label>
+            </article>
           </div>
 
-          <ConfiguratorSupportBlock
-            sections={previewDtfContent.supportSections.map((section) => ({
-              ...section,
-              items:
-                section.label === 'Antes de cerrar'
-                  ? [
-                      ...section.items,
-                      dtfEntry.productionTime ??
-                        'El plazo final se confirma tras revisar el archivo y la carga de trabajo.',
-                    ]
-                  : section.items,
-            }))}
-          />
-        </article>
-
-        <div className="summary-stack">
-          <DtfStickySummaryCard
-            base={`${formatCurrency(BASE_PRICE_PER_METER)}/metro`}
-            extras={formatCurrency(pricing.extras)}
-            fileStatus={formatArtworkAcceptanceStatus(artworkState.acceptance)}
-            subtotal={formatCurrency(pricing.subtotal)}
-            summaryItems={summaryItems}
-            total={formatCurrency(pricing.total)}
-          />
-
-          <article
-            className="content-card file-preview-card hover-lift premium-preview-panel dtf-artwork-review-card"
-            data-animate="panel"
-            data-cursor="interactive"
-            data-depth="0.06"
-            data-scroll-scene="dtf-preview"
-            tabIndex={0}
-          >
-            <SectionHeader eyebrow="Archivo y comprobacion" title="Archivo listo para revisar sin competir con el resumen de precio." />
-            <div className="dtf-artwork-review-card__grid">
-              <section className="dtf-artwork-review-card__section">
-                <h3>Archivo confirmado</h3>
-                {artworkState.summary ? (
-                  <div className="summary-list">
-                    <div className="summary-row">
-                      <span>Archivo</span>
-                      <strong>{artworkState.summary.fileName}</strong>
-                    </div>
-                    <div className="summary-row">
-                      <span>Estado</span>
-                      <strong>{formatArtworkAcceptanceStatus(artworkState.acceptance)}</strong>
-                    </div>
-                    <div className="summary-row">
-                      <span>Guia</span>
-                      <strong>{artworkState.summary.estimatedPhysicalSizeLabel}</strong>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="empty-state premium-empty-state">
-                    <p>Sube y confirma el archivo para activar el resumen del rollo.</p>
-                  </div>
-                )}
-              </section>
-
-              <section className="dtf-artwork-review-card__section">
-                <h3>Comprobacion previa</h3>
-                <div className="preflight-list">
-                  <div className="preflight-item">
-                    <span>Formato detectado</span>
-                    <strong>{artworkState.summary ? artworkState.summary.formatLabel : 'Por confirmar'}</strong>
-                  </div>
-                  <div className="preflight-item">
-                    <span>Archivo seleccionado</span>
-                    <strong>{artworkState.summary ? 'Si' : 'Por confirmar'}</strong>
-                  </div>
-                  <div className="preflight-item">
-                    <span>Turnaround</span>
-                    <strong>{turnaroundPreference}</strong>
-                  </div>
-                  <div className="preflight-item">
-                    <span>Extras</span>
-                    <strong>{selectedExtras.length ? selectedExtras.join(' · ') : 'Sin extras'}</strong>
-                  </div>
-                  <div className="preflight-item">
-                    <span>Resolucion</span>
-                    <strong>
-                      {artworkState.acceptance?.clientAccepted
-                        ? 'Aceptada por el cliente'
-                        : artworkState.summary?.workflowStatus === 'ready'
-                          ? 'Lista para revisar'
-                          : 'Requiere comprobacion'}
-                    </strong>
-                  </div>
-                </div>
-              </section>
-            </div>
-          </article>
-
-          {simulation ? (
-            <CtaPanel
-              actions={
-                <>
-                  <a className="action-button action-link-button" href={publicRoutes.carrito}>
-                    Continuar al carrito
-                  </a>
-                  <a className="card-link" href={publicRoutes.guia}>
-                    Revisar guia de archivos
-                  </a>
-                </>
-              }
-              className="success-card"
-              description={`Metraje: ${simulation.meters} m | Calidad: ${
-                simulation.quality === 'premium' ? 'Premium' : 'Standard'
-              } | Urgencia: ${simulation.urgency === 'express' ? 'Express' : 'Normal'} | Turnaround: ${
-                simulation.turnaroundPreference
-              } | Archivo: ${simulation.fileName} | Notas: ${simulation.notes || 'Sin notas'} | Total: ${formatCurrency(
-                simulation.total,
-              )}`}
-              label="Configuracion lista"
-              title="La configuracion esta lista para pasar al carrito."
-            />
-          ) : null}
-
-          <CommercialNoticeGroup noticeKeys={dtfEntry.legalNotes} />
+          <aside className="dti-order-card" aria-label="Resumen del pedido">
+            <div className="dti-order-card__top"><span>RESUMEN / INNURO</span><span className="dti-live-dot">EN VIVO</span></div>
+            <div className="dti-order-card__product"><div className="dti-mini-roll" aria-hidden="true" /><div><p>DTI INNURO</p><span>Transfer textil · 55 cm útil</span></div></div>
+            <div className="dti-order-card__line"><span>{price.valid ? `${meters} m × ${currency.format(DTI_INNURO_PRICE_PER_METER)}` : 'Metraje pendiente'}</span><strong>{currency.format(price.total)}</strong></div>
+            {adaptationRequested ? <p className="dti-order-card__pending">Adaptación profesional · presupuesto pendiente</p> : null}
+            <div className="dti-order-card__line"><span>{isPickup ? 'Recogida en Barcelona' : 'Envío peninsular · IVA incluido'}</span><strong>{currency.format(shippingPrice)}</strong></div>
+            <div className="dti-order-card__total"><span>TOTAL ESTIMADO · IVA INCLUIDO</span><strong>{currency.format(total)}</strong></div>
+            <p className="dti-order-card__leadtime"><span>PREPARACIÓN Y DESPACHO</span><strong>{preparation.label}</strong><small>{cutoffCopy} El transporte añade su propio plazo.</small></p>
+            {addedToCart ? (
+              <a className="dti-button dti-button--accent dti-order-card__submit" href={publicRoutes.carrito}>Ver carrito <span aria-hidden="true">↗</span></a>
+            ) : (
+              <button className="dti-button dti-button--accent dti-order-card__submit" disabled={!price.valid || !selectedFile || !artworkState.confirmed} onClick={handleAddToCart} type="button">Añadir al carrito <span aria-hidden="true">↗</span></button>
+            )}
+            <p className="dti-order-card__disclaimer">Solicitud de prueba local. No se envía un pedido real ni se realiza ningún cobro.</p>
+          </aside>
         </div>
-      </div>
-
-      <section className="content-section content-grid-two">
-        <article className="content-card motion-card">
-          <SectionHeader eyebrow={previewDtfContent.motionPanel.eyebrow} title={previewDtfContent.motionPanel.title} />
-          <p>{previewDtfContent.motionPanel.description}</p>
-          <MouseMotionVisual variant="dtf" />
-        </article>
-        <article className="content-card">
-          <SectionHeader eyebrow={previewDtfContent.preparationPanel.eyebrow} title={previewDtfContent.preparationPanel.title} />
-          <ul className="detail-list">
-            {previewDtfContent.preparationPanel.bullets.map((bullet) => (
-              <li key={bullet}>{bullet}</li>
-            ))}
-          </ul>
-        </article>
       </section>
 
-      <section className="content-section" data-animate="reveal" data-scroll-scene="dtf-process">
-        <SectionHeader eyebrow={previewDtfContent.process.eyebrow} title={previewDtfContent.process.title} />
-        <ProcessSteps />
+      <section className="dti-final-note" data-animate="reveal">
+        <p className="dti-eyebrow"><span /> CLARIDAD EN CADA PASO</p>
+        <h2>DTF por metro.<br /><em>DTI para producir.</em></h2>
+        <p>Si buscas DTF por metro, has llegado al producto correcto: DTI Innuro de Ridaos Print, preparado en Barcelona.</p>
+        <a className="dti-text-link" href="#dti-configurator">Volver al configurador ↑</a>
       </section>
-
-      <section className="content-section content-grid-two" data-animate="reveal" data-scroll-scene="dtf-content">
-        <SeoContentBlock entryId={dtfEntry.id} title={previewDtfContent.seoTitles.why} />
-        <SeoContentBlock entryId={dtfEntry.id} mode="useCases" title={previewDtfContent.seoTitles.useCases} />
-      </section>
-
-      <section className="content-section content-grid-two" data-animate="reveal" data-scroll-scene="dtf-guidance">
-        <UploadGuidanceBlock entryId={dtfEntry.id} />
-        <ConversionTrustBlock entryId={dtfEntry.id} title={previewDtfContent.seoTitles.trust} />
-      </section>
-
-      <section className="content-section" data-animate="reveal" data-scroll-scene="dtf-trust">
-        <SectionHeader eyebrow={previewDtfContent.trust.eyebrow} title={previewDtfContent.trust.title} />
-        <TrustGrid />
-      </section>
-
-      <ObjectionHandlerBlock entryId={dtfEntry.id} title={faqContent.dtf.objectionsTitle} />
-      <FaqBlock entryId={dtfEntry.id} title={faqContent.dtf.faqTitle} />
     </PageShell>
   )
 }

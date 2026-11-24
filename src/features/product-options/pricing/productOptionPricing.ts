@@ -1,6 +1,7 @@
 import type { ConfigState } from '../../../lib/configuratorState'
 import type { CatalogEntry } from '../../../types/product'
 import type { CatalogPricingResult } from '../../../catalog/adapters/catalogPricingAdapter'
+import { calculateDtiInnuroPrice, DTI_INNURO_PRICE_PER_METER } from '../../../config/pricing/dtiInnuroPricing.mjs'
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('es-ES', {
@@ -370,54 +371,32 @@ function calculateFlyerPricing(entry: CatalogEntry, config: ConfigState): Catalo
 
 function calculateDtiPricing(config: ConfigState): CatalogPricingResult {
   const meters = getMeters(config.meters)
-  if (!Number.isFinite(meters) || meters <= 0) {
+  if (!Number.isFinite(meters) || meters < 1) {
     return createResult({
       subtotal: 0,
       total: 0,
       pricingLabel: 'A consultar',
       breakdown: [],
-      warnings: ['Introduce el metraje real del pedido.'],
+      warnings: ['El pedido mínimo de DTI Innuro es 1 m.'],
       canAddToCart: false,
-      validationMessage: 'Completa el metraje.',
+      validationMessage: 'Introduce al menos 1 m.',
     })
   }
 
-  const basePerMeter = config.quality === 'premium' ? 17.2 : 14.5
-  const widthExtra = config.usableWidth === '60' ? 0.9 : 0
-  const urgencyExtras: Record<string, number> = { '72h': 0, '48h': 8, '24h': 18 }
-  const reviewExtra = config.professionalReview === 'review' ? 12 : 0
-  const artworkHelpExtra = config.artworkMode === 'need-help' ? 8 : 0
-  const urgencyLabels: Record<string, string> = {
-    '72h': 'Planificacion estandar',
-    '48h': 'Ventana prioritaria',
-    '24h': 'Salida compacta 24/48h',
-  }
-  const volumeDiscount = quantityDiscount(meters, [
-    { min: 10, discount: 0.05 },
-    { min: 25, discount: 0.1 },
-  ])
-  const rawSubtotal = round(meters * (basePerMeter + widthExtra))
-  const subtotal = round(rawSubtotal + urgencyExtras[config.urgency || '72h'] + reviewExtra + artworkHelpExtra)
-  const total = round(subtotal * (1 - volumeDiscount))
+  const pricing = calculateDtiInnuroPrice(meters)
 
   return createResult({
-    subtotal,
-    total,
-    unitPrice: round(total / meters),
+    subtotal: pricing.total,
+    total: pricing.total,
+    unitPrice: DTI_INNURO_PRICE_PER_METER,
     unitLabel: 'metro',
-    pricingLabel: `${formatCurrency(total)} total`,
+    pricingLabel: `${formatCurrency(pricing.total)} total · IVA incluido`,
     breakdown: [
       buildFieldSummary('Metros', `${meters} m`),
-      buildFieldSummary('Ancho util', `${config.usableWidth || '58'} cm`),
-      buildFieldSummary('Calidad', config.quality === 'premium' ? 'Premium' : 'Estandar'),
-      buildFieldSummary('Urgencia', urgencyLabels[config.urgency || '72h'] ?? 'Planificacion estandar'),
-      buildFieldSummary('Archivo', config.artworkMode === 'need-help' ? 'Necesito ayuda' : 'Listo'),
-      volumeDiscount > 0 ? `Descuento por volumen: -${Math.round(volumeDiscount * 100)}%` : 'Sin descuento por volumen',
+      buildFieldSummary('Ancho útil', '55 cm'),
+      buildFieldSummary('Precio', '15 €/m · IVA incluido'),
     ],
-    warnings:
-      config.spacing === 'tight'
-        ? ['La separacion ajustada entre disenos puede requerir una revision mas fina en preprensa.']
-        : [],
+    warnings: [],
     canAddToCart: true,
   })
 }

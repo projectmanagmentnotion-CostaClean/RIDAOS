@@ -54,6 +54,10 @@ export type LegalNoticeKey =
   | 'balance_on_delivery'
   | 'design_changes_requote'
   | 'production_subject_to_review'
+  | 'dti_prices_vat_included'
+  | 'dti_artwork_review'
+  | 'dti_adaptation_quote'
+  | 'dti_shipping_and_lead_times'
 
 export type CtaBehavior =
   | {

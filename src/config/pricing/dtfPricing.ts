@@ -1,6 +1,12 @@
 export type DTFQuality = 'standard' | 'premium'
 export type DTFUrgency = 'normal' | 'express'
 
+import {
+  calculateDtiInnuroPrice,
+  DTI_INNURO_MINIMUM_METERS,
+  DTI_INNURO_PRICE_PER_METER,
+} from './dtiInnuroPricing.mjs'
+
 export type PriceBreakdown = {
   subtotal: number
   extras: number
@@ -9,41 +15,34 @@ export type PriceBreakdown = {
 
 export const DTF_PRICING_CONFIG = {
   currency: 'EUR' as const,
-  basePricePerMeter: 14.5,
-  minimumMeters: 0.1,
+  basePricePerMeter: DTI_INNURO_PRICE_PER_METER,
+  minimumMeters: DTI_INNURO_MINIMUM_METERS,
   qualityMultipliers: {
     standard: 1,
-    premium: 1.15,
+    premium: 1,
   } satisfies Record<DTFQuality, number>,
   urgencyExtras: {
     normal: 0,
-    express: 8,
+    express: 0,
   } satisfies Record<DTFUrgency, number>,
   discounts: [],
-  extras: ['express'],
-  futureVatRate: null as number | null,
+  extras: [],
+  vatRate: 0.21,
 }
-
-const roundCurrency = (value: number) => Math.round(value * 100) / 100
 
 export function calculateDTFPricing(
   meters: number,
   quality: DTFQuality,
   urgency: DTFUrgency,
 ): PriceBreakdown {
-  const safeMeters = Number.isFinite(meters) && meters > 0 ? meters : 0
-  const subtotal = roundCurrency(
-    safeMeters *
-      DTF_PRICING_CONFIG.basePricePerMeter *
-      DTF_PRICING_CONFIG.qualityMultipliers[quality],
-  )
-  const extras = roundCurrency(DTF_PRICING_CONFIG.urgencyExtras[urgency])
-  const total = roundCurrency(subtotal + extras)
+  void quality
+  void urgency
+  const pricing = calculateDtiInnuroPrice(meters)
 
   return {
-    subtotal,
-    extras,
-    total,
+    subtotal: pricing.total,
+    extras: 0,
+    total: pricing.total,
   }
 }
 

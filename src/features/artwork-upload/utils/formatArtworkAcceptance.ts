@@ -9,6 +9,10 @@ export function getArtworkAcceptanceDisplayStatus(acceptance?: ArtworkReferenceA
     return 'Ayuda de diseno solicitada'
   }
 
+  if (acceptance.manualReviewRequired) {
+    return 'Revisión manual pendiente'
+  }
+
   switch (acceptance.status) {
     case 'no-file':
       return 'Archivo pendiente'

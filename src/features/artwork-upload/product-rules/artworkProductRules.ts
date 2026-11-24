@@ -52,11 +52,11 @@ export const artworkProductRules: Record<ArtworkProductRuleKey, ArtworkProductRu
   dtf_meter: {
     key: 'dtf_meter',
     label: 'DTF por metro',
-    acceptedFormats: ['PDF', 'AI', 'EPS', 'SVG', 'PNG', 'JPG', 'JPEG', 'TIFF', 'ZIP'],
+    acceptedFormats: ['PDF', 'PNG', 'AI', 'PSD', 'SVG', 'CDR'],
     maxFileSizeMb: 250,
     recommendedMinResolutionDpi: 300,
-    recommendedPhysicalSizeLabel: 'Rollo 58-60 cm de ancho útil',
-    helperCopy: 'Mantén separación entre diseños y revisa el ancho útil del rollo.',
+    recommendedPhysicalSizeLabel: 'Rollo Innuro de 55 cm de ancho útil',
+    helperCopy: 'PNG y PDF pasan comprobación inicial. AI, PSD, SVG y CDR requieren revisión manual.',
     guide: {
       bleedMm: 0,
       safeMarginMm: 8,

@@ -1,5 +1,3 @@
-import { commonArtworkFormats } from '../configurators/commonArtworkFormats'
-import { defaultCommercialNoticeKeys } from '../notices/legalNotices'
 import { DTF_PRICING_CONFIG } from '../../config/pricing/dtfPricing'
 import type { CatalogEntry } from '../../types/product'
 
@@ -8,51 +6,29 @@ export const dtfEntry: CatalogEntry = {
   slug: 'dtf-por-metro',
   kind: 'product',
   category: 'dtf',
-  name: 'DTI por metro',
-  description: 'Producto principal con configurador propio, revision tecnica y compra directa.',
-  shortDescription: 'DTI por metro con archivo, revision y precio claro antes del carrito.',
+  name: 'DTI Innuro por metro',
+  description: 'DTI Innuro para transfer textil a 15 €/m IVA incluido, con ancho útil de 55 cm y revisión previa del archivo.',
+  shortDescription: 'DTI Innuro por metro; DTF por metro para búsquedas. Precio claro y archivo revisado antes de producir.',
   route: '#/producto/dti-por-metro',
   purchaseMode: 'direct',
   pricingMode: 'unit',
   upload: {
     required: true,
-    acceptedFormats: [...commonArtworkFormats],
-    notes: ['La comprobacion tecnica final se realiza antes de fabricar.'],
+    acceptedFormats: ['PNG', 'PDF', 'AI', 'PSD', 'SVG', 'CDR'],
+    notes: ['PNG y PDF con comprobación inicial; AI, PSD, SVG y CDR requieren revisión manual antes de producción.'],
   },
   configuratorFields: [
-    { key: 'meters', type: 'meters', label: 'Metros', required: true, min: 0.1, step: 0.1, hint: 'Introduce el metraje total del pedido.' },
-    {
-      key: 'quality',
-      type: 'select',
-      label: 'Calidad',
-      required: true,
-      hint: 'Elige el acabado base del DTF.',
-      options: [
-        { value: 'standard', label: 'Standard' },
-        { value: 'premium', label: 'Premium' },
-      ],
-    },
-    {
-      key: 'urgency',
-      type: 'select',
-      label: 'Urgencia',
-      required: true,
-      hint: 'Selecciona la urgencia real del pedido.',
-      options: [
-        { value: 'normal', label: 'Normal' },
-        { value: 'express', label: 'Express' },
-      ],
-    },
-    { key: 'file', type: 'file', label: 'Archivo', required: true, accept: '.pdf,.ai,.eps,.svg,.png,.jpg,.jpeg,.tiff,.zip', hint: 'Acepta PDF, AI, EPS, SVG, PNG, JPG, TIFF y ZIP.' },
+    { key: 'meters', type: 'meters', label: 'Metros', required: true, min: 1, step: 0.1, hint: 'Pedido mínimo de 1 m. El ancho útil del rollo es 55 cm.' },
+    { key: 'file', type: 'file', label: 'Archivo', required: true, accept: '.png,.pdf,.ai,.psd,.svg,.cdr', hint: 'PNG y PDF con comprobación inicial; AI, PSD, SVG y CDR pasan a revisión manual.' },
     { key: 'notes', type: 'textarea', label: 'Notas', rows: 5, hint: 'Usa este campo para color, prioridad o referencias de montaje.' },
   ],
-  legalNotes: defaultCommercialNoticeKeys,
+  legalNotes: ['dti_prices_vat_included', 'dti_artwork_review', 'dti_adaptation_quote', 'dti_shipping_and_lead_times'],
   cta: { type: 'open_product', href: '#/producto/dti-por-metro', label: 'Configurar DTI' },
   manualReviewRequired: true,
   featured: true,
   badge: 'Compra directa',
   unitLabel: 'metro',
-  productionTime: 'Plazo sujeto a comprobacion tecnica del archivo y carga de trabajo.',
+  productionTime: '1–5 m: 48 horas laborables · más de 5–10 m: 3 días laborables · más de 10 m bajo consulta. Transporte adicional.',
   basePrice: DTF_PRICING_CONFIG.basePricePerMeter,
   navigation: { label: 'DTI por metro', primary: true, order: 10 },
   catalogGroups: ['direct', 'textil'],

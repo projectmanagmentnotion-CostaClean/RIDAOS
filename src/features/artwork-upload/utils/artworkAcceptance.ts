@@ -22,7 +22,7 @@ type BuildArtworkAcceptanceInput = {
 const preferredFormatsByRule: Record<ArtworkProductRuleKey, string[]> = {
   business_cards: ['PDF', 'AI', 'EPS', 'SVG'],
   stickers: ['PDF', 'SVG', 'AI', 'EPS'],
-  dtf_meter: ['PNG', 'PDF', 'AI'],
+  dtf_meter: ['PNG', 'PDF'],
   printed_vinyl: ['PDF', 'AI', 'EPS'],
   signage: ['PDF', 'AI', 'EPS'],
   textile: ['PNG', 'PDF', 'AI'],
@@ -200,13 +200,26 @@ export function buildArtworkAcceptance({
   const rule = artworkProductRules[ruleKey]
   const preferredFormats = preferredFormatsByRule[ruleKey]
   const formatRecommended = metadata ? preferredFormats.includes(metadata.formatLabel) : false
-  const guidanceLabel =
+  const manualReviewRequired = ruleKey === 'dtf_meter' && Boolean(metadata && ['AI', 'PSD', 'SVG', 'CDR'].includes(metadata.formatLabel))
+  const guidanceLabel = manualReviewRequired
+    ? 'Este formato necesita revisión manual de Ridaos antes de autorizar producción y cualquier pago.'
+    :
     summary?.suggestedActionLabel ??
     (designerHelpRequested
       ? 'Seguiremos la solicitud contigo antes de preparar la referencia de impresion.'
       : 'Sube un archivo para activar la comprobacion inicial.')
   const baseIssues = summary ? buildGeneralIssues(summary) : []
   const productIssues = buildProductSpecificIssues(ruleKey, metadata, context)
+  if (manualReviewRequired) {
+    productIssues.push({
+      id: 'dti-format-manual-review',
+      severity: 'warning',
+      title: 'Revisión manual antes de producir',
+      description: `${metadata?.formatLabel} se recibe para revisión profesional de preprensa.`,
+      whyItMatters: 'La comprobación automática disponible no valida completamente archivos editables o vectoriales.',
+      correctionHint: 'La solicitud puede avanzar como revisión; producción y cobro esperan la aprobación manual.',
+    })
+  }
   const issues = [...baseIssues, ...productIssues]
   const hasCriticalIssue = issues.some((issue) => issue.severity === 'critical')
   const requestedDesigner = designerHelpRequested || prefersDesignerHelp(context?.configuration)
@@ -233,6 +246,7 @@ export function buildArtworkAcceptance({
     designerHelpRequested: requestedDesigner,
     canContinue: requestedDesigner || !metadata || status === 'client-approved',
     formatRecommended,
+    manualReviewRequired,
     preferredFormats,
     lastCheckedAt: metadata ? new Date().toISOString() : undefined,
     acceptedAt,

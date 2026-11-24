@@ -52,6 +52,7 @@ export type ArtworkReferenceAcceptance = {
   designerHelpRequested: boolean
   canContinue: boolean
   formatRecommended: boolean
+  manualReviewRequired?: boolean
   preferredFormats: string[]
   lastCheckedAt?: string
   acceptedAt?: string

@@ -6,6 +6,7 @@ import {
   calculateDtiOrder,
   checkDtiPaymentEligibility,
   deriveGuestOrderToken,
+  normalizeDtiShippingAddress,
   normalizeDtiArtworkMetadata,
   validateDtiArtworkBytes,
   verifyStripeWebhookSignature,
@@ -52,12 +53,27 @@ test('adaptation quotes are server calculated at 35 EUR plus VAT', () => {
   assert.throws(() => calculateDtiAdaptationQuote(0), /positivas/)
 })
 
+test('server address normalization requires a Spanish peninsula address for delivery', () => {
+  assert.equal(normalizeDtiShippingAddress('pickup', null), null)
+  assert.deepEqual(normalizeDtiShippingAddress('standard', {
+    line1: ' Carrer d’Aragó 423 ', line2: '', postalCode: '08013', city: ' Barcelona ', province: ' Barcelona ', countryCode: 'FR',
+  }), {
+    line1: 'Carrer d’Aragó 423', line2: null, postalCode: '08013', city: 'Barcelona', province: 'Barcelona', countryCode: 'ES',
+  })
+  assert.throws(() => normalizeDtiShippingAddress('standard', null), /obligatoria/)
+  for (const postalCode of ['07001', '35001', '38001', '51001', '52001', '00001']) {
+    assert.throws(() => normalizeDtiShippingAddress('standard', {
+      line1: 'Carrer d’Aragó 423', postalCode, city: 'Barcelona', province: 'Barcelona',
+    }), /península/)
+  }
+})
+
 test('metadata allowlist limits private uploads and marks native/vector files for review', () => {
   assert.equal(normalizeDtiArtworkMetadata({ fileName: 'logo.pdf', mimeType: 'application/pdf', fileSizeBytes: 1024 }).reviewRequired, false)
   assert.equal(normalizeDtiArtworkMetadata({ fileName: 'C:\\fakepath\\logo.ai', mimeType: 'application/postscript', fileSizeBytes: 1024 }).safeFileName, 'logo.ai')
   assert.equal(normalizeDtiArtworkMetadata({ fileName: 'logo.cdr', mimeType: 'application/octet-stream', fileSizeBytes: 1024 }).reviewRequired, true)
   assert.throws(() => normalizeDtiArtworkMetadata({ fileName: '../escape.pdf', mimeType: 'application/pdf', fileSizeBytes: 1024 }), /nombre/)
-  assert.throws(() => normalizeDtiArtworkMetadata({ fileName: 'large.png', mimeType: 'image/png', fileSizeBytes: 262_144_001 }), /250 MiB/)
+  assert.throws(() => normalizeDtiArtworkMetadata({ fileName: 'large.png', mimeType: 'image/png', fileSizeBytes: 20 * 1024 * 1024 + 1 }), /20 MiB/)
 })
 
 test('server validation rejects malformed PNG/PDF and never treats manual formats as validated', async () => {
@@ -71,6 +87,10 @@ test('server validation rejects malformed PNG/PDF and never treats manual format
   assert.equal((await validateDtiArtworkBytes({ format: 'PDF', bytes: pdf })).status, 'passed')
   const activePdf = new TextEncoder().encode(makePdf(true))
   assert.equal((await validateDtiArtworkBytes({ format: 'PDF', bytes: activePdf })).status, 'manual_review')
+  const escapedActionPdf = new TextEncoder().encode(makePdf(false, ' /Java#53cript true'))
+  assert.equal((await validateDtiArtworkBytes({ format: 'PDF', bytes: escapedActionPdf })).status, 'manual_review')
+  const compressedObjectsPdf = new TextEncoder().encode(makePdf(false, ' /Type /ObjStm'))
+  assert.equal((await validateDtiArtworkBytes({ format: 'PDF', bytes: compressedObjectsPdf })).status, 'manual_review')
 })
 
 test('client acceptance alone does not permit payment or production', () => {
@@ -138,11 +158,11 @@ function makePng() {
   ])
 }
 
-function makePdf(active = false) {
+function makePdf(active = false, extra = '') {
   const parts = ['%PDF-1.4\n']
   const offsets = [0]
   offsets.push(parts.join('').length)
-  parts.push(`1 0 obj\n<< /Type /Catalog /Pages 2 0 R${active ? ' /OpenAction /JavaScript' : ''} >>\nendobj\n`)
+  parts.push(`1 0 obj\n<< /Type /Catalog /Pages 2 0 R${active ? ' /OpenAction /JavaScript' : ''}${extra} >>\nendobj\n`)
   offsets.push(parts.join('').length)
   parts.push('2 0 obj\n<< /Type /Pages /Kids [] /Count 0 >>\nendobj\n')
   const xrefOffset = parts.join('').length

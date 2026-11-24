@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import type { CartItem } from '../types/ecommerce'
+import { migrateLegacyDtiCartState } from '../features/cart/utils/migrateLegacyDtiCart.mjs'
 
 type CartStore = {
   items: CartItem[]
@@ -51,6 +52,9 @@ export const useCartStore = create<CartStore>()(
     }),
     {
       name: 'ridaosprint-cart',
+      version: 2,
+      migrate: (persistedState, version) =>
+        version < 2 ? migrateLegacyDtiCartState(persistedState) : persistedState,
       storage: createJSONStorage(() => localStorage),
     },
   ),

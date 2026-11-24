@@ -22,7 +22,7 @@ Deno.serve(async (request) => {
       const { data: permission, error: permissionError } = await admin.from('dti_staff_permissions').select('user_id').eq('user_id', userData.user.id).eq('permission', 'manage_quotes').maybeSingle()
       if (permissionError) throw permissionError
       if (!permission) return reply({ error: 'forbidden' }, 403)
-      const { data: quoteId, error } = await admin.schema('dti_private').rpc('create_adaptation_quote', { p_order_id: body.orderId, p_hours: Number(body.hours), p_staff_user_id: userData.user.id })
+      const { data: quoteId, error } = await admin.rpc('dti_create_adaptation_quote', { p_order_id: body.orderId, p_hours: Number(body.hours), p_staff_user_id: userData.user.id })
       if (error) return reply({ error: error.message.includes('permission') ? 'forbidden' : 'quote_cannot_be_created' }, 409)
       const { data: quote, error: quoteError } = await admin.from('dti_adaptation_quotes').select('id,order_id,quote_version,hours,hourly_rate_cents,net_cents,vat_cents,total_cents,status,created_at').eq('id', quoteId).single()
       if (quoteError) throw quoteError
@@ -45,7 +45,7 @@ Deno.serve(async (request) => {
         guestHash = await sha256Hex(token)
         if (guestHash !== order.guest_access_token_hash) return reply({ error: 'forbidden' }, 403)
       }
-      const { data: decided, error } = await admin.schema('dti_private').rpc('decide_adaptation_quote', {
+      const { data: decided, error } = await admin.rpc('dti_decide_adaptation_quote', {
         p_quote_id: quote.id, p_decision: body.decision,
         p_customer_user_id: userData.user?.id ?? null, p_guest_token_hash: guestHash,
       })

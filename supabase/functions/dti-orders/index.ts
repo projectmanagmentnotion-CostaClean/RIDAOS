@@ -1,5 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.95.0'
-import { calculateDtiOrder, deriveGuestOrderToken, sha256Hex } from '../_shared/dtiCommerce.mjs'
+import { calculateDtiOrder, deriveGuestOrderToken, normalizeDtiShippingAddress, sha256Hex } from '../_shared/dtiCommerce.mjs'
 
 const cors = { 'access-control-allow-origin': Deno.env.get('DTI_ALLOWED_ORIGIN') ?? 'https://dti.ridaosprint.com', 'access-control-allow-headers': 'authorization, apikey, content-type, idempotency-key, x-dti-order-token, x-dti-recovery-key', 'access-control-allow-methods': 'GET, POST, OPTIONS' }
 const reply = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...cors, 'content-type': 'application/json', 'cache-control': 'no-store' } })
@@ -66,14 +66,26 @@ Deno.serve(async (request) => {
     if (!idempotencyKey || !/^[A-Za-z0-9_-]{16,100}$/.test(idempotencyKey)) return reply({ error: 'idempotency_key_required' }, 400)
     const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : ''
     const phone = typeof body.phone === 'string' ? body.phone.trim() : ''
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || phone.length < 7 || phone.length > 40) return reply({ error: 'valid_contact_required' }, 400)
-    const totals = calculateDtiOrder({ meters: body.meters, shippingMethod: body.shippingMethod, adaptationRequested: body.adaptationRequested })
+    const customerName = typeof body.customerName === 'string' ? body.customerName.trim() : ''
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || phone.length < 7 || phone.length > 40 || customerName.length < 2 || customerName.length > 120) return reply({ error: 'valid_contact_required' }, 400)
+    let totals: ReturnType<typeof calculateDtiOrder>
+    try {
+      totals = calculateDtiOrder({ meters: body.meters, shippingMethod: body.shippingMethod, adaptationRequested: body.adaptationRequested })
+    } catch {
+      return reply({ error: 'invalid_order_configuration' }, 400)
+    }
+    let shippingAddress
+    try {
+      shippingAddress = normalizeDtiShippingAddress(totals.shippingMethod, body.shippingAddress)
+    } catch {
+      return reply({ error: 'valid_peninsular_address_required' }, 400)
+    }
     const ownerId = authData.user?.id ?? null
     const recoveryKey = request.headers.get('x-dti-recovery-key')
     if (!ownerId && (!recoveryKey || !/^[A-Za-z0-9_-]{43,128}$/.test(recoveryKey))) return reply({ error: 'guest_recovery_key_required' }, 400)
     const guestToken = ownerId ? null : await deriveGuestOrderToken(tokenSecret!, idempotencyKey, recoveryKey!)
     const guestTokenHash = guestToken ? await sha256Hex(guestToken) : null
-    const requestHash = await sha256Hex(JSON.stringify({ email, phone, meters: totals.meters, shippingMethod: totals.shippingMethod, adaptationRequested: totals.adaptationRequested }))
+    const requestHash = await sha256Hex(JSON.stringify({ customerName, email, phone, shippingAddress, meters: totals.meters, shippingMethod: totals.shippingMethod, adaptationRequested: totals.adaptationRequested }))
     const { data: existing, error: lookupError } = await admin.from('dti_orders').select('id,owner_id,request_hash,guest_access_token_hash,status,total_cents,estimated_dispatch_date,confirmed_lead_time').eq('idempotency_key', idempotencyKey).maybeSingle()
     if (lookupError) throw lookupError
     if (existing) {
@@ -81,9 +93,10 @@ Deno.serve(async (request) => {
       if (!sameOwner || existing.request_hash !== requestHash) return reply({ error: 'idempotency_conflict' }, 409)
       return reply({ orderId: existing.id, status: existing.status, totalCents: existing.total_cents, estimatedDispatchDate: existing.estimated_dispatch_date, confirmedLeadTime: existing.confirmed_lead_time, ...(guestToken ? { guestAccessToken: guestToken } : {}) })
     }
-    const { data: order, error } = await admin.schema('dti_private').rpc('create_dti_order', {
+    const { data: order, error } = await admin.rpc('dti_create_order', {
       p_idempotency_key: idempotencyKey, p_request_hash: requestHash, p_owner_id: ownerId,
-      p_guest_access_token_hash: guestTokenHash, p_customer_email: email, p_customer_phone: phone,
+      p_guest_access_token_hash: guestTokenHash, p_customer_name: customerName, p_customer_email: email,
+      p_customer_phone: phone, p_shipping_address: shippingAddress,
       p_meters: totals.meters, p_shipping_method: totals.shippingMethod,
       p_adaptation_requested: totals.adaptationRequested, p_estimated_dispatch_date: totals.estimatedDispatchDate,
     })

@@ -9,8 +9,10 @@ create table public.dti_orders (
   request_hash text not null,
   owner_id uuid references auth.users(id) on delete set null,
   guest_access_token_hash text,
+  customer_name text not null check (length(trim(customer_name)) between 2 and 120),
   customer_email text not null,
   customer_phone text not null,
+  shipping_address jsonb check (shipping_address is null or jsonb_typeof(shipping_address) = 'object'),
   meters numeric(7,1) not null check (meters >= 1),
   useful_width_mm integer not null default 550 check (useful_width_mm = 550),
   product_code text not null default 'dti-innuro' check (product_code = 'dti-innuro'),
@@ -40,6 +42,15 @@ create table public.dti_orders (
   check ((owner_id is not null) or (guest_access_token_hash is not null)),
   check ((shipping_method = 'pickup' and shipping_total_cents = 0) or
          (shipping_method = 'standard' and shipping_total_cents = 500)),
+  check ((shipping_method = 'pickup' and shipping_address is null) or
+         (shipping_method = 'standard'
+           and jsonb_typeof(shipping_address) = 'object'
+           and length(trim(coalesce(shipping_address->>'line1', ''))) between 3 and 140
+           and (shipping_address->>'line2' is null or length(trim(shipping_address->>'line2')) between 1 and 120)
+           and (shipping_address->>'postalCode') ~ '^(0[1-6]|0[89]|[12][0-9]|3[0-4]|3[6-7]|39|4[0-9]|50)[0-9]{3}$'
+           and length(trim(coalesce(shipping_address->>'city', ''))) between 2 and 100
+           and length(trim(coalesce(shipping_address->>'province', ''))) between 2 and 80
+           and shipping_address->>'countryCode' = 'ES')),
   check (meters * 10 = round(meters * 10)),
   check (product_total_cents = round(meters * unit_price_cents)::integer),
   check (product_vat_cents = round(product_total_cents * 2100.0 / 12100)::integer),
@@ -82,13 +93,14 @@ create table public.dti_artwork_files (
 create table public.dti_artwork_versions (
   id uuid primary key default gen_random_uuid(),
   artwork_file_id uuid not null references public.dti_artwork_files(id) on delete cascade,
+  upload_idempotency_key text not null unique,
   version_number integer not null check (version_number > 0),
   bucket_id text not null default 'dti-artwork' check (bucket_id = 'dti-artwork'),
   storage_path text not null unique,
   original_file_name text not null,
   format text not null check (format in ('PNG', 'PDF', 'AI', 'PSD', 'SVG', 'CDR')),
   mime_type text not null,
-  file_size_bytes bigint not null check (file_size_bytes > 0 and file_size_bytes <= 262144000),
+  file_size_bytes bigint not null check (file_size_bytes > 0 and file_size_bytes <= 20971520),
   sha256_hex text check (sha256_hex is null or sha256_hex ~ '^[0-9a-f]{64}$'),
   validation_status text not null default 'pending_upload' check (validation_status in (
     'pending_upload', 'pending_server_validation', 'passed', 'failed', 'manual_review'
@@ -188,8 +200,10 @@ create or replace function dti_private.create_dti_order(
   p_request_hash text,
   p_owner_id uuid,
   p_guest_access_token_hash text,
+  p_customer_name text,
   p_customer_email text,
   p_customer_phone text,
+  p_shipping_address jsonb,
   p_meters numeric,
   p_shipping_method text,
   p_adaptation_requested boolean,
@@ -211,6 +225,11 @@ declare
 begin
   if p_meters < 1 or p_meters * 10 <> round(p_meters * 10) then raise exception 'invalid meter quantity'; end if;
   if p_shipping_method not in ('pickup', 'standard') then raise exception 'invalid shipping method'; end if;
+  if length(trim(p_customer_name)) not between 2 and 120 then raise exception 'invalid customer name'; end if;
+  if (p_shipping_method = 'pickup' and p_shipping_address is not null)
+    or (p_shipping_method = 'standard' and (p_shipping_address is null or jsonb_typeof(p_shipping_address) <> 'object')) then
+    raise exception 'invalid shipping address';
+  end if;
   if (p_owner_id is null) = (p_guest_access_token_hash is null) then raise exception 'exactly one order access method is required'; end if;
   v_product_total := round(p_meters * 1500)::integer;
   v_shipping_total := case when p_shipping_method = 'standard' then 500 else 0 end;
@@ -230,11 +249,11 @@ begin
       'estimatedDispatchDate', v_order.estimated_dispatch_date, 'confirmedLeadTime', v_order.confirmed_lead_time);
   end if;
   insert into public.dti_orders(
-    idempotency_key, request_hash, owner_id, guest_access_token_hash, customer_email, customer_phone,
+    idempotency_key, request_hash, owner_id, guest_access_token_hash, customer_name, customer_email, customer_phone, shipping_address,
     meters, product_total_cents, product_vat_cents, shipping_method, shipping_total_cents,
     shipping_vat_cents, adaptation_requested, total_cents, status, preparation_working_days, estimated_dispatch_date
   ) values (
-    p_idempotency_key, p_request_hash, p_owner_id, p_guest_access_token_hash, p_customer_email, p_customer_phone,
+    p_idempotency_key, p_request_hash, p_owner_id, p_guest_access_token_hash, p_customer_name, p_customer_email, p_customer_phone, p_shipping_address,
     p_meters, v_product_total, v_product_vat, p_shipping_method, v_shipping_total,
     v_shipping_vat, p_adaptation_requested, v_product_total + v_shipping_total, v_status, v_prep_days, p_estimated_dispatch_date
   ) returning * into v_order;
@@ -245,8 +264,66 @@ begin
     'estimatedDispatchDate', v_order.estimated_dispatch_date, 'confirmedLeadTime', v_order.confirmed_lead_time);
 end;
 $$;
-revoke all on function dti_private.create_dti_order(text, text, uuid, text, text, text, numeric, text, boolean, date) from public, anon, authenticated;
-grant execute on function dti_private.create_dti_order(text, text, uuid, text, text, text, numeric, text, boolean, date) to service_role;
+revoke all on function dti_private.create_dti_order(text, text, uuid, text, text, text, text, jsonb, numeric, text, boolean, date) from public, anon, authenticated;
+grant execute on function dti_private.create_dti_order(text, text, uuid, text, text, text, text, jsonb, numeric, text, boolean, date) to service_role;
+
+create or replace function dti_private.accept_dti_artwork(p_order_id uuid, p_version_id uuid, p_actor_user_id uuid)
+returns jsonb
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_order public.dti_orders%rowtype;
+  v_version public.dti_artwork_versions%rowtype;
+  v_latest_version_id uuid;
+  v_accepted_at timestamptz;
+begin
+  select * into v_order from public.dti_orders where id = p_order_id for update;
+  if not found or v_order.status not in ('awaiting_artwork', 'awaiting_artwork_review') then
+    raise exception 'order_not_accepting_artwork';
+  end if;
+
+  select av.* into v_version
+  from public.dti_artwork_versions av
+  join public.dti_artwork_files af on af.id = av.artwork_file_id
+  where av.id = p_version_id and af.order_id = p_order_id;
+  if not found then raise exception 'artwork_version_not_found'; end if;
+  if v_version.validation_status not in ('passed', 'manual_review') then
+    raise exception 'server_validation_required';
+  end if;
+
+  select av.id into v_latest_version_id
+  from public.dti_artwork_versions av
+  join public.dti_artwork_files af on af.id = av.artwork_file_id
+  where af.order_id = p_order_id
+  order by av.version_number desc
+  limit 1;
+  if v_latest_version_id is distinct from p_version_id then
+    raise exception 'only_latest_version_can_be_accepted';
+  end if;
+
+  update public.dti_artwork_versions
+  set client_accepted_at = coalesce(client_accepted_at, now())
+  where id = p_version_id
+  returning client_accepted_at into v_accepted_at;
+
+  insert into public.dti_artwork_events(artwork_version_id, event_type, actor_user_id, actor_kind, idempotency_key, details)
+  values (p_version_id, 'client_accepted', p_actor_user_id, 'customer', 'client-accepted:' || p_version_id::text,
+    jsonb_build_object('accepted_at', v_accepted_at))
+  on conflict (idempotency_key) do nothing;
+
+  return jsonb_build_object(
+    'accepted', true,
+    'versionId', p_version_id,
+    'validation', v_version.validation_status,
+    'acceptedAt', v_accepted_at,
+    'professionalReviewStillRequired', v_version.format in ('AI', 'PSD', 'SVG', 'CDR') or v_version.validation_status = 'manual_review'
+  );
+end;
+$$;
+revoke all on function dti_private.accept_dti_artwork(uuid, uuid, uuid) from public, anon, authenticated;
+grant execute on function dti_private.accept_dti_artwork(uuid, uuid, uuid) to service_role;
 
 create or replace function dti_private.create_adaptation_quote(
   p_order_id uuid,
@@ -493,7 +570,7 @@ grant select, insert, update, delete on public.dti_orders, public.dti_adaptation
 
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values (
-  'dti-artwork', 'dti-artwork', false, 262144000,
+  'dti-artwork', 'dti-artwork', false, 20971520,
   array['image/png', 'application/pdf', 'application/postscript', 'image/vnd.adobe.photoshop', 'image/svg+xml', 'application/vnd.corel-draw', 'application/octet-stream']
 )
 on conflict (id) do update set
@@ -628,3 +705,63 @@ $$;
 
 revoke all on function dti_private.process_stripe_payment_event(text, text, text, uuid, integer, text) from public, anon, authenticated;
 grant execute on function dti_private.process_stripe_payment_event(text, text, text, uuid, integer, text) to service_role;
+
+-- PostgREST exposes public by default. These wrappers keep the implementation
+-- schema private while allowing only service_role Edge Functions to call RPCs.
+create or replace function public.dti_create_order(
+  p_idempotency_key text, p_request_hash text, p_owner_id uuid, p_guest_access_token_hash text,
+  p_customer_name text, p_customer_email text, p_customer_phone text, p_shipping_address jsonb,
+  p_meters numeric, p_shipping_method text,
+  p_adaptation_requested boolean, p_estimated_dispatch_date date
+)
+returns jsonb language sql security definer set search_path = ''
+as $$ select dti_private.create_dti_order(p_idempotency_key, p_request_hash, p_owner_id, p_guest_access_token_hash,
+  p_customer_name, p_customer_email, p_customer_phone, p_shipping_address, p_meters, p_shipping_method, p_adaptation_requested, p_estimated_dispatch_date) $$;
+revoke all on function public.dti_create_order(text, text, uuid, text, text, text, text, jsonb, numeric, text, boolean, date) from public, anon, authenticated;
+grant execute on function public.dti_create_order(text, text, uuid, text, text, text, text, jsonb, numeric, text, boolean, date) to service_role;
+
+create or replace function public.dti_accept_artwork(p_order_id uuid, p_version_id uuid, p_actor_user_id uuid)
+returns jsonb language sql security definer set search_path = ''
+as $$ select dti_private.accept_dti_artwork(p_order_id, p_version_id, p_actor_user_id) $$;
+revoke all on function public.dti_accept_artwork(uuid, uuid, uuid) from public, anon, authenticated;
+grant execute on function public.dti_accept_artwork(uuid, uuid, uuid) to service_role;
+
+create or replace function public.dti_create_adaptation_quote(p_order_id uuid, p_hours numeric, p_staff_user_id uuid)
+returns uuid language sql security definer set search_path = ''
+as $$ select dti_private.create_adaptation_quote(p_order_id, p_hours, p_staff_user_id) $$;
+revoke all on function public.dti_create_adaptation_quote(uuid, numeric, uuid) from public, anon, authenticated;
+grant execute on function public.dti_create_adaptation_quote(uuid, numeric, uuid) to service_role;
+
+create or replace function public.dti_decide_adaptation_quote(p_quote_id uuid, p_decision text, p_customer_user_id uuid, p_guest_token_hash text)
+returns boolean language sql security definer set search_path = ''
+as $$ select dti_private.decide_adaptation_quote(p_quote_id, p_decision, p_customer_user_id, p_guest_token_hash) $$;
+revoke all on function public.dti_decide_adaptation_quote(uuid, text, uuid, text) from public, anon, authenticated;
+grant execute on function public.dti_decide_adaptation_quote(uuid, text, uuid, text) to service_role;
+
+create or replace function public.dti_record_artwork_review(
+  p_version_id uuid, p_reviewer_user_id uuid, p_decision text, p_summary text, p_checklist jsonb, p_idempotency_key text
+)
+returns boolean language sql security definer set search_path = ''
+as $$ select dti_private.record_artwork_review(p_version_id, p_reviewer_user_id, p_decision, p_summary, p_checklist, p_idempotency_key) $$;
+revoke all on function public.dti_record_artwork_review(uuid, uuid, text, text, jsonb, text) from public, anon, authenticated;
+grant execute on function public.dti_record_artwork_review(uuid, uuid, text, text, jsonb, text) to service_role;
+
+create or replace function public.dti_release_order_to_production(p_order_id uuid, p_staff_user_id uuid, p_idempotency_key text)
+returns boolean language sql security definer set search_path = ''
+as $$ select dti_private.release_order_to_production(p_order_id, p_staff_user_id, p_idempotency_key) $$;
+revoke all on function public.dti_release_order_to_production(uuid, uuid, text) from public, anon, authenticated;
+grant execute on function public.dti_release_order_to_production(uuid, uuid, text) to service_role;
+
+create or replace function public.dti_confirm_lead_time(p_order_id uuid, p_staff_user_id uuid, p_summary text)
+returns boolean language sql security definer set search_path = ''
+as $$ select dti_private.confirm_dti_lead_time(p_order_id, p_staff_user_id, p_summary) $$;
+revoke all on function public.dti_confirm_lead_time(uuid, uuid, text) from public, anon, authenticated;
+grant execute on function public.dti_confirm_lead_time(uuid, uuid, text) to service_role;
+
+create or replace function public.dti_process_stripe_payment_event(
+  p_event_id text, p_event_type text, p_payment_intent_id text, p_order_id uuid, p_amount_cents integer, p_currency_code text
+)
+returns boolean language sql security definer set search_path = ''
+as $$ select dti_private.process_stripe_payment_event(p_event_id, p_event_type, p_payment_intent_id, p_order_id, p_amount_cents, p_currency_code) $$;
+revoke all on function public.dti_process_stripe_payment_event(text, text, text, uuid, integer, text) from public, anon, authenticated;
+grant execute on function public.dti_process_stripe_payment_event(text, text, text, uuid, integer, text) to service_role;

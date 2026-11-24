@@ -1,3 +1,5 @@
+import { isDtiInnuroCartItem } from './migrateLegacyDtiCart.mjs'
+
 const DTI_INNURO_SHIPPING_PRICE = 5
 
 export const SHIPPING_METHODS = [
@@ -26,11 +28,11 @@ export const SHIPPING_METHODS = [
 ]
 
 export function hasDtiInnuro(items) {
-  return items.some((item) => item.productName === 'DTI Innuro por metro')
+  return items.some(isDtiInnuroCartItem)
 }
 
 function hasOtherProducts(items) {
-  return items.some((item) => item.productName !== 'DTI Innuro por metro')
+  return items.some((item) => !isDtiInnuroCartItem(item))
 }
 
 export function getCartShippingMethods(items) {

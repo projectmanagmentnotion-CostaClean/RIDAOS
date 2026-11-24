@@ -2,7 +2,7 @@ export const DTI_PRICE_CENTS_PER_METER = 1500
 export const DTI_SHIPPING_CENTS = 500
 export const DTI_ADAPTATION_CENTS_PER_HOUR = 3500
 export const DTI_VAT_BASIS_POINTS = 2100
-export const DTI_MAX_FILE_BYTES = 262_144_000
+export const DTI_MAX_FILE_BYTES = 20 * 1024 * 1024
 const CRC32_TABLE = Uint32Array.from({ length: 256 }, (_, value) => {
   let crc = value
   for (let bit = 0; bit < 8; bit += 1) crc = (crc >>> 1) ^ (crc & 1 ? 0xedb88320 : 0)
@@ -45,6 +45,35 @@ export function calculateDtiOrder({ meters, shippingMethod, adaptationRequested 
   }
 }
 
+export function normalizeDtiShippingAddress(shippingMethod, address) {
+  if (shippingMethod === 'pickup') return null
+  if (shippingMethod !== 'standard' || !address || typeof address !== 'object') {
+    throw new TypeError('La dirección de entrega es obligatoria para el envío peninsular.')
+  }
+  const field = (value, name, min, max) => {
+    if (typeof value !== 'string') throw new TypeError(`El campo ${name} de la dirección no es válido.`)
+    const normalized = value.trim()
+    if (normalized.length < min || normalized.length > max || /[\u0000-\u001f\u007f]/.test(normalized)) {
+      throw new TypeError(`El campo ${name} de la dirección no es válido.`)
+    }
+    return normalized
+  }
+  const postalCode = field(address.postalCode, 'código postal', 5, 5)
+  const provinceCode = Number(postalCode.slice(0, 2))
+  if (!/^\d{5}$/.test(postalCode) || provinceCode < 1 || provinceCode > 50 || [7, 35, 38].includes(provinceCode)) {
+    throw new TypeError('Solo se admiten direcciones de la península española.')
+  }
+  const line2 = typeof address.line2 === 'string' && address.line2.trim() ? field(address.line2, 'complemento', 1, 120) : null
+  return {
+    line1: field(address.line1, 'dirección', 3, 140),
+    line2,
+    postalCode,
+    city: field(address.city, 'localidad', 2, 100),
+    province: field(address.province, 'provincia', 2, 80),
+    countryCode: 'ES',
+  }
+}
+
 function estimateDtiDispatchDate(value, preparationWorkingDays) {
   const date = value instanceof Date ? value : new Date(value)
   if (!Number.isFinite(date.getTime())) throw new TypeError('La fecha de pedido no es válida.')
@@ -81,7 +110,7 @@ export function normalizeDtiArtworkMetadata({ fileName, mimeType, fileSizeBytes 
     throw new TypeError('El nombre del archivo no es válido.')
   }
   if (!Number.isSafeInteger(fileSizeBytes) || fileSizeBytes < 1 || fileSizeBytes > DTI_MAX_FILE_BYTES) {
-    throw new RangeError('El archivo supera el límite permitido de 250 MiB o está vacío.')
+    throw new RangeError('El archivo supera el límite permitido de 20 MiB o está vacío.')
   }
 
   if (/(^|[\\/])\.\.([\\/]|$)/.test(fileName)) throw new TypeError('El nombre del archivo no es válido.')
@@ -201,7 +230,7 @@ export async function validateDtiArtworkBytes({ format, bytes }) {
     const head = new TextDecoder().decode(file.slice(0, Math.min(file.length, 1024)))
     const tail = new TextDecoder().decode(file.slice(Math.max(0, file.length - 4096)))
     if (!head.includes('%PDF-') || !tail.includes('%%EOF')) return { status: 'failed', reason: 'invalid_pdf_structure' }
-    if (file.length > 25 * 1024 * 1024) return { status: 'manual_review', reason: 'large_pdf_manual_review', reviewRequired: true }
+    if (file.length > 10 * 1024 * 1024) return { status: 'manual_review', reason: 'large_pdf_manual_review', reviewRequired: true }
     const content = new TextDecoder('latin1').decode(file)
     const xrefMatch = content.match(/\bstartxref\s+(\d+)\s+%%EOF/i)
     const xrefOffset = xrefMatch ? Number(xrefMatch[1]) : Number.NaN
@@ -209,9 +238,13 @@ export async function validateDtiArtworkBytes({ format, bytes }) {
     if (!/\/Root\s+\d+\s+\d+\s+R/.test(content) || (!/^xref(?:\r?\n)/.test(xrefTarget) && !/\/Type\s*\/XRef\b/.test(xrefTarget))) {
       return { status: 'failed', reason: 'missing_pdf_catalog_or_xref' }
     }
-    if (/\/(?:JavaScript|JS|OpenAction|AA|Launch|EmbeddedFile|RichMedia)\b/i.test(content)) {
+    const names = [...content.matchAll(/\/([A-Za-z0-9#]+)/g)].map((match) =>
+      match[1].replace(/#([0-9a-f]{2})/gi, (_escape, hex) => String.fromCharCode(Number.parseInt(hex, 16))),
+    )
+    if (names.some((name) => ['JavaScript', 'JS', 'OpenAction', 'AA', 'Launch', 'EmbeddedFile', 'RichMedia'].includes(name))) {
       return { status: 'manual_review', reason: 'pdf_active_content_marker', reviewRequired: true }
     }
+    if (names.includes('ObjStm')) return { status: 'manual_review', reason: 'pdf_compressed_objects_manual_review', reviewRequired: true }
     return { status: 'passed', reviewRequired: false }
   }
 

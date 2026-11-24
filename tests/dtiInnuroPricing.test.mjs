@@ -8,6 +8,7 @@ import {
 } from '../src/config/pricing/dtiInnuroPricing.mjs'
 import { calculateCartGrossTotals } from '../src/features/cart/utils/cartGrossTotals.mjs'
 import { getCartShippingMethods, resolveCartShippingMethod } from '../src/features/cart/utils/cartShipping.mjs'
+import { migrateLegacyDtiCartState } from '../src/features/cart/utils/migrateLegacyDtiCart.mjs'
 
 test('DTI price is 15 EUR per meter with VAT included and a one-meter minimum', () => {
   assert.deepEqual(calculateDtiInnuroPrice(1), {
@@ -86,4 +87,33 @@ test('mixed baskets keep DTI shipping inclusive and preserve the other catalog s
   assert.equal(shipping.taxablePrice, 6.9)
   assert.deepEqual(totals, { subtotal: 115, taxes: 25.92, total: 149.35 })
   assert.equal(resolveCartShippingMethod('express', items).price, 19.9)
+})
+
+test('persisted pre-V1.6 DTI carts migrate to current gross price and shipping rules', () => {
+  const legacyItem = {
+    id: 'dtf-legacy-1',
+    lineQuantity: 1,
+    productType: 'dtf',
+    productName: 'DTI por metro',
+    configuration: { meters: 2, quality: 'premium', urgency: 'express', extras: ['express'] },
+    pricing: { unitPrice: 16.67, subtotal: 33.34, extras: 8, total: 41.34 },
+    artwork: { fileName: 'art.pdf' },
+  }
+  const migrated = migrateLegacyDtiCartState({ items: [legacyItem], shippingMethod: 'express' })
+  const item = migrated.items[0]
+  const shipping = resolveCartShippingMethod(migrated.shippingMethod, migrated.items)
+  const totals = calculateCartGrossTotals(migrated.items, shipping, 0)
+
+  assert.equal(item.productName, 'DTI Innuro por metro')
+  assert.equal(item.pricing.total, 30)
+  assert.equal(item.pricing.vatIncluded, true)
+  assert.deepEqual(item.configuration.summary, [
+    'Producto: DTI Innuro',
+    'Metraje: 2 m',
+    'Ancho útil: 55 cm',
+    'Archivo: art.pdf',
+  ])
+  assert.equal(migrated.shippingMethod, 'standard')
+  assert.equal(shipping.price, 5)
+  assert.deepEqual(totals, { subtotal: 30, taxes: 6.07, total: 35 })
 })

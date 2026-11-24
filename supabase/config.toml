@@ -2,12 +2,12 @@ project_id = "ridaos-dti-qa"
 
 [api]
 enabled = true
-schemas = ["public", "graphql_public", "dti_private"]
+schemas = ["public", "graphql_public"]
 extra_search_path = ["public", "extensions"]
 max_rows = 1000
 
 [db]
-major_version = 15
+major_version = 17
 
 [functions.dti-orders]
 verify_jwt = false

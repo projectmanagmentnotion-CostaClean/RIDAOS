@@ -21,7 +21,7 @@ Deno.serve(async (request) => {
     const orderId = intent.metadata.order_id
     if (typeof event.id !== 'string' || !intent?.id || !/^[0-9a-f-]{36}$/i.test(orderId) || !Number.isSafeInteger(intent.amount) || !Number.isSafeInteger(settledAmount) || intent.currency !== 'eur') return new Response('invalid_event', { status: 400 })
     const admin = createClient(url, serviceKey, { auth: { persistSession: false } })
-    const { data, error } = await admin.schema('dti_private').rpc('process_stripe_payment_event', {
+    const { data, error } = await admin.rpc('dti_process_stripe_payment_event', {
       p_event_id: event.id,
       p_event_type: event.type,
       p_payment_intent_id: intent.id,

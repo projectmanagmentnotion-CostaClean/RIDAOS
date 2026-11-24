@@ -21,7 +21,7 @@ Deno.serve(async (request) => {
 
     if (body.action === 'review_artwork') {
       if (typeof body.versionId !== 'string' || !['approved', 'rejected', 'revision_requested'].includes(body.decision) || typeof body.summary !== 'string' || body.summary.trim().length < 3 || body.summary.length > 2000 || !Array.isArray(body.checklist) || body.checklist.length > 100) return reply({ error: 'invalid_review_request' }, 400)
-      const { data, error } = await admin.schema('dti_private').rpc('record_artwork_review', {
+      const { data, error } = await admin.rpc('dti_record_artwork_review', {
         p_version_id: body.versionId, p_reviewer_user_id: user.id, p_decision: body.decision,
         p_summary: body.summary.trim(), p_checklist: body.checklist, p_idempotency_key: idempotencyKey,
       })
@@ -31,7 +31,7 @@ Deno.serve(async (request) => {
 
     if (body.action === 'release_production') {
       if (typeof body.orderId !== 'string' || !/^[0-9a-f-]{36}$/i.test(body.orderId)) return reply({ error: 'invalid_order' }, 400)
-      const { data, error } = await admin.schema('dti_private').rpc('release_order_to_production', {
+      const { data, error } = await admin.rpc('dti_release_order_to_production', {
         p_order_id: body.orderId, p_staff_user_id: user.id, p_idempotency_key: idempotencyKey,
       })
       if (error) return reply({ error: 'production_release_rejected' }, 409)
@@ -39,7 +39,7 @@ Deno.serve(async (request) => {
     }
     if (body.action === 'confirm_lead_time') {
       if (typeof body.orderId !== 'string' || !/^[0-9a-f-]{36}$/i.test(body.orderId) || typeof body.summary !== 'string' || body.summary.trim().length < 5 || body.summary.length > 500) return reply({ error: 'invalid_lead_time_confirmation' }, 400)
-      const { data, error } = await admin.schema('dti_private').rpc('confirm_dti_lead_time', {
+      const { data, error } = await admin.rpc('dti_confirm_lead_time', {
         p_order_id: body.orderId, p_staff_user_id: user.id, p_summary: body.summary.trim(),
       })
       if (error) return reply({ error: 'lead_time_confirmation_rejected' }, 409)

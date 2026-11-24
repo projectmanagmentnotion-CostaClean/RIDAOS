@@ -23,21 +23,19 @@ Deno.serve(async (request) => {
     if (!order.owner_id && guestToken) allowed = await sha256Hex(guestToken) === order.guest_access_token_hash
     if (!allowed) return reply({ error: 'forbidden' }, 403)
     if (order.status !== 'awaiting_artwork' && order.status !== 'awaiting_artwork_review') return reply({ error: 'order_not_accepting_artwork' }, 409)
-    const { data: artwork, error: artworkError } = await admin.from('dti_artwork_files').select('id').eq('order_id', orderId).maybeSingle()
-    if (artworkError) throw artworkError
-    if (!artwork) return reply({ error: 'artwork_not_found' }, 404)
-    const { data: versions, error: versionError } = await admin.from('dti_artwork_versions').select('id,validation_status,format,artwork_file_id,version_number').eq('artwork_file_id', artwork.id).eq('id', versionId).order('version_number', { ascending: false }).limit(1)
-    if (versionError) throw versionError
-    const version = versions?.[0]
-    if (!version || !['passed', 'manual_review'].includes(version.validation_status)) return reply({ error: 'server_validation_required' }, 422)
-    const { data: latest, error: latestError } = await admin.from('dti_artwork_versions').select('id').eq('artwork_file_id', artwork.id).order('version_number', { ascending: false }).limit(1).single()
-    if (latestError || latest?.id !== versionId) return reply({ error: 'only_latest_version_can_be_accepted' }, 409)
-    const now = new Date().toISOString()
-    const { error: updateError } = await admin.from('dti_artwork_versions').update({ client_accepted_at: now }).eq('id', versionId)
-    if (updateError) throw updateError
-    const { error: eventError } = await admin.from('dti_artwork_events').upsert({ artwork_version_id: versionId, event_type: 'client_accepted', actor_user_id: userData.user?.id ?? null, actor_kind: 'customer', idempotency_key: `client-accepted:${versionId}`, details: { accepted_at: now } }, { onConflict: 'idempotency_key' })
-    if (eventError) throw eventError
-    return reply({ accepted: true, versionId, validation: version.validation_status, professionalReviewStillRequired: ['AI', 'PSD', 'SVG', 'CDR'].includes(version.format) || version.validation_status === 'manual_review' })
+    const { data: result, error: acceptanceError } = await admin.rpc('dti_accept_artwork', {
+      p_order_id: orderId,
+      p_version_id: versionId,
+      p_actor_user_id: userData.user?.id ?? null,
+    })
+    if (acceptanceError) {
+      if (/server_validation_required/.test(acceptanceError.message)) return reply({ error: 'server_validation_required' }, 422)
+      if (/only_latest_version_can_be_accepted/.test(acceptanceError.message)) return reply({ error: 'only_latest_version_can_be_accepted' }, 409)
+      if (/order_not_accepting_artwork/.test(acceptanceError.message)) return reply({ error: 'order_not_accepting_artwork' }, 409)
+      if (/artwork_version_not_found/.test(acceptanceError.message)) return reply({ error: 'artwork_not_found' }, 404)
+      throw acceptanceError
+    }
+    return reply(result)
   } catch (error) {
     console.error('dti-accept-artwork failure', error instanceof Error ? error.message : 'unknown')
     return reply({ error: 'acceptance_failed' }, 400)

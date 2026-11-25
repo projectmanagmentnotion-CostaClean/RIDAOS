@@ -2,6 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import {
   PUBLICATION_PRODUCT_CODES,
+  PUBLICATION_PRODUCT_BY_ROUTE,
   isFullCatalogPublished,
   isPublicationRouteAllowed,
   isPublicLaunchHost,
@@ -69,5 +70,10 @@ test('the full catalog is available only when every known product is published',
   assert.equal(isFullCatalogPublished(full), true)
   assert.equal(shouldUseDtiLanding(full), false)
   assert.equal(isPublicationRouteAllowed('#/catalogo', full), true)
+  assert.equal(isPublicationRouteAllowed('#/portafolio', full), true)
+  assert.equal(isPublicationRouteAllowed('#/product-configurator', full), true)
+  for (const route of Object.keys(PUBLICATION_PRODUCT_BY_ROUTE)) {
+    assert.equal(isPublicationRouteAllowed(route, full), true, `route should return with full catalog: ${route}`)
+  }
   assert.equal(resolvePublicationRoute('home', full), 'home')
 })

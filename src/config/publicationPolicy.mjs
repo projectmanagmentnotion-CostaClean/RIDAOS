@@ -79,6 +79,12 @@ const alwaysAvailableRoutes = new Set([
   '#/presupuesto',
 ])
 
+const fullCatalogOnlyRoutes = new Set([
+  '#/catalogo',
+  '#/portafolio',
+  '#/product-configurator',
+])
+
 const privatePolicy = Object.freeze({
   isPublicLaunch: false,
   dtiOnlyMode: false,
@@ -152,7 +158,7 @@ export function isPublicationRouteAllowed(route, policy) {
     return isPublicationProductEnabled(productCode, policy)
   }
 
-  if (normalized === '#/catalogo') {
+  if (fullCatalogOnlyRoutes.has(normalized)) {
     return isFullCatalogPublished(policy)
   }
 

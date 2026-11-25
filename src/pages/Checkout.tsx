@@ -17,7 +17,7 @@ import { submitOrder } from '../services/orderService'
 import { useCartStore } from '../store/useCartStore'
 import { useUIStore } from '../store/useUIStore'
 import type { CartItem, CustomerData, SimulatedOrder } from '../types/ecommerce'
-import { callDtiFunction, dtiBackendConfigured, dtiIdempotencyKey, dtiOrderKey, dtiRecoveryKey, dtiStripeTestConfigured, finishDtiOrderAttempt, forgetDtiArtwork, getDtiArtwork, hasOnlyOneDtiLine, isDtiCart } from '../features/dtf/dtiCheckout'
+import { callDtiFunction, dtiBackendConfigured, dtiIdempotencyKey, dtiOrderKey, dtiRecoveryKey, dtiStripeTestConfigured, finishDtiOrderAttempt, forgetDtiArtwork, getDtiArtwork, hasOnlyOneDtiLine, isDtiCart, rememberDtiArtwork } from '../features/dtf/dtiCheckout'
 import { DtiStripePayment } from '../features/dtf/DtiStripePayment'
 import { usePublicationPolicy } from '../config/publicationContext'
 import { isPublicationRouteAllowed } from '../config/publicationPolicy.mjs'
@@ -88,6 +88,14 @@ function Checkout() {
     try {
       const orderAccess = JSON.parse(saved) as DtiOrderAccess
       return orderAccess.itemId === cartItems[0]?.id ? orderAccess : null
+    } catch { return null }
+  })
+  const [dtiRetryFile, setDtiRetryFile] = useState<File | null>(() => {
+    const saved = sessionStorage.getItem('dti-current-order')
+    if (!saved) return null
+    try {
+      const orderAccess = JSON.parse(saved) as DtiOrderAccess
+      return getDtiArtwork(orderAccess.itemId) ?? null
     } catch { return null }
   })
   const [dtiRemoteOrder, setDtiRemoteOrder] = useState<{ order?: Record<string, unknown>; latestArtwork?: Record<string, unknown> | null; adaptationQuote?: Record<string, unknown> | null } | null>(null)
@@ -223,6 +231,40 @@ function Checkout() {
       error('No se pudo registrar la solicitud', message)
     } finally {
       dismiss(progressToastId)
+      setLoading('checkout', false)
+    }
+  }
+
+  const retryDtiArtworkUpload = async () => {
+    if (!dtiOrderAccess) return
+    const file = dtiRetryFile ?? getDtiArtwork(dtiOrderAccess.itemId)
+    if (!file) {
+      setDtiStatus('Selecciona de nuevo el archivo para continuar el mismo pedido. No se creará otro pedido ni se iniciará un pago.')
+      return
+    }
+
+    setLoading('checkout', true)
+    setDtiStatus('Reintentando la subida al pedido QA existente…')
+    try {
+      const upload = await callDtiFunction<{ versionId: string; validation: string; reviewRequired: boolean }>(
+        'dti-artwork', {},
+        { file, orderId: dtiOrderAccess.orderId, orderToken: dtiOrderAccess.token, idempotencyKey: dtiIdempotencyKey(dtiOrderAccess.orderId) },
+      )
+      if (dtiClientAccepted && ['passed', 'manual_review'].includes(upload.validation)) {
+        await callDtiFunction('dti-accept-artwork', { orderId: dtiOrderAccess.orderId, versionId: upload.versionId }, { orderToken: dtiOrderAccess.token })
+      }
+      forgetDtiArtwork(dtiOrderAccess.itemId)
+      setDtiRetryFile(null)
+      setDtiRemoteOrder(await callDtiFunction('dti-orders', { orderId: dtiOrderAccess.orderId }, { method: 'GET', orderToken: dtiOrderAccess.token }))
+      setDtiStatus(upload.reviewRequired || upload.validation === 'manual_review'
+        ? 'El archivo llegó al mismo pedido y requiere revisión profesional. Aún no se ha iniciado ningún pago.'
+        : `Archivo recibido y validado en el mismo pedido QA. ${dtiClientAccepted ? 'Aceptación del cliente registrada. ' : 'La aceptación del cliente sigue pendiente. '}Aún no se ha iniciado ningún pago.`)
+    } catch (cause) {
+      const message = cause instanceof TypeError && cause.message === 'Failed to fetch'
+        ? 'El navegador no pudo completar la subida al backend QA. El pedido sigue guardado y no se creó otro ni se inició un pago; comprueba la conexión y reintenta aquí.'
+        : cause instanceof Error ? cause.message : 'No se pudo subir el archivo al pedido QA.'
+      setDtiStatus(message)
+    } finally {
       setLoading('checkout', false)
     }
   }
@@ -364,6 +406,18 @@ function Checkout() {
                 <p className="inline-notice">{dtiBackendConfigured() ? 'Se registrará un pedido de prueba y se validará el archivo en servidor. La aceptación del cliente, revisión técnica y aprobación de presupuesto son estados separados.' : 'El pedido real de prueba no está disponible hasta configurar un proyecto Supabase QA aislado.'}</p>
                 {dtiOrderAccess ? <div className="content-card">
                   <p>Pedido QA: {dtiOrderAccess.orderId}</p>
+                  <label className="field-group" htmlFor="dti-artwork-retry">
+                    <span>Archivo del mismo pedido</span>
+                    <input id="dti-artwork-retry" type="file" accept=".png,.pdf,.ai,.psd,.svg,.cdr" onChange={(event) => {
+                      const file = event.target.files?.[0] ?? null
+                      setDtiRetryFile(file)
+                      if (file) rememberDtiArtwork(dtiOrderAccess.itemId, file)
+                    }} />
+                    <small>Vuelve a seleccionar el arte si hace falta. El reintento usa la clave idempotente del pedido actual.</small>
+                  </label>
+                  <button className="action-button action-button-muted" disabled={loading || !(dtiRetryFile ?? getDtiArtwork(dtiOrderAccess.itemId))} type="button" onClick={retryDtiArtworkUpload}>
+                    Reintentar subida de archivo
+                  </button>
                   <button className="action-button action-button-muted" type="button" onClick={async () => {
                     try { setDtiRemoteOrder(await callDtiFunction('dti-orders', { orderId: dtiOrderAccess.orderId }, { method: 'GET', orderToken: dtiOrderAccess.token })) }
                     catch (cause) { setDtiStatus(cause instanceof Error ? cause.message : 'No se pudo actualizar el pedido.') }

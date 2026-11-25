@@ -12,17 +12,15 @@ const env = import.meta.env as ImportMetaEnv & {
 }
 
 export function useResolvedPublicationPolicy(hostname: string): PublicationPolicy {
-  const [policy, setPolicy] = useState(() => resolvePublicationPolicy(hostname))
+  const [resolved, setResolved] = useState<{ hostname: string; policy: PublicationPolicy } | null>(null)
 
   useEffect(() => {
     let cancelled = false
 
     if (!isPublicLaunchHost(hostname)) {
-      setPolicy(resolvePublicationPolicy(hostname))
       return () => { cancelled = true }
     }
 
-    setPolicy(resolvePublicationPolicy(hostname))
     const baseUrl = env.VITE_DTI_SUPABASE_URL?.replace(/\/$/, '')
     const anonKey = env.VITE_DTI_SUPABASE_ANON_KEY
 
@@ -39,14 +37,16 @@ export function useResolvedPublicationPolicy(hostname: string): PublicationPolic
         return await response.json() as PublicationConfig[]
       })
       .then((rows) => {
-        if (!cancelled && rows.length === 1) setPolicy(resolvePublicationPolicy(hostname, rows[0]))
+        if (!cancelled && rows.length === 1) {
+          setResolved({ hostname, policy: resolvePublicationPolicy(hostname, rows[0]) })
+        }
       })
-      .catch(() => {
-        if (!cancelled) setPolicy(resolvePublicationPolicy(hostname))
-      })
+      .catch(() => null)
 
     return () => { cancelled = true }
   }, [hostname])
 
-  return policy
+  return resolved?.hostname === hostname
+    ? resolved.policy
+    : resolvePublicationPolicy(hostname)
 }

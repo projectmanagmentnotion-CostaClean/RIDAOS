@@ -72,6 +72,9 @@ test('the full catalog is available only when every known product is published',
   assert.equal(isPublicationRouteAllowed('#/catalogo', full), true)
   assert.equal(isPublicationRouteAllowed('#/portafolio', full), true)
   assert.equal(isPublicationRouteAllowed('#/product-configurator', full), true)
+  for (const route of ['#/', '#/carrito', '#/checkout', '#/upload', '#/guia', '#/contacto', '#/legal', '#/presupuesto']) {
+    assert.equal(isPublicationRouteAllowed(route, full), true, `public utility route should remain: ${route}`)
+  }
   for (const route of Object.keys(PUBLICATION_PRODUCT_BY_ROUTE)) {
     assert.equal(isPublicationRouteAllowed(route, full), true, `route should return with full catalog: ${route}`)
   }

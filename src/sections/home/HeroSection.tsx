@@ -32,8 +32,8 @@ function HeroSection({ content }: HeroSectionProps) {
             eyebrow={previewHeroContent.fallbackEyebrow}
             hero
             stickerWords={['DTF', 'pedido']}
-            title={content?.h1 ? `RidaosPrint ${content.h1}` : 'RidaosPrint DTF por metro.'}
-            titleLines={['RIDAOSPRINT', 'DTF POR', 'METRO']}
+            title={content?.h1 ? `RidaosPrint ${content.h1}` : 'RidaosPrint DTI Innuro por metro.'}
+            titleLines={['RIDAOSPRINT', 'DTI INNURO', 'POR METRO']}
           />
           <div className="home-hero-direct-flow cursor-interest" data-cursor-zone="conversion">
             <div className="hero-orbit-stack">

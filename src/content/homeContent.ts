@@ -13,9 +13,9 @@ export const homeHeroContent = {
 
 export const homeMetricsContent = [
   {
-    label: 'Base',
-    value: '14,50 EUR/metro',
-    note: 'Precio de referencia visible antes de subir el arte final.',
+    label: 'DTI Innuro',
+    value: '15 €/m IVA incluido',
+    note: 'Ancho útil fijo de 55 cm y pedido mínimo de 1 m.',
   },
   {
     label: 'Flujo',

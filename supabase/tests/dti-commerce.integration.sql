@@ -13,6 +13,9 @@ declare
   v_file_id uuid;
   v_version_id uuid;
   v_attempt_id uuid;
+  v_isolation_order_id uuid;
+  v_isolation_file_id uuid;
+  v_isolation_version_id uuid;
   v_acceptance jsonb;
   v_acceptance_retry jsonb;
   v_blocked boolean := false;
@@ -125,6 +128,34 @@ begin
   end if;
   if not exists (select 1 from public.dti_orders where id = v_order_id and payment_status = 'paid' and status = 'paid_awaiting_technical_review') then
     raise exception 'paid order bypassed technical-review state';
+  end if;
+
+  v_order := dti_private.create_dti_order(
+    'integration-order-000005', 'hash-isolation-order', v_customer, null,
+    'Taller DTI', 'dti-customer@example.test', '+34900000000', null, 1.0, 'pickup', false, date '2026-11-26'
+  );
+  v_isolation_order_id := (v_order->>'orderId')::uuid;
+  insert into public.dti_artwork_files(order_id) values (v_isolation_order_id) returning id into v_isolation_file_id;
+  insert into public.dti_artwork_versions(
+    artwork_file_id, upload_idempotency_key, version_number, storage_path, original_file_name, format, mime_type,
+    file_size_bytes, validation_status, client_accepted_at, uploaded_at
+  ) values (
+    v_isolation_file_id, 'integration-upload-cross-order-000001', 1,
+    v_isolation_order_id::text || '/v1/art.png', 'art.png', 'PNG', 'image/png',
+    100, 'passed', now(), now()
+  ) returning id into v_isolation_version_id;
+  update public.dti_orders set status = 'awaiting_payment', payment_status = 'unpaid', total_cents = 1500 where id = v_isolation_order_id;
+  insert into public.dti_payment_attempts(order_id, idempotency_key, stripe_payment_intent_id, artwork_version_id, amount_cents, status)
+  values (v_isolation_order_id, 'integration-attempt-cross-order-000001', 'pi_test_cross_order_000001', v_isolation_version_id, 1500, 'requires_payment_method');
+  if dti_private.process_stripe_payment_event(
+    'evt_dti_cross_order_000001', 'payment_intent.succeeded', 'pi_test_integration_000001', v_isolation_order_id, 1500, 'eur'
+  ) then
+    raise exception 'a PaymentIntent belonging to another order was accepted';
+  end if;
+  if not exists (select 1 from public.dti_orders where id = v_isolation_order_id and payment_status = 'unpaid' and status = 'awaiting_payment')
+    or not exists (select 1 from public.dti_orders where id = v_order_id and payment_status = 'paid' and status = 'paid_awaiting_technical_review')
+    or not exists (select 1 from public.dti_stripe_events where stripe_event_id = 'evt_dti_cross_order_000001' and not processed) then
+    raise exception 'cross-order webhook changed payment state or was not left retryable';
   end if;
 
   begin

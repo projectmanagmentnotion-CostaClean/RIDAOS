@@ -16,12 +16,12 @@ const defaultTrustItems = [
     description: 'Cada proyecto especial cuenta con seguimiento directo y propuesta a medida.',
   },
   {
-    title: 'Precios sin IVA',
-    description: 'Las referencias del catalogo 2026 se muestran sin impuestos.',
+    title: 'Precio DTI transparente',
+    description: 'DTI Innuro cuesta 15 €/m y el envío peninsular 5 €; ambos precios incluyen IVA.',
   },
   {
-    title: 'Anticipo y saldo',
-    description: 'Trabajamos con un anticipo inicial y el resto a la entrega del pedido.',
+    title: 'Adaptación aprobada antes del pago',
+    description: 'La adaptación profesional se presupuesta a 35 €/hora + IVA y requiere aprobación antes de cobrar.',
   },
 ] as const
 

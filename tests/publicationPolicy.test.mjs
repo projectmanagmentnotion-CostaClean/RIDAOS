@@ -54,7 +54,9 @@ test('partial rollout always keeps DTI as landing and enables only explicitly pu
 
   assert.equal(shouldUseDtiLanding(policy), true)
   assert.equal(isPublicationRouteAllowed('#/producto/dti-por-metro', policy), true)
+  assert.equal(isPublicationRouteAllowed('#/dtf', policy), true)
   assert.equal(isPublicationRouteAllowed('#/producto/textil-personalizado', policy), true)
+  assert.equal(isPublicationRouteAllowed('#/textil', policy), true)
   assert.equal(isPublicationRouteAllowed('#/producto/flyers-personalizados', policy), false)
   assert.equal(isPublicationRouteAllowed('#/catalogo', policy), false)
 })

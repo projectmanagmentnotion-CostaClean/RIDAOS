@@ -11,8 +11,10 @@ export const PUBLICATION_PRODUCT_CODES = Object.freeze([
 ])
 
 export const PUBLICATION_PRODUCT_BY_ROUTE = Object.freeze({
+  '#/dtf': 'dti-innuro',
   '#/producto/dti-por-metro': 'dti-innuro',
   '#/catalogo/dti': 'dti-innuro',
+  '#/textil': 'textil',
   '#/catalogo/textil': 'textil',
   '#/producto/textil-personalizado': 'textil',
   '#/catalogo/tarjetas': 'papeleria',
@@ -22,6 +24,8 @@ export const PUBLICATION_PRODUCT_BY_ROUTE = Object.freeze({
   '#/catalogo/vinilo-impreso': 'vinilo',
   '#/producto/vinilo-impreso': 'vinilo',
   '#/catalogo/pegatinas': 'accesorios',
+  '#/accesorios': 'accesorios',
+  '#/producto/accesorios': 'accesorios',
   '#/producto/pegatinas-personalizadas': 'accesorios',
   '#/catalogo/rotulacion': 'rotulacion',
   '#/producto/rotulacion-furgonetas': 'rotulacion',

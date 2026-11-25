@@ -9,6 +9,8 @@ import {
   navigationMeta,
   type NavigationLinkItem,
 } from './navigationData'
+import { usePublicationPolicy } from '../../config/publicationContext'
+import { isPublicationNavigationItemAllowed } from '../../config/publicationPolicy.mjs'
 
 type MobileCommandDrawerProps = {
   brandLabel: string
@@ -65,6 +67,10 @@ export function MobileCommandDrawer({
   onClose,
   onNavigate,
 }: MobileCommandDrawerProps) {
+  const publicationPolicy = usePublicationPolicy()
+  const visiblePrimaryCards = mobilePrimaryCards.filter((item) => isPublicationNavigationItemAllowed(item, publicationPolicy))
+  const visibleProducts = mobileProductLinks.filter((item) => isPublicationNavigationItemAllowed(item, publicationPolicy))
+  const visibleResources = mobileResourceLinks.filter((item) => isPublicationNavigationItemAllowed(item, publicationPolicy))
   return (
     <>
       <div
@@ -127,7 +133,7 @@ export function MobileCommandDrawer({
           </a>
 
           <div className="ridaos-nav__mobile-grid">
-            {mobilePrimaryCards.map((item) => (
+            {visiblePrimaryCards.map((item) => (
               <a
                 className="ridaos-nav__mobile-card"
                 data-accent={item.accent}
@@ -153,7 +159,7 @@ export function MobileCommandDrawer({
               </div>
             </header>
             <div className="ridaos-nav__mobile-links">
-              {mobileProductLinks.map((item) => (
+              {visibleProducts.map((item) => (
                 <MobileLink
                   currentHashRoute={currentHashRoute}
                   item={item}
@@ -172,7 +178,7 @@ export function MobileCommandDrawer({
               </div>
             </header>
             <div className="ridaos-nav__mobile-links">
-              {mobileResourceLinks.map((item) => (
+              {visibleResources.map((item) => (
                 <MobileLink
                   currentHashRoute={currentHashRoute}
                   item={item}

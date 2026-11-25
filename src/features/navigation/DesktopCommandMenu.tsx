@@ -9,6 +9,8 @@ import {
   serviceLinks,
   type NavigationLinkItem,
 } from './navigationData'
+import { usePublicationPolicy } from '../../config/publicationContext'
+import { isPublicationNavigationItemAllowed } from '../../config/publicationPolicy.mjs'
 
 type DesktopCommandMenuProps = {
   currentHashRoute: string
@@ -65,6 +67,11 @@ export function DesktopCommandMenu({
   onClose,
   onNavigate,
 }: DesktopCommandMenuProps) {
+  const publicationPolicy = usePublicationPolicy()
+  const visibleProducts = productLinks.filter((item) => isPublicationNavigationItemAllowed(item, publicationPolicy))
+  const visibleServices = serviceLinks.filter((item) => isPublicationNavigationItemAllowed(item, publicationPolicy))
+  const visibleResources = resourceLinks.filter((item) => isPublicationNavigationItemAllowed(item, publicationPolicy))
+  const visibleFeatured = featuredLinks.filter((item) => isPublicationNavigationItemAllowed(item, publicationPolicy))
   return (
     <>
       <div
@@ -89,7 +96,7 @@ export function DesktopCommandMenu({
               <span className="ridaos-nav__section-line ridaos-nav__accent-line" aria-hidden="true" />
             </header>
             <div className="ridaos-nav__panel-list">
-              {productLinks.map((item) => (
+              {visibleProducts.map((item) => (
                 <CommandLinkItem
                   currentHashRoute={currentHashRoute}
                   item={item}
@@ -109,7 +116,7 @@ export function DesktopCommandMenu({
               <span className="ridaos-nav__section-line ridaos-nav__accent-line" aria-hidden="true" />
             </header>
             <div className="ridaos-nav__panel-list">
-              {serviceLinks.map((item) => (
+              {visibleServices.map((item) => (
                 <CommandLinkItem
                   currentHashRoute={currentHashRoute}
                   item={item}
@@ -129,7 +136,7 @@ export function DesktopCommandMenu({
               <span className="ridaos-nav__section-line ridaos-nav__accent-line" aria-hidden="true" />
             </header>
             <div className="ridaos-nav__panel-list">
-              {resourceLinks.map((item) => (
+              {visibleResources.map((item) => (
                 <CommandLinkItem
                   currentHashRoute={currentHashRoute}
                   item={item}
@@ -154,7 +161,7 @@ export function DesktopCommandMenu({
               ))}
             </div>
             <div className="ridaos-nav__featured-links">
-              {featuredLinks.map((item) => (
+              {visibleFeatured.map((item) => (
                 <CommandLinkItem
                   currentHashRoute={currentHashRoute}
                   item={item}

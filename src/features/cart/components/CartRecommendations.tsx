@@ -1,7 +1,16 @@
 import { cartRecommendations } from '../data/cartRecommendations'
 import { RecommendedProductCard } from '../../products/recommendations/RecommendedProductCard'
+import { usePublicationPolicy } from '../../../config/publicationContext'
+import { isPublicationNavigationItemAllowed } from '../../../config/publicationPolicy.mjs'
 
 export function CartRecommendations() {
+  const publicationPolicy = usePublicationPolicy()
+  const visibleRecommendations = cartRecommendations.filter((recommendation) =>
+    isPublicationNavigationItemAllowed(recommendation, publicationPolicy),
+  )
+
+  if (!visibleRecommendations.length) return null
+
   return (
     <section className="commerce-recommendations">
       <div className="commerce-recommendations__header">
@@ -9,7 +18,7 @@ export function CartRecommendations() {
         <h2>Amplia el pedido sin romper el flujo.</h2>
       </div>
       <div className="commerce-recommendations__grid">
-        {cartRecommendations.map((recommendation) => (
+        {visibleRecommendations.map((recommendation) => (
           <RecommendedProductCard
             description={recommendation.description}
             href={recommendation.href}

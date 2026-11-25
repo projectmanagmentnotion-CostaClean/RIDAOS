@@ -4,6 +4,8 @@ import { NavigationIcon } from './NavigationIcons'
 import { isNavigationItemActive, navigationMeta, primaryLinks } from './navigationData'
 import { useNavigationMotion } from './useNavigationMotion'
 import { getPublicHref } from '../../lib/navigation'
+import { usePublicationPolicy } from '../../config/publicationContext'
+import { isPublicationNavigationItemAllowed } from '../../config/publicationPolicy.mjs'
 
 type PremiumNavBarProps = {
   brandLabel: string
@@ -11,6 +13,7 @@ type PremiumNavBarProps = {
 }
 
 export function PremiumNavBar({ brandLabel, currentHashRoute }: PremiumNavBarProps) {
+  const publicationPolicy = usePublicationPolicy()
   const {
     desktopOpen,
     mobileOpen,
@@ -47,7 +50,7 @@ export function PremiumNavBar({ brandLabel, currentHashRoute }: PremiumNavBarPro
         </a>
 
         <div className="ridaos-nav__primary">
-          {primaryLinks.map((item) => {
+          {primaryLinks.filter((item) => isPublicationNavigationItemAllowed(item, publicationPolicy)).map((item) => {
             const isActive = isNavigationItemActive(currentHashRoute, item)
 
             return (

@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useRef, useState, type ComponentType } from 'react'
+import { Suspense, lazy, useCallback, useEffect, useRef, useState, type ComponentType } from 'react'
 import './App.css'
 import NotFoundPage from './components/NotFoundPage'
 import RouteErrorBoundary from './components/RouteErrorBoundary'
@@ -13,6 +13,9 @@ import { getCurrentHashRoute, navigateToHashRoute, normalizeHashRoute } from './
 import { footerContent, navigationContent } from './content'
 import { useCmsPreviewDocument } from './features/cms-preview'
 import { PremiumNavBar } from './features/navigation'
+import { PublicationContext } from './config/publicationContext'
+import { useResolvedPublicationPolicy } from './config/usePublicationPolicy'
+import { isPublicationRouteAllowed, resolvePublicationRoute, PUBLICATION_ROUTE_BY_KEY } from './config/publicationPolicy.mjs'
 
 type RouteKey =
   | 'home'
@@ -241,11 +244,22 @@ function PageLoadingFallback() {
 }
 
 function App() {
+  const publicationPolicy = useResolvedPublicationPolicy(window.location.hostname)
   const [currentHashRoute, setCurrentHashRoute] = useState(() => getCurrentHashRoute())
   const [route, setRoute] = useState<RouteKey>(() => getRouteFromHash(currentHashRoute))
   const [isHeaderHidden, setIsHeaderHidden] = useState(false)
   const [isHeaderSolid, setIsHeaderSolid] = useState(false)
   const lastScrollYRef = useRef(0)
+
+  const resolveVisibleRoute = useCallback((hash: string): { route: RouteKey; hash: string } => {
+    const rawRoute = getRouteFromHash(hash)
+    const resolvedKey = resolvePublicationRoute(rawRoute, publicationPolicy)
+    const resolvedHash = PUBLICATION_ROUTE_BY_KEY[resolvedKey] ?? hash
+    return {
+      route: getRouteFromHash(resolvedHash),
+      hash: resolvedKey === 'dtf' || !isPublicationRouteAllowed(hash, publicationPolicy) ? resolvedHash : hash,
+    }
+  }, [publicationPolicy])
 
   useEffect(() => {
     const smoothScroll = initSmoothScroll()
@@ -265,7 +279,8 @@ function App() {
       }
 
       setCurrentHashRoute(nextHashRoute)
-      setRoute(getRouteFromHash(nextHashRoute))
+      const visible = resolveVisibleRoute(nextHashRoute)
+      setRoute(visible.route)
     }
 
     syncRoute()
@@ -275,7 +290,7 @@ function App() {
       window.removeEventListener('hashchange', syncRoute)
       smoothScroll.destroy()
     }
-  }, [])
+  }, [publicationPolicy, resolveVisibleRoute])
 
   useEffect(() => {
     const smoothScroll = initSmoothScroll()
@@ -284,8 +299,8 @@ function App() {
   }, [route])
 
   useEffect(() => {
-    applySEO(currentHashRoute)
-  }, [currentHashRoute])
+    applySEO(resolveVisibleRoute(currentHashRoute).hash)
+  }, [currentHashRoute, publicationPolicy, resolveVisibleRoute])
 
   useEffect(() => {
     let frame = 0
@@ -328,7 +343,8 @@ function App() {
     }
   }, [])
 
-  const ActivePage = pageComponents[route] ?? NotFoundPage
+  const visibleRoute = resolveVisibleRoute(currentHashRoute)
+  const ActivePage = pageComponents[visibleRoute.route] ?? NotFoundPage
   const previewNavigation = useCmsPreviewDocument(
     'src/content/navigationContent.ts',
     navigationContent,
@@ -339,7 +355,7 @@ function App() {
   )
 
   return (
-    <>
+    <PublicationContext.Provider value={publicationPolicy}>
       <PremiumCursor />
       <LiveToastProvider>
         <div className="app-shell">
@@ -349,14 +365,14 @@ function App() {
           <div className="app-grid" aria-hidden="true" />
           {/* Editable Zone: NAV_MAIN | Content: src/content/navigationContent.ts */}
           <header
-            className={`site-header${route === 'home' ? ' site-header--overlay' : ''}${
+            className={`site-header${visibleRoute.route === 'home' ? ' site-header--overlay' : ''}${
               isHeaderHidden ? ' site-header--hidden' : ''
             }${isHeaderSolid ? ' site-header--solid' : ''}`}
           >
-            <PremiumNavBar brandLabel={previewNavigation.brandLabel} currentHashRoute={currentHashRoute} />
+            <PremiumNavBar brandLabel={previewNavigation.brandLabel} currentHashRoute={visibleRoute.hash} />
           </header>
 
-          <main className={`page-shell${route === 'home' ? ' page-shell--home' : ''}`} id="main-content" tabIndex={-1}>
+          <main className={`page-shell${visibleRoute.route === 'home' ? ' page-shell--home' : ''}`} id="main-content" tabIndex={-1}>
             <RouteErrorBoundary fallback={<NotFoundPage />}>
               <Suspense fallback={<PageLoadingFallback />}>
                 <ActivePage />
@@ -368,7 +384,7 @@ function App() {
           <footer className="site-footer">
             <p>{previewFooter.description}</p>
             <div className="footer-links">
-              {previewFooter.links.map((link) => (
+              {previewFooter.links.filter((link) => isPublicationRouteAllowed(link.href, publicationPolicy)).map((link) => (
                 <a data-cursor="interactive" href={link.href} key={link.href}>
                   {link.label}
                 </a>
@@ -377,7 +393,7 @@ function App() {
           </footer>
         </div>
       </LiveToastProvider>
-    </>
+    </PublicationContext.Provider>
   )
 }
 

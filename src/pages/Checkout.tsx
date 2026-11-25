@@ -19,6 +19,8 @@ import { useUIStore } from '../store/useUIStore'
 import type { CartItem, CustomerData, SimulatedOrder } from '../types/ecommerce'
 import { callDtiFunction, dtiBackendConfigured, dtiIdempotencyKey, dtiOrderKey, dtiRecoveryKey, dtiStripeTestConfigured, finishDtiOrderAttempt, forgetDtiArtwork, getDtiArtwork, hasOnlyOneDtiLine, isDtiCart } from '../features/dtf/dtiCheckout'
 import { DtiStripePayment } from '../features/dtf/DtiStripePayment'
+import { usePublicationPolicy } from '../config/publicationContext'
+import { isPublicationRouteAllowed } from '../config/publicationPolicy.mjs'
 
 type CheckoutStep = (typeof checkoutSteps)[number]['id']
 type PaymentMockId = (typeof paymentMocks)[number]['id']
@@ -43,6 +45,7 @@ function needsArtworkApproval(item: CartItem) {
  * Visual component: src/pages/Checkout.tsx
  */
 function Checkout() {
+  const publicationPolicy = usePublicationPolicy()
   const pageRef = useRef<HTMLElement | null>(null)
   const cartItems = useCartStore((state) => state.items)
   const cartShippingMethod = useCartStore((state) => state.shippingMethod)
@@ -65,6 +68,16 @@ function Checkout() {
   const clearError = useUIStore((state) => state.clearError)
   const { dismiss, error, info, progress, showSuccessModal, success } = useLiveToast()
   const pendingArtworkItems = useMemo(() => cartItems.filter((item) => needsArtworkApproval(item)), [cartItems])
+  const unpublishedCartItems = useMemo(
+    () => publicationPolicy.isPublicLaunch
+      ? cartItems.filter((item) => {
+          const productRoute = item.configuration.productHref
+          if (productRoute) return !isPublicationRouteAllowed(productRoute, publicationPolicy)
+          return item.productType !== 'dtf'
+        })
+      : [],
+    [cartItems, publicationPolicy],
+  )
   const dtiOnly = isDtiCart(cartItems)
   const [dtiAddress, setDtiAddress] = useState<DtiAddress>({ line1: '', city: '', province: '', postalCode: '' })
   const [dtiStatus, setDtiStatus] = useState('')
@@ -79,7 +92,7 @@ function Checkout() {
   })
   const [dtiRemoteOrder, setDtiRemoteOrder] = useState<{ order?: Record<string, unknown>; latestArtwork?: Record<string, unknown> | null; adaptationQuote?: Record<string, unknown> | null } | null>(null)
 
-  const canAdvance = useMemo(() => cartItems.length > 0, [cartItems.length])
+  const canAdvance = useMemo(() => cartItems.length > 0 && unpublishedCartItems.length === 0, [cartItems.length, unpublishedCartItems.length])
 
   useEffect(() => {
     const root = pageRef.current
@@ -117,6 +130,10 @@ function Checkout() {
 
     if (cartItems.length === 0) {
       nextErrors.cart = 'Necesitas al menos un articulo en el carrito para continuar.'
+    }
+
+    if (unpublishedCartItems.length > 0) {
+      nextErrors.cart = 'Hay productos que no están publicados en esta tienda. Elimina esas líneas del carrito para continuar.'
     }
 
     if (!dtiOnly && pendingArtworkItems.length > 0) {
@@ -243,6 +260,7 @@ function Checkout() {
                 </div>
               ) : (
                 <>
+                  {unpublishedCartItems.length > 0 ? <p className="inline-notice" role="alert">Esta tienda está publicando DTI. Elimina del carrito los productos que todavía no están disponibles antes de continuar.</p> : null}
                   <div className="checkout-list">
                     {cartItems.map((item) => (
                       <div className="checkout-item" key={item.id}>

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { artworkProductRules } from '../product-rules/artworkProductRules'
+import { dtiArtworkFileWasAccepted } from '../../dtf/dtiArtworkGate.mjs'
 import { extractArtworkMetadata } from '../services/extractArtworkMetadata'
 import type {
   ArtworkPreviewSummary,
@@ -18,11 +19,11 @@ export function useArtworkUploadFlow(
   const rule = artworkProductRules[ruleKey]
   const [metadata, setMetadata] = useState<ArtworkUploadFlowState['metadata']>(null)
   const [summary, setSummary] = useState<ArtworkPreviewSummary | null>(null)
-  const [confirmedToken, setConfirmedToken] = useState<string | null>(null)
-  const [designerHelpRequested, setDesignerHelpRequested] = useState(false)
-  const [acceptedAt, setAcceptedAt] = useState<string | undefined>(undefined)
+  const [confirmation, setConfirmation] = useState<{ file: File; acceptedAt: string } | null>(null)
+  const [designerHelpFile, setDesignerHelpFile] = useState<File | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const fileToken = file ? `${file.name}-${file.size}-${file.lastModified}` : null
+  const clientAccepted = dtiArtworkFileWasAccepted(file, confirmation?.file ?? null)
+  const designerHelpRequested = dtiArtworkFileWasAccepted(file, designerHelpFile)
 
   useEffect(() => {
     let cancelled = false
@@ -32,7 +33,6 @@ export function useArtworkUploadFlow(
         if (!cancelled) {
           setMetadata(null)
           setSummary(null)
-          setAcceptedAt(undefined)
           setIsLoading(false)
         }
       })
@@ -84,12 +84,12 @@ export function useArtworkUploadFlow(
         metadata,
         summary,
         isLoading,
-        clientAccepted: Boolean(fileToken) && confirmedToken === fileToken,
+        clientAccepted,
         designerHelpRequested,
-        acceptedAt,
+        acceptedAt: clientAccepted ? confirmation?.acceptedAt : undefined,
         context,
       }),
-    [acceptedAt, confirmedToken, context, designerHelpRequested, fileToken, isLoading, metadata, ruleKey, summary],
+    [clientAccepted, confirmation?.acceptedAt, context, designerHelpRequested, file, isLoading, metadata, ruleKey, summary],
   )
 
   const steps = useMemo(
@@ -112,18 +112,16 @@ export function useArtworkUploadFlow(
     acceptance,
     confirmed: acceptance.canContinue,
     setConfirmed: (nextConfirmed: boolean) => {
-      if (!fileToken) {
+      if (!file) {
         return
       }
 
-      setConfirmedToken(nextConfirmed ? fileToken : null)
-      setAcceptedAt(nextConfirmed ? new Date().toISOString() : undefined)
+      setConfirmation(nextConfirmed ? { file, acceptedAt: new Date().toISOString() } : null)
     },
     requestDesignerHelp: (nextValue: boolean) => {
-      setDesignerHelpRequested(nextValue)
+      setDesignerHelpFile(nextValue ? file : null)
       if (nextValue) {
-        setConfirmedToken(null)
-        setAcceptedAt(undefined)
+        setConfirmation(null)
       }
     },
     isLoading,

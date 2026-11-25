@@ -45,9 +45,16 @@ test('DTI-only publication preserves cart and support routes while hiding genera
 
   assert.equal(isPublicationRouteAllowed('#/carrito', policy), true)
   assert.equal(isPublicationRouteAllowed('#/checkout', policy), true)
+  assert.equal(isPublicationRouteAllowed('#/upload', policy), true)
+  assert.equal(isPublicationRouteAllowed('#/guia', policy), true)
   assert.equal(isPublicationRouteAllowed('#/contacto', policy), true)
+  assert.equal(isPublicationRouteAllowed('#/legal', policy), true)
+  assert.equal(isPublicationRouteAllowed('#/presupuesto', policy), true)
   assert.equal(isPublicationRouteAllowed('#/catalogo', policy), false)
   assert.equal(isPublicationRouteAllowed('#/catalogo/flyers', policy), false)
+  for (const [route, productCode] of Object.entries(PUBLICATION_PRODUCT_BY_ROUTE)) {
+    assert.equal(isPublicationRouteAllowed(route, policy), productCode === 'dti-innuro', `DTI-only route policy: ${route}`)
+  }
 })
 
 test('partial rollout always keeps DTI as landing and enables only explicitly published products', () => {

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { callDtiFunction, dtiStripePublishableKey, dtiStripeTestConfigured } from './dtiCheckout'
+import { createStripeClientCache } from './stripeClientCache.mjs'
 
 type StripeElement = { mount(target: HTMLElement): void; unmount(): void }
 type StripeElements = { create(type: 'payment', options?: Record<string, unknown>): StripeElement; submit(): Promise<{ error?: { message?: string } }> }
@@ -9,22 +10,47 @@ type StripeClient = {
 }
 declare global { interface Window { Stripe?: (key: string) => StripeClient } }
 
-async function getStripe() {
-  if (!window.Stripe) {
-    await new Promise<void>((resolve, reject) => {
-      const script = document.querySelector<HTMLScriptElement>('script[data-stripe-js]') ?? document.createElement('script')
-      if (!script.src) { script.src = 'https://js.stripe.com/v3/'; script.async = true; script.dataset.stripeJs = 'true'; document.head.append(script) }
-      script.addEventListener('load', () => resolve(), { once: true })
-      script.addEventListener('error', () => reject(new Error('No se pudo cargar Stripe.js.')), { once: true })
-      if (window.Stripe) resolve()
-    })
-  }
-  if (!window.Stripe) throw new Error('Stripe.js no está disponible.')
-  return window.Stripe(dtiStripePublishableKey())
+const getOrCreateStripeClient = createStripeClientCache<StripeClient>()
+let stripeJsPromise: Promise<void> | null = null
+
+function loadStripeJs() {
+  if (window.Stripe) return Promise.resolve()
+  if (stripeJsPromise) return stripeJsPromise
+
+  stripeJsPromise = new Promise<void>((resolve, reject) => {
+    const existingScript = document.querySelector<HTMLScriptElement>('script[data-stripe-js]')
+    const script = existingScript ?? document.createElement('script')
+    const onLoad = () => resolve()
+    const onError = () => reject(new Error('No se pudo cargar Stripe.js.'))
+
+    script.addEventListener('load', onLoad, { once: true })
+    script.addEventListener('error', onError, { once: true })
+
+    if (!existingScript) {
+      script.src = 'https://js.stripe.com/v3/'
+      script.async = true
+      script.dataset.stripeJs = 'true'
+      document.head.append(script)
+    }
+  }).catch((error: unknown) => {
+    stripeJsPromise = null
+    throw error
+  })
+
+  return stripeJsPromise
+}
+
+function getStripe() {
+  return getOrCreateStripeClient(dtiStripePublishableKey(), async (publishableKey) => {
+    await loadStripeJs()
+    if (!window.Stripe) throw new Error('Stripe.js no está disponible.')
+    return window.Stripe(publishableKey)
+  })
 }
 
 export function DtiStripePayment({ orderId, orderToken }: { orderId: string; orderToken: string }) {
   const mountRef = useRef<HTMLDivElement | null>(null)
+  const stripeRef = useRef<StripeClient | null>(null)
   const elementsRef = useRef<StripeElements | null>(null)
   const [ready, setReady] = useState(false)
   const [busy, setBusy] = useState(false)
@@ -42,23 +68,25 @@ export function DtiStripePayment({ orderId, orderToken }: { orderId: string; ord
         const stripe = await getStripe()
         if (disposed || !mountRef.current) return
         const elements = stripe.elements({ clientSecret: response.clientSecret, appearance: { theme: 'night', variables: { colorPrimary: '#d6a85c', colorBackground: '#151719', colorText: '#f4f1e9', borderRadius: '12px' } } })
+        stripeRef.current = stripe
         elementsRef.current = elements
         paymentElement = elements.create('payment', { layout: 'tabs' })
         paymentElement.mount(mountRef.current)
         setReady(true)
       } catch (cause) { if (!disposed) setMessage(cause instanceof Error ? cause.message : 'No se pudo iniciar el pago de prueba.') }
     })()
-    return () => { disposed = true; paymentElement?.unmount(); elementsRef.current = null }
+    return () => { disposed = true; paymentElement?.unmount(); stripeRef.current = null; elementsRef.current = null }
   }, [orderId, orderToken])
 
   const pay = async () => {
-    if (!elementsRef.current || !ready) return
+    const stripe = stripeRef.current
+    const elements = elementsRef.current
+    if (!stripe || !elements || !ready) return
     setBusy(true); setMessage('')
     try {
-      const validation = await elementsRef.current.submit()
+      const validation = await elements.submit()
       if (validation.error) throw new Error(validation.error.message ?? 'Revisa los datos de pago.')
-      const stripe = await getStripe()
-      const result = await stripe.confirmPayment({ elements: elementsRef.current, confirmParams: { return_url: window.location.href }, redirect: 'if_required' })
+      const result = await stripe.confirmPayment({ elements, confirmParams: { return_url: window.location.href }, redirect: 'if_required' })
       if (result.error) throw new Error(result.error.message ?? 'Stripe no pudo confirmar el intento.')
       setMessage('Stripe recibió el intento. El pedido solo aparecerá pagado cuando el webhook de prueba confirme el importe y la moneda.')
     } catch (cause) { setMessage(cause instanceof Error ? cause.message : 'No se pudo completar el intento de prueba.') }

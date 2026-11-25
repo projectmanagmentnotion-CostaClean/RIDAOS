@@ -6,6 +6,7 @@ import { useLiveToast } from '../features/live-feedback'
 import { publicRoutes } from '../lib/navigation'
 import { addToCart } from '../lib/cart'
 import { rememberDtiArtwork } from '../features/dtf/dtiCheckout'
+import { dtiArtworkCanEnterCart } from '../features/dtf/dtiArtworkGate.mjs'
 import { useCartStore } from '../store/useCartStore'
 import type { CartItem } from '../types/ecommerce'
 import './DTFPage.css'
@@ -36,8 +37,7 @@ function DTFPage() {
     metadata: ArtworkUploadFlowState['metadata']
     summary: ArtworkPreviewSummary | null
     acceptance: ArtworkUploadFlowState['acceptance']
-    confirmed: boolean
-  }>({ metadata: null, summary: null, acceptance: null, confirmed: false })
+  }>({ metadata: null, summary: null, acceptance: null })
 
   const meters = Number(metersInput)
   const price = useMemo(() => calculateDtiInnuroPrice(meters), [meters])
@@ -47,6 +47,7 @@ function DTFPage() {
   const shippingPrice = isPickup ? 0 : DTI_INNURO_SHIPPING_PRICE
   const total = price.total + shippingPrice
   const adaptationRate = calculateDtiAdaptationRate(1)
+  const artworkCanContinue = dtiArtworkCanEnterCart(selectedFile, artworkState.acceptance)
   const cutoffCopy = cutoff.startsNextWorkingDay
     ? 'Los pedidos recibidos ahora pasan al siguiente día laborable.'
     : 'Los pedidos antes de las 18:30 (Europe/Madrid) cuentan desde el mismo día laborable.'
@@ -62,7 +63,7 @@ function DTFPage() {
       error('Pedido mínimo de 1 m', 'Ajusta el metraje para continuar.')
       return
     }
-    if (!selectedFile || !artworkState.confirmed || !artworkState.acceptance) {
+    if (!selectedFile || !artworkState.acceptance || !artworkCanContinue) {
       error('Revisa el archivo', 'Sube el arte y acepta la referencia o solicita ayuda de diseño.')
       return
     }
@@ -193,8 +194,8 @@ function DTFPage() {
                 acceptedFormats=".png,.pdf,.ai,.psd,.svg,.cdr"
                 description="La comprobación del navegador es orientativa. AI, PSD, SVG y CDR requieren revisión manual antes de producir o cobrar."
                 file={selectedFile}
-                onFileChange={(file) => { setSelectedFile(file); setArtworkState((current) => ({ ...current, confirmed: false })) }}
-                onStateChange={setArtworkState}
+                onFileChange={(file) => { setSelectedFile(file); setArtworkState({ metadata: null, summary: null, acceptance: null }) }}
+                onStateChange={({ metadata, summary, acceptance }) => setArtworkState({ metadata, summary, acceptance })}
                 ruleKey="dtf_meter"
                 summaryItems={[{ label: 'Producto', value: 'DTI Innuro' }, { label: 'Metraje', value: price.valid ? `${meters} m` : 'Pendiente' }, { label: 'Ancho útil', value: '55 cm' }]}
                 title="Sube el arte final"
@@ -224,7 +225,7 @@ function DTFPage() {
             {addedToCart ? (
               <a className="dti-button dti-button--accent dti-order-card__submit" href={publicRoutes.carrito}>Ver carrito <span aria-hidden="true">↗</span></a>
             ) : (
-              <button className="dti-button dti-button--accent dti-order-card__submit" disabled={!price.valid || !selectedFile || !artworkState.confirmed} onClick={handleAddToCart} type="button">Añadir al carrito <span aria-hidden="true">↗</span></button>
+              <button className="dti-button dti-button--accent dti-order-card__submit" disabled={!price.valid || !selectedFile || !artworkCanContinue} onClick={handleAddToCart} type="button">Añadir al carrito <span aria-hidden="true">↗</span></button>
             )}
             <p className="dti-order-card__disclaimer">Solicitud de prueba local. No se envía un pedido real ni se realiza ningún cobro.</p>
           </aside>

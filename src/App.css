@@ -8148,6 +8148,57 @@ body.lenis {
   gap: 12px;
 }
 
+.dti-auth-callback {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: clamp(1rem, 4vw, 3rem);
+  background: radial-gradient(circle at 15% 20%, rgba(0, 229, 255, .12), transparent 32%), #08090a;
+  color: #f5f7f8;
+}
+
+.dti-auth-callback__card {
+  width: min(100%, 34rem);
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  border: 1px solid rgba(0, 229, 255, .24);
+  border-radius: 1.5rem;
+  background: rgba(19, 22, 23, .9);
+  box-shadow: 0 1.5rem 5rem rgba(0, 0, 0, .48);
+}
+
+.dti-auth-callback__card h1 {
+  margin: .8rem 0;
+  font-size: clamp(1.8rem, 5vw, 2.7rem);
+}
+
+.dti-auth-callback__form {
+  display: grid;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.dti-auth-callback__form label {
+  display: grid;
+  gap: .45rem;
+}
+
+.dti-auth-callback__form input {
+  min-height: 2.9rem;
+  padding: .65rem .8rem;
+  border: 1px solid rgba(255, 255, 255, .16);
+  border-radius: .75rem;
+  background: rgba(255, 255, 255, .06);
+  color: inherit;
+}
+
+.dti-auth-callback__error {
+  color: #ff9b9b;
+}
+
+.dti-auth-callback__card > .action-button {
+  margin-top: 1rem;
+}
+
 .dti-staff-login {
   max-width: 560px;
   padding: 18px;

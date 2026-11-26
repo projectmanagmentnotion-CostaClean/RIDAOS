@@ -2,9 +2,12 @@ import { useEffect, useState, type FormEvent } from 'react'
 import AdminSection from './AdminSection'
 import {
   callDtiStaff,
+  clearDtiStaffSession,
+  ensureDtiStaffSession,
   getDtiArtworkDownload,
   getDtiStaffSession,
   newDtiOperationKey,
+  requestDtiPasswordRecovery,
   signInDtiStaff,
   signOutDtiStaff,
   type DtiStaffOrder,
@@ -49,6 +52,8 @@ function DtiOperationsWorkspace() {
   const [permissions, setPermissions] = useState<string[]>([])
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [recoveryMode, setRecoveryMode] = useState(false)
+  const [recoverySent, setRecoverySent] = useState(false)
   const [summaryByOrder, setSummaryByOrder] = useState<Record<string, string>>({})
   const [trackingByOrder, setTrackingByOrder] = useState<Record<string, string>>({})
   const [reviewedVersion, setReviewedVersion] = useState<Record<string, boolean>>({})
@@ -73,7 +78,11 @@ function DtiOperationsWorkspace() {
         setOrders([])
         setPermissions([])
       } else {
-        setError(reason)
+        if (reason === 'dti_session_expired') {
+          clearDtiStaffSession()
+          setSession(null)
+          setError('La sesión ha caducado. Inicia sesión de nuevo.')
+        } else setError(reason)
       }
     } finally {
       setLoading(false)
@@ -83,7 +92,11 @@ function DtiOperationsWorkspace() {
   useEffect(() => {
     if (!session) return
     let active = true
-    void callDtiStaff<DtiStaffResponse>(session, { action: 'list_orders' })
+    void ensureDtiStaffSession(session)
+      .then((nextSession) => {
+        if (active) setSession(nextSession)
+        return callDtiStaff<DtiStaffResponse>(nextSession, { action: 'list_orders' })
+      })
       .then((result) => {
         if (!active) return
         setOrders(result.orders)
@@ -94,7 +107,11 @@ function DtiOperationsWorkspace() {
       .catch((cause: unknown) => {
         if (!active) return
         const reason = cause instanceof Error ? cause.message : 'No se pudo cargar la cola DTI.'
-        if (reason === 'insufficient_staff_permission') {
+        if (reason === 'dti_session_expired') {
+          clearDtiStaffSession()
+          setSession(null)
+          setError('La sesión ha caducado. Inicia sesión de nuevo.')
+        } else if (reason === 'insufficient_staff_permission') {
           setAccessDenied(true)
           setOrders([])
           setPermissions([])
@@ -121,12 +138,27 @@ function DtiOperationsWorkspace() {
   }
 
   const handleSignOut = () => {
-    signOutDtiStaff()
+    void signOutDtiStaff()
     setSession(null)
     setOrders([])
     setPermissions([])
     setAccessDenied(false)
     setNotice('Sesión cerrada en este dispositivo.')
+  }
+
+  const handleRecovery = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setLoading(true)
+    setError('')
+    setRecoverySent(false)
+    try {
+      await requestDtiPasswordRecovery(email)
+      setRecoverySent(true)
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : 'No se pudo solicitar el enlace.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const perform = async (order: DtiStaffOrder, payload: Record<string, unknown>, successMessage: string) => {
@@ -166,12 +198,25 @@ function DtiOperationsWorkspace() {
       actions={session ? <button className="action-button action-button-muted" onClick={handleSignOut} type="button">Cerrar sesión · {session.email}</button> : null}
     >
       {!session ? (
-        <form className="dti-staff-login" onSubmit={handleSignIn}>
+        <div>
           <p>Acceso de personal mediante Supabase Auth. El acceso operativo depende de permisos DTI ya asignados; esta pantalla no crea usuarios ni permisos.</p>
-          <label>Email de personal<input autoComplete="username" onChange={(event) => setEmail(event.target.value)} required type="email" value={email} /></label>
-          <label>Contraseña<input autoComplete="current-password" onChange={(event) => setPassword(event.target.value)} required type="password" value={password} /></label>
-          <button className="action-button action-button-primary" disabled={loading} type="submit">{loading ? 'Conectando…' : 'Acceder a la cola DTI'}</button>
-        </form>
+          {recoveryMode ? (
+            <form className="dti-staff-login" onSubmit={(event) => void handleRecovery(event)}>
+              <p>Si la cuenta puede recuperar el acceso, recibirás un enlace seguro en su dirección de correo.</p>
+              <label>Email de personal<input autoComplete="username" onChange={(event) => setEmail(event.target.value)} required type="email" value={email} /></label>
+              <button className="action-button action-button-primary" disabled={loading} type="submit">{loading ? 'Solicitando…' : 'Enviar enlace de recuperación'}</button>
+              <button className="action-button action-button-muted" onClick={() => { setRecoveryMode(false); setRecoverySent(false); setError('') }} type="button">Volver al acceso</button>
+              {recoverySent ? <p role="status">Solicitud recibida. Revisa el correo si la cuenta está registrada.</p> : null}
+            </form>
+          ) : (
+            <form className="dti-staff-login" onSubmit={handleSignIn}>
+              <label>Email de personal<input autoComplete="username" onChange={(event) => setEmail(event.target.value)} required type="email" value={email} /></label>
+              <label>Contraseña<input autoComplete="current-password" onChange={(event) => setPassword(event.target.value)} required type="password" value={password} /></label>
+              <button className="action-button action-button-primary" disabled={loading} type="submit">{loading ? 'Conectando…' : 'Acceder a la cola DTI'}</button>
+              <button className="action-button action-button-muted" onClick={() => { setRecoveryMode(true); setError('') }} type="button">He olvidado mi contraseña</button>
+            </form>
+          )}
+        </div>
       ) : (
         <>
           <div className="dti-staff-toolbar">

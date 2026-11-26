@@ -16,6 +16,8 @@ import { PremiumNavBar } from './features/navigation'
 import { PublicationContext } from './config/publicationContext'
 import { useResolvedPublicationPolicy } from './config/usePublicationPolicy'
 import { isPublicationRouteAllowed, resolvePublicationRoute, PUBLICATION_ROUTE_BY_KEY } from './config/publicationPolicy.mjs'
+import DtiAuthCallback from './admin/components/DtiAuthCallback'
+import { DTI_AUTH_CALLBACK_PATH } from './admin/services/dtiAuthFlow.mjs'
 
 type RouteKey =
   | 'home'
@@ -244,6 +246,7 @@ function PageLoadingFallback() {
 }
 
 function App() {
+  const isDtiAuthCallback = window.location.pathname === DTI_AUTH_CALLBACK_PATH
   const publicationPolicy = useResolvedPublicationPolicy(window.location.hostname)
   const [currentHashRoute, setCurrentHashRoute] = useState(() => getCurrentHashRoute())
   const [route, setRoute] = useState<RouteKey>(() => getRouteFromHash(currentHashRoute))
@@ -262,6 +265,7 @@ function App() {
   }, [publicationPolicy])
 
   useEffect(() => {
+    if (isDtiAuthCallback) return
     const smoothScroll = initSmoothScroll()
     syncScrollTriggerWithLenis()
 
@@ -290,7 +294,7 @@ function App() {
       window.removeEventListener('hashchange', syncRoute)
       smoothScroll.destroy()
     }
-  }, [publicationPolicy, resolveVisibleRoute])
+  }, [isDtiAuthCallback, publicationPolicy, resolveVisibleRoute])
 
   useEffect(() => {
     const smoothScroll = initSmoothScroll()
@@ -353,6 +357,8 @@ function App() {
     'src/content/footerContent.ts',
     footerContent,
   )
+
+  if (isDtiAuthCallback) return <DtiAuthCallback />
 
   return (
     <PublicationContext.Provider value={publicationPolicy}>

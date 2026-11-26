@@ -204,6 +204,18 @@ begin
   end if;
   insert into public.dti_payment_attempts(order_id, idempotency_key, stripe_payment_intent_id, artwork_version_id, amount_cents, status)
   values (v_retry_order_id, 'integration-attempt-000002', 'pi_test_retry_000001', v_retry_version_id, 1500, 'requires_payment_method');
+  if not dti_private.process_stripe_payment_event('evt_dti_retry_decline_000001', 'payment_intent.payment_failed', 'pi_test_retry_000001', v_retry_order_id, 1500, 'eur') then
+    raise exception 'declined payment event was not acknowledged';
+  end if;
+  if not exists (
+    select 1 from public.dti_orders where id = v_retry_order_id and payment_status = 'failed' and status = 'awaiting_payment'
+  ) or not exists (
+    select 1 from public.dti_payment_attempts where order_id = v_retry_order_id and status = 'requires_payment_method'
+  ) or not exists (
+    select 1 from public.dti_stripe_events where stripe_event_id = 'evt_dti_retry_decline_000001' and processed
+  ) then
+    raise exception 'declined payment did not remain retryable';
+  end if;
   v_blocked := false;
   begin
     perform dti_private.process_stripe_payment_event('evt_dti_retry_000001', 'payment_intent.succeeded', 'pi_test_retry_000001', v_retry_order_id, 1499, 'eur');

@@ -56,6 +56,7 @@ begin
   end if;
 
   v_event_key := 'dti-production:' || p_idempotency_key;
+  perform pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended(v_event_key, 0));
   select * into v_existing_event from public.dti_order_events
   where idempotency_key = v_event_key;
   if found then

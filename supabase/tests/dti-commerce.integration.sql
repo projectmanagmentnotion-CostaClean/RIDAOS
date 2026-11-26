@@ -196,6 +196,13 @@ begin
     or (select count(*) from public.dti_order_events where order_id = v_order_id and idempotency_key = 'dti-production:integration-stage-production-0001') <> 1 then
     raise exception 'production update retry was not idempotent';
   end if;
+  v_blocked := false;
+  begin
+    perform dti_private.update_dti_production_status(v_order_id, v_staff, 'in_production', 'Contenido distinto para la misma clave', null, 'integration-stage-production-0001');
+  exception when others then
+    v_blocked := true;
+  end;
+  if not v_blocked then raise exception 'production idempotency key was reused with a different payload'; end if;
   if not dti_private.update_dti_production_status(v_order_id, v_staff, 'quality_control', 'Revisión de color y acabado', null, 'integration-stage-qc-000001')
     or not dti_private.update_dti_production_status(v_order_id, v_staff, 'rework_required', 'Color fuera de tolerancia', null, 'integration-stage-rework-0001')
     or not dti_private.update_dti_production_status(v_order_id, v_staff, 'in_production', 'Reimpresión liberada tras ajuste', null, 'integration-stage-reprint-0001')

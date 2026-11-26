@@ -3,6 +3,7 @@ import AdminSection from '../components/AdminSection'
 import EmptyAdminState from '../components/EmptyAdminState'
 import OrderStatusBadge from '../components/OrderStatusBadge'
 import AdminShell from '../layouts/AdminShell'
+import DtiOperationsWorkspace from '../components/DtiOperationsWorkspace'
 import { patchAdminOrderDispatch } from '../services/orderAdminService'
 import { productionStageDefinitions, shippingStatusLabels } from '../../features/operations/mock/operationsMockData'
 import ProductionStageSummary from '../../features/operations/production/ProductionStageSummary'
@@ -62,8 +63,10 @@ function ProductionPage() {
   return (
     <AdminShell
       description="Pipeline operativo desde triage, impresion y control de calidad hasta salida."
+      hasDtiWorkspace
       title="Produccion y flujo operativo"
     >
+      <DtiOperationsWorkspace />
       <div className="admin-stat-grid">
         <AdminStatCard label="Revision arte" note="Pedidos bloqueados por archivo o aprobacion." value={stats?.artworkPending ?? '...'} />
         <AdminStatCard label="Label pendiente" note="Pedidos listos sin expedicion cerrada." value={stats?.labelPending ?? '...'} />

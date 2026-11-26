@@ -4,6 +4,7 @@ import { useAdminUiStore } from '../store/useAdminUiStore'
 type AdminShellProps = {
   title: string
   description: string
+  hasDtiWorkspace?: boolean
   children: ReactNode
 }
 
@@ -19,7 +20,7 @@ const adminNavigation = [
   { href: '#/admin/production', label: 'Produccion' },
 ]
 
-function AdminShell({ title, description, children }: AdminShellProps) {
+function AdminShell({ title, description, hasDtiWorkspace = false, children }: AdminShellProps) {
   const mobileSidebarOpen = useAdminUiStore((state) => state.mobileSidebarOpen)
   const toggleMobileSidebar = useAdminUiStore((state) => state.toggleMobileSidebar)
   const closeMobileSidebar = useAdminUiStore((state) => state.closeMobileSidebar)
@@ -31,11 +32,11 @@ function AdminShell({ title, description, children }: AdminShellProps) {
         <div className="admin-sidebar-head">
           <p className="section-label">RidaosPrint</p>
           <h2>Operaciones</h2>
-          <p>Demostracion local del panel de revision, produccion, notas internas y salida.</p>
+          <p>{hasDtiWorkspace ? 'Operaciones DTI protegidas por Supabase QA. Las áreas legacy de este panel conservan sus datos de demostración.' : 'Demostracion local del panel de revision, produccion, notas internas y salida.'}</p>
         </div>
         <div className="admin-sidebar-mode">
-          <span className="status-badge status-warning">Modo demo · no operativo</span>
-          <span className="status-badge status-muted">Datos simulados · no son pedidos reales</span>
+          <span className={`status-badge ${hasDtiWorkspace ? 'status-info' : 'status-warning'}`}>{hasDtiWorkspace ? 'DTI QA · acceso por rol' : 'Modo demo · no operativo'}</span>
+          <span className="status-badge status-muted">{hasDtiWorkspace ? 'Legacy · datos simulados' : 'Datos simulados · no son pedidos reales'}</span>
         </div>
         <nav aria-label="Admin" className="admin-sidebar-nav">
           {adminNavigation.map((item) => (
@@ -58,9 +59,15 @@ function AdminShell({ title, description, children }: AdminShellProps) {
             <h1>{title}</h1>
             <p>{description}</p>
             <div className="admin-topbar-meta">
-              <span>Demostracion local</span>
-              <span>Los cambios solo afectan datos de muestra</span>
-              <span>No conecta con pedidos DTI ni con Supabase</span>
+              {hasDtiWorkspace ? <>
+                <span>Cola DTI conectada a QA después del inicio de sesión</span>
+                <span>Las demás áreas siguen siendo demos</span>
+                <span>Permisos comprobados por Supabase en cada acción</span>
+              </> : <>
+                <span>Demostracion local</span>
+                <span>Los cambios solo afectan datos de muestra</span>
+                <span>No conecta con pedidos DTI ni con Supabase</span>
+              </>}
             </div>
           </div>
           <button

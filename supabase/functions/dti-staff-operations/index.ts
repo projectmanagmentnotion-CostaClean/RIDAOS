@@ -16,9 +16,69 @@ Deno.serve(async (request) => {
     const { data: { user }, error: authError } = await userClient.auth.getUser()
     if (authError || !user) return reply(request, { error: 'invalid_authentication' }, 401)
     const body = await request.json()
+    const admin = createClient(url, serviceKey, { auth: { persistSession: false } })
+    const { data: permissionRows, error: permissionError } = await admin.from('dti_staff_permissions')
+      .select('permission').eq('user_id', user.id)
+    if (permissionError) throw permissionError
+    const permissions = (permissionRows ?? []).map((row) => row.permission)
+    if (body.action === 'list_orders') {
+      if (!permissions.some((permission) => ['review_artwork', 'manage_quotes', 'manage_production', 'manage_payments'].includes(permission))) {
+        return reply(request, { error: 'insufficient_staff_permission' }, 403)
+      }
+      const { data: orders, error: ordersError } = await admin.from('dti_orders')
+        .select('id,customer_name,meters,useful_width_mm,shipping_method,shipping_total_cents,total_cents,currency_code,status,payment_status,adaptation_requested,preparation_working_days,estimated_dispatch_date,confirmed_lead_time,lead_time_confirmed_at,production_started_at,quality_control_completed_at,dispatch_ready_at,dispatched_at,picked_up_at,tracking_reference,created_at')
+        .order('created_at', { ascending: false }).limit(100)
+      if (ordersError) throw ordersError
+      const orderIds = (orders ?? []).map((order) => order.id)
+      const { data: artworkFiles, error: artworkError } = orderIds.length
+        ? await admin.from('dti_artwork_files').select('id,order_id').in('order_id', orderIds)
+        : { data: [], error: null }
+      if (artworkError) throw artworkError
+      const fileIds = (artworkFiles ?? []).map((file) => file.id)
+      const { data: versions, error: versionsError } = fileIds.length
+        ? await admin.from('dti_artwork_versions').select('id,artwork_file_id,version_number,original_file_name,format,file_size_bytes,validation_status,validation_summary,client_accepted_at,uploaded_at').in('artwork_file_id', fileIds).order('version_number', { ascending: false })
+        : { data: [], error: null }
+      if (versionsError) throw versionsError
+      const versionIds = (versions ?? []).map((version) => version.id)
+      const { data: reviews, error: reviewsError } = versionIds.length
+        ? await admin.from('dti_artwork_reviews').select('artwork_version_id,decision,summary,reviewer_user_id,created_at').in('artwork_version_id', versionIds).order('created_at', { ascending: false })
+        : { data: [], error: null }
+      if (reviewsError) throw reviewsError
+      const { data: events, error: eventsError } = orderIds.length
+        ? await admin.from('dti_order_events').select('order_id,event_type,actor_user_id,actor_kind,details,created_at').in('order_id', orderIds).order('created_at', { ascending: false }).limit(500)
+        : { data: [], error: null }
+      if (eventsError) throw eventsError
+      const fileByOrder = new Map((artworkFiles ?? []).map((file) => [file.order_id, file.id]))
+      const latestVersionByFile = new Map<string, NonNullable<typeof versions>[number]>()
+      for (const version of versions ?? []) if (!latestVersionByFile.has(version.artwork_file_id)) latestVersionByFile.set(version.artwork_file_id, version)
+      const latestReviewByVersion = new Map<string, NonNullable<typeof reviews>[number]>()
+      for (const review of reviews ?? []) if (!latestReviewByVersion.has(review.artwork_version_id)) latestReviewByVersion.set(review.artwork_version_id, review)
+      return reply(request, {
+        permissions,
+        orders: (orders ?? []).map((order) => {
+          const version = latestVersionByFile.get(fileByOrder.get(order.id) ?? '')
+          return {
+            ...order,
+            latestArtwork: version ? { ...version, latestReview: latestReviewByVersion.get(version.id) ?? null } : null,
+            events: (events ?? []).filter((event) => event.order_id === order.id).slice(0, 8),
+          }
+        }),
+      })
+    }
+    if (body.action === 'artwork_download') {
+      if (!permissions.includes('review_artwork') || typeof body.versionId !== 'string' || !/^[0-9a-f-]{36}$/i.test(body.versionId)) {
+        return reply(request, { error: 'insufficient_staff_permission' }, 403)
+      }
+      const { data: version, error: versionError } = await admin.from('dti_artwork_versions')
+        .select('storage_path,format,original_file_name').eq('id', body.versionId).maybeSingle()
+      if (versionError) throw versionError
+      if (!version) return reply(request, { error: 'artwork_not_found' }, 404)
+      const { data: signed, error: signedError } = await admin.storage.from('dti-artwork').createSignedUrl(version.storage_path, 120, { download: version.original_file_name })
+      if (signedError) throw signedError
+      return reply(request, { url: signed.signedUrl, format: version.format, fileName: version.original_file_name, expiresInSeconds: 120 })
+    }
     const idempotencyKey = request.headers.get('idempotency-key')
     if (!idempotencyKey || !/^[A-Za-z0-9_-]{16,100}$/.test(idempotencyKey)) return reply(request, { error: 'idempotency_key_required' }, 400)
-    const admin = createClient(url, serviceKey, { auth: { persistSession: false } })
 
     if (body.action === 'review_artwork') {
       if (typeof body.versionId !== 'string' || !['approved', 'rejected', 'revision_requested'].includes(body.decision) || typeof body.summary !== 'string' || body.summary.trim().length < 3 || body.summary.length > 2000 || !Array.isArray(body.checklist) || body.checklist.length > 100) return reply(request, { error: 'invalid_review_request' }, 400)

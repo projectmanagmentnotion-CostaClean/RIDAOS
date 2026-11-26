@@ -31,11 +31,11 @@ function AdminShell({ title, description, children }: AdminShellProps) {
         <div className="admin-sidebar-head">
           <p className="section-label">RidaosPrint</p>
           <h2>Operaciones</h2>
-          <p>Panel operativo para revision de arte, produccion, notas internas y salida.</p>
+          <p>Demostracion local del panel de revision, produccion, notas internas y salida.</p>
         </div>
         <div className="admin-sidebar-mode">
-          <span className="status-badge status-info">Entorno operativo</span>
-          <span className="status-badge status-muted">Datos de trabajo activos</span>
+          <span className="status-badge status-warning">Modo demo · no operativo</span>
+          <span className="status-badge status-muted">Datos simulados · no son pedidos reales</span>
         </div>
         <nav aria-label="Admin" className="admin-sidebar-nav">
           {adminNavigation.map((item) => (
@@ -58,9 +58,9 @@ function AdminShell({ title, description, children }: AdminShellProps) {
             <h1>{title}</h1>
             <p>{description}</p>
             <div className="admin-topbar-meta">
-              <span>Panel interno</span>
-              <span>Operacion local activa</span>
-              <span>Listo para escalar a datos y roles conectados</span>
+              <span>Demostracion local</span>
+              <span>Los cambios solo afectan datos de muestra</span>
+              <span>No conecta con pedidos DTI ni con Supabase</span>
             </div>
           </div>
           <button

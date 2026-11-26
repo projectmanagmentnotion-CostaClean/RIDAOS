@@ -87,7 +87,9 @@ begin
 
   v_order := dti_private.create_dti_order(
     'integration-order-000002', 'hash-adaptation-order', v_customer, null,
-    'Taller DTI', 'dti-customer@example.test', '+34900000000', null, 1.0, 'pickup', true, date '2026-11-26'
+    'Taller DTI', 'dti-customer@example.test', '+34900000000',
+    '{"line1":"Carrer d’Aragó 423","line2":null,"postalCode":"08013","city":"Barcelona","province":"Barcelona","countryCode":"ES"}'::jsonb,
+    1.0, 'standard', true, date '2026-11-26'
   );
   v_order_id := (v_order->>'orderId')::uuid;
   v_quote_id := dti_private.create_adaptation_quote(v_order_id, 1.23, v_staff);
@@ -97,7 +99,7 @@ begin
   if not dti_private.decide_adaptation_quote(v_quote_id, 'approved', v_customer, null) then
     raise exception 'customer quote approval was not recorded';
   end if;
-  if not exists (select 1 from public.dti_orders where id = v_order_id and adaptation_quote_id = v_quote_id and total_cents = 6709) then
+  if not exists (select 1 from public.dti_orders where id = v_order_id and adaptation_quote_id = v_quote_id and total_cents = 7209) then
     raise exception 'approved quote was not included in the authoritative order total';
   end if;
 
@@ -115,15 +117,15 @@ begin
     or (select count(*) from public.dti_artwork_events where artwork_version_id = v_version_id and event_type = 'client_accepted') <> 1 then
     raise exception 'client acceptance retry changed its audit record';
   end if;
-  update public.dti_orders set status = 'awaiting_payment', payment_status = 'unpaid', total_cents = 6709 where id = v_order_id;
+  update public.dti_orders set status = 'awaiting_payment', payment_status = 'unpaid', total_cents = 7209 where id = v_order_id;
   insert into public.dti_payment_attempts(order_id, idempotency_key, stripe_payment_intent_id, artwork_version_id, adaptation_quote_id, amount_cents, status)
-  values (v_order_id, 'integration-attempt-000001', 'pi_test_integration_000001', v_version_id, v_quote_id, 6709, 'requires_payment_method')
+  values (v_order_id, 'integration-attempt-000001', 'pi_test_integration_000001', v_version_id, v_quote_id, 7209, 'requires_payment_method')
   returning id into v_attempt_id;
 
-  if not dti_private.process_stripe_payment_event('evt_dti_integration_000001', 'payment_intent.succeeded', 'pi_test_integration_000001', v_order_id, 6709, 'eur') then
+  if not dti_private.process_stripe_payment_event('evt_dti_integration_000001', 'payment_intent.succeeded', 'pi_test_integration_000001', v_order_id, 7209, 'eur') then
     raise exception 'first verified Stripe event was not processed';
   end if;
-  if not dti_private.process_stripe_payment_event('evt_dti_integration_000001', 'payment_intent.succeeded', 'pi_test_integration_000001', v_order_id, 6709, 'eur') then
+  if not dti_private.process_stripe_payment_event('evt_dti_integration_000001', 'payment_intent.succeeded', 'pi_test_integration_000001', v_order_id, 7209, 'eur') then
     raise exception 'duplicate Stripe event was not acknowledged idempotently';
   end if;
   if not exists (select 1 from public.dti_orders where id = v_order_id and payment_status = 'paid' and status = 'paid_awaiting_technical_review') then
@@ -191,10 +193,17 @@ begin
   end;
   if not v_blocked then raise exception 'production status skipped a required stage'; end if;
 
-  if not dti_private.update_dti_production_status(v_order_id, v_staff, 'in_production', 'Inicio de impresión de prueba', null, 'integration-stage-production-0001')
-    or not dti_private.update_dti_production_status(v_order_id, v_staff, 'in_production', 'Inicio de impresión de prueba', null, 'integration-stage-production-0001')
-    or (select count(*) from public.dti_order_events where order_id = v_order_id and idempotency_key = 'dti-production:integration-stage-production-0001') <> 1 then
-    raise exception 'production update retry was not idempotent';
+  if not dti_private.update_dti_production_status(v_order_id, v_staff, 'in_production', 'Inicio de impresión de prueba', null, 'integration-stage-production-0001') then
+    raise exception 'initial production status update failed';
+  end if;
+  if not dti_private.update_dti_production_status(v_order_id, v_staff, 'in_production', 'Inicio de impresión de prueba', null, 'integration-stage-production-0001') then
+    raise exception 'identical production retry was not acknowledged';
+  end if;
+  if (select count(*) from public.dti_order_events where order_id = v_order_id and idempotency_key = 'dti-production:integration-stage-production-0001') <> 1 then
+    raise exception 'production retry created a duplicate event';
+  end if;
+  if not exists (select 1 from public.dti_orders where id = v_order_id and status = 'in_production') then
+    raise exception 'production retry did not preserve the current stage';
   end if;
   v_blocked := false;
   begin
@@ -203,15 +212,17 @@ begin
     v_blocked := true;
   end;
   if not v_blocked then raise exception 'production idempotency key was reused with a different payload'; end if;
-  if not dti_private.update_dti_production_status(v_order_id, v_staff, 'quality_control', 'Revisión de color y acabado', null, 'integration-stage-qc-000001')
-    or not dti_private.update_dti_production_status(v_order_id, v_staff, 'rework_required', 'Color fuera de tolerancia', null, 'integration-stage-rework-0001')
-    or not dti_private.update_dti_production_status(v_order_id, v_staff, 'in_production', 'Reimpresión liberada tras ajuste', null, 'integration-stage-reprint-0001')
-    or not dti_private.update_dti_production_status(v_order_id, v_staff, 'quality_control', 'Revisión final aprobada', null, 'integration-stage-qc-final-0001')
-    or not dti_private.update_dti_production_status(v_order_id, v_staff, 'preparing_dispatch', 'Embalaje según ficha técnica', null, 'integration-stage-packing-00001')
-    or not dti_private.update_dti_production_status(v_order_id, v_staff, 'ready_for_dispatch', 'Paquete precintado y listo', null, 'integration-stage-ready-000001')
-    or not dti_private.update_dti_production_status(v_order_id, v_staff, 'dispatched', 'Entregado a transporte de prueba', 'TEST-RIDAOS-0001', 'integration-stage-dispatched-0001') then
-    raise exception 'standard shipping production flow failed';
-  end if;
+  if not dti_private.update_dti_production_status(v_order_id, v_staff, 'quality_control', 'Revisión de color y acabado', null, 'integration-stage-qc-000001') then raise exception 'initial quality control update failed'; end if;
+  if not exists (select 1 from public.dti_orders where id = v_order_id and status = 'quality_control') then raise exception 'quality control did not persist before rework'; end if;
+  if not dti_private.update_dti_production_status(v_order_id, v_staff, 'rework_required', 'Color fuera de tolerancia', null, 'integration-stage-rework-0001') then raise exception 'rework status update failed'; end if;
+  if not exists (select 1 from public.dti_orders where id = v_order_id and status = 'rework_required') then raise exception 'rework status did not persist'; end if;
+  if not dti_private.update_dti_production_status(v_order_id, v_staff, 'in_production', 'Reimpresión liberada tras ajuste', null, 'integration-stage-reprint-0001') then raise exception 'reprint production update failed'; end if;
+  if not exists (select 1 from public.dti_orders where id = v_order_id and status = 'in_production') then raise exception 'reprint production status did not persist'; end if;
+  if not dti_private.update_dti_production_status(v_order_id, v_staff, 'quality_control', 'Revisión final aprobada', null, 'integration-stage-qc-final-0001') then raise exception 'final quality control update failed'; end if;
+  if not dti_private.update_dti_production_status(v_order_id, v_staff, 'preparing_dispatch', 'Embalaje según ficha técnica', null, 'integration-stage-packing-00001') then raise exception 'packing status update failed'; end if;
+  if not dti_private.update_dti_production_status(v_order_id, v_staff, 'ready_for_dispatch', 'Paquete precintado y listo', null, 'integration-stage-ready-000001') then raise exception 'dispatch-ready status update failed'; end if;
+  if not exists (select 1 from public.dti_orders where id = v_order_id and status = 'ready_for_dispatch' and shipping_method = 'standard') then raise exception 'dispatch-ready state or standard shipping method did not persist'; end if;
+  if not dti_private.update_dti_production_status(v_order_id, v_staff, 'dispatched', 'Entregado a transporte de prueba', 'TEST-RIDAOS-0001', 'integration-stage-dispatched-0001') then raise exception 'dispatch status update failed'; end if;
   if not exists (
     select 1 from public.dti_orders where id = v_order_id and status = 'dispatched'
       and payment_status = 'paid' and production_started_at is not null
@@ -219,7 +230,7 @@ begin
       and dispatched_at is not null and tracking_reference = 'TEST-RIDAOS-0001'
   ) then raise exception 'standard dispatch details were not persisted'; end if;
 
-  if not dti_private.process_stripe_payment_event('evt_dti_late_failure_000001', 'payment_intent.payment_failed', 'pi_test_integration_000001', v_order_id, 6709, 'eur') then
+  if not dti_private.process_stripe_payment_event('evt_dti_late_failure_000001', 'payment_intent.payment_failed', 'pi_test_integration_000001', v_order_id, 7209, 'eur') then
     raise exception 'late duplicate payment failure event was not acknowledged';
   end if;
   if not exists (select 1 from public.dti_orders where id = v_order_id and payment_status = 'paid' and status = 'dispatched') then

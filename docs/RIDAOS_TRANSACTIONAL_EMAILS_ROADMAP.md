@@ -7,6 +7,14 @@ No se activa Supabase Auth.
 No se activa Stripe.
 No se activa un proveedor transaccional.
 
+## Avance DTI V2.5
+
+- `20261126150000_dti_transactional_notification_outbox.sql` añade una cola transaccional privada que se alimenta desde una lista permitida de `dti_order_events`.
+- Cada evento fuente solo puede crear una intención (`source_event_id` único); la cola guarda IDs y clave de plantilla, no email ni contenido con datos personales.
+- `pending` significa pendiente de entrega, nunca enviado. La migración no está aplicada en QA y no existe todavía un trabajador de entrega.
+- La prueba focalizada de mapeo, deduplicación y eventos no mapeados pasó en Supabase QA dentro de `BEGIN/ROLLBACK`; se verificó que el esquema y los eventos temporales quedaron revertidos.
+- La entrega real queda bloqueada hasta elegir y autorizar un transporte existente. No reutilizar SMTP de Auth para pedidos comerciales ni activar un servicio de pago sin autorización.
+
 ## Objetivo futuro
 
 Centralizar emails de cuenta, solicitud, archivo y produccion sin acoplarlos al storefront mock actual.

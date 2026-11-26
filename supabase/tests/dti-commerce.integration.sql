@@ -48,7 +48,7 @@ begin
   end if;
   if (select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace
       where n.nspname = 'public' and p.proname ~ '^dti_'
-        and has_function_privilege('service_role', p.oid, 'execute')) <> 8 then
+        and has_function_privilege('service_role', p.oid, 'execute')) <> 9 then
     raise exception 'service_role cannot execute every DTI RPC wrapper';
   end if;
   if (select b.public from storage.buckets b where b.id = 'dti-artwork') is distinct from false then

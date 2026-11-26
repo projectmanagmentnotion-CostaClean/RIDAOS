@@ -21,7 +21,7 @@ Deno.serve(async (request) => {
     if (request.method === 'GET') {
       const orderId = new URL(request.url).searchParams.get('orderId')
       if (!orderId || !/^[0-9a-f-]{36}$/i.test(orderId)) return reply(request, { error: 'invalid_order' }, 400)
-      const { data: order, error } = await admin.from('dti_orders').select('id,owner_id,guest_access_token_hash,meters,useful_width_mm,product_total_cents,product_vat_cents,shipping_method,shipping_total_cents,shipping_vat_cents,total_cents,currency_code,status,payment_status,adaptation_requested,estimated_dispatch_date,preparation_working_days,confirmed_lead_time,lead_time_confirmed_at,created_at').eq('id', orderId).maybeSingle()
+      const { data: order, error } = await admin.from('dti_orders').select('id,owner_id,guest_access_token_hash,meters,useful_width_mm,product_total_cents,product_vat_cents,shipping_method,shipping_total_cents,shipping_vat_cents,total_cents,currency_code,status,payment_status,adaptation_requested,estimated_dispatch_date,preparation_working_days,confirmed_lead_time,lead_time_confirmed_at,production_started_at,quality_control_completed_at,dispatch_ready_at,dispatched_at,picked_up_at,tracking_reference,created_at').eq('id', orderId).maybeSingle()
       if (error) throw error
       if (!order) return reply(request, { error: 'order_not_found' }, 404)
       let allowed = Boolean(authData.user && order.owner_id === authData.user.id)
@@ -49,7 +49,10 @@ Deno.serve(async (request) => {
           currency: order.currency_code, status: order.status, paymentStatus: order.payment_status,
           adaptationRequested: order.adaptation_requested, estimatedDispatchDate: order.estimated_dispatch_date,
           preparationWorkingDays: order.preparation_working_days, confirmedLeadTime: order.confirmed_lead_time,
-          leadTimeConfirmedAt: order.lead_time_confirmed_at, createdAt: order.created_at,
+          leadTimeConfirmedAt: order.lead_time_confirmed_at, productionStartedAt: order.production_started_at,
+          qualityControlCompletedAt: order.quality_control_completed_at, dispatchReadyAt: order.dispatch_ready_at,
+          dispatchedAt: order.dispatched_at, pickedUpAt: order.picked_up_at,
+          trackingReference: order.tracking_reference, createdAt: order.created_at,
         },
         latestArtwork: latestArtwork ? {
           versionId: latestArtwork.id, version: latestArtwork.version_number, fileName: latestArtwork.original_file_name,

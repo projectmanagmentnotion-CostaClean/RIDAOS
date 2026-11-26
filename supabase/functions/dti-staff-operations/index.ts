@@ -38,6 +38,30 @@ Deno.serve(async (request) => {
       if (error) return reply(request, { error: 'production_release_rejected' }, 409)
       return reply(request, { released: data === true, orderId: body.orderId })
     }
+    if (body.action === 'update_production_status') {
+      const statuses = ['in_production', 'quality_control', 'rework_required', 'preparing_dispatch', 'ready_for_dispatch', 'dispatched', 'ready_for_pickup', 'picked_up']
+      if (typeof body.orderId !== 'string' || !/^[0-9a-f-]{36}$/i.test(body.orderId)
+        || typeof body.status !== 'string' || !statuses.includes(body.status)
+        || typeof body.summary !== 'string' || body.summary.trim().length < 5 || body.summary.length > 500
+        || (body.trackingReference !== undefined && body.trackingReference !== null && typeof body.trackingReference !== 'string')) {
+        return reply(request, { error: 'invalid_production_status_request' }, 400)
+      }
+      const trackingReference = typeof body.trackingReference === 'string' ? body.trackingReference.trim() : null
+      if (body.status === 'dispatched' && (!trackingReference || trackingReference.length < 4 || trackingReference.length > 120)
+        || body.status !== 'dispatched' && trackingReference !== null) {
+        return reply(request, { error: 'invalid_tracking_reference' }, 400)
+      }
+      const { data, error } = await admin.rpc('dti_update_production_status', {
+        p_order_id: body.orderId,
+        p_staff_user_id: user.id,
+        p_next_status: body.status,
+        p_summary: body.summary.trim(),
+        p_tracking_reference: trackingReference,
+        p_idempotency_key: idempotencyKey,
+      })
+      if (error) return reply(request, { error: 'production_status_update_rejected' }, 409)
+      return reply(request, { updated: data === true, orderId: body.orderId, status: body.status })
+    }
     if (body.action === 'confirm_lead_time') {
       if (typeof body.orderId !== 'string' || !/^[0-9a-f-]{36}$/i.test(body.orderId) || typeof body.summary !== 'string' || body.summary.trim().length < 5 || body.summary.length > 500) return reply(request, { error: 'invalid_lead_time_confirmation' }, 400)
       const { data, error } = await admin.rpc('dti_confirm_lead_time', {

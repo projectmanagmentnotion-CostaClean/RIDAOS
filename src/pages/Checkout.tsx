@@ -34,6 +34,24 @@ const formatCurrency = (value: number) =>
     currency: pricingContent.currency,
   }).format(value)
 
+const dtiOrderStatusLabels: Record<string, string> = {
+  awaiting_artwork: 'Esperando el archivo',
+  awaiting_artwork_review: 'Revisión inicial del archivo',
+  awaiting_manual_timeline: 'Plazo bajo consulta',
+  awaiting_payment: 'Pendiente de pago',
+  paid_awaiting_technical_review: 'Pago confirmado · revisión técnica pendiente',
+  queued_for_production: 'Aprobado · pendiente de producción',
+  in_production: 'En producción',
+  quality_control: 'Control de calidad',
+  rework_required: 'Ajuste de producción',
+  preparing_dispatch: 'Preparando el pedido',
+  ready_for_dispatch: 'Listo para envío',
+  dispatched: 'Despachado',
+  ready_for_pickup: 'Listo para recoger en Barcelona',
+  picked_up: 'Recogido',
+  cancelled: 'Cancelado',
+}
+
 function needsArtworkApproval(item: CartItem) {
   const acceptance = item.artwork.acceptance
   return Boolean(acceptance?.acceptanceRequired && !acceptance.clientAccepted && !acceptance.designerHelpRequested)
@@ -422,6 +440,12 @@ function Checkout() {
                     try { setDtiRemoteOrder(await callDtiFunction('dti-orders', { orderId: dtiOrderAccess.orderId }, { method: 'GET', orderToken: dtiOrderAccess.token })) }
                     catch (cause) { setDtiStatus(cause instanceof Error ? cause.message : 'No se pudo actualizar el pedido.') }
                   }}>Consultar estado y presupuesto</button>
+                  {typeof dtiRemoteOrder?.order?.status === 'string' ? <div className="inline-notice" role="status">
+                    <strong>Estado del pedido: {dtiOrderStatusLabels[dtiRemoteOrder.order.status] ?? 'En revisión por el equipo'}</strong>
+                    {typeof dtiRemoteOrder.order.trackingReference === 'string' ? <p>Referencia de seguimiento: {dtiRemoteOrder.order.trackingReference}</p> : null}
+                    {typeof dtiRemoteOrder.order.dispatchedAt === 'string' ? <p>Despachado el {new Date(dtiRemoteOrder.order.dispatchedAt).toLocaleDateString('es-ES')}</p> : null}
+                    {typeof dtiRemoteOrder.order.pickedUpAt === 'string' ? <p>Recogido el {new Date(dtiRemoteOrder.order.pickedUpAt).toLocaleDateString('es-ES')}</p> : null}
+                  </div> : null}
                   {dtiRemoteOrder?.adaptationQuote ? <>
                     <p>Presupuesto de adaptación: {Number(dtiRemoteOrder.adaptationQuote.hours)} h · {formatCurrency(Number(dtiRemoteOrder.adaptationQuote.total_cents) / 100)} IVA incluido · estado: {String(dtiRemoteOrder.adaptationQuote.status)}</p>
                     {dtiRemoteOrder.adaptationQuote.status === 'awaiting_customer_approval' ? <div className="form-actions">

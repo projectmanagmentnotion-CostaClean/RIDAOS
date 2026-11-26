@@ -175,10 +175,47 @@ begin
     raise exception 'production transition was not persisted';
   end if;
 
+  v_blocked := false;
+  begin
+    perform dti_private.update_dti_production_status(v_order_id, v_customer, 'in_production', 'Unauthorized production update', null, 'integration-unauthorized-0001');
+  exception when others then
+    v_blocked := true;
+  end;
+  if not v_blocked then raise exception 'a customer without production permission changed the order'; end if;
+
+  v_blocked := false;
+  begin
+    perform dti_private.update_dti_production_status(v_order_id, v_staff, 'quality_control', 'Invalid skipped stage', null, 'integration-invalid-stage-0001');
+  exception when others then
+    v_blocked := true;
+  end;
+  if not v_blocked then raise exception 'production status skipped a required stage'; end if;
+
+  if not dti_private.update_dti_production_status(v_order_id, v_staff, 'in_production', 'Inicio de impresión de prueba', null, 'integration-stage-production-0001')
+    or not dti_private.update_dti_production_status(v_order_id, v_staff, 'in_production', 'Inicio de impresión de prueba', null, 'integration-stage-production-0001')
+    or (select count(*) from public.dti_order_events where order_id = v_order_id and idempotency_key = 'dti-production:integration-stage-production-0001') <> 1 then
+    raise exception 'production update retry was not idempotent';
+  end if;
+  if not dti_private.update_dti_production_status(v_order_id, v_staff, 'quality_control', 'Revisión de color y acabado', null, 'integration-stage-qc-000001')
+    or not dti_private.update_dti_production_status(v_order_id, v_staff, 'rework_required', 'Color fuera de tolerancia', null, 'integration-stage-rework-0001')
+    or not dti_private.update_dti_production_status(v_order_id, v_staff, 'in_production', 'Reimpresión liberada tras ajuste', null, 'integration-stage-reprint-0001')
+    or not dti_private.update_dti_production_status(v_order_id, v_staff, 'quality_control', 'Revisión final aprobada', null, 'integration-stage-qc-final-0001')
+    or not dti_private.update_dti_production_status(v_order_id, v_staff, 'preparing_dispatch', 'Embalaje según ficha técnica', null, 'integration-stage-packing-00001')
+    or not dti_private.update_dti_production_status(v_order_id, v_staff, 'ready_for_dispatch', 'Paquete precintado y listo', null, 'integration-stage-ready-000001')
+    or not dti_private.update_dti_production_status(v_order_id, v_staff, 'dispatched', 'Entregado a transporte de prueba', 'TEST-RIDAOS-0001', 'integration-stage-dispatched-0001') then
+    raise exception 'standard shipping production flow failed';
+  end if;
+  if not exists (
+    select 1 from public.dti_orders where id = v_order_id and status = 'dispatched'
+      and payment_status = 'paid' and production_started_at is not null
+      and quality_control_completed_at is not null and dispatch_ready_at is not null
+      and dispatched_at is not null and tracking_reference = 'TEST-RIDAOS-0001'
+  ) then raise exception 'standard dispatch details were not persisted'; end if;
+
   if not dti_private.process_stripe_payment_event('evt_dti_late_failure_000001', 'payment_intent.payment_failed', 'pi_test_integration_000001', v_order_id, 6709, 'eur') then
     raise exception 'late duplicate payment failure event was not acknowledged';
   end if;
-  if not exists (select 1 from public.dti_orders where id = v_order_id and payment_status = 'paid' and status = 'queued_for_production') then
+  if not exists (select 1 from public.dti_orders where id = v_order_id and payment_status = 'paid' and status = 'dispatched') then
     raise exception 'late failure event regressed a paid order';
   end if;
 
@@ -231,6 +268,18 @@ begin
   end if;
   if not exists (select 1 from public.dti_orders where id = v_retry_order_id and payment_status = 'paid' and status = 'paid_awaiting_technical_review') then
     raise exception 'retried payment was not reconciled';
+  end if;
+  if not dti_private.record_artwork_review(v_retry_version_id, v_staff, 'approved', 'Pickup artwork approved', '[]'::jsonb, 'integration-review-pickup-0001')
+    or not dti_private.release_order_to_production(v_retry_order_id, v_staff, 'integration-release-pickup-0001')
+    or not dti_private.update_dti_production_status(v_retry_order_id, v_staff, 'in_production', 'Inicio de producción para recogida', null, 'integration-pickup-production-01')
+    or not dti_private.update_dti_production_status(v_retry_order_id, v_staff, 'quality_control', 'Control final para recogida', null, 'integration-pickup-qc-000001')
+    or not dti_private.update_dti_production_status(v_retry_order_id, v_staff, 'preparing_dispatch', 'Pedido preparado para recogida', null, 'integration-pickup-pack-00001')
+    or not dti_private.update_dti_production_status(v_retry_order_id, v_staff, 'ready_for_pickup', 'Recogida disponible en Ridaos Print BCN', null, 'integration-pickup-ready-0001')
+    or not dti_private.update_dti_production_status(v_retry_order_id, v_staff, 'picked_up', 'Entrega presencial confirmada en prueba', null, 'integration-pickup-complete-01') then
+    raise exception 'pickup production flow failed';
+  end if;
+  if not exists (select 1 from public.dti_orders where id = v_retry_order_id and status = 'picked_up' and picked_up_at is not null and tracking_reference is null) then
+    raise exception 'pickup completion details were not persisted';
   end if;
 
   v_order := dti_private.create_dti_order(

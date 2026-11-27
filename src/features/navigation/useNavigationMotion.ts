@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import gsap from 'gsap'
+
+type KillableTimeline = { kill: () => void }
 
 function prefersReducedMotion() {
   return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -16,8 +17,8 @@ export function useNavigationMotion(currentHashRoute: string) {
   const desktopPanelRef = useRef<HTMLDivElement | null>(null)
   const mobileBackdropRef = useRef<HTMLDivElement | null>(null)
   const mobileDrawerRef = useRef<HTMLElement | null>(null)
-  const desktopTimelineRef = useRef<gsap.core.Timeline | null>(null)
-  const mobileTimelineRef = useRef<gsap.core.Timeline | null>(null)
+  const desktopTimelineRef = useRef<KillableTimeline | null>(null)
+  const desktopWasOpenedRef = useRef(false)
   const scrollLockRef = useRef({
     scrollY: 0,
     overflow: '',
@@ -155,120 +156,90 @@ export function useNavigationMotion(currentHashRoute: string) {
     const backdrop = desktopBackdropRef.current
     const panel = desktopPanelRef.current
 
-    if (!backdrop || !panel) {
+    if (!backdrop || !panel || (!desktopOpen && !desktopWasOpenedRef.current)) {
       return
     }
 
-    const reducedMotion = prefersReducedMotion()
-    const items = Array.from(panel.querySelectorAll<HTMLElement>('[data-nav-item]'))
-    const accents = Array.from(panel.querySelectorAll<HTMLElement>('.ridaos-nav__accent-line'))
-    const glow = panel.querySelector<HTMLElement>('.ridaos-nav__featured-glow')
+    if (desktopOpen) desktopWasOpenedRef.current = true
+    let cancelled = false
+    let timeline: KillableTimeline | null = null
 
-    desktopTimelineRef.current?.kill()
+    void import('gsap').then(({ default: gsap }) => {
+      if (cancelled) return
 
-    if (desktopOpen) {
-      gsap.set([backdrop, panel], { display: 'block', pointerEvents: 'auto' })
+      const reducedMotion = prefersReducedMotion()
+      const items = Array.from(panel.querySelectorAll<HTMLElement>('[data-nav-item]'))
+      const accents = Array.from(panel.querySelectorAll<HTMLElement>('.ridaos-nav__accent-line'))
+      const glow = panel.querySelector<HTMLElement>('.ridaos-nav__featured-glow')
 
-      const timeline = gsap.timeline({ defaults: { ease: 'power3.out' } })
-      timeline
-        .fromTo(backdrop, { autoAlpha: 0 }, { autoAlpha: 1, duration: reducedMotion ? 0.18 : 0.28 }, 0)
-        .fromTo(
-          panel,
-          { autoAlpha: 0, y: reducedMotion ? 0 : -16, scale: reducedMotion ? 1 : 0.985 },
-          { autoAlpha: 1, y: 0, scale: 1, duration: reducedMotion ? 0.24 : 0.42 },
-          0,
-        )
-        .fromTo(
-          items,
-          { autoAlpha: 0, y: reducedMotion ? 0 : 14 },
-          { autoAlpha: 1, y: 0, duration: reducedMotion ? 0.16 : 0.28, stagger: reducedMotion ? 0 : 0.04 },
-          0.06,
-        )
-        .fromTo(
-          accents,
-          { scaleX: 0, transformOrigin: 'left center' },
-          { scaleX: 1, duration: reducedMotion ? 0.16 : 0.24, stagger: reducedMotion ? 0 : 0.02 },
-          0.08,
-        )
+      desktopTimelineRef.current?.kill()
 
-      if (glow) {
-        timeline.fromTo(glow, { autoAlpha: 0 }, { autoAlpha: 1, duration: reducedMotion ? 0.18 : 0.3 }, 0.1)
+      if (desktopOpen) {
+        gsap.set([backdrop, panel], { display: 'block', pointerEvents: 'auto' })
+
+        const nextTimeline = gsap.timeline({ defaults: { ease: 'power3.out' } })
+        nextTimeline
+          .fromTo(backdrop, { autoAlpha: 0 }, { autoAlpha: 1, duration: reducedMotion ? 0.18 : 0.28 }, 0)
+          .fromTo(
+            panel,
+            { autoAlpha: 0, y: reducedMotion ? 0 : -16, scale: reducedMotion ? 1 : 0.985 },
+            { autoAlpha: 1, y: 0, scale: 1, duration: reducedMotion ? 0.24 : 0.42 },
+            0,
+          )
+          .fromTo(
+            items,
+            { autoAlpha: 0, y: reducedMotion ? 0 : 14 },
+            { autoAlpha: 1, y: 0, duration: reducedMotion ? 0.16 : 0.28, stagger: reducedMotion ? 0 : 0.04 },
+            0.06,
+          )
+          .fromTo(
+            accents,
+            { scaleX: 0, transformOrigin: 'left center' },
+            { scaleX: 1, duration: reducedMotion ? 0.16 : 0.24, stagger: reducedMotion ? 0 : 0.02 },
+            0.08,
+          )
+
+        if (glow) {
+          nextTimeline.fromTo(glow, { autoAlpha: 0 }, { autoAlpha: 1, duration: reducedMotion ? 0.18 : 0.3 }, 0.1)
+        }
+
+        timeline = nextTimeline
+        desktopTimelineRef.current = nextTimeline
+        return
       }
 
-      desktopTimelineRef.current = timeline
-      return () => {
-        timeline.kill()
-      }
-    }
+      const nextTimeline = gsap.timeline({
+        defaults: { ease: 'power2.inOut' },
+        onComplete: () => gsap.set([backdrop, panel], { clearProps: 'all', display: 'none', pointerEvents: 'none' }),
+      })
+      nextTimeline
+        .to(items, { autoAlpha: 0, y: reducedMotion ? 0 : -6, duration: reducedMotion ? 0.1 : 0.14, stagger: 0.015 }, 0)
+        .to(panel, { autoAlpha: 0, y: reducedMotion ? 0 : -10, scale: reducedMotion ? 1 : 0.985, duration: reducedMotion ? 0.14 : 0.22 }, 0.02)
+        .to(backdrop, { autoAlpha: 0, duration: reducedMotion ? 0.12 : 0.2 }, 0.04)
 
-    const timeline = gsap.timeline({
-      defaults: { ease: 'power2.inOut' },
-      onComplete: () => gsap.set([backdrop, panel], { clearProps: 'all', display: 'none', pointerEvents: 'none' }),
+      timeline = nextTimeline
+      desktopTimelineRef.current = nextTimeline
+    }).catch(() => {
+      if (cancelled) return
+      const isVisible = desktopOpen
+      ;[backdrop, panel].forEach((element) => {
+        element.style.display = isVisible ? 'block' : 'none'
+        element.style.pointerEvents = isVisible ? 'auto' : 'none'
+        element.style.opacity = isVisible ? '1' : '0'
+      })
     })
-    timeline
-      .to(items, { autoAlpha: 0, y: reducedMotion ? 0 : -6, duration: reducedMotion ? 0.1 : 0.14, stagger: 0.015 }, 0)
-      .to(panel, { autoAlpha: 0, y: reducedMotion ? 0 : -10, scale: reducedMotion ? 1 : 0.985, duration: reducedMotion ? 0.14 : 0.22 }, 0.02)
-      .to(backdrop, { autoAlpha: 0, duration: reducedMotion ? 0.12 : 0.2 }, 0.04)
 
-    desktopTimelineRef.current = timeline
     return () => {
-      timeline.kill()
+      cancelled = true
+      timeline?.kill()
     }
   }, [desktopOpen])
 
   useEffect(() => {
-    const backdrop = mobileBackdropRef.current
-    const drawer = mobileDrawerRef.current
-
-    if (!backdrop || !drawer) {
-      return
-    }
-
-    const reducedMotion = prefersReducedMotion()
-    const items = Array.from(drawer.querySelectorAll<HTMLElement>('[data-nav-item], .ridaos-nav__drawer-section, .ridaos-nav__drawer-footer'))
-
-    mobileTimelineRef.current?.kill()
-
-    if (mobileOpen) {
-      gsap.set([backdrop, drawer], { display: 'block', pointerEvents: 'auto' })
-
-      const timeline = gsap.timeline({ defaults: { ease: 'power3.out' } })
-      timeline
-        .fromTo(backdrop, { autoAlpha: 0 }, { autoAlpha: 1, duration: reducedMotion ? 0.14 : 0.24 }, 0)
-        .fromTo(
-          drawer,
-          { autoAlpha: 0, y: reducedMotion ? 0 : 24 },
-          { autoAlpha: 1, y: 0, duration: reducedMotion ? 0.18 : 0.4 },
-          0,
-        )
-        .fromTo(
-          items,
-          { autoAlpha: 0, y: reducedMotion ? 0 : 12 },
-          { autoAlpha: 1, y: 0, duration: reducedMotion ? 0.16 : 0.24, stagger: reducedMotion ? 0 : 0.035 },
-          0.08,
-        )
-
-      mobileTimelineRef.current = timeline
-      requestAnimationFrame(() => mobileCloseRef.current?.focus())
-      return () => {
-        timeline.kill()
-      }
-    }
-
-    gsap.set([backdrop, drawer], { display: 'block', pointerEvents: 'auto' })
-
-    const timeline = gsap.timeline({
-      defaults: { ease: 'power2.inOut' },
-      onComplete: () => gsap.set([backdrop, drawer], { clearProps: 'all', display: 'none', pointerEvents: 'none' }),
-    })
-    timeline
-      .to(items, { autoAlpha: 0, y: reducedMotion ? 0 : -4, duration: reducedMotion ? 0.08 : 0.12, stagger: 0.008 }, 0)
-      .to(drawer, { autoAlpha: 0, y: reducedMotion ? 0 : 16, duration: reducedMotion ? 0.14 : 0.24 }, 0.02)
-      .to(backdrop, { autoAlpha: 0, duration: reducedMotion ? 0.1 : 0.18 }, 0.04)
-
-    mobileTimelineRef.current = timeline
+    if (!mobileOpen) return
+    const frame = window.requestAnimationFrame(() => mobileCloseRef.current?.focus())
     return () => {
-      timeline.kill()
+      window.cancelAnimationFrame(frame)
     }
   }, [mobileOpen])
 

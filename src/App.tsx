@@ -2,11 +2,9 @@ import { Suspense, lazy, useCallback, useEffect, useRef, useState, type Componen
 import './App.css'
 import NotFoundPage from './components/NotFoundPage'
 import RouteErrorBoundary from './components/RouteErrorBoundary'
-import PremiumCursor from './components/system/PremiumCursor'
 import { LiveToastProvider } from './features/live-feedback'
 import { applySEO } from './lib/seo'
 import { initSmoothScroll } from './lib/smoothScroll'
-import { refreshScrollNarrative, syncScrollTriggerWithLenis } from './lib/animations'
 import { getCatalogFamilyHref, getProductPageHref, getPublicCtaHref, getPublicHref, legacyRouteRedirects } from './lib/navigation'
 import { getCurrentHashRoute, navigateToHashRoute, normalizeHashRoute } from './lib/hashRouting'
 import { footerContent, navigationContent } from './content'
@@ -172,6 +170,34 @@ const OrderDetailPage = lazy(() => import('./admin/pages/OrderDetailPage'))
 const UploadsPage = lazy(() => import('./admin/pages/UploadsPage'))
 const CustomersPage = lazy(() => import('./admin/pages/CustomersPage'))
 const ProductionPage = lazy(() => import('./admin/pages/ProductionPage'))
+const PremiumCursor = lazy(() => import('./components/system/PremiumCursor'))
+
+function supportsDesktopMotion() {
+  return typeof window !== 'undefined' &&
+    window.matchMedia('(min-width: 921px) and (prefers-reduced-motion: no-preference)').matches
+}
+
+function usePremiumCursorEligibility() {
+  const [eligible, setEligible] = useState(() =>
+    typeof window !== 'undefined' &&
+    window.matchMedia('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)').matches,
+  )
+
+  useEffect(() => {
+    const queries = [
+      window.matchMedia('(hover: hover)'),
+      window.matchMedia('(pointer: fine)'),
+      window.matchMedia('(prefers-reduced-motion: no-preference)'),
+    ]
+    const syncEligibility = () => setEligible(queries.every((query) => query.matches))
+    queries.forEach((query) => query.addEventListener('change', syncEligibility))
+    syncEligibility()
+
+    return () => queries.forEach((query) => query.removeEventListener('change', syncEligibility))
+  }, [])
+
+  return eligible
+}
 
 const pageComponents: Record<RouteKey, ComponentType> = {
   home: Home,
@@ -259,6 +285,7 @@ function App() {
   })
   const [isHeaderHidden, setIsHeaderHidden] = useState(false)
   const [isHeaderSolid, setIsHeaderSolid] = useState(false)
+  const cursorEligible = usePremiumCursorEligibility()
   const lastScrollYRef = useRef(0)
 
   const resolveVisibleRoute = useCallback((hash: string): { route: RouteKey; hash: string } => {
@@ -274,7 +301,13 @@ function App() {
   useEffect(() => {
     if (isDtiAuthCallback) return
     const smoothScroll = initSmoothScroll()
-    syncScrollTriggerWithLenis()
+    let cancelled = false
+
+    if (supportsDesktopMotion()) {
+      void import('./lib/animations').then(({ syncScrollTriggerWithLenis }) => {
+        if (!cancelled) syncScrollTriggerWithLenis()
+      }).catch(() => undefined)
+    }
 
     const syncRoute = () => {
       const nextHashRoute = getCurrentHashRoute()
@@ -294,6 +327,7 @@ function App() {
     window.addEventListener('hashchange', syncRoute)
 
     return () => {
+      cancelled = true
       window.removeEventListener('hashchange', syncRoute)
       smoothScroll.destroy()
     }
@@ -302,7 +336,17 @@ function App() {
   useEffect(() => {
     const smoothScroll = initSmoothScroll()
     smoothScroll.scrollToTop(smoothScroll.isReducedMotion())
-    refreshScrollNarrative()
+    let cancelled = false
+
+    if (supportsDesktopMotion()) {
+      void import('./lib/animations').then(({ refreshScrollNarrative }) => {
+        if (!cancelled) refreshScrollNarrative()
+      }).catch(() => undefined)
+    }
+
+    return () => {
+      cancelled = true
+    }
   }, [route])
 
   useEffect(() => {
@@ -365,7 +409,11 @@ function App() {
 
   return (
     <PublicationContext.Provider value={publicationPolicy}>
-      <PremiumCursor />
+      {cursorEligible ? (
+        <Suspense fallback={null}>
+          <PremiumCursor />
+        </Suspense>
+      ) : null}
       <LiveToastProvider>
         <div className="app-shell">
           <a className="skip-link" href="#main-content">

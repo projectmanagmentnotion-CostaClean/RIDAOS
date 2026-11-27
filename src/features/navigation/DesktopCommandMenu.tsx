@@ -76,13 +76,13 @@ export function DesktopCommandMenu({
     <>
       <div
         aria-hidden={!open}
-        className="ridaos-nav__panel-backdrop"
+        className={`ridaos-nav__panel-backdrop${open ? ' is-open' : ''}`}
         onClick={onClose}
         ref={backdropRef}
       />
       <div
         aria-hidden={!open}
-        className="ridaos-nav__panel"
+        className={`ridaos-nav__panel${open ? ' is-open' : ''}`}
         id={panelId}
         ref={panelRef}
         role="group"

@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import PageShell from '../components/PageShell'
 import { ArtworkUploadFlow, type ArtworkPreviewSummary, type ArtworkUploadFlowState } from '../features/artwork-upload'
-import { initStorefrontRevealAnimations } from '../features/motion/revealAnimations'
 import { useLiveToast } from '../features/live-feedback'
 import { publicRoutes } from '../lib/navigation'
 import { addToCart } from '../lib/cart'
@@ -80,9 +79,28 @@ function DTFPage() {
   }, [])
 
   useEffect(() => {
-    if (!pageRef.current) return
-    const context = initStorefrontRevealAnimations(pageRef.current)
-    return () => context.revert()
+    const page = pageRef.current
+    if (!page || typeof window === 'undefined') return
+
+    const canAnimate = window.matchMedia(
+      '(min-width: 921px) and (prefers-reduced-motion: no-preference)',
+    ).matches
+    if (!canAnimate) return
+
+    let isMounted = true
+    let revertAnimation: (() => void) | undefined
+    void import('../features/motion/revealAnimations')
+      .then(({ initStorefrontRevealAnimations }) => {
+        if (!isMounted) return
+        const context = initStorefrontRevealAnimations(page)
+        revertAnimation = () => context.revert()
+      })
+      .catch(() => undefined)
+
+    return () => {
+      isMounted = false
+      revertAnimation?.()
+    }
   }, [])
 
   const handleAddToCart = () => {

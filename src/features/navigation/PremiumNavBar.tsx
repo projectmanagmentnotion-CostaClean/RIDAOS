@@ -43,8 +43,10 @@ export function PremiumNavBar({ brandLabel, currentHashRoute }: PremiumNavBarPro
           <img
             alt={brandLabel}
             className="brand__logo"
+            height={317}
             loading="eager"
-            src="/assets/brand/ridaos-logo-main.png"
+            src="/assets/brand/ridaos-logo-main-optimized.png"
+            width={684}
           />
           <span className="sr-only">{brandLabel}</span>
         </a>

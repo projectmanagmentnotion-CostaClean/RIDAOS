@@ -10,7 +10,7 @@ Deployment observado: `dpl_14rA7qppwCodzvouyANmmqjh2Ffy`, READY, con SHA exacto.
 
 | Estado | Área | Evidencia y alcance |
 |---|---|---|
-| PASS | Build y checks | 52/52 pruebas, lint sin avisos, build correcto y `git diff --check` limpio tras las correcciones de código. |
+| PASS | Build y checks | 53/53 pruebas, lint sin avisos, build correcto y `git diff --check` limpio tras las correcciones de código. |
 | PASS | Carrito vacío | En Preview, productos, envío, IVA y total muestran `0,00 €`; no hay envío/cupón seleccionable sin líneas. |
 | PASS | Precio y entrega | 1 m DTI: 15,00 € IVA incluido; envío peninsular: 5,00 €; total 20,00 € e IVA mostrado 3,47 €. Preparación 48 h laborables; transporte adicional. |
 | PASS | Landing/configurador | Se inspeccionaron landing, CTA, metraje, ancho útil 55 cm, tramos de preparación, corte 18:30 Europe/Madrid y criterios de archivo. Preflight aceptó un PNG sintético en cliente. |

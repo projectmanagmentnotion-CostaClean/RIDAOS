@@ -1,7 +1,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.95.0'
-import { calculateDtiOrder, deriveGuestOrderToken, normalizeDtiShippingAddress, sha256Hex, dtiCorsHeaders } from '../_shared/dtiCommerce.mjs'
+import { calculateDtiOrder, deriveGuestOrderToken, normalizeDtiShippingAddress, sha256Hex, dtiCorsHeaders, dtiCorsOriginsForProject } from '../_shared/dtiCommerce.mjs'
 
-const cors = (request: Request) => dtiCorsHeaders(request, Deno.env.get('DTI_ALLOWED_ORIGIN') ?? '', 'authorization, apikey, content-type, idempotency-key, x-dti-order-token, x-dti-recovery-key', 'GET, POST, OPTIONS')
+const cors = (request: Request) => dtiCorsHeaders(request, dtiCorsOriginsForProject(Deno.env.get('DTI_ALLOWED_ORIGIN') ?? '', Deno.env.get('SUPABASE_URL') ?? ''), 'authorization, apikey, content-type, idempotency-key, x-dti-order-token, x-dti-recovery-key', 'GET, POST, OPTIONS')
 const reply = (request: Request, body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...Object.fromEntries(cors(request)), 'content-type': 'application/json', 'cache-control': 'no-store' } })
 
 Deno.serve(async (request) => {

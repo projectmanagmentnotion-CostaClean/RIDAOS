@@ -3,6 +3,18 @@ export const DTI_SHIPPING_CENTS = 500
 export const DTI_ADAPTATION_CENTS_PER_HOUR = 3500
 export const DTI_VAT_BASIS_POINTS = 2100
 export const DTI_MAX_FILE_BYTES = 20 * 1024 * 1024
+const DTI_QA_PROJECT_REF = 'uzldkpnenmfjfwqfkhre'
+const DTI_QA_PREVIEW_ORIGIN = 'https://ridaos-git-f-2c0516-projectmanagmentnotion-costacleans-projects.vercel.app'
+
+export function dtiCorsOriginsForProject(configuredOrigins, supabaseUrl) {
+  try {
+    const projectUrl = new URL(supabaseUrl)
+    if (projectUrl.hostname !== `${DTI_QA_PROJECT_REF}.supabase.co`) return String(configuredOrigins ?? '')
+    return [String(configuredOrigins ?? ''), DTI_QA_PREVIEW_ORIGIN].filter(Boolean).join(',')
+  } catch {
+    return String(configuredOrigins ?? '')
+  }
+}
 
 export function dtiCorsHeaders(request, configuredOrigins, allowedHeaders, allowedMethods) {
   const origin = request.headers.get('origin')

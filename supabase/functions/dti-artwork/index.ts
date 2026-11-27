@@ -1,7 +1,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.95.0'
-import { DTI_MAX_FILE_BYTES, normalizeDtiArtworkMetadata, sha256Hex, validateDtiArtworkBytes, dtiCorsHeaders } from '../_shared/dtiCommerce.mjs'
+import { DTI_MAX_FILE_BYTES, normalizeDtiArtworkMetadata, sha256Hex, validateDtiArtworkBytes, dtiCorsHeaders, dtiCorsOriginsForProject } from '../_shared/dtiCommerce.mjs'
 
-const cors = (request: Request) => dtiCorsHeaders(request, Deno.env.get('DTI_ALLOWED_ORIGIN') ?? '', 'authorization, apikey, content-type, idempotency-key, x-dti-order-token', 'POST, OPTIONS')
+const cors = (request: Request) => dtiCorsHeaders(request, dtiCorsOriginsForProject(Deno.env.get('DTI_ALLOWED_ORIGIN') ?? '', Deno.env.get('SUPABASE_URL') ?? ''), 'authorization, apikey, content-type, idempotency-key, x-dti-order-token', 'POST, OPTIONS')
 const reply = (request: Request, body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...Object.fromEntries(cors(request)), 'content-type': 'application/json', 'cache-control': 'no-store' } })
 const MAX_MULTIPART_BYTES = DTI_MAX_FILE_BYTES + 1_048_576
 

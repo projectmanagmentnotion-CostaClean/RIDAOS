@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import PageShell from '../components/PageShell'
 import { ArtworkUploadFlow, type ArtworkPreviewSummary, type ArtworkUploadFlowState } from '../features/artwork-upload'
 import { initStorefrontRevealAnimations } from '../features/motion/revealAnimations'
@@ -62,6 +62,22 @@ function DTFPage() {
   const cutoffCopy = cutoff.startsNextWorkingDay
     ? 'Los pedidos recibidos ahora pasan al siguiente día laborable.'
     : 'Los pedidos antes de las 18:30 (Europe/Madrid) cuentan desde el mismo día laborable.'
+  const dtiValidationContext = useMemo(() => ({
+    configuration: { meters: String(meters), usableWidth: '55' },
+    productName: 'DTI Innuro por metro',
+  }), [meters])
+  const dtiSummaryItems = useMemo(() => [
+    { label: 'Producto', value: 'DTI Innuro' },
+    { label: 'Metraje', value: price.valid ? `${meters} m` : 'Pendiente' },
+    { label: 'Ancho útil', value: '55 cm' },
+  ], [meters, price.valid])
+  const handleArtworkFileChange = useCallback((file: File | null) => {
+    setSelectedFile(file)
+    setArtworkState({ metadata: null, summary: null, acceptance: null })
+  }, [])
+  const handleArtworkStateChange = useCallback((state: Pick<ArtworkUploadFlowState, 'metadata' | 'summary' | 'acceptance'>) => {
+    setArtworkState({ metadata: state.metadata, summary: state.summary, acceptance: state.acceptance })
+  }, [])
 
   useEffect(() => {
     if (!pageRef.current) return
@@ -205,12 +221,12 @@ function DTFPage() {
                 acceptedFormats=".png,.pdf,.ai,.psd,.svg,.cdr"
                 description="La comprobación del navegador es orientativa. AI, PSD, SVG y CDR requieren revisión manual antes de producir o cobrar."
                 file={selectedFile}
-                onFileChange={(file) => { setSelectedFile(file); setArtworkState({ metadata: null, summary: null, acceptance: null }) }}
-                onStateChange={({ metadata, summary, acceptance }) => setArtworkState({ metadata, summary, acceptance })}
+                onFileChange={handleArtworkFileChange}
+                onStateChange={handleArtworkStateChange}
                 ruleKey="dtf_meter"
-                summaryItems={[{ label: 'Producto', value: 'DTI Innuro' }, { label: 'Metraje', value: price.valid ? `${meters} m` : 'Pendiente' }, { label: 'Ancho útil', value: '55 cm' }]}
+                summaryItems={dtiSummaryItems}
                 title="Sube el arte final"
-                validationContext={{ configuration: { meters: String(meters), usableWidth: '55' }, productName: 'DTI Innuro por metro' }}
+                validationContext={dtiValidationContext}
               />
               <p className="dti-format-note"><strong>PNG / PDF</strong> · comprobación inicial y aceptación de referencia<br /><strong>AI / PSD / SVG / CDR</strong> · revisión manual antes de producir</p>
             </article>

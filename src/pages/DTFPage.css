@@ -213,7 +213,7 @@
 }
 
 @media (max-width: 680px) {
-  .dti-innuro-page { padding: 22px 16px 88px; }
+  .dti-innuro-page { padding: 22px 16px calc(88px + env(safe-area-inset-bottom, 0px)); }
   .dti-hero { grid-template-columns: minmax(0, 1fr); gap: 26px; padding-top: 24px; padding-bottom: 48px; }
   .dti-hero h1 { font-size: clamp(3.8rem, 16vw, 6.3rem); }
   .dti-hero__intro { max-width: 34ch; margin-block: 18px 22px; font-size: .96rem; }

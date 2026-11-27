@@ -2,6 +2,7 @@ import { getSeoForRoute } from '../catalog/content/contentSelectors'
 import { catalogEntries } from '../catalog/registry/catalogRegistry'
 import { localSeoContent, siteUrl } from '../content/localSeoContent'
 import { publicRoutes } from './navigation'
+import { getSeoSiteOrigin } from './seoSiteOrigin.mjs'
 
 type StaticSeoEntry = {
   title: string
@@ -244,8 +245,13 @@ function getCanonicalPath(hash: string) {
   return routePathMap.get(pathOnly) ?? (pathOnly === '#/' ? '/' : pathOnly.replace(/^#/, ''))
 }
 
+function getCurrentSiteOrigin() {
+  const hostname = typeof window === 'undefined' ? '' : window.location.hostname
+  return getSeoSiteOrigin(hostname, siteUrl)
+}
+
 function buildAbsoluteUrl(hash: string) {
-  return `${siteUrl}${getCanonicalPath(hash)}`
+  return `${getCurrentSiteOrigin()}${getCanonicalPath(hash)}`
 }
 
 function shouldIndexRoute(hash: string) {
@@ -272,7 +278,7 @@ export function buildOpenGraphData(data: {
     description: buildMetaDescription(data.description),
     type: 'website',
     url: data.url,
-    image: `${siteUrl}${data.image ?? '/assets/seo/og-home.jpg'}`,
+    image: `${getCurrentSiteOrigin()}${data.image ?? '/assets/seo/og-home.jpg'}`,
   }
 }
 
@@ -282,9 +288,9 @@ function buildOrganizationSchema(): JsonLdRecord {
     '@type': 'Organization',
     name: localSeoContent.organization.name,
     legalName: localSeoContent.organization.legalName,
-    url: siteUrl,
-    logo: `${siteUrl}/assets/brand/ridaos-mark-square-512.png`,
-    image: `${siteUrl}/assets/brand/ridaos-mark-square-512.png`,
+    url: getCurrentSiteOrigin(),
+    logo: `${getCurrentSiteOrigin()}/assets/brand/ridaos-mark-square-512.png`,
+    image: `${getCurrentSiteOrigin()}/assets/brand/ridaos-mark-square-512.png`,
     description: localSeoContent.organization.description,
     email: localSeoContent.organization.email,
     telephone: localSeoContent.organization.telephone,
@@ -297,9 +303,9 @@ function buildLocalBusinessSchema(): JsonLdRecord {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
     name: localSeoContent.localBusiness.name,
-    url: siteUrl,
-    logo: `${siteUrl}/assets/brand/ridaos-mark-square-512.png`,
-    image: `${siteUrl}/assets/brand/ridaos-mark-square-512.png`,
+    url: getCurrentSiteOrigin(),
+    logo: `${getCurrentSiteOrigin()}/assets/brand/ridaos-mark-square-512.png`,
+    image: `${getCurrentSiteOrigin()}/assets/brand/ridaos-mark-square-512.png`,
     description: localSeoContent.localBusiness.description,
     priceRange: localSeoContent.localBusiness.priceRange,
     address: {
@@ -318,7 +324,7 @@ function buildBreadcrumbSchema(items: Array<{ name: string; path: string }>): Js
       '@type': 'ListItem',
       position: index + 1,
       name: item.name,
-      item: `${siteUrl}${item.path}`,
+      item: `${getCurrentSiteOrigin()}${item.path}`,
     })),
   }
 }
@@ -360,7 +366,7 @@ export function buildJsonLdProductStub(entryId: string): JsonLdRecord | null {
     category: entry.category,
     sku: entry.id,
     url: buildAbsoluteUrl(entry.route),
-    image: content?.ogImage ? `${siteUrl}${content.ogImage}` : undefined,
+    image: content?.ogImage ? `${getCurrentSiteOrigin()}${content.ogImage}` : undefined,
     offers: {
       '@type': 'Offer',
       priceCurrency: 'EUR',
@@ -399,7 +405,7 @@ export function buildJsonLdServiceStub(entryId: string): JsonLdRecord | null {
         ? localSeoContent.organization.areaServed
         : ['Espana'],
     url: buildAbsoluteUrl(entry.route),
-    image: content?.ogImage ? `${siteUrl}${content.ogImage}` : undefined,
+    image: content?.ogImage ? `${getCurrentSiteOrigin()}${content.ogImage}` : undefined,
     offers: {
       '@type': 'Offer',
       priceCurrency: 'EUR',

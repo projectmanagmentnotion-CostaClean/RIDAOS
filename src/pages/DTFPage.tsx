@@ -163,12 +163,12 @@ function DTFPage() {
           </div>
           <div className="dti-hero__meta"><span>01 / 04</span><span>IMPRESIÓN TRANSFER · BARCELONA</span></div>
         </div>
-        <div className="dti-hero__visual" aria-label="Visual del rollo DTI Innuro" role="img">
+        <div className="dti-hero__visual" aria-label="Representación ilustrativa del rollo DTI Innuro; no es una fotografía real del producto" role="img">
           <div className="dti-visual__glow" />
           <div className="dti-visual__frame"><span>INNURO / TRANSFER FILM</span><span>55 CM</span></div>
           <div className="dti-film-roll"><div className="dti-film-roll__core" /><div className="dti-film-roll__edge" /></div>
           <div className="dti-visual__stamp"><span>DTI</span><small>MADE FOR<br />YOUR NEXT MOVE</small></div>
-          <div className="dti-visual__caption"><span>Rollo de producción</span><strong>INNURO / 01</strong></div>
+          <div className="dti-visual__caption"><span>Representación ilustrativa · no fotografía real</span><strong>DTI INNURO</strong></div>
         </div>
       </section>
 

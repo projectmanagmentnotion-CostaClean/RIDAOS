@@ -4,6 +4,82 @@
     {
       "source": "/auth/callback",
       "destination": "/index.html"
+    },
+    {
+      "source": "/robots.txt",
+      "destination": "/api/seo-assets?asset=robots"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/seo-assets?asset=sitemap"
+    },
+    {
+      "source": "/catalogo",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/catalogo/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/producto/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/servicios/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/portafolio",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/guia",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/contacto",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/legal",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/upload",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/carrito",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/checkout",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/ayuda",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/presupuesto",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/mi-cuenta",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/mi-cuenta/:path*",
+      "destination": "/index.html"
     }
   ]
 }

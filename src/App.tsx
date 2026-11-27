@@ -276,10 +276,6 @@ function App() {
     const smoothScroll = initSmoothScroll()
     syncScrollTriggerWithLenis()
 
-    if (!window.location.hash || window.location.hash === '#') {
-      navigateToHashRoute('#/')
-    }
-
     const syncRoute = () => {
       const nextHashRoute = getCurrentHashRoute()
       const redirectTarget = legacyRouteRedirects[nextHashRoute]

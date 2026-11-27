@@ -4408,7 +4408,9 @@ body.lenis {
 
 @media (max-width: 540px) {
   .site-header {
-    padding-top: 18px;
+    padding-top: max(18px, calc(env(safe-area-inset-top, 0px) + 8px));
+    padding-right: max(18px, env(safe-area-inset-right, 0px));
+    padding-left: max(18px, env(safe-area-inset-left, 0px));
   }
 
   .ridaos-nav__bar {
@@ -4448,7 +4450,7 @@ body.lenis {
   }
 
   .page-shell {
-    padding-top: 52px;
+    padding-top: max(68px, calc(env(safe-area-inset-top, 0px) + 68px));
     padding-bottom: 38px;
   }
 

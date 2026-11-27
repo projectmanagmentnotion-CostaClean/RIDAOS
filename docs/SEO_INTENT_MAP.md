@@ -23,14 +23,14 @@ Esta capa organiza la demanda real por intencion, entidad, localizacion y oportu
 
 - No trabajar keywords aisladas.
 - Priorizar intencion, entidad y siguiente paso comercial.
-- Capturar aliases reales como `DTI` sin romper la nomenclatura correcta `DTF`.
+- Capturar `DTF por metro` como término de búsqueda sin cambiar el nombre comercial `DTI Innuro`.
 - Convertir FAQs en respuestas claras para Google, Bing y buscadores conversacionales.
 
 ## Keyword groups prioritarios
 
 | Grupo | Termino principal | Intencion | Prioridad | Entidad | Localizacion |
 | --- | --- | --- | --- | --- | --- |
-| DTF por metro | DTF por metro | transactional / commercial / local | alta | dtf | Barcelona, Blanes, Girona, Costa Brava, Espana |
+| DTI Innuro por metro | DTI Innuro por metro (término de búsqueda: DTF por metro) | transactional / commercial / local | alta | dti-innuro | Barcelona, Blanes, Girona, Costa Brava, Espana |
 | Rotulacion comercial | Rotulacion de furgonetas | commercial / transactional / local | alta | rotulacion | Barcelona, Blanes, Girona, Costa Brava, Cataluna |
 | Rotulacion local | Rotulacion furgonetas Barcelona | local / commercial | alta | rotulacion | Barcelona, Blanes, Girona, Costa Brava |
 | Pegatinas personalizadas | pegatinas personalizadas | transactional / commercial / informational | alta | pegatinas | Barcelona, Girona, Espana |
@@ -88,8 +88,8 @@ Esta capa organiza la demanda real por intencion, entidad, localizacion y oportu
 
 - Rotulacion:
   - relacionado con vinilo comercial, branding, DTI para uniforme, pegatinas empresa y tarjetas empresa
-- DTF:
-  - relacionado con camisetas, sudaderas, uniformes, eventos y branding
+- DTI Innuro:
+  - producto real por metro; `DTF por metro` se conserva como alias de búsqueda y no como nombre de producto o técnica comercial.
 - Tarjetas:
   - relacionado con flyers, pegatinas, papeleria corporativa y ventas presenciales
 - Vinilo comercial:
@@ -97,7 +97,7 @@ Esta capa organiza la demanda real por intencion, entidad, localizacion y oportu
 
 ## Oportunidades
 
-- Capturar `DTI` como patron de busqueda, pero responder con estructura `DTF por metro`.
+- Capturar `DTF por metro` como patrón de búsqueda y responder identificando el producto real como `DTI Innuro`.
 - Dominar rotulacion local con combinacion de:
   - ciudad
   - tipo de vehiculo

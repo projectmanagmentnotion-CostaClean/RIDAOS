@@ -4,7 +4,6 @@ import NotFoundPage from './components/NotFoundPage'
 import RouteErrorBoundary from './components/RouteErrorBoundary'
 import PremiumCursor from './components/system/PremiumCursor'
 import { LiveToastProvider } from './features/live-feedback'
-import Home from './pages/Home'
 import { applySEO } from './lib/seo'
 import { initSmoothScroll } from './lib/smoothScroll'
 import { refreshScrollNarrative, syncScrollTriggerWithLenis } from './lib/animations'
@@ -130,6 +129,7 @@ const routes: Record<string, RouteKey> = {
  * Visual component: src/App.tsx
  */
 const Catalogo = lazy(() => import('./pages/Catalogo'))
+const Home = lazy(() => import('./pages/Home'))
 const DtiCategoryPage = lazy(() => import('./pages/DtiCategoryPage'))
 const DTFPage = lazy(() => import('./pages/DTFPage'))
 const TextilPage = lazy(() => import('./pages/TextilPage'))
@@ -253,7 +253,10 @@ function App() {
   const isDtiAuthCallback = window.location.pathname === DTI_AUTH_CALLBACK_PATH
   const publicationPolicy = useResolvedPublicationPolicy(window.location.hostname)
   const [currentHashRoute, setCurrentHashRoute] = useState(() => getCurrentHashRoute())
-  const [route, setRoute] = useState<RouteKey>(() => getRouteFromHash(currentHashRoute))
+  const [route, setRoute] = useState<RouteKey>(() => {
+    const initialRoute = getRouteFromHash(getCurrentHashRoute())
+    return resolvePublicationRoute(initialRoute, publicationPolicy) as RouteKey
+  })
   const [isHeaderHidden, setIsHeaderHidden] = useState(false)
   const [isHeaderSolid, setIsHeaderSolid] = useState(false)
   const lastScrollYRef = useRef(0)

@@ -4,9 +4,9 @@ import {
   FRAME_SEQUENCE_TOTAL,
   getFrameSequencePixelRatio,
   getFrameSequenceUrl,
-  scheduleFrameBatch,
   shouldReduceFrameSequenceMotion,
 } from '../../lib/frameSequence'
+import { getHomeSequenceFrameWindow } from '../../motion/cinematic/homeSequencePolicy.mjs'
 
 function canAnimateVehicleSequence() {
   return (
@@ -40,7 +40,7 @@ function HomeVehicleScrollSequence() {
       root.closest<HTMLElement>('.home-fullscreen-hero') ??
       root
     const loadedImages = new Map<number, HTMLImageElement>()
-    const loadingFrames = new Set<number>()
+    const loadingFrames = new Map<number, HTMLImageElement>()
 
     const resizeCanvas = () => {
       const bounds = root.getBoundingClientRect()
@@ -144,9 +144,10 @@ function HomeVehicleScrollSequence() {
           priority === 'high' ? 'high' : 'low'
       }
 
-      loadingFrames.add(frameIndex)
+      loadingFrames.set(frameIndex, image)
 
       image.onload = () => {
+        if (loadingFrames.get(frameIndex) !== image) return
         loadingFrames.delete(frameIndex)
         loadedImages.set(frameIndex, image)
 
@@ -168,25 +169,57 @@ function HomeVehicleScrollSequence() {
       }
 
       image.onerror = () => {
-        loadingFrames.delete(frameIndex)
+        if (loadingFrames.get(frameIndex) === image) loadingFrames.delete(frameIndex)
       }
 
       image.src = getFrameSequenceUrl(frameIndex)
     }
 
-    const queueNearbyFrames = (frameNumber: number) => {
-      for (let offset = -3; offset <= 8; offset += 1) {
-        loadFrame(frameNumber + offset, 'high')
+    const reduceMotion = shouldReduceFrameSequenceMotion()
+
+    const retainFrameWindow = (frameNumber: number) => {
+      const frameWindow = new Set(getHomeSequenceFrameWindow(frameNumber, {
+        reduceMotion,
+        frameCount: FRAME_SEQUENCE_TOTAL,
+      }))
+      for (const loadedFrameIndex of loadedImages.keys()) {
+        if (!frameWindow.has(loadedFrameIndex + 1)) {
+          loadedImages.delete(loadedFrameIndex)
+        }
       }
+      for (const [loadingFrameIndex, image] of loadingFrames) {
+        if (!frameWindow.has(loadingFrameIndex + 1)) {
+          loadingFrames.delete(loadingFrameIndex)
+          image.onload = null
+          image.onerror = null
+          image.src = ''
+        }
+      }
+    }
+
+    const queueNearbyFrames = (frameNumber: number) => {
+      for (const nextFrameNumber of getHomeSequenceFrameWindow(frameNumber, {
+        reduceMotion,
+        frameCount: FRAME_SEQUENCE_TOTAL,
+      })) {
+        loadFrame(nextFrameNumber, nextFrameNumber === frameNumber ? 'high' : 'low')
+      }
+      retainFrameWindow(frameNumber)
     }
 
     const updateFromScroll = () => {
       frameRequest = 0
-      const progress = canAnimateVehicleSequence() ? getScrollProgress() : 0
+      const canAnimate = canAnimateVehicleSequence()
+      const progress = canAnimate ? getScrollProgress() : 0
       const nextFrameNumber = 1 + Math.round(progress * (FRAME_SEQUENCE_TOTAL - 1))
       requestedFrameNumber = clampFrameNumber(nextFrameNumber)
       syncCanvasDiagnostics()
-      queueNearbyFrames(requestedFrameNumber)
+      if (canAnimate) {
+        queueNearbyFrames(requestedFrameNumber)
+      } else {
+        loadFrame(1, 'high')
+        retainFrameWindow(1)
+      }
       drawFrame(requestedFrameNumber)
     }
 
@@ -199,25 +232,7 @@ function HomeVehicleScrollSequence() {
     }
 
     const preloadFrames = () => {
-      loadFrame(1, 'high')
-      loadFrame(FRAME_SEQUENCE_TOTAL, 'low')
-
-      let nextFrame = 2
-      const batch = () => {
-        if (destroyed) {
-          return
-        }
-
-        for (let count = 0; count < 10 && nextFrame < FRAME_SEQUENCE_TOTAL; count += 1, nextFrame += 1) {
-          loadFrame(nextFrame, 'low')
-        }
-
-        if (nextFrame < FRAME_SEQUENCE_TOTAL) {
-          scheduleFrameBatch(batch)
-        }
-      }
-
-      batch()
+      queueNearbyFrames(1)
     }
 
     resizeCanvas()
@@ -240,6 +255,13 @@ function HomeVehicleScrollSequence() {
       resizeObserver?.disconnect()
       window.removeEventListener('scroll', requestScrollUpdate)
       window.removeEventListener('resize', requestResize)
+      for (const image of loadingFrames.values()) {
+        image.onload = null
+        image.onerror = null
+        image.src = ''
+      }
+      loadingFrames.clear()
+      loadedImages.clear()
     }
   }, [])
 

@@ -25,7 +25,7 @@ create table public.dti_notification_outbox (
     'order_picked_up'
   )),
   delivery_status text not null default 'pending'
-    check (delivery_status in ('pending', 'processing', 'sent', 'retry')),
+    check (delivery_status in ('pending', 'processing', 'sent', 'retry', 'failed')),
   attempt_count integer not null default 0 check (attempt_count >= 0),
   available_at timestamptz not null default now(),
   claimed_at timestamptz,
@@ -46,6 +46,123 @@ create policy dti_notification_outbox_service_only
   using (true) with check (true);
 revoke all on public.dti_notification_outbox from public, anon, authenticated;
 grant select, insert, update, delete on public.dti_notification_outbox to service_role;
+
+-- Claims are atomic and bounded. A worker must time out transport calls well
+-- below the 10-minute lease so a second worker cannot send concurrently.
+create or replace function dti_private.claim_dti_customer_notifications(
+  p_batch_size integer default 10,
+  p_now timestamptz default now()
+)
+returns table (
+  id uuid,
+  order_id uuid,
+  source_event_id uuid,
+  notification_key text,
+  attempt_count integer
+)
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  update public.dti_notification_outbox
+  set delivery_status = 'retry', available_at = p_now, claimed_at = null,
+      last_error_code = 'claim_expired'
+  where delivery_status = 'processing'
+    and claimed_at < p_now - interval '10 minutes'
+    and attempt_count < 6;
+
+  update public.dti_notification_outbox
+  set delivery_status = 'failed', claimed_at = null,
+      last_error_code = 'attempt_limit'
+  where delivery_status = 'processing'
+    and claimed_at < p_now - interval '10 minutes'
+    and attempt_count >= 6;
+
+  return query
+  with candidates as (
+    select outbox.id
+    from public.dti_notification_outbox as outbox
+    where outbox.delivery_status in ('pending', 'retry')
+      and outbox.available_at <= p_now
+      and outbox.attempt_count < 6
+    order by outbox.available_at, outbox.created_at
+    for update skip locked
+    limit (greatest(1, least(coalesce(p_batch_size, 10), 50)))
+  ), claimed as (
+    update public.dti_notification_outbox as outbox
+    set delivery_status = 'processing', claimed_at = p_now,
+        attempt_count = outbox.attempt_count + 1
+    from candidates
+    where outbox.id = candidates.id
+    returning outbox.id, outbox.order_id, outbox.source_event_id,
+      outbox.notification_key, outbox.attempt_count
+  )
+  select claimed.id, claimed.order_id, claimed.source_event_id,
+    claimed.notification_key, claimed.attempt_count
+  from claimed;
+end;
+$$;
+
+create or replace function dti_private.complete_dti_customer_notification(
+  p_outbox_id uuid,
+  p_now timestamptz default now()
+)
+returns boolean
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_updated integer;
+begin
+  update public.dti_notification_outbox
+  set delivery_status = 'sent', sent_at = p_now, claimed_at = null,
+      last_error_code = null
+  where id = p_outbox_id and delivery_status = 'processing';
+  get diagnostics v_updated = row_count;
+  return v_updated = 1;
+end;
+$$;
+
+create or replace function dti_private.fail_dti_customer_notification(
+  p_outbox_id uuid,
+  p_safe_error_code text,
+  p_now timestamptz default now()
+)
+returns boolean
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_updated integer;
+begin
+  if p_safe_error_code is null or p_safe_error_code !~ '^[a-z0-9_.-]{1,80}$' then
+    raise exception 'invalid safe notification error code';
+  end if;
+
+  update public.dti_notification_outbox
+  set delivery_status = case when attempt_count >= 6 then 'failed' else 'retry' end,
+      available_at = case when attempt_count >= 6 then available_at
+        else p_now + make_interval(secs => least(
+          3600::double precision,
+          60::double precision * power(2::double precision, greatest(attempt_count - 1, 0)::double precision)
+        )) end,
+      claimed_at = null,
+      last_error_code = p_safe_error_code
+  where id = p_outbox_id and delivery_status = 'processing';
+  get diagnostics v_updated = row_count;
+  return v_updated = 1;
+end;
+$$;
+
+revoke all on function dti_private.claim_dti_customer_notifications(integer, timestamptz) from public, anon, authenticated;
+revoke all on function dti_private.complete_dti_customer_notification(uuid, timestamptz) from public, anon, authenticated;
+revoke all on function dti_private.fail_dti_customer_notification(uuid, text, timestamptz) from public, anon, authenticated;
+grant execute on function dti_private.claim_dti_customer_notifications(integer, timestamptz) to service_role;
+grant execute on function dti_private.complete_dti_customer_notification(uuid, timestamptz) to service_role;
+grant execute on function dti_private.fail_dti_customer_notification(uuid, text, timestamptz) to service_role;
 
 create or replace function dti_private.enqueue_dti_customer_notification()
 returns trigger

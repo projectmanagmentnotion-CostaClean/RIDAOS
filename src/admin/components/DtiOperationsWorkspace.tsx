@@ -287,7 +287,7 @@ function DtiOperationsWorkspace() {
               )
             })}
           </div>
-          <p className="dti-staff-muted">Las acciones quedan trazadas en Supabase. Este panel no envía notificaciones al cliente: el canal de correo sigue pendiente de integrar.</p>
+          <p className="dti-staff-muted">Las acciones quedan trazadas en Supabase. Hay plantillas de notificación preparadas, pero el envío está desactivado hasta aprobar un proveedor transaccional y conectar la cola.</p>
         </>
       )}
       {loading ? <p role="status">Cargando operación DTI…</p> : null}

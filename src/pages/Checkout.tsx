@@ -21,7 +21,7 @@ import { callDtiFunction, dtiBackendConfigured, dtiIdempotencyKey, dtiOrderKey, 
 import { DtiStripePayment } from '../features/dtf/DtiStripePayment'
 import { usePublicationPolicy } from '../config/publicationContext'
 import { isPublicationRouteAllowed } from '../config/publicationPolicy.mjs'
-import { isValidDtiDeliveryAddress, validateCheckoutContact } from '../features/cart/utils/checkoutValidation.mjs'
+import { getDtiArtworkAcceptanceError, isValidDtiDeliveryAddress, validateCheckoutContact } from '../features/cart/utils/checkoutValidation.mjs'
 
 type CheckoutStep = (typeof checkoutSteps)[number]['id']
 type PaymentMockId = (typeof paymentMocks)[number]['id']
@@ -52,6 +52,13 @@ const dtiOrderStatusLabels: Record<string, string> = {
   picked_up: 'Recogido',
   cancelled: 'Cancelado',
 }
+
+const dtiCheckoutNoticeItems = [
+  'DTI Innuro: 15 €/m IVA incluido; envío peninsular: 5 € IVA incluido.',
+  'El pago se habilita después de validar técnicamente el archivo; no se cobra al crear la solicitud.',
+  'Si solicitas adaptación, el presupuesto de 35 €/hora + IVA debe aprobarse antes del pago.',
+  'La producción y los plazos se confirman tras la revisión técnica; el transporte se suma al tiempo de preparación.',
+]
 
 function needsArtworkApproval(item: CartItem) {
   const acceptance = item.artwork.acceptance
@@ -154,6 +161,11 @@ function Checkout() {
     if (!dtiOnly && pendingArtworkItems.length > 0) {
       nextErrors.artwork =
         'Antes de confirmar, revisa y acepta el archivo final o solicita ayuda de diseno en cada linea pendiente.'
+    }
+
+    if (dtiOnly) {
+      const acceptanceError = getDtiArtworkAcceptanceError(dtiClientAccepted)
+      if (acceptanceError) nextErrors.artwork = acceptanceError
     }
 
     if (dtiOnly && !hasOnlyOneDtiLine(cartItems)) nextErrors.cart = 'Para usar el checkout DTI de pruebas, tramita una sola línea DTI por pedido y separa otros productos.'
@@ -480,7 +492,7 @@ function Checkout() {
               </div>}
               {uiError ? <p className="field-error">{uiError}</p> : null}
               {loading ? <p className="inline-notice">Registrando tu solicitud...</p> : null}
-              <CommercialNotice className="checkout-notice" title="Resumen de cierre" />
+              <CommercialNotice className="checkout-notice" items={dtiOnly ? dtiCheckoutNoticeItems : undefined} title="Resumen de cierre" />
               <div className="summary-list compact-summary">
                 {cartItems.map((item) => (
                   <div className="summary-row" key={`artwork-${item.id}`}>
@@ -489,7 +501,7 @@ function Checkout() {
                   </div>
                 ))}
               </div>
-              {errors.artwork ? <p className="field-error">{errors.artwork}</p> : null}
+              {errors.artwork && !dtiOnly ? <p className="field-error">{errors.artwork}</p> : null}
               {pendingArtworkItems.length ? (
                 <p className="inline-notice">
                   Puedes enviar la solicitud sin archivo final aceptado solo cuando hayas pedido ayuda de diseno Ridaos.
@@ -499,12 +511,16 @@ function Checkout() {
                   Antes de confirmar, revisa que el archivo y la configuracion coincidan. Usaremos esta informacion para preparar tu solicitud.
                 </p>
               )}
-              {dtiOnly ? <label className="field-group" htmlFor="dti-client-acceptance"><span><input id="dti-client-acceptance" type="checkbox" checked={dtiClientAccepted} onChange={(event) => setDtiClientAccepted(event.target.checked)} /> Confirmo que el archivo corresponde a mi diseño y acepto esta versión como referencia del pedido.</span><small>Esta aceptación del cliente no equivale a aprobación técnica ni autoriza producción.</small></label> : null}
+              {dtiOnly ? <label className="field-group" htmlFor="dti-client-acceptance"><span><input aria-describedby={errors.artwork ? 'dti-acceptance-error' : undefined} aria-invalid={Boolean(errors.artwork)} id="dti-client-acceptance" type="checkbox" checked={dtiClientAccepted} onChange={(event) => {
+                setDtiClientAccepted(event.target.checked)
+                if (event.target.checked) setErrors((current) => ({ ...current, artwork: undefined }))
+              }} /> Confirmo que el archivo corresponde a mi diseño y acepto esta versión como referencia del pedido.</span><small>Esta aceptación del cliente no equivale a aprobación técnica ni autoriza producción.</small></label> : null}
+              {dtiOnly && errors.artwork ? <p className="field-error" id="dti-acceptance-error" role="alert">{errors.artwork}</p> : null}
               <div className="form-actions">
                 <button className="action-button action-button-muted" onClick={() => setStep('shipping')} type="button">
                   Volver a entrega
                 </button>
-                <button className="action-button" data-cursor="sales" disabled={loading || (dtiOnly && (!dtiBackendConfigured() || Boolean(dtiOrderAccess)))} onClick={handleSubmit} type="button">
+                <button className="action-button" data-cursor="sales" disabled={loading || (dtiOnly && (!dtiBackendConfigured() || Boolean(dtiOrderAccess) || !dtiClientAccepted))} onClick={handleSubmit} type="button">
                   {dtiOnly ? 'Crear pedido de prueba' : 'Enviar solicitud'}
                 </button>
               </div>

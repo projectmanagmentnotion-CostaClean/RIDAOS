@@ -15,3 +15,7 @@ export function isValidDtiDeliveryAddress(address) {
     && /^\d{5}$/.test(address.postalCode),
   )
 }
+
+export function getDtiArtworkAcceptanceError(accepted) {
+  return accepted ? '' : 'Confirma que el archivo corresponde a tu diseño antes de crear el pedido.'
+}

@@ -29,9 +29,11 @@ Preview prevista: `https://ridaos-git-f-2c0516-projectmanagmentnotion-costaclean
 
 ## Verificación de publicación Preview
 
-Vercel confirma el deployment `dpl_AWaLTtzpKtACQPCGkZ1aXuv7jhPg` en estado `READY`, con SHA `f9632da2b021e0ed306cb35ae33fd5f3d308fd60`. El alias QA estable apunta a ese deployment.
+Vercel confirma el deployment de código `dpl_AWaLTtzpKtACQPCGkZ1aXuv7jhPg` en estado `READY`, con SHA `f9632da2b021e0ed306cb35ae33fd5f3d308fd60`. El alias QA se verificó con ese contenido; el deployment documental posterior conserva el mismo código.
 
 La Preview protegida devolvió `200` en `/robots.txt` y `/sitemap.xml`. Robots apunta al sitemap DTI; el XML solo enumera Inicio y `/producto/dti-por-metro`. La ruta de producto directa devuelve `200` y el `index.html` de la SPA. La prueba de render React en navegador no pudo hacerse porque Chrome no estaba disponible para automatización en esta sesión. Las reglas Vercel para host y rutas están además cubiertas por pruebas unitarias del handler/configuración.
+
+En el host único del deployment Preview (no incluido en la allowlist DTI) se verificó que `/sitemap.xml` conserva las 14 URL del e-commerce completo, y que `/producto/textil-personalizado` devuelve el entrypoint de la SPA. El sitemap DTI no se filtra a ese host.
 
 ## Alcance QA y límites
 

@@ -147,4 +147,3 @@ export function planDtiNotificationRetry(attemptCount, now = Date.now()) {
   const delay = Math.min(60 * 60 * 1000, 60_000 * (2 ** (attempt - 1)))
   return Object.freeze({ retry: true, availableAt: new Date(now + delay), attemptCount: attempt })
 }
-

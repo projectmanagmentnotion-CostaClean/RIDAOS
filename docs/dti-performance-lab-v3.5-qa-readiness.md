@@ -29,11 +29,13 @@ Preview prevista: `https://ridaos-git-f-2c0516-projectmanagmentnotion-costaclean
 
 ## Verificación de publicación Preview
 
-Pendiente: confirmar el deployment READY generado desde este commit y probar allí `/robots.txt`, `/sitemap.xml` y `/producto/dti-por-metro`. No se da por validada la precedencia de routing de Vercel por el solo hecho de pasar la prueba local del handler.
+Vercel confirma el deployment `dpl_AWaLTtzpKtACQPCGkZ1aXuv7jhPg` en estado `READY`, con SHA `f9632da2b021e0ed306cb35ae33fd5f3d308fd60`. El alias QA estable apunta a ese deployment.
+
+La Preview protegida devolvió `200` en `/robots.txt` y `/sitemap.xml`. Robots apunta al sitemap DTI; el XML solo enumera Inicio y `/producto/dti-por-metro`. La ruta de producto directa devuelve `200` y el `index.html` de la SPA. La prueba de render React en navegador no pudo hacerse porque Chrome no estaba disponible para automatización en esta sesión. Las reglas Vercel para host y rutas están además cubiertas por pruebas unitarias del handler/configuración.
 
 ## Alcance QA y límites
 
-- La cuenta de staff de QA queda sin permisos. Para comprobar el `403` de una cuenta autenticada se necesita que el titular use su sesión ya establecida en la Preview; no se solicitan contraseñas, enlaces de acceso ni nuevos correos.
+- La cuenta de staff de QA queda sin permisos. Sin una sesión reutilizable, el endpoint devuelve `401`; el `403 insufficient_staff_permission` autenticado sigue pendiente de que el titular abra operaciones en la Preview con su sesión ya establecida. No se solicitan contraseñas, enlaces de acceso ni nuevos correos.
 - La evidencia de Stripe Test, rechazo e idempotencia se mantiene en los informes anteriores. Esta revisión no inició pagos ni webhooks.
 - La Preview está protegida por Vercel Authentication. No se considera pública ni indexable mientras siga protegida.
 - Para preparar Producción siguen pendientes, con aprobaciones separadas: DNS del subdominio, migraciones y secretos de Supabase Production, Stripe Live, correo transaccional y apertura pública.

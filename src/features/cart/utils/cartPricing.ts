@@ -64,7 +64,18 @@ export function buildCartSummary(input: {
   couponCode: string
 }): CartSummary {
   const subtotal = getCartSubtotal(input.items)
-  const shipping = resolveCartShippingMethod(input.shippingMethod, input.items)
+  const resolvedShipping = resolveCartShippingMethod(input.shippingMethod, input.items)
+  const shipping = input.items.length > 0
+    ? resolvedShipping
+    : {
+        ...resolvedShipping,
+        description: 'Añade productos para calcular la entrega.',
+        eta: 'Pendiente de productos',
+        price: 0,
+        includedPrice: 0,
+        taxablePrice: 0,
+        vatIncluded: true,
+      }
   const { coupon, discount } = resolveCoupon(input.couponCode, subtotal)
   const { taxes, total } = calculateCartGrossTotals(input.items, shipping, discount, TAX_RATE)
 

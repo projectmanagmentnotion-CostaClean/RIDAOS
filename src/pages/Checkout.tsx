@@ -21,6 +21,7 @@ import { callDtiFunction, dtiBackendConfigured, dtiIdempotencyKey, dtiOrderKey, 
 import { DtiStripePayment } from '../features/dtf/DtiStripePayment'
 import { usePublicationPolicy } from '../config/publicationContext'
 import { isPublicationRouteAllowed } from '../config/publicationPolicy.mjs'
+import { isValidDtiDeliveryAddress, validateCheckoutContact } from '../features/cart/utils/checkoutValidation.mjs'
 
 type CheckoutStep = (typeof checkoutSteps)[number]['id']
 type PaymentMockId = (typeof paymentMocks)[number]['id']
@@ -140,19 +141,7 @@ function Checkout() {
     }
 
   const validateCustomer = () => {
-    const nextErrors: Partial<Record<CheckoutErrorKey, string>> = {}
-
-    if (!customer.name.trim()) {
-      nextErrors.name = 'Introduce el nombre del cliente.'
-    }
-
-    if (!customer.email.trim()) {
-      nextErrors.email = 'Introduce un email de contacto.'
-    }
-
-    if (!customer.phone.trim()) {
-      nextErrors.phone = 'Introduce un telefono de contacto.'
-    }
+    const nextErrors: Partial<Record<CheckoutErrorKey, string>> = validateCheckoutContact(customer)
 
     if (cartItems.length === 0) {
       nextErrors.cart = 'Necesitas al menos un articulo en el carrito para continuar.'
@@ -170,7 +159,7 @@ function Checkout() {
     if (dtiOnly && !hasOnlyOneDtiLine(cartItems)) nextErrors.cart = 'Para usar el checkout DTI de pruebas, tramita una sola línea DTI por pedido y separa otros productos.'
     if (dtiOnly && !dtiBackendConfigured()) nextErrors.cart = 'Checkout DTI desactivado: falta conectar un proyecto Supabase QA aislado.'
     if (dtiOnly && cartShippingMethod !== 'pickup') {
-      if (!dtiAddress.line1.trim() || !dtiAddress.city.trim() || !dtiAddress.province.trim() || !/^\d{5}$/.test(dtiAddress.postalCode)) nextErrors.cart = 'Completa dirección, municipio, provincia y código postal peninsular.'
+      if (!isValidDtiDeliveryAddress(dtiAddress)) nextErrors.cart = 'Completa dirección, municipio, provincia y código postal peninsular.'
     }
 
     setErrors(nextErrors)
@@ -371,26 +360,26 @@ function Checkout() {
               <div className="configurator-form">
                 <label className="field-group" htmlFor="checkout-name">
                   <span className="field-label">Nombre</span>
-                  <input className="form-input" id="checkout-name" onChange={handleFieldChange('name')} type="text" value={customer.name} />
-                  {errors.name ? <span className="field-error">{errors.name}</span> : null}
+                  <input aria-describedby={errors.name ? 'checkout-name-error' : undefined} aria-invalid={Boolean(errors.name)} className="form-input" id="checkout-name" onChange={handleFieldChange('name')} required type="text" value={customer.name} />
+                  {errors.name ? <span className="field-error" id="checkout-name-error" role="alert">{errors.name}</span> : null}
                 </label>
                 <label className="field-group" htmlFor="checkout-email">
                   <span className="field-label">Email</span>
-                  <input className="form-input" id="checkout-email" onChange={handleFieldChange('email')} type="email" value={customer.email} />
-                  {errors.email ? <span className="field-error">{errors.email}</span> : null}
+                  <input aria-describedby={errors.email ? 'checkout-email-error' : undefined} aria-invalid={Boolean(errors.email)} className="form-input" id="checkout-email" onChange={handleFieldChange('email')} required type="email" value={customer.email} />
+                  {errors.email ? <span className="field-error" id="checkout-email-error" role="alert">{errors.email}</span> : null}
                 </label>
                 <label className="field-group" htmlFor="checkout-phone">
                   <span className="field-label">Telefono</span>
-                  <input className="form-input" id="checkout-phone" onChange={handleFieldChange('phone')} type="tel" value={customer.phone} />
-                  {errors.phone ? <span className="field-error">{errors.phone}</span> : null}
+                  <input aria-describedby={errors.phone ? 'checkout-phone-error' : undefined} aria-invalid={Boolean(errors.phone)} className="form-input" id="checkout-phone" onChange={handleFieldChange('phone')} required type="tel" value={customer.phone} />
+                  {errors.phone ? <span className="field-error" id="checkout-phone-error" role="alert">{errors.phone}</span> : null}
                 </label>
                 {dtiOnly && cartShippingMethod !== 'pickup' ? <>
-                  <label className="field-group" htmlFor="dti-address"><span className="field-label">Dirección de envío</span><input className="form-input" id="dti-address" value={dtiAddress.line1} onChange={(event) => setDtiAddress((current) => ({ ...current, line1: event.target.value }))} /></label>
-                  <label className="field-group" htmlFor="dti-city"><span className="field-label">Municipio</span><input className="form-input" id="dti-city" value={dtiAddress.city} onChange={(event) => setDtiAddress((current) => ({ ...current, city: event.target.value }))} /></label>
-                  <label className="field-group" htmlFor="dti-province"><span className="field-label">Provincia</span><input className="form-input" id="dti-province" value={dtiAddress.province} onChange={(event) => setDtiAddress((current) => ({ ...current, province: event.target.value }))} /></label>
-                  <label className="field-group" htmlFor="dti-postal"><span className="field-label">Código postal peninsular</span><input className="form-input" inputMode="numeric" maxLength={5} id="dti-postal" value={dtiAddress.postalCode} onChange={(event) => setDtiAddress((current) => ({ ...current, postalCode: event.target.value }))} /></label>
+                  <label className="field-group" htmlFor="dti-address"><span className="field-label">Dirección de envío</span><input aria-describedby={errors.cart ? 'dti-delivery-error' : undefined} aria-invalid={Boolean(errors.cart)} className="form-input" id="dti-address" required value={dtiAddress.line1} onChange={(event) => setDtiAddress((current) => ({ ...current, line1: event.target.value }))} /></label>
+                  <label className="field-group" htmlFor="dti-city"><span className="field-label">Municipio</span><input aria-describedby={errors.cart ? 'dti-delivery-error' : undefined} aria-invalid={Boolean(errors.cart)} className="form-input" id="dti-city" required value={dtiAddress.city} onChange={(event) => setDtiAddress((current) => ({ ...current, city: event.target.value }))} /></label>
+                  <label className="field-group" htmlFor="dti-province"><span className="field-label">Provincia</span><input aria-describedby={errors.cart ? 'dti-delivery-error' : undefined} aria-invalid={Boolean(errors.cart)} className="form-input" id="dti-province" required value={dtiAddress.province} onChange={(event) => setDtiAddress((current) => ({ ...current, province: event.target.value }))} /></label>
+                  <label className="field-group" htmlFor="dti-postal"><span className="field-label">Código postal peninsular</span><input aria-describedby={errors.cart ? 'dti-delivery-error' : undefined} aria-invalid={Boolean(errors.cart)} className="form-input" inputMode="numeric" maxLength={5} id="dti-postal" pattern="[0-9]{5}" required value={dtiAddress.postalCode} onChange={(event) => setDtiAddress((current) => ({ ...current, postalCode: event.target.value }))} /></label>
                 </> : null}
-                {errors.cart ? <p className="field-error">{errors.cart}</p> : null}
+                {errors.cart ? <p className="field-error" id="dti-delivery-error" role="alert">{errors.cart}</p> : null}
                 {errors.artwork ? <p className="field-error">{errors.artwork}</p> : null}
                 <ul className="hint-list">
                   <li>Usamos estos datos para preparar la entrega y la confirmacion de la solicitud.</li>
@@ -404,6 +393,10 @@ function Checkout() {
                   <button
                     className="action-button"
                     onClick={() => {
+                      if (!validateCustomer()) {
+                        error('Revisa tus datos', 'Completa los datos de contacto y entrega antes de confirmar.')
+                        return
+                      }
                       setStep('payment')
                       info('Datos revisados', 'La solicitud ya puede pasar al paso de confirmacion.', 1800)
                     }}
@@ -548,7 +541,9 @@ function Checkout() {
         <div className="summary-stack" data-animate="reveal">
           <article className="content-card premium-cart-summary" data-animate="panel" data-cursor-zone="conversion">
             <p className="section-label">Resumen de checkout</p>
-            <div className="summary-list">
+            {cartItems.length === 0 ? (
+              <p className="inline-notice" role="note">Añade un producto para calcular el precio y la entrega. No hay ningún importe pendiente.</p>
+            ) : <div className="summary-list">
               <div className="summary-row">
                 <span>{vatAlreadyIncluded ? 'Productos · IVA incluido' : 'Subtotal productos'}</span>
                 <strong>{formatCurrency(activeSummary.subtotal)}</strong>
@@ -573,12 +568,12 @@ function Checkout() {
                 <span>Total estimado</span>
                 <strong>{formatCurrency(typeof dtiRemoteOrder?.order?.totalCents === 'number' ? dtiRemoteOrder.order.totalCents / 100 : activeSummary.total)}</strong>
               </div>
-            </div>
-            <ul className="hint-list">
+            </div>}
+            {cartItems.length > 0 ? <ul className="hint-list">
               <li>El total mantiene entrega, impuestos y descuentos visibles antes de confirmar.</li>
               <li>La comprobacion inicial del archivo sigue separada para proteger medidas, formato y acabados.</li>
               <li>La prueba local conserva el resumen en este dispositivo; no se envía a Ridaos ni se cobra.</li>
-            </ul>
+            </ul> : null}
           </article>
 
           {confirmation ? (

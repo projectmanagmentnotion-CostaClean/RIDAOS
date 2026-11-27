@@ -9,6 +9,7 @@ import {
 import { calculateCartGrossTotals } from '../src/features/cart/utils/cartGrossTotals.mjs'
 import { getCartShippingMethods, resolveCartShippingMethod } from '../src/features/cart/utils/cartShipping.mjs'
 import { migrateLegacyDtiCartState } from '../src/features/cart/utils/migrateLegacyDtiCart.mjs'
+import { buildCartSummary } from '../src/features/cart/utils/cartPricing.ts'
 
 test('DTI price is 15 EUR per meter with VAT included and a one-meter minimum', () => {
   assert.deepEqual(calculateDtiInnuroPrice(1), {
@@ -48,6 +49,26 @@ test('cart keeps DTI and peninsular delivery prices gross with VAT included', ()
   )
 
   assert.deepEqual(totals, { subtotal: 15, taxes: 3.47, total: 20 })
+})
+
+test('empty cart has zero products, shipping, VAT and total; one DTI meter totals 20 EUR with delivery', () => {
+  const empty = buildCartSummary({ items: [], shippingMethod: 'standard', couponCode: '' })
+  assert.deepEqual({ subtotal: empty.subtotal, shipping: empty.shipping.price, taxes: empty.taxes, total: empty.total }, {
+    subtotal: 0, shipping: 0, taxes: 0, total: 0,
+  })
+
+  const oneMeter = buildCartSummary({
+    items: [{
+      id: 'dti-1m-test', productType: 'dtf', productName: 'DTI Innuro por metro', lineQuantity: 1,
+      configuration: { meters: 1 }, artwork: { fileName: 'art.png' },
+      pricing: { subtotal: 15, extras: 0, total: 15, vatIncluded: true },
+    }],
+    shippingMethod: 'standard',
+    couponCode: '',
+  })
+  assert.equal(oneMeter.subtotal, 15)
+  assert.equal(oneMeter.shipping.price, 5)
+  assert.equal(oneMeter.total, 20)
 })
 
 test('cart still adds VAT to legacy exclusive items without charging VAT twice on delivery', () => {

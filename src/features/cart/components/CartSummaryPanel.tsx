@@ -59,25 +59,31 @@ export function CartSummaryPanel({
 
         <div className="premium-cart-summary__group">
           <p className="section-label">Entrega</p>
-          <div className="shipping-option-list">
-            {getCartShippingMethods(summary.items).map((method) => (
-              <button
-                className={`shipping-option${summary.shipping.id === method.id ? ' is-active' : ''}`}
-                key={method.id}
-                onClick={() => onShippingChange(method.id)}
-                type="button"
-              >
-                <strong>{method.label}</strong>
-                <span>{formatCurrency(method.price)}{method.vatIncluded ? ' · IVA incluido' : ''}</span>
-              </button>
-            ))}
-          </div>
-          <p className="catalog-result-caption">
-            {summary.shipping.description} · {summary.shipping.eta}
-          </p>
+          {summary.items.length > 0 ? (
+            <>
+              <div className="shipping-option-list">
+                {getCartShippingMethods(summary.items).map((method) => (
+                  <button
+                    className={`shipping-option${summary.shipping.id === method.id ? ' is-active' : ''}`}
+                    key={method.id}
+                    onClick={() => onShippingChange(method.id)}
+                    type="button"
+                  >
+                    <strong>{method.label}</strong>
+                    <span>{formatCurrency(method.price)}{method.vatIncluded ? ' · IVA incluido' : ''}</span>
+                  </button>
+                ))}
+              </div>
+              <p className="catalog-result-caption">
+                {summary.shipping.description} · {summary.shipping.eta}
+              </p>
+            </>
+          ) : (
+            <p className="catalog-result-caption">{summary.shipping.description}</p>
+          )}
         </div>
 
-        <div className="premium-cart-summary__group">
+        {summary.items.length > 0 ? <div className="premium-cart-summary__group">
           <p className="section-label">Cupon</p>
           <div className="coupon-row">
             <input
@@ -94,7 +100,7 @@ export function CartSummaryPanel({
           <p className="catalog-result-caption">
             Aplicamos el codigo sobre este resumen para que puedas revisar el pedido con claridad.
           </p>
-        </div>
+        </div> : null}
 
         <ul className="hint-list">
           <li>Los totales se actualizan al instante para que no pierdas contexto durante la compra.</li>

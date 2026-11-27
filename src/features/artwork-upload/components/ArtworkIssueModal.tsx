@@ -32,6 +32,27 @@ export function ArtworkIssueModal({
       if (event.key === 'Escape') {
         event.preventDefault()
         onClose()
+        return
+      }
+
+      if (event.key === 'Tab') {
+        const focusable = panelRef.current?.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), a[href], input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        )
+        const first = focusable?.[0]
+        const last = focusable?.[focusable.length - 1]
+        const activeElement = document.activeElement
+
+        if (!first || !last) {
+          event.preventDefault()
+          panelRef.current?.focus()
+        } else if (event.shiftKey && (activeElement === first || !panelRef.current?.contains(activeElement))) {
+          event.preventDefault()
+          last.focus()
+        } else if (!event.shiftKey && (activeElement === last || !panelRef.current?.contains(activeElement))) {
+          event.preventDefault()
+          first.focus()
+        }
       }
     }
 
@@ -50,7 +71,6 @@ export function ArtworkIssueModal({
 
   return (
     <div
-      aria-hidden="true"
       className="live-dialog-backdrop"
       onClick={onClose}
       role="presentation"
@@ -63,6 +83,7 @@ export function ArtworkIssueModal({
         onClick={(event) => event.stopPropagation()}
         ref={panelRef}
         role="dialog"
+        tabIndex={-1}
       >
         <button
           aria-label="Cerrar revision del archivo"

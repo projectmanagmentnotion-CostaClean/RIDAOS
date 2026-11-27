@@ -89,7 +89,7 @@ export function useArtworkUploadFlow(
         acceptedAt: clientAccepted ? confirmation?.acceptedAt : undefined,
         context,
       }),
-    [clientAccepted, confirmation?.acceptedAt, context, designerHelpRequested, file, isLoading, metadata, ruleKey, summary],
+    [clientAccepted, confirmation?.acceptedAt, context, designerHelpRequested, isLoading, metadata, ruleKey, summary],
   )
 
   const steps = useMemo(

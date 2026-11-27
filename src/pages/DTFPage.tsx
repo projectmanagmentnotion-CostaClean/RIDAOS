@@ -23,6 +23,17 @@ import {
 
 const currency = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' })
 
+function scrollToSection(id: string) {
+  const section = document.getElementById(id)
+  if (!section) return
+
+  section.focus({ preventScroll: true })
+  section.scrollIntoView({
+    behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+    block: 'start',
+  })
+}
+
 function DTFPage() {
   const pageRef = useRef<HTMLElement | null>(null)
   const { error, success } = useLiveToast()
@@ -131,8 +142,8 @@ function DTFPage() {
           <p className="dti-hero__intro">Color, detalle y libertad de aplicación para marcas que producen a su manera.</p>
           <div className="dti-hero__price"><strong>15 €</strong><span>/ metro<br />IVA incluido</span></div>
           <div className="dti-hero__actions">
-            <a className="dti-button dti-button--accent" href="#dti-configurator">Configurar mi rollo <span aria-hidden="true">↘</span></a>
-            <a className="dti-text-link" href="#dti-specifications">Descubre Innuro</a>
+            <a className="dti-button dti-button--accent" href="#dti-configurator" onClick={(event) => { event.preventDefault(); scrollToSection('dti-configurator') }}>Configurar mi rollo <span aria-hidden="true">↘</span></a>
+            <a className="dti-text-link" href="#dti-specifications" onClick={(event) => { event.preventDefault(); scrollToSection('dti-specifications') }}>Descubre Innuro</a>
           </div>
           <div className="dti-hero__meta"><span>01 / 04</span><span>IMPRESIÓN TRANSFER · BARCELONA</span></div>
         </div>
@@ -145,7 +156,7 @@ function DTFPage() {
         </div>
       </section>
 
-      <section className="dti-spec-strip" id="dti-specifications" data-animate="reveal">
+      <section className="dti-spec-strip" id="dti-specifications" tabIndex={-1} data-animate="reveal">
         <article><span>01 — PRECISIÓN</span><strong>55 cm</strong><p>Ancho útil fijo para cada metro Innuro.</p></article>
         <article><span>02 — PRECIO CLARO</span><strong>15 €/m</strong><p>IVA incluido. Desde un metro.</p></article>
         <article><span>03 — PRODUCCIÓN</span><strong>{preparation.label}</strong><p>{cutoffCopy}</p></article>
@@ -161,7 +172,7 @@ function DTFPage() {
         </div>
       </section>
 
-      <section className="dti-configurator" id="dti-configurator" data-animate="reveal">
+      <section className="dti-configurator" id="dti-configurator" tabIndex={-1} data-animate="reveal">
         <div className="dti-configurator__heading">
           <p className="dti-eyebrow"><span /> TU PEDIDO, A TU MEDIDA</p>
           <h2>Configura tu<br /><em>próxima producción.</em></h2>
@@ -236,7 +247,7 @@ function DTFPage() {
         <p className="dti-eyebrow"><span /> CLARIDAD EN CADA PASO</p>
         <h2>DTF por metro.<br /><em>DTI para producir.</em></h2>
         <p>Si buscas DTF por metro, has llegado al producto correcto: DTI Innuro de Ridaos Print, preparado en Barcelona.</p>
-        <a className="dti-text-link" href="#dti-configurator">Volver al configurador ↑</a>
+        <a className="dti-text-link" href="#dti-configurator" onClick={(event) => { event.preventDefault(); scrollToSection('dti-configurator') }}>Volver al configurador ↑</a>
       </section>
     </PageShell>
   )

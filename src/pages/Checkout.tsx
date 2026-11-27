@@ -19,6 +19,7 @@ import { useUIStore } from '../store/useUIStore'
 import type { CartItem, CustomerData, SimulatedOrder } from '../types/ecommerce'
 import { callDtiFunction, dtiBackendConfigured, dtiIdempotencyKey, dtiOrderKey, dtiRecoveryKey, dtiStripeTestConfigured, finishDtiOrderAttempt, forgetDtiArtwork, getDtiArtwork, hasOnlyOneDtiLine, isDtiCart, rememberDtiArtwork } from '../features/dtf/dtiCheckout'
 import { DtiStripePayment } from '../features/dtf/DtiStripePayment'
+import { dtiOrderCanRetryArtwork } from '../features/dtf/dtiArtworkGate.mjs'
 import { usePublicationPolicy } from '../config/publicationContext'
 import { isPublicationRouteAllowed } from '../config/publicationPolicy.mjs'
 import { getDtiArtworkAcceptanceError, isValidDtiDeliveryAddress, validateCheckoutContact } from '../features/cart/utils/checkoutValidation.mjs'
@@ -294,6 +295,9 @@ function Checkout() {
 
   const activeSummary = submittedSummary ?? summary
   const vatAlreadyIncluded = activeSummary.items.length > 0 && activeSummary.items.every((item) => item.pricing.vatIncluded) && activeSummary.shipping.vatIncluded
+  const canRetryDtiArtwork = dtiOrderCanRetryArtwork(
+    typeof dtiRemoteOrder?.order?.status === 'string' ? dtiRemoteOrder.order.status : undefined,
+  )
 
   return (
     <section className="page" ref={pageRef}>
@@ -433,18 +437,20 @@ function Checkout() {
                 <p className="inline-notice">{dtiBackendConfigured() ? 'Se registrará un pedido de prueba y se validará el archivo en servidor. La aceptación del cliente, revisión técnica y aprobación de presupuesto son estados separados.' : 'El pedido real de prueba no está disponible hasta configurar un proyecto Supabase QA aislado.'}</p>
                 {dtiOrderAccess ? <div className="content-card">
                   <p>Pedido QA: {dtiOrderAccess.orderId}</p>
-                  <label className="field-group" htmlFor="dti-artwork-retry">
-                    <span>Archivo del mismo pedido</span>
-                    <input id="dti-artwork-retry" type="file" accept=".png,.pdf,.ai,.psd,.svg,.cdr" onChange={(event) => {
-                      const file = event.target.files?.[0] ?? null
-                      setDtiRetryFile(file)
-                      if (file) rememberDtiArtwork(dtiOrderAccess.itemId, file)
-                    }} />
-                    <small>Vuelve a seleccionar el arte si hace falta. El reintento usa la clave idempotente del pedido actual.</small>
-                  </label>
-                  <button className="action-button action-button-muted" disabled={loading || !(dtiRetryFile ?? getDtiArtwork(dtiOrderAccess.itemId))} type="button" onClick={retryDtiArtworkUpload}>
-                    Reintentar subida de archivo
-                  </button>
+                  {canRetryDtiArtwork ? <>
+                    <label className="field-group" htmlFor="dti-artwork-retry">
+                      <span>Archivo del mismo pedido</span>
+                      <input id="dti-artwork-retry" type="file" accept=".png,.pdf,.ai,.psd,.svg,.cdr" onChange={(event) => {
+                        const file = event.target.files?.[0] ?? null
+                        setDtiRetryFile(file)
+                        if (file) rememberDtiArtwork(dtiOrderAccess.itemId, file)
+                      }} />
+                      <small>Vuelve a seleccionar el arte si hace falta. El reintento usa la clave idempotente del pedido actual.</small>
+                    </label>
+                    <button className="action-button action-button-muted" disabled={loading || !(dtiRetryFile ?? getDtiArtwork(dtiOrderAccess.itemId))} type="button" onClick={retryDtiArtworkUpload}>
+                      Reintentar subida de archivo
+                    </button>
+                  </> : <p className="inline-notice">La referencia de archivo ya está vinculada a un intento de pago; no se puede sustituir mientras el pedido esté en esta fase.</p>}
                   <button className="action-button action-button-muted" type="button" onClick={async () => {
                     try { setDtiRemoteOrder(await callDtiFunction('dti-orders', { orderId: dtiOrderAccess.orderId }, { method: 'GET', orderToken: dtiOrderAccess.token })) }
                     catch (cause) { setDtiStatus(cause instanceof Error ? cause.message : 'No se pudo actualizar el pedido.') }

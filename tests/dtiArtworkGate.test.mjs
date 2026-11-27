@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { dtiArtworkCanEnterCart, dtiArtworkFileWasAccepted } from '../src/features/dtf/dtiArtworkGate.mjs'
+import { dtiArtworkCanEnterCart, dtiArtworkFileWasAccepted, dtiOrderCanRetryArtwork } from '../src/features/dtf/dtiArtworkGate.mjs'
 
 const file = { name: 'qa-artwork.png' }
 
@@ -17,4 +17,16 @@ test('DTI acceptance is bound to the selected File instance', () => {
   assert.equal(dtiArtworkFileWasAccepted(file, file), true)
   assert.equal(dtiArtworkFileWasAccepted(replacement, file), false)
   assert.equal(dtiArtworkFileWasAccepted(null, file), false)
+})
+
+test('DTI artwork retry stays available only while the order accepts file changes', () => {
+  assert.equal(dtiOrderCanRetryArtwork(undefined), true)
+  assert.equal(dtiOrderCanRetryArtwork('awaiting_artwork'), true)
+  assert.equal(dtiOrderCanRetryArtwork('awaiting_artwork_review'), true)
+  assert.equal(dtiOrderCanRetryArtwork('awaiting_manual_timeline'), true)
+  assert.equal(dtiOrderCanRetryArtwork('awaiting_payment'), false)
+  assert.equal(dtiOrderCanRetryArtwork('paid_awaiting_technical_review'), false)
+  assert.equal(dtiOrderCanRetryArtwork('queued_for_production'), false)
+  assert.equal(dtiOrderCanRetryArtwork('cancelled'), false)
+  assert.equal(dtiOrderCanRetryArtwork('unknown'), false)
 })

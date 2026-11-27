@@ -108,7 +108,7 @@ export function DesktopCommandMenu({
             </div>
           </section>
 
-          <section className="ridaos-nav__panel-card ridaos-nav__panel-card--wrap" data-accent="pink">
+          {visibleServices.length > 0 ? <section className="ridaos-nav__panel-card ridaos-nav__panel-card--wrap" data-accent="pink">
             <header className="ridaos-nav__panel-head">
               <div className="ridaos-nav__section-label">
                 <p>Rotulacion</p>
@@ -126,7 +126,7 @@ export function DesktopCommandMenu({
                 />
               ))}
             </div>
-          </section>
+          </section> : null}
 
           <section className="ridaos-nav__panel-card" data-accent="cyan">
             <header className="ridaos-nav__panel-head">

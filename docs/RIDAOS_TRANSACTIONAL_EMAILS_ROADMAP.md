@@ -1,5 +1,7 @@
 # Ridaos Transactional Emails Roadmap
 
+> **Estado actualizado (27-11-2026):** este roadmap conserva las decisiones históricas de V2.5. Sus frases sobre la outbox «no aplicada» y la ausencia de worker quedaron supersedidas por [dti-transactional-email-v2.9.md](./dti-transactional-email-v2.9.md). Actualmente existe outbox y worker preparado en QA, pero el transporte está desactivado y no hay proveedor conectado ni mensajes enviados. No usar este documento como inventario actual.
+
 ## Estado actual
 
 No hay envio real en este sprint.
@@ -7,7 +9,7 @@ No se activa Supabase Auth.
 No se activa Stripe.
 No se activa un proveedor transaccional.
 
-## Avance DTI V2.5
+## Registro histórico — avance DTI V2.5
 
 - `20261126150000_dti_transactional_notification_outbox.sql` añade una cola transaccional privada que se alimenta desde una lista permitida de `dti_order_events`.
 - Cada evento fuente solo puede crear una intención (`source_event_id` único); la cola guarda IDs y clave de plantilla, no email ni contenido con datos personales.

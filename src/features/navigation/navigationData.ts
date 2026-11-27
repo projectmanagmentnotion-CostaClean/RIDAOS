@@ -202,6 +202,41 @@ export const resourceLinks: NavigationLinkItem[] = [
     priority: 'medium',
     matchHrefs: [publicRoutes.upload, publicRoutes.guia],
   },
+  {
+    label: 'Mis pedidos',
+    href: publicRoutes.misPedidos,
+    description: 'Consulta el estado del pedido y del archivo asociado.',
+    accent: 'green',
+    priority: 'medium',
+  },
+  {
+    label: 'Carrito DTI',
+    href: publicRoutes.carrito,
+    description: 'Revisa metros, archivo, entrega e importe estimado.',
+    accent: 'green',
+    priority: 'high',
+  },
+  {
+    label: 'Checkout DTI',
+    href: publicRoutes.checkout,
+    description: 'Confirma tu solicitud cuando el carrito esté listo.',
+    accent: 'cyan',
+    priority: 'medium',
+  },
+  {
+    label: 'Ayuda y preguntas frecuentes',
+    href: publicRoutes.ayuda,
+    description: 'Respuestas sobre DTI Innuro, archivos, plazos y pedidos.',
+    accent: 'neutral',
+    priority: 'medium',
+  },
+  {
+    label: 'Soporte',
+    href: publicRoutes.contacto,
+    description: 'Contacta con Ridaos Print BCN para resolver una duda.',
+    accent: 'cyan',
+    priority: 'medium',
+  },
 ]
 
 export const featuredLinks: NavigationLinkItem[] = [
@@ -270,6 +305,36 @@ export const mobileResourceLinks = [
     href: getPublicCtaHref('upload'),
     description: 'Envia tu diseno para comprobacion previa.',
     accent: 'green' as const,
+  },
+  {
+    label: 'Mis pedidos',
+    href: publicRoutes.misPedidos,
+    description: 'Consulta el estado del pedido y del archivo asociado.',
+    accent: 'green' as const,
+  },
+  {
+    label: 'Carrito DTI',
+    href: publicRoutes.carrito,
+    description: 'Revisa metros, archivo y entrega.',
+    accent: 'green' as const,
+  },
+  {
+    label: 'Checkout DTI',
+    href: publicRoutes.checkout,
+    description: 'Confirma tu solicitud cuando esté lista.',
+    accent: 'cyan' as const,
+  },
+  {
+    label: 'Ayuda y preguntas frecuentes',
+    href: publicRoutes.ayuda,
+    description: 'DTI Innuro, archivos, plazos y pedidos.',
+    accent: 'neutral' as const,
+  },
+  {
+    label: 'Soporte',
+    href: publicRoutes.contacto,
+    description: 'Contacta con Ridaos Print BCN.',
+    accent: 'cyan' as const,
   },
 ]
 

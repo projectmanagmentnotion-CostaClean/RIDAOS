@@ -36,8 +36,24 @@ test('an exact public host fails closed to DTI when config is missing or invalid
     assert.equal(isPublicationRouteAllowed('#/producto/dti-por-metro', policy), true)
     assert.equal(isPublicationRouteAllowed('#/producto/textil-personalizado', policy), false)
     assert.equal(isPublicationRouteAllowed('#/admin', policy), false)
+  assert.equal(isPublicationRouteAllowed('#/admin/production', policy), true)
     assert.equal(resolvePublicationRoute('home', policy), 'dtf')
   }
+})
+
+test('the exact protected QA Preview applies DTI-only fail-closed rules', () => {
+  const preview = resolvePublicationPolicy('ridaos-git-f-2c0516-projectmanagmentnotion-costacleans-projects.vercel.app')
+
+  assert.equal(preview.isPublicLaunch, true)
+  assert.equal(preview.dtiOnlyMode, true)
+  assert.equal(isPublicationRouteAllowed('#/producto/dti-por-metro', preview), true)
+  assert.equal(isPublicationRouteAllowed('#/producto/textil-personalizado', preview), false)
+  assert.equal(isPublicationRouteAllowed('#/presupuesto?service=rotulacion', preview), false)
+  assert.equal(isPublicationRouteAllowed('#/mi-cuenta/archivos', preview), false)
+  assert.equal(isPublicationRouteAllowed('#/admin', preview), false)
+  assert.equal(isPublicationRouteAllowed('#/admin/production', preview), true)
+  assert.equal(resolvePublicationRoute('adminProduction', preview), 'adminProduction')
+  assert.equal(isPublicationRouteAllowed('#/admin/orders', preview), false)
 })
 
 test('DTI-only publication preserves cart and support routes while hiding general catalog', () => {
@@ -47,9 +63,15 @@ test('DTI-only publication preserves cart and support routes while hiding genera
   assert.equal(isPublicationRouteAllowed('#/checkout', policy), true)
   assert.equal(isPublicationRouteAllowed('#/upload', policy), true)
   assert.equal(isPublicationRouteAllowed('#/guia', policy), true)
+  assert.equal(isPublicationRouteAllowed('#/ayuda', policy), true)
   assert.equal(isPublicationRouteAllowed('#/contacto', policy), true)
   assert.equal(isPublicationRouteAllowed('#/legal', policy), true)
-  assert.equal(isPublicationRouteAllowed('#/presupuesto', policy), true)
+  for (const route of ['#/mi-cuenta', '#/mi-cuenta/pedidos', '#/mi-cuenta/pedidos/demo']) {
+    assert.equal(isPublicationRouteAllowed(route, policy), true, `customer tracking route should remain: ${route}`)
+    assert.equal(isPublicationRouteAllowed(`${route}?utm_source=direct`, policy), true)
+  }
+  assert.equal(isPublicationRouteAllowed('#/mi-cuenta/archivos', policy), false)
+  assert.equal(isPublicationRouteAllowed('#/presupuesto?service=rotulacion', policy), false)
   assert.equal(isPublicationRouteAllowed('#/catalogo', policy), false)
   assert.equal(isPublicationRouteAllowed('#/catalogo/flyers', policy), false)
   for (const [route, productCode] of Object.entries(PUBLICATION_PRODUCT_BY_ROUTE)) {
@@ -79,7 +101,7 @@ test('the full catalog is available only when every known product is published',
   assert.equal(isPublicationRouteAllowed('#/catalogo', full), true)
   assert.equal(isPublicationRouteAllowed('#/portafolio', full), true)
   assert.equal(isPublicationRouteAllowed('#/product-configurator', full), true)
-  for (const route of ['#/', '#/carrito', '#/checkout', '#/upload', '#/guia', '#/contacto', '#/legal', '#/presupuesto']) {
+  for (const route of ['#/', '#/carrito', '#/checkout', '#/upload', '#/guia', '#/ayuda', '#/contacto', '#/legal', '#/presupuesto', '#/mi-cuenta', '#/mi-cuenta/pedidos', '#/mi-cuenta/pedidos/demo', '#/mi-cuenta/archivos']) {
     assert.equal(isPublicationRouteAllowed(route, full), true, `public utility route should remain: ${route}`)
   }
   for (const route of Object.keys(PUBLICATION_PRODUCT_BY_ROUTE)) {

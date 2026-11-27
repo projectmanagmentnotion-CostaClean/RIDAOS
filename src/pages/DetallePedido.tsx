@@ -5,6 +5,7 @@ import { publicRoutes } from '../lib/navigation'
 import { getOrderItemSummary } from '../lib/products'
 import { useOrderStore } from '../store/useOrderStore'
 import { dtiCustomerStatusLabels, useDtiGuestOrder } from '../features/dtf/useDtiGuestOrder'
+import { usePublicationPolicy } from '../config/publicationContext'
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('es-ES', {
@@ -13,12 +14,24 @@ const formatCurrency = (value: number) =>
   }).format(value)
 
 function DetallePedido() {
+  const publicationPolicy = usePublicationPolicy()
   const dti = useDtiGuestOrder()
   const orders = useOrderStore((state) => state.orders)
   const order = useMemo(
     () => [...orders].sort((left, right) => right.createdAt.localeCompare(left.createdAt))[0],
     [orders],
   )
+
+  if (publicationPolicy.dtiOnlyMode && !dti.access) {
+    return <section className="page account-page">
+      <div className="page-hero account-hero">
+        <p className="eyebrow">SEGUIMIENTO DTI</p>
+        <h1>No hay un pedido asociado a esta sesión.</h1>
+        <p>Abre Mis pedidos desde el acceso de seguimiento que recibiste al registrar el pedido DTI.</p>
+        <a className="action-button action-link-button" href={publicRoutes.misPedidos}>Ir a Mis pedidos</a>
+      </div>
+    </section>
+  }
 
   if (dti.access) {
     const remoteOrder = dti.order?.order

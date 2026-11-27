@@ -10,7 +10,7 @@ import { initStorefrontRevealAnimations } from '../features/motion/revealAnimati
 import { multiplyOrderItemPricing } from '../features/cart/utils/cartPricing'
 import { OrderLifecycleTimeline } from '../features/orders/components/OrderLifecycleTimeline'
 import { formatArtworkAcceptanceStatus } from '../features/artwork-upload/utils/formatArtworkAcceptance'
-import { getContinueShoppingHref } from '../lib/navigation'
+import { getContinueShoppingHref, publicRoutes } from '../lib/navigation'
 import { getOrderItemSummary } from '../lib/products'
 import { upsertCustomerProfile } from '../services/customerService'
 import { submitOrder } from '../services/orderService'
@@ -72,6 +72,7 @@ function needsArtworkApproval(item: CartItem) {
  */
 function Checkout() {
   const publicationPolicy = usePublicationPolicy()
+  const continueShoppingHref = publicationPolicy.dtiOnlyMode ? publicRoutes.dtf : getContinueShoppingHref()
   const pageRef = useRef<HTMLElement | null>(null)
   const cartItems = useCartStore((state) => state.items)
   const cartShippingMethod = useCartStore((state) => state.shippingMethod)
@@ -318,8 +319,8 @@ function Checkout() {
               {cartItems.length === 0 ? (
                 <div className="empty-state premium-empty-state">
                   <p>Tu carrito esta vacio. Anade productos antes de pasar a este paso.</p>
-                  <a className="card-link" href={getContinueShoppingHref()}>
-                    Volver al catalogo
+                  <a className="card-link" href={continueShoppingHref}>
+                    {publicationPolicy.dtiOnlyMode ? 'Volver a DTI Innuro' : 'Volver al catalogo'}
                   </a>
                 </div>
               ) : (

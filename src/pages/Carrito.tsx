@@ -8,6 +8,7 @@ import { useLiveToast } from '../features/live-feedback'
 import { initStorefrontRevealAnimations } from '../features/motion/revealAnimations'
 import { getContinueShoppingHref, publicRoutes } from '../lib/navigation'
 import { useCartStore } from '../store/useCartStore'
+import { usePublicationPolicy } from '../config/publicationContext'
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat(pricingContent.locale, {
@@ -21,6 +22,10 @@ const formatCurrency = (value: number) =>
  * Visual component: src/pages/Carrito.tsx
  */
 function Carrito() {
+  const publicationPolicy = usePublicationPolicy()
+  const dtiOnly = publicationPolicy.dtiOnlyMode
+  const continueShoppingHref = dtiOnly ? publicRoutes.dtf : getContinueShoppingHref()
+  const continueShoppingLabel = dtiOnly ? 'Volver a DTI Innuro' : pricingContent.cart.continueShoppingLabel
   const pageRef = useRef<HTMLElement | null>(null)
   const items = useCartStore((state) => state.items)
   const couponCode = useCartStore((state) => state.couponCode)
@@ -80,7 +85,7 @@ function Carrito() {
       intent: 'danger',
       onConfirm: () => {
         clearCart()
-        warning('Carrito vaciado', 'Puedes volver a empezar o recuperar productos desde el catalogo.', 3000)
+        warning('Carrito vaciado', dtiOnly ? 'Puedes configurar de nuevo tu pedido DTI Innuro.' : 'Puedes volver a empezar o recuperar productos desde el catalogo.', 3000)
       },
     })
   }
@@ -120,8 +125,8 @@ function Carrito() {
           {items.length === 0 ? (
             <div className="empty-state premium-empty-state">
               <p>{pricingContent.cart.emptyState}</p>
-              <a className="card-link" href={getContinueShoppingHref()}>
-                {pricingContent.cart.continueShoppingLabel}
+              <a className="card-link" href={continueShoppingHref}>
+                {continueShoppingLabel}
               </a>
             </div>
           ) : (
@@ -158,7 +163,7 @@ function Carrito() {
             <ul className="hint-list">
               <li>El checkout mantiene entrega, cupon y lectura del pedido sin rehacer tu configuracion.</li>
               <li>La comprobacion tecnica sigue siendo el paso previo a cualquier produccion real.</li>
-              <li>{footerContent.description}</li>
+              <li>{dtiOnly ? 'DTI Innuro por metro · archivo y revisión técnica separados del pago.' : footerContent.description}</li>
             </ul>
             {pendingArtworkItems.length ? (
               <p className="inline-notice">
@@ -178,9 +183,9 @@ function Carrito() {
               <a
                 className="action-button action-button-muted action-link-button"
                 data-cursor="interactive"
-                href={getContinueShoppingHref()}
+                href={continueShoppingHref}
               >
-                {pricingContent.cart.keepShoppingLabel}
+                {dtiOnly ? 'Seguir con DTI Innuro' : pricingContent.cart.keepShoppingLabel}
               </a>
               <a
                 className={`action-button action-link-button${items.length === 0 ? ' is-disabled' : ''}`}

@@ -108,7 +108,7 @@ export function MobileCommandDrawer({
                 />
               </a>
               <h2 id="ridaos-mobile-nav-title">{navigationMeta.mobileTitle}</h2>
-              <p>Acceso rapido a catalogo, rotulacion y DTI.</p>
+              <p>{publicationPolicy.dtiOnlyMode ? 'DTI Innuro, pedidos y soporte.' : 'Acceso rapido a catalogo, rotulacion y DTI.'}</p>
             </div>
             <button
               aria-label={navigationMeta.mobileCloseAriaLabel}
@@ -152,7 +152,7 @@ export function MobileCommandDrawer({
             ))}
           </div>
 
-          <section className="ridaos-nav__drawer-section">
+          {visibleProducts.length > 0 ? <section className="ridaos-nav__drawer-section">
             <header>
               <div className="ridaos-nav__section-label">
                 <p>Productos</p>
@@ -169,7 +169,7 @@ export function MobileCommandDrawer({
                 />
               ))}
             </div>
-          </section>
+          </section> : null}
 
           <section className="ridaos-nav__drawer-section">
             <header>
@@ -191,7 +191,7 @@ export function MobileCommandDrawer({
           </section>
 
           <footer className="ridaos-nav__drawer-footer">
-            <p>Impresion, rotulacion y DTI con revision tecnica.</p>
+            <p>{publicationPolicy.dtiOnlyMode ? 'DTI Innuro por metro · revisión técnica antes de producir.' : 'Impresion, rotulacion y DTI con revision tecnica.'}</p>
           </footer>
         </div>
       </aside>

@@ -3,6 +3,7 @@ import { getMockLifecycleLabel } from '../features/orders/utils/orderLifecycle'
 import { useMemo } from 'react'
 import { useOrderStore } from '../store/useOrderStore'
 import { dtiCustomerStatusLabels, useDtiGuestOrder } from '../features/dtf/useDtiGuestOrder'
+import { usePublicationPolicy } from '../config/publicationContext'
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('es-ES', {
@@ -18,12 +19,15 @@ const formatDate = (value: string) =>
   }).format(new Date(value))
 
 function MisPedidos() {
+  const publicationPolicy = usePublicationPolicy()
+  const dtiOnly = publicationPolicy.dtiOnlyMode
   const orders = useOrderStore((state) => state.orders)
   const sortedOrders = useMemo(
     () => [...orders].sort((left, right) => right.createdAt.localeCompare(left.createdAt)),
     [orders],
   )
   const dti = useDtiGuestOrder()
+  const visibleOrders = dtiOnly ? [] : sortedOrders
 
   return (
     <section className="page account-page">
@@ -55,12 +59,13 @@ function MisPedidos() {
         </div>
       </article> : null}
 
-      <p className="inline-notice" role="note">
+      {dtiOnly && !dti.access ? <p className="inline-notice" role="note">No hay un pedido DTI asociado a esta sesión. El acceso de seguimiento se facilita al registrar el pedido.</p> : null}
+      {!dtiOnly ? <p className="inline-notice" role="note">
         Los pedidos locales que aparecen a continuación son solo demostraciones; no representan operaciones reales.
-      </p>
+      </p> : null}
 
       <div className="account-dashboard-grid order-grid">
-        {sortedOrders.map((order) => (
+        {visibleOrders.map((order) => (
           <article className="content-card order-card" key={order.id}>
             <div className="order-card-head">
               <div>

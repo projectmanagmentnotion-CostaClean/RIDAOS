@@ -5,6 +5,7 @@ import SectionHeader from '../components/SectionHeader'
 import { publicRoutes } from '../lib/navigation'
 import { useOrderStore } from '../store/useOrderStore'
 import { useUserStore } from '../store/useUserStore'
+import { usePublicationPolicy } from '../config/publicationContext'
 
 const quickLinks = [
   { label: 'Mis pedidos', href: '#/mi-cuenta/pedidos' },
@@ -14,6 +15,7 @@ const quickLinks = [
 ]
 
 function MiCuenta() {
+  const publicationPolicy = usePublicationPolicy()
   const customer = useUserStore((state) => state.customer)
   const orders = useOrderStore((state) => state.orders)
 
@@ -21,6 +23,23 @@ function MiCuenta() {
     () => orders.reduce((sum, order) => sum + order.items.length, 0),
     [orders],
   )
+
+  if (publicationPolicy.dtiOnlyMode) {
+    return (
+      <section className="page account-page premium-page">
+        <div className="page-hero account-hero">
+          <p className="eyebrow">ÁREA CLIENTE · DTI</p>
+          <h1>Consulta tu pedido DTI Innuro.</h1>
+          <p>El seguimiento del pedido de prueba queda asociado al acceso seguro de esta sesión.</p>
+        </div>
+        <article className="content-card account-notice-card">
+          <h2>Seguimiento del pedido</h2>
+          <p>Abre Mis pedidos para consultar el estado del archivo, el pago y la entrega cuando el pedido tenga acceso asociado.</p>
+          <a className="action-button action-link-button" href={publicRoutes.misPedidos}>Ir a Mis pedidos</a>
+        </article>
+      </section>
+    )
+  }
 
   return (
     <PageShell className="account-page premium-page">

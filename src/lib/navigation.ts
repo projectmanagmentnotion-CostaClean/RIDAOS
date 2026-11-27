@@ -26,6 +26,7 @@ export const publicRoutes = {
   checkout: '#/checkout',
   upload: '#/upload',
   guia: '#/guia',
+  ayuda: '#/ayuda',
   portafolio: '#/portafolio',
   contacto: '#/contacto',
   legal: '#/legal',

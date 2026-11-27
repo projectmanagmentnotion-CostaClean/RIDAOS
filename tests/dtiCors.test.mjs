@@ -39,3 +39,28 @@ test('QA order and artwork functions add only the exact protected preview origin
   assert.equal(productionOrigins, configured)
   assert.equal(productionDenied.has('access-control-allow-origin'), false)
 })
+
+test('all six browser DTI functions apply the exact QA preview origin without changing other projects', () => {
+  const origin = 'https://ridaos-git-f-2c0516-projectmanagmentnotion-costacleans-projects.vercel.app'
+  const configured = 'http://localhost:5173'
+  const functions = [
+    ['dti-orders', 'idempotency-key, x-dti-order-token'],
+    ['dti-artwork', 'idempotency-key, x-dti-order-token'],
+    ['dti-accept-artwork', 'x-dti-order-token'],
+    ['dti-payment-intent', 'x-dti-order-token'],
+    ['dti-adaptation-quotes', 'x-dti-order-token'],
+    ['dti-staff-operations', 'idempotency-key'],
+  ]
+
+  for (const [name, extraHeaders] of functions) {
+    const qaOrigins = dtiCorsOriginsForProject(configured, 'https://uzldkpnenmfjfwqfkhre.supabase.co')
+    const allowed = dtiCorsHeaders(new Request(`https://qa.supabase.co/functions/v1/${name}`, { headers: { origin } }), qaOrigins, `authorization, apikey, content-type, ${extraHeaders}`, 'POST, OPTIONS')
+    const rejected = dtiCorsHeaders(new Request(`https://qa.supabase.co/functions/v1/${name}`, { headers: { origin: 'https://example.invalid' } }), qaOrigins, `authorization, apikey, content-type, ${extraHeaders}`, 'POST, OPTIONS')
+    assert.equal(allowed.get('access-control-allow-origin'), origin, `${name} allows the exact QA Preview`)
+    assert.equal(rejected.has('access-control-allow-origin'), false, `${name} rejects unrelated origins`)
+
+    const productionOrigins = dtiCorsOriginsForProject(configured, 'https://production-ref.supabase.co')
+    const production = dtiCorsHeaders(new Request(`https://production.supabase.co/functions/v1/${name}`, { headers: { origin } }), productionOrigins, `authorization, apikey, content-type, ${extraHeaders}`, 'POST, OPTIONS')
+    assert.equal(production.has('access-control-allow-origin'), false, `${name} does not allow the QA Preview in another project`)
+  }
+})

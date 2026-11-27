@@ -27,6 +27,7 @@ type RouteKey =
   | 'checkout'
   | 'upload'
   | 'guia'
+  | 'ayuda'
   | 'portafolio'
   | 'contacto'
   | 'legal'
@@ -98,6 +99,7 @@ const routes: Record<string, RouteKey> = {
   [getPublicCtaHref('upload')]: 'upload',
   [getPublicCtaHref('guia')]: 'guia',
   '#/guia-archivos': 'guia',
+  [getPublicHref('ayuda')]: 'ayuda',
   '#/portafolio': 'portafolio',
   [getPublicCtaHref('contacto')]: 'contacto',
   '#/legal': 'legal',
@@ -149,6 +151,7 @@ const LegacyProductConfiguratorPage = lazy(() => import('./pages/LegacyProductCo
 const Carrito = lazy(() => import('./pages/Carrito'))
 const Checkout = lazy(() => import('./pages/Checkout'))
 const GuiaArchivos = lazy(() => import('./pages/GuiaArchivos'))
+const AyudaDTI = lazy(() => import('./pages/AyudaDTI'))
 const Portafolio = lazy(() => import('./pages/Portafolio'))
 const Contacto = lazy(() => import('./pages/Contacto'))
 const Legal = lazy(() => import('./pages/Legal'))
@@ -195,6 +198,7 @@ const pageComponents: Record<RouteKey, ComponentType> = {
   checkout: Checkout,
   upload: GuiaArchivos,
   guia: GuiaArchivos,
+  ayuda: AyudaDTI,
   portafolio: Portafolio,
   contacto: Contacto,
   legal: Legal,
@@ -388,7 +392,9 @@ function App() {
 
           {/* Editable Zone: FOOTER_MAIN | Content: src/content/footerContent.ts */}
           <footer className="site-footer">
-            <p>{previewFooter.description}</p>
+            <p>{publicationPolicy.dtiOnlyMode
+              ? 'DTI Innuro por metro · impresión transfer textil con revisión técnica en Ridaos Print BCN.'
+              : previewFooter.description}</p>
             <div className="footer-links">
               {previewFooter.links.filter((link) => isPublicationRouteAllowed(link.href, publicationPolicy)).map((link) => (
                 <a data-cursor="interactive" href={link.href} key={link.href}>

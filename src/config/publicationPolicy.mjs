@@ -59,13 +59,18 @@ export const PUBLICATION_ROUTE_BY_KEY = Object.freeze({
   checkout: '#/checkout',
   upload: '#/upload',
   guia: '#/guia',
+  ayuda: '#/ayuda',
   contacto: '#/contacto',
   legal: '#/legal',
   presupuesto: '#/presupuesto',
+  adminProduction: '#/admin/production',
 })
 
 const publicLaunchHosts = new Set([
   'dti.ridaosprint.com',
+  // Exact protected branch alias used for DTI QA. Keep this allowlist explicit:
+  // arbitrary Vercel previews must retain the full private storefront.
+  'ridaos-git-f-2c0516-projectmanagmentnotion-costacleans-projects.vercel.app',
 ])
 
 const alwaysAvailableRoutes = new Set([
@@ -74,14 +79,20 @@ const alwaysAvailableRoutes = new Set([
   '#/checkout',
   '#/upload',
   '#/guia',
+  '#/ayuda',
   '#/contacto',
   '#/legal',
-  '#/presupuesto',
+  '#/mi-cuenta',
+  '#/mi-cuenta/pedidos',
+  '#/mi-cuenta/pedidos/demo',
+  '#/admin/production',
 ])
 
 const fullCatalogOnlyRoutes = new Set([
   '#/catalogo',
   '#/portafolio',
+  '#/presupuesto',
+  '#/mi-cuenta/archivos',
   '#/product-configurator',
 ])
 

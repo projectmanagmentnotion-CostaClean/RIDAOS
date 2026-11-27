@@ -18,6 +18,7 @@ import { getNextShippingStatus } from '../../features/operations/dispatch/dispat
 import { resolveMockUser } from '../../features/admin-accounts/services/adminAccountsService'
 import { useLiveToast } from '../../features/live-feedback'
 import { ReportPreviewPanel, buildDispatchReport, buildProductionSheetReport } from '../../features/reporting'
+import { usePublicationPolicy } from '../../config/publicationContext'
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('es-ES', {
@@ -35,7 +36,7 @@ const formatCurrency = (value: number) =>
  * Content: src/features/operations/mock/operationsMockData.ts
  * Visual component: src/admin/pages/ProductionPage.tsx
  */
-function ProductionPage() {
+function LegacyProductionPage() {
   const { success, warning } = useLiveToast()
   const [orders, setOrders] = useState<OperationsOrderRecord[]>([])
   const [stats, setStats] = useState<Awaited<ReturnType<typeof getProductionOperations>>['stats'] | null>(null)
@@ -209,6 +210,25 @@ function ProductionPage() {
       </div>
     </AdminShell>
   )
+}
+
+function ProductionPage() {
+  const publicationPolicy = usePublicationPolicy()
+
+  if (publicationPolicy.dtiOnlyMode) {
+    return (
+      <section className="page admin-public-page">
+        <div className="page-hero">
+          <p className="eyebrow">ÁREA PRIVADA · DTI QA</p>
+          <h1>Operaciones DTI</h1>
+          <p>Acceso de personal protegido por Supabase Auth. La cola y las acciones operativas requieren permisos DTI asignados.</p>
+        </div>
+        <DtiOperationsWorkspace />
+      </section>
+    )
+  }
+
+  return <LegacyProductionPage />
 }
 
 export default ProductionPage

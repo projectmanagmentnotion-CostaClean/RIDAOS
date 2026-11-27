@@ -163,11 +163,6 @@ function Checkout() {
         'Antes de confirmar, revisa y acepta el archivo final o solicita ayuda de diseno en cada linea pendiente.'
     }
 
-    if (dtiOnly) {
-      const acceptanceError = getDtiArtworkAcceptanceError(dtiClientAccepted)
-      if (acceptanceError) nextErrors.artwork = acceptanceError
-    }
-
     if (dtiOnly && !hasOnlyOneDtiLine(cartItems)) nextErrors.cart = 'Para usar el checkout DTI de pruebas, tramita una sola línea DTI por pedido y separa otros productos.'
     if (dtiOnly && !dtiBackendConfigured()) nextErrors.cart = 'Checkout DTI desactivado: falta conectar un proyecto Supabase QA aislado.'
     if (dtiOnly && cartShippingMethod !== 'pickup') {
@@ -182,6 +177,14 @@ function Checkout() {
     if (!validateCustomer()) {
       setConfirmation(null)
       error('Revisa tus datos', 'Necesitamos un nombre, email, telefono y al menos un producto en la solicitud.')
+      return
+    }
+
+    if (dtiOnly && !dtiClientAccepted) {
+      const acceptanceError = getDtiArtworkAcceptanceError(false)
+      setErrors((current) => ({ ...current, artwork: acceptanceError }))
+      setConfirmation(null)
+      error('Revisa el archivo', acceptanceError)
       return
     }
 

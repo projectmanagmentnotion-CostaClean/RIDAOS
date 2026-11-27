@@ -11,7 +11,7 @@ const correctionMigration = await readFile(
   'utf8',
 )
 const workerMigration = await readFile(
-  new URL('../supabase/migrations/20261127101500_dti_notification_worker_rpc.sql', import.meta.url),
+  new URL('../supabase/migrations/20261127092808_dti_notification_worker_rpc.sql', import.meta.url),
   'utf8',
 )
 

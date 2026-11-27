@@ -6,7 +6,7 @@
 - `dti-notification-worker` is prepared as a Supabase Edge Function. It uses a server-only `SUPABASE_SERVICE_ROLE_KEY`; the browser does not call it or receive provider credentials.
 - The endpoint requires a dedicated bearer secret (`DTI_NOTIFICATION_WORKER_TOKEN`) and is locked with `verify_jwt = false` because it performs its own constant-time token check.
 - Delivery is disabled unless `DTI_EMAIL_TRANSPORT_ENABLED=true`. Missing provider credentials also returns an error before any claim is made.
-- A local SQL migration adds REST-callable wrappers for claim/complete/fail. They are invoker functions restricted to `service_role`. The `dti_private` schema remains unexposed. This worker migration has **not** been applied to QA.
+- Migration `20261127092808_dti_notification_worker_rpc.sql` adds REST-callable wrappers for claim/complete/fail. They are invoker functions restricted to `service_role`. The `dti_private` schema remains unexposed. This migration is applied in QA only.
 - No provider account, key, sender identity, schedule, domain record, or actual message has been created or sent.
 
 ## Provider recommendation
@@ -20,7 +20,7 @@ AWS SES in an EU region is an alternative where regional routing is a priority, 
 ## Enablement sequence — requires separate approval
 
 1. Approve provider/DPA and establish a verified sender identity, SPF, DKIM, and DMARC. Do not add DNS records without explicit DNS authorization.
-2. Apply `20261127101500_dti_notification_worker_rpc.sql` to **QA only**, verify `anon`/`authenticated` cannot execute wrappers and `service_role` can.
+2. Migration `20261127092808_dti_notification_worker_rpc.sql` is already applied in **QA**; verify `anon`/`authenticated` cannot execute wrappers and `service_role` can.
 3. Add QA Edge Function secrets only: `RESEND_API_KEY`, `DTI_EMAIL_FROM`, and a generated `DTI_NOTIFICATION_WORKER_TOKEN`. Keep transport disabled initially.
 4. Deploy the worker to QA and invoke it with transport disabled; verify it claims nothing. Then use the provider's non-delivering test mode if available; the current Resend adapter is intended for live API semantics and has no special test mode.
 5. After explicit approval to deliver real messages to customers, set `DTI_EMAIL_TRANSPORT_ENABLED=true` in QA, manually invoke one controlled test order, verify outbox/provider logs, then configure a bounded schedule. Do not reuse QA secrets in Production.

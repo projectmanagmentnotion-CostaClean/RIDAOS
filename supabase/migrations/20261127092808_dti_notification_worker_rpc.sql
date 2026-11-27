@@ -1,6 +1,6 @@
 -- REST entry points for the Edge Function worker. The underlying queue and
 -- lifecycle functions remain in dti_private; only service_role can call these.
--- This is a local preparation migration and has not been applied to QA.
+-- This migration adds only service_role-only worker RPC wrappers.
 create or replace function public.dti_claim_customer_notifications(p_batch_size integer default 10)
 returns table (
   id uuid,
